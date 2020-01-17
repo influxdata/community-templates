@@ -1,5 +1,7 @@
 # Influx Community Templates
 
+[![Slack Status](https://img.shields.io/badge/slack-join_chat-white.svg?logo=slack&style=social)](https://www.influxdata.com/slack)
+
 InfluxDB 2.0 introduces a new `pkg` command which lets you export your entire configuration, from dashboards to Telegraf scripts to notifications and alters, as a single YAML manifest file, and then re-load those configurations into a fresh instance of InfluxDB. Not only is this useful for backing up your own deployment setup, but it also allows you to create reusable templates for common setups, such as monitoring a service or network traffic, that can be quickly deployed by you or others. 
 
 In true Open Source spirit, these templates of common use cases can be shared with other users of InfluxDB, so they can get started faster, using known-good configurations, and contribute their own improvements to those templates that will benefit the originaly author and the wider community.
@@ -84,3 +86,5 @@ Once your template has been merged, you can start sharing it with the community!
 The InfluxDB Community Templates are provided by members of the community, who are solely responsible for their content and supporting them. InfluxData does not test contributed templates, nor guarantees their quality or safety. If you have questions or need help with the use a specific template, please contact that template's author using the contact information they provide in the README of the template.
 
 InfluxData provides and supports the `influx` command-line tool and `influx pkg` command for importing and exporting template manifests. For help with these tools, please join our [Community Slack](https://influxdata.com/slack) and ask for help in the `#community-support` channel.
+
+[![Slack Status](https://img.shields.io/badge/slack-join_chat-white.svg?logo=slack&style=social)](https://www.influxdata.com/slack)
