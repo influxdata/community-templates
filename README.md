@@ -2,7 +2,7 @@
 
 [![Slack Status](https://img.shields.io/badge/slack-join_chat-white.svg?logo=slack&style=social)](https://www.influxdata.com/slack)
 
-InfluxDB 2.0 introduces Influx Templates – prepackaged InfluxDB configurations that contain everything from dashboards and Telegraf configurations to notifications and alerts in a single manifest file. Use Influx Templates to get a fresh instance of InfluxDB setup quickly, create reusable templates for common setups, backup your own deployment setup, and share them with the community.
+InfluxDB 2.0 introduces Influx Templates – prepackaged InfluxDB configurations that contain everything from dashboards and Telegraf configurations to notifications and alerts in a single manifest file. Use Influx Templates to get a fresh instance of InfluxDB set up quickly, create reusable templates for common setups, backup your own deployment setup, and share them with the community.
 
 In true open source spirit, these templates of common use cases can be shared with other users of InfluxDB, so they can get started faster, using known good configurations, and contribute their own improvements to those templates that will benefit the original author and the wider community.
 
@@ -65,7 +65,7 @@ To contribute a new template or enhance an existing template, submit a pull requ
 
     * To update an existing template, make the changes to template files in the appropriate directory.
 
-3. Add and commit commit your changes and push them to Github. Include the ``--signoff`` flag when committing your changes to include your author information in the commit message.
+3. Add and commit your changes and push them to Github. Include the `--signoff` flag when committing your changes to include your author information in the commit message.
 
     ```
     # Add your changes
