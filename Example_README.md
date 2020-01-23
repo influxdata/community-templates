@@ -24,7 +24,7 @@ List what resources your template provides in this section. That will allow user
 
 ## Setup Instructions
 
-Here you need to describe any steps needed to finish setting up and running your template, including how to launch your Telegraf configurations and connect to any external services or data sources.
+Describe any steps needed to finish setting up and running your template, including how to launch your Telegraf configurations and connect to any external services or data sources.
 
 **Example:**
     
