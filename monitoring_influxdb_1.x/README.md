@@ -18,12 +18,14 @@ This InfluxDB Template can be used to monitor your already running InfluxDB 1.x 
 ## Setup Instructions
     
   The data for the dashboard is populated by the included Telegraf configuration. The Telegraf Configuration requires the following environment variables
-    - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your master token to get started.
-    - `INFLUX_ORG` - The name of your Organization
+    
+  - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your master token to get started.
+  - `INFLUX_ORG` - The name of your Organization
 
   You **MUST** set these environment variables before running Telegraf using something similar to the following commands
-    - This can be found on the `Load Data` > `Tokens` page in your browser: `export INFLUX_TOKEN=TOKEN`
-    - Your Organization name can be found on the Settings page in your browser: `export INFLUX_ORG=my_org`
+    
+  - This can be found on the `Load Data` > `Tokens` page in your browser: `export INFLUX_TOKEN=TOKEN`
+  - Your Organization name can be found on the Settings page in your browser: `export INFLUX_ORG=my_org`
 
   You can start Telegraf using the instructions from the `Telegraf` > `Setup Instructions` link in the UI.
 
@@ -32,10 +34,7 @@ You can easily update the Telegraf configurations to point to a specific InfluxD
 
 ## Contact
 
-Author: Russ Savage
-
-Email: russ@influxdata.com
-
-Github: @russorat
-
-Influx Slack: @russ
+- Author: Russ Savage
+- Email: russ@influxdata.com
+- Github: [@russorat](https://github.com/russorat)
+- Influx Slack: [@russ](https://influxdata.com/slack)
