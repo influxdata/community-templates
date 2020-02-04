@@ -78,7 +78,9 @@ To contribute a new template or enhance an existing template, submit a pull requ
     git push
     ```
 
-4. [Create the pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork) for your changes. InfluxData community template maintainers will review your changes and, upon approval, will merge them into this repository.
+4. [Create the pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork) for your changes. InfluxData community template maintainers will review your changes and, upon approval, will merge them into this repository. Our goal is to review every submission within 5 business days.
+
+Reviews consist only of verifying that you provided a manifest file and a filled out a corresponding README with instructions for its use. We reserve the right to reject or remove a template from this repository for any reason.
 
 Once your template has been merged, start sharing it with the community! Link to it on Twitter, Reddit, or whatever social media you use. Let people on the [InfluxDB Community Slack](https://influxdata.com/slack) know about it too!
 
