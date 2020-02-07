@@ -14,7 +14,7 @@ Each template provides a manifest file and instructions for using the template.
 To import a template, use the following command:
 
 ```
- influx pkg --org <organization_name> -file ~/path/to/template/manifest.yml
+ influx pkg --org <organization_name> --file ~/path/to/template/manifest.yml
  ```
 
 This imports the specified `manifest.yml` into an instance of InfluxDB running on `localhost`.
@@ -61,7 +61,7 @@ To contribute a new template or enhance an existing template, submit a pull requ
         influx pkg export --file ~/path/to/template/manifest.yml
         ```
 
-        > Manifest files can be YAML, JSON or Jsonnet. The filename extension you provide will determine the format used.
+        > Exported manifest files will be YAML or JSON. The filename extension you provide will determine the format used.
 
     * To update an existing template, make the changes to template files in the appropriate directory.
 
