@@ -8,81 +8,17 @@ In true open source spirit, these templates of common use cases can be shared wi
 
 The purpose of this repository is to promote the creation, sharing, and reuse of templates among the InfluxDB community. Anybody can submit new templates or improvements upon existing templates and use these templates in their own InfluxDB instances.
 
-## Use a Template
+## Templates
 
-Each template provides a manifest file and instructions for using the template.
-To import a template, use the following command:
+Start by reading [how to use a Template](docs/use_a_template.md), then check each template's individual instructions for further setup and customization options.
 
-```
- influx pkg --org <organization_name> --file ~/path/to/template/manifest.yml
- ```
+| Template             | Description | Author |
+|----------------------|-------------|:------:|
+| [Linux System Monitor](linux_system/README.md) | Monitor system resources on one or more Linux hosts. | InfluxData |
+| [InfluxDB 1.x Monitor](monitoring_influxdb_1.x/README.md) | Monitor your already running InfluxDB 1.x instance. | InfluxData |
 
-This imports the specified `manifest.yml` into an instance of InfluxDB running on `localhost`.
+To submit a new template, see our [contributing guide](docs/submit_a_template.md).
 
-> Manifest files can be YAML, JSON or Jsonnet.
-
-If you don't want to download the manifest file locally, you can point to its remote location using the `--url` flag, for example:
-```
- influx pkg --org <organization_name> --url https://raw.githubusercontent.com/influxdata/community-templates/master/template/manifest.yml
- ```
-
-### Use Templates in InfluxDB Cloud
-
-If using InfluxDB Cloud or running InfluxDB on a remote server, provide the URL of your InfluxDB instance using the `--host` flag and provide your InfluxDB authentication token using the ``--token`` flag:
-
-```
- influx pkg --org <organization_name> --file ~/path/to/template/manifest.yml --host <hostname> --token <token>
-```
-
-> Need help? You can find [support](#support) information at the bottom of this page.
-
-## Submit a Template
-
-To contribute a new template or enhance an existing template, submit a pull request to this repository.
-
-> Submissions must be provided under the [Apache Public License v2](https://www.apache.org/licenses/LICENSE-2.0).
-
-
-
-1. [Fork this repo](https://help.github.com/en/github/getting-started-with-github/fork-a-repo) on Github, and then clone it locally on your machine.
-   ```
-   git clone https://github.com/<your_github_name>/community-templates
-   ```
-
-
-2. Apply your changes to the clone repository on your local machine.
-
-
-    * To submit and entirely new template, create a new directory for your template and create a `README.md` that describes your template and how to use it. See the `Example_README.md` file in this repository. **Be sure to include a way for users to get in contact with you**.
-
-        Use the following command to export the template and generate a manifest file:
-
-        ```
-        influx pkg export --file ~/path/to/template/manifest.yml
-        ```
-
-        > Exported manifest files will be YAML or JSON. The filename extension you provide will determine the format used.
-
-    * To update an existing template, make the changes to template files in the appropriate directory.
-
-3. Add and commit your changes and push them to Github. Include the `--signoff` flag when committing your changes to include your author information in the commit message.
-
-    ```
-    # Add your changes
-    git add .
-
-    # Commit your changes with a commit message
-    git commit --signoff -m "your commit message"
-
-    # Push your changes to your forked repository on Github
-    git push
-    ```
-
-4. [Create the pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork) for your changes. InfluxData community template maintainers will review your changes and, upon approval, will merge them into this repository. Our goal is to review every submission within 5 business days.
-
-In the review process, we verify that you provide a manifest file and a README.md with instructions for using the template. We reserve the right to reject or remove a template from this repository for any reason.
-
-Once your template has been merged, start sharing it with the community! Link to it on Twitter, Reddit, or whatever social media you use. Let people on the [InfluxDB Community Slack](https://influxdata.com/slack) know about it too!
 
 ## Support
 
