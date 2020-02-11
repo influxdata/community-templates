@@ -14,8 +14,8 @@ Start by reading [how to use a Template](docs/use_a_template.md), then check eac
 
 | Template             | Description | Author |
 |----------------------|-------------|:------:|
-| [Linux System Monitor](linux_system/README.md) | Monitor system resources on one or more Linux hosts. | InfluxData |
-| [InfluxDB 1.x Monitor](monitoring_influxdb_1.x/README.md) | Monitor your already running InfluxDB 1.x instance. | InfluxData |
+| [Linux System Monitor](linux_system/) | Monitor system resources on one or more Linux hosts. | Russ Savage |
+| [InfluxDB 1.x Monitor](monitoring_influxdb_1.x/) | Monitor your already running InfluxDB 1.x instance. | Russ Savage |
 
 To submit a new template, see our [contributing guide](docs/submit_a_template.md).
 
