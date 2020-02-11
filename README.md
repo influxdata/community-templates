@@ -19,6 +19,8 @@ Start by reading [how to use a Template](docs/use_a_template.md), then check eac
 
 To submit a new template, see our [contributing guide](docs/submit_a_template.md).
 
+You can also ask the community to create a Template for a specific use-case by creating a [Template Request](https://github.com/influxdata/community-templates/issues/new?template=template-request.md&labels=Template+Request).
+
 
 ## Support
 
