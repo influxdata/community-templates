@@ -2,7 +2,7 @@
 name: Template request
 about: Suggest an idea for a Template that would be useful to InfluxDB users
 title: ''
-labels: ''
+labels: Template Request
 assignees: ''
 
 ---
