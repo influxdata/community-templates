@@ -18,14 +18,18 @@ If you don't want to download the manifest file locally, you can point to its re
 
  ## Use Templates in InfluxDB Cloud
 
-If you are using InfluxDB Cloud platform you will need provide the URL of your InfluxDB zone using the `--host` flag. For example `https://us-west-2-1.aws.cloud2.influxdata.com`. 
+If you are using InfluxDB Cloud platform you will need provide the [URL of your InfluxDB zone](https://v2.docs.influxdata.com/v2.0/cloud/urls/) using the `--host` flag. For example `https://us-west-2-1.aws.cloud2.influxdata.com`. 
 
 ```
- influx pkg --org <organization_name> --file ~/path/to/template/manifest.yml --host <az_name> --token <token>
+ influx pkg --org <organization_name> --file ~/path/to/template/manifest.yml --host <influxdb_cloud_host> --token <token>
 ```
-You can find your tokens or create a new one under the `Load Data` -> `Tokens` section of the UI.
+
+> Your default organization name in InfluxDB Cloud will be your email address.
+
+To apply templates and download Telegraf configurations from InfluxDB Cloud, create an **All Access Token**. You can [create this token](https://v2.docs.influxdata.com/v2.0/security/tokens/create-token/) from the `Load Data` -> `Tokens` section of the UI.
 
 ![Tokens page](img/nav_token.png)
+![Token Creation](img/token_creation.png)
 
  ## Use Templates in a remote instance
 

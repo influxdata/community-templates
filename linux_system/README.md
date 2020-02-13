@@ -25,7 +25,13 @@ This InfluxDB Template can be used to monitor your Linux System.
   - This can be found on the `Load Data` > `Tokens` page in your browser: `export INFLUX_TOKEN=TOKEN`
   - Your Organization name can be found on the Settings page in your browser: `export INFLUX_ORG=my_org`
 
-  You can start Telegraf using the instructions from the `Telegraf` > `Setup Instructions` link in the UI.
+## Running Telegraf
+
+  To get resource data from your Linux hosts, [download and install Telegraf](https://portal.influxdata.com/downloads/) on those hosts. InfluxData provides native packages for a number of distributions as well as binaries that can be executed directly.
+
+  Start Telegraf using the instructions from the `Load Data` > `Telegraf` > `Setup Instructions` link in the UI.
+
+![Telegraf Setup Instructions](img/linux_system_telegraf.png)
 
 ## Customizations
 
