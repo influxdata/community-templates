@@ -252,7 +252,7 @@ spec:
           ## Multiple URLs can be specified for a single cluster, only ONE of the
           ## urls will be written to each interval.
           ##   ex: urls = ["https://us-west-2-1.aws.cloud2.influxdata.com"]
-          urls = ["$INFLUX_URL"]
+          urls = ["$INFLUX_HOST"]
           ## Token for authentication.
           token = "$INFLUX_TOKEN"
           ## Organization is the name of the organization you wish to write to; must exist.
