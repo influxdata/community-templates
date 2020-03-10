@@ -16,7 +16,7 @@ The dashboard includes 4 sample exchange rates:
 
 The goal of the template is to show how easy it is to use InfluxDB and Telegraf to retrieve time-series data from any source, add it to InfluxDB and be able to process it.
 
-It also shows how to use functions such as [timedMovingAverage()](https://docs.influxdata.com/flux/stdlib/built-in/transformations/aggregates/timedmovingaverage/) to perform basic analysis.
+It also shows how to use functions such as [timedMovingAverage()](https://v2.docs.influxdata.com/v2.0/reference/flux/stdlib/built-in/transformations/aggregates/timedmovingaverage/) to perform basic analysis.
 
 ![Exchange Rates Screenshot](img/exchange-rates-dashboard.png)
 
