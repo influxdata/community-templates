@@ -30,8 +30,6 @@ spec:
     associations:
       - kind: Label
         name: outputs.influxdb_v2
-      - kind: Label
-        name: Windows System Template
     config: |
         [agent]
           interval = "5s"
