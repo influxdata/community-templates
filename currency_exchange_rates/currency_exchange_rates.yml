@@ -59,8 +59,8 @@ spec:
         name: processors.pivot
     config: |
         [agent]
-          interval = "5s"
-          flush_interval = "5s"
+          interval = "1m"
+          flush_interval = "1m"
           round_interval = true
           metric_buffer_limit = 10000
           collection_jitter = "0s"

@@ -45,6 +45,12 @@ It also shows how to use functions such as [timedMovingAverage()](https://v2.doc
 
   You can start Telegraf using the instructions from the `Telegraf` > `Setup Instructions` link in the UI.
 
+## Usage Instructions
+
+  The source of the data shown in this dashboard is updated every weekday. Therefore, it is recommended to set the Time Range in the top-right corner of the dashboard to *Past 30d*.
+
+  Please note that this telegraf configuration will retrieve the data every minute. This helps getting the data added  to InfluxDB fast. However, the data used in this example does not change often. After sending the initial data to InfluxDB, it is recommended to change the `interval` and `flush_interval` settings in Telegraf configuration to `12h` and restart Telegraf.
+
 ## Contact
 
 - Author: Wojciech Kocjan
