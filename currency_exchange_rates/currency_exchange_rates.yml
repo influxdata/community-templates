@@ -1,0 +1,388 @@
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: Exchange Rates
+spec:
+    color: '#7A65F2'
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: outputs.influxdb_v2
+spec:
+    color: '#108174'
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: inputs.http
+spec:
+    color: '#108174'
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: processors.regex
+spec:
+    color: '#108174'
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: processors.pivot
+spec:
+    color: '#108174'
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: quandl
+spec:
+    retentionRules:
+      - everySeconds: 2592000
+        type: expire
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: Exchange Rates Data Retrieval
+spec:
+    associations:
+      - kind: Label
+        name: outputs.influxdb_v2
+      - kind: Label
+        name: inputs.http
+      - kind: Label
+        name: processors.regex
+      - kind: Label
+        name: processors.pivot
+    config: |
+        [agent]
+          interval = "1m"
+          flush_interval = "1m"
+          round_interval = true
+          metric_buffer_limit = 10000
+          collection_jitter = "0s"
+          flush_jitter = "0s"
+          precision = ""
+          debug = true
+          quiet = false
+          logfile = ""
+          omit_hostname = true
+
+        [[outputs.influxdb_v2]]
+          ## Multiple URLs can be specified for a single cluster, only ONE of the
+          ## urls will be written to each interval.
+          ##   ex: urls = ["https://us-west-2-1.aws.cloud2.influxdata.com"]
+          urls = ["$INFLUX_URL"]
+          ## Token for authentication.
+          token = "$INFLUX_TOKEN"
+          ## Organization is the name of the organization you wish to write to; must exist.
+          organization = "$INFLUX_ORG" ## Destination bucket to write into.
+          bucket = "quandl"
+          tagexclude = ["url"]
+
+        #[[outputs.file]]
+        #  files = ["stdout"]
+        #  data_format = "influx"
+        #  tagexclude = ["url"]
+
+        [[processors.regex]]
+          namepass = ["quandl_ecb"]
+
+        [[processors.regex.tags]]
+          key = "url"
+          pattern = "^.*ECB/(.+)\\.csv.*$"
+          replacement = "${1}"
+          result_key = "exchange_rate"
+
+        [[processors.pivot]]
+          tag_key = "exchange_rate"
+          ## Field to use as the value of the new field.
+          value_key = "value"
+
+        [[inputs.http]]
+          urls = [
+            "https://www.quandl.com/api/v3/datasets/ECB/EURUSD.csv?api_key=$QUANDL_API_KEY&order=desc&rows=90",
+            "https://www.quandl.com/api/v3/datasets/ECB/EURGBP.csv?api_key=$QUANDL_API_KEY&order=desc&rows=90",
+            "https://www.quandl.com/api/v3/datasets/ECB/EURCHF.csv?api_key=$QUANDL_API_KEY&order=desc&rows=90",
+            "https://www.quandl.com/api/v3/datasets/ECB/EURAUD.csv?api_key=$QUANDL_API_KEY&order=desc&rows=90",
+          ]
+          data_format = "csv"
+          csv_header_row_count = 1
+          name_override = "quandl_ecb"
+          fielddrop = ["time"]
+          csv_column_names = ["time", "value"]
+          csv_timestamp_column = "time"
+          csv_timestamp_format = "2006-01-02"
+          [inputs.http.tags]
+            dataset = "ECB"
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: Exchange Rates
+spec:
+    charts:
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 6
+        kind: Xy
+        name: EUR-USD
+        position: overlaid
+        queries:
+          - query: |-
+                import "experimental"
+
+                result = from(bucket: "quandl")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "quandl_ecb")
+                  |> filter(fn: (r) => r._field == "EURUSD")
+
+                // report daily exchange rates
+                result
+                  |> yield(name: "daily values")
+        shade: true
+        width: 3
+        xCol: _time
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#8F8AF4'
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#A51414'
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#F4CF31'
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+        geom: line
+        height: 6
+        kind: Xy
+        name: EUR-CHF
+        position: overlaid
+        queries:
+          - query: |-
+                import "experimental"
+
+                result = from(bucket: "quandl")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "quandl_ecb")
+                  |> filter(fn: (r) => r._field == "EURAUD")
+
+                // report daily exchange rates
+                result
+                  |> yield(name: "daily values")
+        shade: true
+        width: 3
+        xCol: _time
+        yCol: _value
+        yPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#FDC44F'
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            name: Cthulhu
+            type: scale
+        geom: line
+        height: 6
+        kind: Xy
+        name: EUR-GBP
+        position: overlaid
+        queries:
+          - query: |-
+                import "experimental"
+
+                result = from(bucket: "quandl")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "quandl_ecb")
+                  |> filter(fn: (r) => r._field == "EURGBP")
+
+                // report daily exchange rates
+                result
+                  |> yield(name: "daily values")
+        shade: true
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#74D495'
+            name: Atlantis
+            type: scale
+          - hex: '#3F3FBA'
+            name: Atlantis
+            type: scale
+          - hex: '#FF4D9E'
+            name: Atlantis
+            type: scale
+        geom: line
+        height: 6
+        kind: Xy
+        name: USD-CHF
+        position: overlaid
+        queries:
+          - query: |-
+                import "experimental"
+
+                result = from(bucket: "quandl")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "quandl_ecb")
+                    // combine all exchange rates into single table
+                  |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+                  // calculate rate by combining EURCHF and EURUSD
+                  |> map(fn: (r) => ({ r with _value: r.EURCHF / r.EURUSD }))
+
+                // report daily exchange rates
+                result
+                  |> yield(name: "daily values")
+        shade: true
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#DA6FF1'
+            name: Ectoplasm
+            type: scale
+          - hex: '#00717A'
+            name: Ectoplasm
+            type: scale
+          - hex: '#ACFF76'
+            name: Ectoplasm
+            type: scale
+        geom: line
+        height: 6
+        kind: Xy
+        name: EUR relative combined index (using USD, CHF, GBP and AUD)
+        position: overlaid
+        queries:
+          - query: |-
+                import "experimental"
+
+                result = from(bucket: "quandl")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "quandl_ecb")
+                  // combine all exchange rates into single table
+                  |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+                  // calculate the relative index by taking each exchange rate and multiplying it by 0.25
+                  |> map(fn: (r) => ({ r with _value: r.EURUSD * 0.25 + r.EURCHF * 0.25 + r.EURGBP * 0.25 + r.EURAUD * 0.25 }))
+
+                // report daily exchange rates
+                result
+                  |> yield(name: "daily values")
+
+                // calculate weekly timed moving average
+                result
+                  |> timedMovingAverage(every: 1d, period: 7d)
+                  |> map(fn: (r) => ({ r with _time: experimental.subDuration(d: 84h, from: r._time) }))
+                  |> yield(name: "weekly timed moving average")
+        shade: true
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+      - axes:
+          - base: "2"
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 6
+        kind: Xy
+        name: USD relative combined index  (using EUR, CHF, GBP and AUD)
+        position: overlaid
+        queries:
+          - query: |-
+                import "experimental"
+
+                result = from(bucket: "quandl")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "quandl_ecb")
+                  // combine all exchange rates into single table
+                  |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+                  // calculate the relative index by taking each exchange rate and multiplying it by 0.25
+                  // since EBC only provides reference rates against EUR, the following calculations are applied
+                  // - calculate the opposite index for EUR-USD
+                  // - calculate the currency / USD index by dividing the currency / EUR index with EUR-USD index
+                  |> map(fn: (r) => ({ r with _value: (1.0 / r.EURUSD) * 0.25 + (r.EURCHF / r.EURUSD) * 0.25 + (r.EURGBP / r.EURUSD) * 0.25 + (r.EURAUD / r.EURUSD) * 0.25}))
+
+                // report daily exchange rates
+                result
+                  |> yield(name: "daily values")
+
+                // calculate weekly timed moving average
+                result
+                  |> timedMovingAverage(every: 1d, period: 7d)
+                  |> map(fn: (r) => ({ r with _time: experimental.subDuration(d: 84h, from: r._time) }))
+                  |> yield(name: "weekly timed moving average")
+        shade: true
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 6
+    description: ""
+...
