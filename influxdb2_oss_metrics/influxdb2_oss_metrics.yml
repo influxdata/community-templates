@@ -1,0 +1,457 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: oss_metrics
+spec:
+    retentionRules:
+      - everySeconds: 604800
+        type: expire
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: InfluxDB2
+spec:
+    color: '#326BBA'
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: prometheus
+spec:
+    color: '#326BBA'
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: InfluxDB OSS Metrics
+spec:
+    associations:
+      - kind: Label
+        name: InfluxDB2
+      - kind: Label
+        name: prometheus
+    charts:
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: This Dashboard gives you an overview of some of the metrics that are
+            available from the Local Metrics endpoint located at `/metrics`. Check
+            out our [documentation page for configuring Scrapers](https://v2.docs.influxdata.com/v2.0/collect-data/scrape-data/manage-scrapers/create-a-scraper/)
+            if you don't see any data below.
+        queries: null
+        width: 12
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Uptime
+        note: This shows the amount of time your current InfluxDB 2 instance has been
+            running, in hours. Keep it up!
+        queries:
+          - query: |-
+                from(bucket: "oss_metrics")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "influxdb_uptime_seconds")
+                  |> filter(fn: (r) => r._field == "gauge")
+                  |> last()
+                  |> map(fn: (r) => ({r with _value: float(v: r._value) / 60.0 / 60.0}))
+        suffix: ' hrs'
+        width: 3
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: TSM Disk Usage (MB)
+        queries:
+          - query: |-
+                from(bucket: "scrape_data")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "storage_tsm_files_disk_bytes")
+                  |> filter(fn: (r) => r._field == "gauge")
+                  |> last()
+                  |> group()
+                  |> sum()
+                  |> map(fn: (r) => ({ r with _value: r._value / 1024.0 / 1024.0 }))
+        suffix: ' MB'
+        width: 3
+        yPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Organizations
+        note: An Organization is a workspace where you and your team can organize
+            your data, Dashboards, Tasks, and anything else you create. You can quickly
+            switch between or create a new one from the first icon in the navigation
+            bar. You can read more about Organizations in our [documentation](https://v2.docs.influxdata.com/v2.0/organizations/).
+        queries:
+          - query: |-
+                from(bucket: "oss_metrics")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "influxdb_organizations_total")
+                  |> filter(fn: (r) => r._field == "counter")
+                  |> last()
+        suffix: ' Orgs'
+        width: 3
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Telegraf Configs
+        note: InfluxDB 2 can create and store your Telegraf agent configs. Telegraf
+            is the world's best data collection agent and is one of the easiest ways
+            to send data into InfluxDB. You can create new configurations in the Settings
+            menu. You can learn more about Telegraf in our [documentation](https://v2.docs.influxdata.com/v2.0/collect-data/use-telegraf/).
+        queries:
+          - query: |-
+                from(bucket: "oss_metrics")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "influxdb_telegrafs_total")
+                  |> filter(fn: (r) => r._field == "counter")
+                  |> last()
+        suffix: ' Telegrafs'
+        width: 3
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        geom: line
+        height: 4
+        kind: Xy
+        name: Local Object Store IO
+        queries:
+          - query: |-
+                from(bucket: "oss_metrics")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "boltdb_reads_total" or r._measurement == "boltdb_writes_total")
+                  |> filter(fn: (r) => r._field == "counter")
+                  |> derivative(unit: 1s, nonNegative: true)
+                  |> drop(columns: ["_field"])
+        width: 12
+        xCol: _time
+        yCol: _value
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        geom: line
+        height: 4
+        kind: Xy
+        name: Query Requests
+        queries:
+          - query: |-
+                from(bucket: "oss_metrics")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "http_api_requests_total")
+                  |> filter(fn: (r) => r.path == "/api/v2/query")
+                  |> filter(fn: (r) => r._field == "counter")
+                  |> derivative(unit: 1s, nonNegative: true)
+        width: 12
+        xCol: _time
+        yCol: _value
+        yPos: 9
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        geom: line
+        height: 3
+        kind: Xy
+        name: Memory Allocations (Bytes)
+        queries:
+          - query: |-
+                from(bucket: "oss_metrics")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "go_memstats_alloc_bytes_total")
+                  |> filter(fn: (r) => r._field == "counter")
+                  |> derivative(unit: 1s, nonNegative: true)
+        width: 4
+        xCol: _time
+        yCol: _value
+        yPos: 13
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        fieldOptions:
+          - displayName: Architecture
+            fieldName: Architecture
+            visible: true
+          - displayName: Build Date
+            fieldName: Build Date
+            visible: true
+          - displayName: Github Commit
+            fieldName: Github Commit
+            visible: true
+          - displayName: CPUs
+            fieldName: CPUs
+            visible: true
+          - displayName: OS
+            fieldName: OS
+            visible: true
+          - displayName: Version
+            fieldName: Version
+            visible: true
+        height: 2
+        kind: Table
+        name: Instance Info
+        note: This cell gives you information about your running instance of InfluxDB
+            2, but you probably already knew that.
+        queries:
+          - query: |-
+                from(bucket: "oss_metrics")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "influxdb_info")
+                  |> group()
+                  |> last()
+                  |> drop(columns: ["_start", "_stop","_time","_field","_value","_measurement"])
+                  |> rename(columns: {arch: "Architecture", build_date: "Build Date", commit: "Github Commit", cpus: "CPUs", os: "OS", version: "Version"})
+                  |> yield(name: "last")
+        tableOptions:
+            fixFirstColumn: true
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 9
+        xPos: 3
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Users
+        note: This lets you know how many users have access to your InfluxDB 2 instance.
+            You can add new users from the command line. You can learn more about
+            Users in our [documentation](https://v2.docs.influxdata.com/v2.0/users/).
+        queries:
+          - query: |-
+                from(bucket: "oss_metrics")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "influxdb_users_total")
+                  |> filter(fn: (r) => r._field == "counter")
+                  |> last()
+        suffix: ' Users'
+        width: 3
+        xPos: 3
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Dashboards
+        note: Dashboards are a great way to group together and view data in InfluxDB
+            2. You can create new ones from the Dashboards page in the navigation
+            menu. For more information on managing Dashboards, check out our [documentation](https://v2.docs.influxdata.com/v2.0/visualize-data/dashboards/).
+        queries:
+          - query: |-
+                from(bucket: "oss_metrics")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "influxdb_dashboards_total")
+                  |> filter(fn: (r) => r._field == "counter")
+                  |> last()
+        suffix: ' Dashboards'
+        width: 3
+        xPos: 3
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+            suffix: '%'
+        geom: line
+        height: 3
+        kind: Xy
+        name: Memory Usage (%)
+        queries:
+          - query: |-
+                bytes_used = from(bucket: "oss_metrics")
+                  |> range(start: v.timeRangeStart,stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "go_memstats_alloc_bytes")
+                  |> filter(fn: (r) => r._field == "gauge")
+                  |> drop(columns:["_start", "_stop"])
+                  
+                total_bytes = from(bucket: "oss_metrics")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn:(r) => r._measurement == "go_memstats_sys_bytes")
+                  |> filter(fn:(r) => r._field == "gauge")
+                  |> drop(columns: ["_start", "_stop"])
+
+                join(tables:{key1: bytes_used, key2: total_bytes}, on: ["_time", "_field"],method: "inner")
+                  |> map(fn: (r) => ({
+                    _time: r._time,
+                    _value: (float(v: r._value_key1) / float(v: r._value_key2)) *100.0,
+                    _field: "Memory Usage Percent"
+                  }))
+                  |> yield(name:"percentage")
+
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 13
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Buckets
+        note: A Bucket is where you store your time series data and each one has a
+            set retention policy. You created one when you first set your instance
+            up, but you can create new ones from the Settings menu. You can learn
+            more about Buckets in our [documentation](https://v2.docs.influxdata.com/v2.0/organizations/buckets/).
+            Why not create a new one right now?
+        queries:
+          - query: |-
+                from(bucket: "oss_metrics")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "influxdb_buckets_total")
+                  |> filter(fn: (r) => r._field == "counter")
+                  |> last()
+        suffix: ' Buckets'
+        width: 3
+        xPos: 6
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Scrapers
+        note: InfluxDB 2 can natively scrape data from Prometheus endpoints, including
+            its own metrics. For more information on setting them up, check out our
+            [documentation](https://v2.docs.influxdata.com/v2.0/collect-data/scrape-data/).
+        queries:
+          - query: |-
+                from(bucket: "oss_metrics")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "influxdb_scrapers_total")
+                  |> filter(fn: (r) => r._field == "counter")
+                  |> last()
+                  |> yield(name: "last")
+        suffix: ' Scrapers'
+        width: 3
+        xPos: 6
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        geom: line
+        height: 3
+        kind: Xy
+        name: Memory Allocs & Frees (Bytes)
+        queries:
+          - query: |-
+                from(bucket: "oss_metrics")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "go_memstats_mallocs_total" or r._measurement == "go_memstats_frees_total")
+                  |> filter(fn: (r) => r._field == "counter")
+                  |> derivative(unit: 1s, nonNegative: false)
+        width: 4
+        xCol: _time
+        xPos: 8
+        yCol: _value
+        yPos: 13
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Tokens
+        note: A Token allows you to access your instance from an external client such
+            as a command line or a client library. They are also used to limit the
+            scope of automated actions like Tasks. You can manage them in the Setting
+            menu. You can learn more about Tokens in our [documentation](https://v2.docs.influxdata.com/v2.0/security/tokens/).
+            Keep your Tokens safe!
+        queries:
+          - query: |-
+                from(bucket: "oss_metrics")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "influxdb_tokens_total")
+                  |> filter(fn: (r) => r._field == "counter")
+                  |> last()
+        suffix: ' Tokens'
+        width: 3
+        xPos: 9
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Successful Task Runs
+        note: Tasks allow you to automate Flux queries for things like data rollups
+            and enrichment. You can create a new one from the Tasks button in the
+            navigation menu. For more information about Tasks, check out our [documentation](https://v2.docs.influxdata.com/v2.0/process-data/).
+        queries:
+          - query: |-
+                import "csv"
+
+                dummy_data = "#group,false,false,false,false,true,true,true,true
+                #datatype,string,long,dateTime:RFC3339,double,string,string,string,string
+                #default,_result,,,,,,,
+                ,result,table,_time,_value,_field,_measurement,status,task_type
+                ,,0,2000-01-01T00:00:00.000000Z,0,counter,task_executor_total_runs_complete,success,system"
+
+                default = csv.from(csv: dummy_data)
+
+                new = from(bucket: "oss_metrics")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "task_executor_total_runs_complete")
+                  |> filter(fn: (r) => r.status == "success")
+                  |> filter(fn: (r) => r.task_type == "system")
+                  |> filter(fn: (r) => r._field == "counter")
+                  |> last()
+
+                union(tables: [default, new]) |> last()
+        suffix: ' Runs'
+        width: 3
+        xPos: 9
+        yPos: 4
+    description: A collection of useful visualizations for monitoring your local InfluxDB
+        2.0 OSS instance.
