@@ -2,7 +2,7 @@
 
 [![Slack Status](https://img.shields.io/badge/slack-join_chat-white.svg?logo=slack&style=social)](https://www.influxdata.com/slack)
 
-InfluxDB 2.0 introduces InfluxDB templates&mdash;prepackaged InfluxDB configurations that contain everything from dashboards and Telegraf configurations to notifications and alerts in a single manifest file. Use InfluxDB templates to get a fresh instance of InfluxDB set up quickly, create reusable templates for common setups, back up your own deployment setup, and share your templates with the community.
+InfluxDB 2.0 [introduces InfluxDB templates](https://www.influxdata.com/blog/introducing-community-influxdb-templates/)&mdash;prepackaged InfluxDB configurations that contain everything from dashboards and Telegraf configurations to notifications and alerts in a single manifest file. Use InfluxDB templates to get a fresh instance of InfluxDB set up quickly, create reusable templates for common setups, back up your own deployment setup, and share your templates with the community.
 
 In true open source spirit, you can update InfluxDB templates with common use cases and share with other InfluxDB users, so they can get started faster, use known configurations, and contribute improvements to templates that benefit everyone in the community.
 
@@ -29,6 +29,6 @@ You can also ask the community to create a template for a specific use-case by c
 
 Community InfluxDB templates are provided by members of the community. Template authors are solely responsible for supporting their templates. InfluxData does not test contributed templates, nor guarantee their quality or safety. If you have questions about or need help with a specific template, please contact the template author using the contact information provided in the template README.
 
-InfluxData provides and supports the `influx` command-line tool and `influx pkg` command for importing and exporting template manifests. For help with these tools, please join our [Community Slack](https://influxdata.com/slack) and ask for help in the `#community-support` channel.
+InfluxData provides and supports the `influx` command-line tool and `influx pkg` command for importing and exporting template manifests. You'll need the [InfluxDB 2.0.0 beta or greater](https://portal.influxdata.com/downloads/) for the `influx pkg` command. For help with these tools, please join our [Community Slack](https://influxdata.com/slack) and ask for help in the `#community-support` channel.
 
 [![Slack Status](https://img.shields.io/badge/slack-join_chat-white.svg?logo=slack&style=social)](https://www.influxdata.com/slack)

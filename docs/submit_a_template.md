@@ -17,7 +17,7 @@ To contribute a new template or enhance an existing template, submit a pull requ
 
     * To submit and entirely new template, create a new directory for your template and create a `README.md` that describes your template and how to use it. See the `Example_README.md` file in this repository. **Be sure to include a way for users to get in contact with you**.
 
-        Use the following command to export the template and generate a manifest file:
+        Use the following command to export the template and generate a manifest file ([Influx pkg requires InfluxDB 2.0.0 beta or greater](https://portal.influxdata.com/downloads/)):
 
         ```
         influx pkg export --file ~/path/to/template/manifest.yml
