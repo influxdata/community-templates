@@ -18,6 +18,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [Linux System Monitor](linux_system/) | Monitor system resources on one or more Linux hosts. | Russ Savage |
 | [Windows System Monitor](windows_system/) | Monitor system resources on one or more Windows hosts. | Russ Savage |
 | [Currency Exchange Rates](currency_exchange_rates/) | Visualize and analyze currency exchange rates using Quandl. | Wojciech Kocjan |
+| [Telegraf Dashboard](telegraf/) | View throughput and internal stats about your Telegraf instances | Steven Soroka |
 
 
 To submit a new template, see our [contributing guide](docs/submit_a_template.md).
