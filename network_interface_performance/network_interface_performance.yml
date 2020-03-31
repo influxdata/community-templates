@@ -508,7 +508,7 @@ spec:
           token = "$INFLUX_TOKEN"
           ## Organization is the name of the organization you wish to write to; must exist.
           organization = "$INFLUX_ORG" ## Destination bucket to write into.
-          bucket = "telegraf"
+          bucket = "network_data"
           ## The value of this tag will be used to determine the bucket.  If this
           ## tag is not set the 'bucket' option is used as the default.
           # bucket_tag = ""
