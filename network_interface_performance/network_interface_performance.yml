@@ -1,0 +1,568 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: loving_austin_c26005
+spec:
+    language: flux
+    name: network_host
+    query: |-
+        import "influxdata/influxdb/v1"
+        v1.measurementTagValues(bucket: v.bucket, measurement: "net", tag: "host")
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: relaxed_dijkstra_c26003
+spec:
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> filter(fn: (r) => r.name !~ /^_/)
+          |> rename(columns: {name: "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: stupefied_galileo_c26007
+spec:
+    language: flux
+    name: network_interface
+    query: |-
+        from(bucket: v.bucket)
+          |> range(start: -24h)
+          |> filter(fn: (r) => r._measurement == "net")
+          |> filter(fn: (r) => r.host == v.network_host)
+          |> keep(columns: ["interface"])
+          |> group()
+          |> unique(column: "interface")
+          |> sort(columns: ["interface"], desc: false)
+          |> rename(columns: {interface: "_value"})
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: dangerous_williamson_426001
+spec:
+    charts:
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Total Traffic (bytes)
+        queries:
+          - query: |-
+                import "system"
+                import "influxdata/influxdb/v1"
+
+                data = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "net")
+                  |> filter(fn: (r) => r._field =~ /^bytes_/)
+                  |> filter(fn: (r) => r.host == v.network_host)
+                  |> filter(fn: (r) => r.interface == v.network_interface)
+
+                last = data |> last() |> v1.fieldsAsCols()
+                first = data |> first() |> v1.fieldsAsCols()
+
+                join(tables: {l: last, f: first}, on: ["host","interface","_measurement"], method: "inner")
+                  |> drop(columns: ["_time_f", "_time_l","_stop_f","_stop_l","_start_f","_start_l"])
+                  |> map(fn: (r) => ({ r with _value: ((r.bytes_recv_l - r.bytes_recv_f) + (r.bytes_sent_l - r.bytes_sent_f)) }))
+                  |> map(fn: (r) => ({ r with _time:  system.time() }))
+                  |> keep(columns: ["_time", "_value", "host", "interface"])
+        width: 3
+      - axes:
+          - base: "2"
+            label: packets
+            name: y
+            scale: linear
+            suffix: /s
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Dropped Packets
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "net")
+                  |> filter(fn: (r) => r._field == "drop_in" or r._field == "err_in")
+                  |> filter(fn: (r) => r.host == v.network_host)
+                  |> filter(fn: (r) => r.interface == v.network_interface)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> sort(columns: ["_time"], desc: false)
+                  |> difference(nonNegative: true, columns: ["_value"])
+                  |> map(fn: (r) => ({ r with _field: if r._field == "drop_in" then "Ingress Discards" else "Ingress Errors" }))
+                  |> drop(columns: ["_start", "_stop"])
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "net")
+                  |> filter(fn: (r) => r._field == "drop_out" or r._field == "err_out")
+                  |> filter(fn: (r) => r.host == v.network_host)
+                  |> filter(fn: (r) => r.interface == v.network_interface)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> derivative(unit: 1s, nonNegative: true, columns: ["_value"], timeColumn: "_time")
+                  |> map(fn: (r) => ({ r with _field: if r._field == "drop_out" then "Egress Dropped Packet Rate" else "Egress Errored Packet Rate" }))
+                  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))
+                  |> drop(columns: ["_start", "_stop"])
+        width: 9
+        xCol: _time
+        yCol: _value
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            label: packets
+            name: y
+            scale: linear
+            suffix: /s
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Traffic Rate (pkts/s)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "net")
+                  |> filter(fn: (r) => r._field == "packets_sent")
+                  |> filter(fn: (r) => r.host == v.network_host)
+                  |> filter(fn: (r) => r.interface == v.network_interface)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> sort(columns: ["_time"], desc: false)
+                  |> derivative(unit: 1s, nonNegative: true, columns: ["_value"], timeColumn: "_time")
+                  |> map(fn: (r) => ({ r with _field: "Egress Unicast Packet Rate" }))
+                  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))
+                  |> drop(columns: ["_start", "_stop"])
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "net")
+                  |> filter(fn: (r) => r._field == "packets_recv")
+                  |> filter(fn: (r) => r.host == v.network_host)
+                  |> filter(fn: (r) => r.interface == v.network_interface)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> derivative(unit: 1s, nonNegative: true, columns: ["_value"], timeColumn: "_time")
+                  |> map(fn: (r) => ({ r with _field: "Ingress Packet Rate" }))
+                  |> drop(columns: ["_start", "_stop"])
+        width: 9
+        xCol: _time
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            label: packets
+            name: y
+            scale: linear
+            suffix: /s
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Traffic Rate (bits/s)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "net")
+                  |> filter(fn: (r) => r._field == "bytes_sent")
+                  |> filter(fn: (r) => r.host == v.network_host)
+                  |> filter(fn: (r) => r.interface == v.network_interface)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> sort(columns: ["_time"], desc: false)
+                  |> derivative(unit: 1s, nonNegative: true, columns: ["_value"], timeColumn: "_time")
+                  |> map(fn: (r) => ({ r with _field: "Egress Traffic Rate" }))
+                  |> map(fn: (r) => ({ r with _value: r._value * -8.0 }))
+                  |> drop(columns: ["_start", "_stop"])
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "net")
+                  |> filter(fn: (r) => r._field == "bytes_recv")
+                  |> filter(fn: (r) => r.host == v.network_host)
+                  |> filter(fn: (r) => r.interface == v.network_interface)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> derivative(unit: 1s, nonNegative: true, columns: ["_value"], timeColumn: "_time")
+                  |> map(fn: (r) => ({ r with _field: "Ingress Bit Rate" }))
+                  |> map(fn: (r) => ({ r with _value: r._value * 8.0}))
+                  |> drop(columns: ["_start", "_stop"])
+        width: 9
+        xCol: _time
+        yCol: _value
+        yPos: 7
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Total Traffic (packets)
+        queries:
+          - query: |-
+                import "system"
+                import "influxdata/influxdb/v1"
+
+                data =from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "net")
+                  |> filter(fn: (r) => r._field =~ /^packets_/)
+                  |> filter(fn: (r)=> r.host == v.network_host)
+                  |> filter(fn: (r) => r.interface ==v.network_interface)
+                  
+                last = data |> last() |> v1.fieldsAsCols()
+                first= data |> first() |> v1.fieldsAsCols()
+
+                join(tables: {l: last, f:first}, on: ["host","interface","_measurement"], method: "inner")
+                  |> drop(columns: ["_time_f", "_time_l","_stop_f","_stop_l","_start_f","_start_l"])
+                  |> map(fn: (r) => ({ r with _value: ((r.packets_recv_l - r.packets_recv_f)+ (r.packets_sent_l - r.packets_sent_f)) }))
+                  |> map(fn: (r) =>({ r with _time:  system.time() }))
+                  |> keep(columns: ["_time","_value", "host", "interface"])
+        width: 3
+        xPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Total Discards (packets)
+        queries:
+          - query: |-
+                import "system"
+                import "influxdata/influxdb/v1"
+
+                data = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "net")
+                  |> filter(fn: (r) => r._field =~ /^drop_/)
+                  |> filter(fn: (r) => r.host == v.network_host)
+                  |> filter(fn: (r) => r.interface == v.network_interface)
+
+                last = data |> last() |> v1.fieldsAsCols()
+                first = data |> first() |> v1.fieldsAsCols()
+
+                join(tables: {l: last, f: first}, on: ["host","interface","_measurement"], method: "inner")
+                  |> drop(columns: ["_time_f", "_time_l","_stop_f","_stop_l","_start_f","_start_l"])
+                  |> map(fn: (r) => ({ r with _value: ((r.drop_in_l - r.drop_in_f) + (r.drop_out_l - r.drop_out_f)) }))
+                  |> map(fn: (r) => ({ r with _time:  system.time() }))
+                  |> keep(columns: ["_time", "_value", "host", "interface"])
+        width: 3
+        xPos: 6
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Total Errors (packets)
+        queries:
+          - query: |-
+                import "system"
+                import "influxdata/influxdb/v1"
+
+                data = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "net")
+                  |> filter(fn: (r) => r._field =~ /^err_/)
+                  |> filter(fn: (r) => r.host == v.network_host)
+                  |> filter(fn: (r) => r.interface == v.network_interface)
+
+                last = data |> last() |> v1.fieldsAsCols()
+                first = data |> first() |> v1.fieldsAsCols()
+
+                join(tables: {l: last, f: first}, on: ["host","interface","_measurement"], method: "inner")
+                  |> drop(columns: ["_time_f", "_time_l","_stop_f","_stop_l","_start_f","_start_l"])
+                  |> map(fn: (r) => ({ r with _value: ((r.err_in_l - r.err_in_f) + (r.err_out_l - r.err_out_f)) }))
+                  |> map(fn: (r) => ({ r with _time:  system.time() }))
+                  |> keep(columns: ["_time", "_value", "host", "interface"])
+        width: 3
+        xPos: 9
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        fieldOptions:
+          - displayName: interface
+            fieldName: interface
+            visible: true
+          - displayName: Bytes Transferred
+            fieldName: Bytes Transferred
+            visible: true
+        height: 5
+        kind: Table
+        name: Active Interfaces
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "net")
+                  |> filter(fn: (r) => r._field == "bytes_sent" or r._field == "bytes_recv")
+                  |> filter(fn: (r) => r.host == v.network_host)
+                  |> group(columns: ["host", "interface"], mode:"by")
+                  |> sum(column: "_value")
+                  |> filter(fn: (r) => r._value > 0)
+                  |> group()
+                  |> drop(columns: ["_start", "_stop","host"])
+                  |> rename(columns: {_value: "Bytes Transferred"})
+        tableOptions:
+            fixFirstColumn: false
+            sortBy: Bytes Transferred
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 3
+        xPos: 9
+        yPos: 1
+    description: A dashboard for Telegraf's net input plugin showing the performance
+        of each network interface.
+    name: Network Interface Performance
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: focused_albattani_026001
+spec:
+    color: '#108174'
+    name: outputs.influxdb_v2
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: noshing_shamir_026003
+spec:
+    color: '#326BBA'
+    name: inputs.net
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: toasty_gould_426001
+spec:
+    associations:
+      - kind: Label
+        name: focused_albattani_026001
+      - kind: Label
+        name: noshing_shamir_026003
+    config: |
+        # Telegraf Configuration
+        #
+        # Telegraf is entirely plugin driven. All metrics are gathered from the
+        # declared inputs, and sent to the declared outputs.
+        #
+        # Plugins must be declared in here to be active.
+        # To deactivate a plugin, comment out the name and any variables.
+        #
+        # Use 'telegraf -config telegraf.conf -test' to see what metrics a config
+        # file would generate.
+        #
+        # Environment variables can be used anywhere in this config file, simply surround
+        # them with ${}. For strings the variable must be within quotes (ie, "${STR_VAR}"),
+        # for numbers and booleans they should be plain (ie, ${INT_VAR}, ${BOOL_VAR})
+
+
+        # Global tags can be specified here in key="value" format.
+        [global_tags]
+          # dc = "us-east-1" # will tag all metrics with dc=us-east-1
+          # rack = "1a"
+          ## Environment variables can be used as tags, and throughout the config file
+          # user = "$USER"
+
+
+        # Configuration for telegraf agent
+        [agent]
+          ## Default data collection interval for all inputs
+          interval = "10s"
+          ## Rounds collection interval to 'interval'
+          ## ie, if interval="10s" then always collect on :00, :10, :20, etc.
+          round_interval = true
+
+          ## Telegraf will send metrics to outputs in batches of at most
+          ## metric_batch_size metrics.
+          ## This controls the size of writes that Telegraf sends to output plugins.
+          metric_batch_size = 1000
+
+          ## Maximum number of unwritten metrics per output.  Increasing this value
+          ## allows for longer periods of output downtime without dropping metrics at the
+          ## cost of higher maximum memory usage.
+          metric_buffer_limit = 10000
+
+          ## Collection jitter is used to jitter the collection by a random amount.
+          ## Each plugin will sleep for a random time within jitter before collecting.
+          ## This can be used to avoid many plugins querying things like sysfs at the
+          ## same time, which can have a measurable effect on the system.
+          collection_jitter = "0s"
+
+          ## Default flushing interval for all outputs. Maximum flush_interval will be
+          ## flush_interval + flush_jitter
+          flush_interval = "10s"
+          ## Jitter the flush interval by a random amount. This is primarily to avoid
+          ## large write spikes for users running a large number of telegraf instances.
+          ## ie, a jitter of 5s and interval 10s means flushes will happen every 10-15s
+          flush_jitter = "0s"
+
+          ## By default or when set to "0s", precision will be set to the same
+          ## timestamp order as the collection interval, with the maximum being 1s.
+          ##   ie, when interval = "10s", precision will be "1s"
+          ##       when interval = "250ms", precision will be "1ms"
+          ## Precision will NOT be used for service inputs. It is up to each individual
+          ## service input to set the timestamp at the appropriate precision.
+          ## Valid time units are "ns", "us" (or "µs"), "ms", "s".
+          precision = ""
+
+          ## Log at debug level.
+          # debug = false
+          ## Log only error level messages.
+          # quiet = false
+
+          ## Log target controls the destination for logs and can be one of "file",
+          ## "stderr" or, on Windows, "eventlog".  When set to "file", the output file
+          ## is determined by the "logfile" setting.
+          # logtarget = "file"
+
+          ## Name of the file to be logged to when using the "file" logtarget.  If set to
+          ## the empty string then logs are written to stderr.
+          # logfile = ""
+
+          ## The logfile will be rotated after the time interval specified.  When set
+          ## to 0 no time based rotation is performed.  Logs are rotated only when
+          ## written to, if there is no log activity rotation may be delayed.
+          # logfile_rotation_interval = "0d"
+
+          ## The logfile will be rotated when it becomes larger than the specified
+          ## size.  When set to 0 no size based rotation is performed.
+          # logfile_rotation_max_size = "0MB"
+
+          ## Maximum number of rotated archives to keep, any older logs are deleted.
+          ## If set to -1, no archives are removed.
+          # logfile_rotation_max_archives = 5
+
+          ## Override default hostname, if empty use os.Hostname()
+          hostname = ""
+          ## If set to true, do no set the "host" tag in the telegraf agent.
+          omit_hostname = false
+
+
+        ###############################################################################
+        #                            OUTPUT PLUGINS                                   #
+        ###############################################################################
+
+        # Configuration for sending metrics to InfluxDB
+        [[outputs.influxdb_v2]]
+          ## The URLs of the InfluxDB cluster nodes.
+          ##
+          ## Multiple URLs can be specified for a single cluster, only ONE of the
+          ## urls will be written to each interval.
+          ##   ex: urls = ["https://us-west-2-1.aws.cloud2.influxdata.com"]
+          urls = ["$INFLUX_URL"]
+          ## Token for authentication.
+          token = "$INFLUX_TOKEN"
+          ## Organization is the name of the organization you wish to write to; must exist.
+          organization = "$INFLUX_ORG" ## Destination bucket to write into.
+          bucket = "network_data"
+          ## The value of this tag will be used to determine the bucket.  If this
+          ## tag is not set the 'bucket' option is used as the default.
+          # bucket_tag = ""
+                  ## If true, the bucket tag will not be added to the metric.
+          # exclude_bucket_tag = false
+                  ## Timeout for HTTP messages.
+          # timeout = "5s"
+                  ## Additional HTTP headers
+          # http_headers = {"X-Special-Header" = "Special-Value"}
+                  ## HTTP Proxy override, if unset values the standard proxy environment
+          ## variables are consulted to determine which proxy, if any, should be used.
+          # http_proxy = "http://corporate.proxy:3128"
+                  ## HTTP User-Agent
+          # user_agent = "telegraf"
+                  ## Content-Encoding for write request body, can be set to "gzip" to
+          ## compress body or "identity" to apply no encoding.
+          # content_encoding = "gzip"
+                  ## Enable or disable uint support for writing uints influxdb 2.0.
+          # influx_uint_support = false
+                  ## Optional TLS Config for use on HTTP connections.
+          # tls_ca = "/etc/telegraf/ca.pem"
+          # tls_cert = "/etc/telegraf/cert.pem"
+          # tls_key = "/etc/telegraf/key.pem"
+          ## Use TLS but skip chain & host verification
+          # insecure_skip_verify = false
+
+        ###############################################################################
+        #                            INPUT PLUGINS                                    #
+        ###############################################################################
+
+
+        # Gather metrics about network interfaces
+        [[inputs.net]]
+          ## By default, telegraf gathers stats from any up interface (excluding loopback)
+          ## Setting interfaces will tell it to gather these explicit interfaces,
+          ## regardless of status. When specifying an interface, glob-style
+          ## patterns are also supported.
+          ##
+          # interfaces = ["eth*", "enp0s[0-1]", "lo"]
+          ##
+          ## On linux systems telegraf also collects protocol stats.
+          ## Setting ignore_protocol_stats to true will skip reporting of protocol metrics.
+          ##
+          # ignore_protocol_stats = false
+          ##
+    description: A set of plugins for monitoring your Network Interfaces.
+    name: Network Interface Monitoring
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: sleepy_napier_826001
+spec:
+    name: network_data
+    retentionRules:
+      - everySeconds: 604800
+        type: expire
