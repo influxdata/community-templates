@@ -19,6 +19,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [InfluxDB 2 OSS Metrics](influxdb2_oss_metrics/) | Monitor your InfluxDB 2 OSS instance using scrapers. | Russ Savage |
 | [Linux System Monitor](linux_system/) | Monitor system resources on one or more Linux hosts. | Russ Savage |
 | [Network Interface Monitor](network_interface_performance/) | Monitor network interfaces on one or more hosts. | Russ Savage |
+| [Website Monitor (Apache/Postgresql)](apache_postgresql/) | Monitor a website that uses Apache and Postgresql | Michael Hall |
 | [Windows System Monitor](windows_system/) | Monitor system resources on one or more Windows hosts. | Russ Savage |
 | [Telegraf Dashboard](telegraf/) | View throughput and internal stats about your Telegraf instances | Steven Soroka |
 
