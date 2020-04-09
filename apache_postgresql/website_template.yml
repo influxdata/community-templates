@@ -1,0 +1,569 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: modest_wu_5b4001
+spec:
+    color: '#009f5f'
+    name: website
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: bettering_faraday_5b4005
+spec:
+    associations:
+      - kind: Label
+        name: modest_wu_5b4001
+    name: website
+    retentionRules:
+      - everySeconds: 2.592e+06
+        type: expire
+---
+apiVersion: influxdata.com/v2alpha1
+kind: CheckThreshold
+metadata:
+    name: earnest_cohen_9b4001
+spec:
+    associations:
+      - kind: Label
+        name: modest_wu_5b4001
+    every: 1m0s
+    name: High Server Load
+    query: |-
+        from(bucket: "website")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r._measurement == "apache")
+          |> filter(fn: (r) => r._field == "Load1")
+          |> aggregateWindow(every: 1m, fn: mean)
+          |> yield(name: "mean")
+    status: active
+    statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }'
+    thresholds:
+      - level: WARN
+        type: greater
+        value: 1
+      - level: CRIT
+        type: greater
+        value: 10
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: bold_buck_9b4009
+spec:
+    associations:
+      - kind: Label
+        name: modest_wu_5b4001
+    language: flux
+    name: hostname
+    query: |-
+        import "influxdata/influxdb/v1"
+        v1.measurementTagValues(bucket: "website", measurement: "apache", tag: "host")
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: sharp_kare_9b4005
+spec:
+    associations:
+      - kind: Label
+        name: modest_wu_5b4001
+    language: flux
+    name: database
+    query: |-
+        import "influxdata/influxdb/v1"
+        v1.measurementTagValues(bucket: "website", measurement: "postgresql", tag: "db")
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: sweet_noyce_db4001
+spec:
+    associations:
+      - kind: Label
+        name: modest_wu_5b4001
+    charts:
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Server Load
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "website")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "apache")
+                  |> filter(fn: (r) => r._field == "Load1" or r._field == "Load5" or r._field == "Load15")
+                  |> filter(fn: (r) => r.host == v.hostname)
+        shade: true
+        width: 3
+        xCol: _time
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Connections
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "website")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "apache")
+                  |> filter(fn: (r) => r._field == "ConnsTotal" or r._field == "ConnsAsyncWriting" or r._field == "ConnsAsyncKeepAlive" or r._field == "ConnsAsyncClosing" or r._field == "BusyWorkers")
+                  |> filter(fn: (r) => r.host == v.hostname)
+                  |> aggregateWindow(every: 1m, fn: sum)
+                  |> yield(name: "sum")
+        shade: true
+        width: 12
+        xCol: _time
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Rows
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: DB rows queried per second
+        position: overlaid
+        queries:
+          - query: |-
+                import "experimental/aggregate"
+                from(bucket: "website")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "postgresql")
+                  |> filter(fn: (r) => r._field == "tup_inserted" or r._field == "tup_updated" or r._field == "tup_deleted" or r._field == "tup_fetched")
+                  |> filter(fn: (r) => r.db == v.database)
+                  |> aggregate.rate(every: 1m, unit: 1s)
+        shade: true
+        width: 12
+        xCol: _time
+        yCol: _value
+        yPos: 6
+      - axes:
+          - base: "10"
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#FDC44F'
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            name: Cthulhu
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: CPU Usage
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "website")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "cpu")
+                  |> filter(fn: (r) => r._field == "usage_system" or r._field == "usage_iowait" or r._field == "usage_steal" or r._field == "usage_user")
+                  |> filter(fn: (r) => r.cpu == "cpu-total")
+                  |> filter(fn: (r) => r.host == v.hostname)
+                  |> aggregateWindow(every: 1m, fn: max)
+                  |> yield(name: "max")
+        shade: true
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Memory
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "website")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "mem")
+                  |> filter(fn: (r) => r._field == "used_percent")
+                  |> filter(fn: (r) => r.host == v.hostname)
+        shade: true
+        width: 3
+        xCol: _time
+        xPos: 6
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#FD7A5D'
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            name: Delorean
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Disk Usage
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "website")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "disk")
+                  |> filter(fn: (r) => r._field == "used" or r._field == "free" or r._field == "total")
+                  |> filter(fn: (r) => r.host == v.hostname)
+        shade: true
+        width: 3
+        xCol: _time
+        xPos: 9
+        yCol: _value
+    description: Dashboard for monitoring websites deployed on Apache + Postgresql
+    name: Website Monitor
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: inspiring_clarke_5b4003
+spec:
+    associations:
+      - kind: Label
+        name: modest_wu_5b4001
+    config: |
+        # Telegraf Configuration
+        #
+        # Telegraf is entirely plugin driven. All metrics are gathered from the
+        # declared inputs, and sent to the declared outputs.
+        #
+        # Plugins must be declared in here to be active.
+        # To deactivate a plugin, comment out the name and any variables.
+        #
+        # Use 'telegraf -config telegraf.conf -test' to see what metrics a config
+        # file would generate.
+        #
+        # Environment variables can be used anywhere in this config file, simply surround
+        # them with ${}. For strings the variable must be within quotes (ie, "${STR_VAR}"),
+        # for numbers and booleans they should be plain (ie, ${INT_VAR}, ${BOOL_VAR})
+
+
+        # Global tags can be specified here in key="value" format.
+        [global_tags]
+          # dc = "us-east-1" # will tag all metrics with dc=us-east-1
+          # rack = "1a"
+          ## Environment variables can be used as tags, and throughout the config file
+          # user = "$USER"
+
+
+        # Configuration for telegraf agent
+        [agent]
+          ## Default data collection interval for all inputs
+          interval = "10s"
+          ## Rounds collection interval to 'interval'
+          ## ie, if interval="10s" then always collect on :00, :10, :20, etc.
+          round_interval = true
+
+          ## Telegraf will send metrics to outputs in batches of at most
+          ## metric_batch_size metrics.
+          ## This controls the size of writes that Telegraf sends to output plugins.
+          metric_batch_size = 1000
+
+          ## Maximum number of unwritten metrics per output.  Increasing this value
+          ## allows for longer periods of output downtime without dropping metrics at the
+          ## cost of higher maximum memory usage.
+          metric_buffer_limit = 10000
+
+          ## Collection jitter is used to jitter the collection by a random amount.
+          ## Each plugin will sleep for a random time within jitter before collecting.
+          ## This can be used to avoid many plugins querying things like sysfs at the
+          ## same time, which can have a measurable effect on the system.
+          collection_jitter = "0s"
+
+          ## Default flushing interval for all outputs. Maximum flush_interval will be
+          ## flush_interval + flush_jitter
+          flush_interval = "10s"
+          ## Jitter the flush interval by a random amount. This is primarily to avoid
+          ## large write spikes for users running a large number of telegraf instances.
+          ## ie, a jitter of 5s and interval 10s means flushes will happen every 10-15s
+          flush_jitter = "0s"
+
+          ## By default or when set to "0s", precision will be set to the same
+          ## timestamp order as the collection interval, with the maximum being 1s.
+          ##   ie, when interval = "10s", precision will be "1s"
+          ##       when interval = "250ms", precision will be "1ms"
+          ## Precision will NOT be used for service inputs. It is up to each individual
+          ## service input to set the timestamp at the appropriate precision.
+          ## Valid time units are "ns", "us" (or "µs"), "ms", "s".
+          precision = ""
+
+          ## Log at debug level.
+          # debug = false
+          ## Log only error level messages.
+          # quiet = false
+
+          ## Log target controls the destination for logs and can be one of "file",
+          ## "stderr" or, on Windows, "eventlog".  When set to "file", the output file
+          ## is determined by the "logfile" setting.
+          # logtarget = "file"
+
+          ## Name of the file to be logged to when using the "file" logtarget.  If set to
+          ## the empty string then logs are written to stderr.
+          # logfile = ""
+
+          ## The logfile will be rotated after the time interval specified.  When set
+          ## to 0 no time based rotation is performed.  Logs are rotated only when
+          ## written to, if there is no log activity rotation may be delayed.
+          # logfile_rotation_interval = "0d"
+
+          ## The logfile will be rotated when it becomes larger than the specified
+          ## size.  When set to 0 no size based rotation is performed.
+          # logfile_rotation_max_size = "0MB"
+
+          ## Maximum number of rotated archives to keep, any older logs are deleted.
+          ## If set to -1, no archives are removed.
+          # logfile_rotation_max_archives = 5
+
+          ## Override default hostname, if empty use os.Hostname()
+          hostname = "$APACHE_HOSTNAME"
+          ## If set to true, do no set the "host" tag in the telegraf agent.
+          omit_hostname = false
+
+
+        ###############################################################################
+        #                            OUTPUT PLUGINS                                   #
+        ###############################################################################
+
+
+        # Configuration for sending metrics to InfluxDB
+        [[outputs.influxdb_v2]]
+          ## The URLs of the InfluxDB cluster nodes.
+          ##
+          ## Multiple URLs can be specified for a single cluster, only ONE of the
+          ## urls will be written to each interval.
+          ##   ex: urls = ["https://us-west-2-1.aws.cloud2.influxdata.com"]
+          urls = ["$INFLUX_HOST"]
+
+          ## Token for authentication.
+          token = "$INFLUX_TOKEN"
+
+          ## Organization is the name of the organization you wish to write to; must exist.
+          organization = "$INFLUX_ORG"
+
+          ## Destination bucket to write into.
+          bucket = "website"
+
+          ## The value of this tag will be used to determine the bucket.  If this
+          ## tag is not set the 'bucket' option is used as the default.
+          # bucket_tag = ""
+
+          ## If true, the bucket tag will not be added to the metric.
+          # exclude_bucket_tag = false
+
+          ## Timeout for HTTP messages.
+          # timeout = "5s"
+
+          ## Additional HTTP headers
+          # http_headers = {"X-Special-Header" = "Special-Value"}
+
+          ## HTTP Proxy override, if unset values the standard proxy environment
+          ## variables are consulted to determine which proxy, if any, should be used.
+          # http_proxy = "http://corporate.proxy:3128"
+
+          ## HTTP User-Agent
+          # user_agent = "telegraf"
+
+          ## Content-Encoding for write request body, can be set to "gzip" to
+          ## compress body or "identity" to apply no encoding.
+          # content_encoding = "gzip"
+
+          ## Enable or disable uint support for writing uints influxdb 2.0.
+          # influx_uint_support = false
+
+          ## Optional TLS Config for use on HTTP connections.
+          # tls_ca = "/etc/telegraf/ca.pem"
+          # tls_cert = "/etc/telegraf/cert.pem"
+          # tls_key = "/etc/telegraf/key.pem"
+          ## Use TLS but skip chain & host verification
+          # insecure_skip_verify = false
+
+
+        ###############################################################################
+        #                            PROCESSOR PLUGINS                                #
+        ###############################################################################
+
+
+        ###############################################################################
+        #                            AGGREGATOR PLUGINS                               #
+        ###############################################################################
+
+
+        ###############################################################################
+        #                            INPUT PLUGINS                                    #
+        ###############################################################################
+
+
+        # Read Apache status information (mod_status)
+        [[inputs.apache]]
+          ## An array of URLs to gather from, must be directed at the machine
+          ## readable version of the mod_status page including the auto query string.
+          ## Default is "http://localhost/server-status?auto".
+          urls = ["$APACHE_STATUS_URL"]
+
+          ## Credentials for basic HTTP authentication.
+          # username = "myuser"
+          # password = "mypassword"
+
+          ## Maximum time to receive response.
+          # response_timeout = "5s"
+
+          ## Optional TLS Config
+          # tls_ca = "/etc/telegraf/ca.pem"
+          # tls_cert = "/etc/telegraf/cert.pem"
+          # tls_key = "/etc/telegraf/key.pem"
+          ## Use TLS but skip chain & host verification
+          # insecure_skip_verify = false
+
+
+        # Read metrics about cpu usage
+        [[inputs.cpu]]
+          ## Whether to report per-cpu stats or not
+          percpu = true
+          ## Whether to report total system cpu stats or not
+          totalcpu = true
+          ## If true, collect raw CPU time metrics.
+          collect_cpu_time = false
+          ## If true, compute and report the sum of all non-idle CPU states.
+          report_active = false
+
+
+        # Read metrics about disk usage by mount point
+        [[inputs.disk]]
+          ## By default stats will be gathered for all mount points.
+          ## Set mount_points will restrict the stats to only the specified mount points.
+          # mount_points = ["/"]
+
+          ## Ignore mount points by filesystem type.
+          ignore_fs = ["tmpfs", "devtmpfs", "devfs", "iso9660", "overlay", "aufs", "squashfs"]
+
+
+        # Read metrics about memory usage
+        [[inputs.mem]]
+          # no configuration
+
+
+        ###############################################################################
+        #                            SERVICE INPUT PLUGINS                            #
+        ###############################################################################
+
+
+        # Read metrics from one or many postgresql servers
+        [[inputs.postgresql]]
+          ## specify address via a url matching:
+          ##   postgres://[pqgotest[:password]]@localhost[/dbname]\
+          ##       ?sslmode=[disable|verify-ca|verify-full]
+          ## or a simple string:
+          ##   host=localhost user=pqotest password=... sslmode=... dbname=app_production
+          ##
+          ## All connection parameters are optional.
+          ##
+          ## Without the dbname parameter, the driver will default to a database
+          ## with the same name as the user. This dbname is just for instantiating a
+          ## connection with the server and doesn't restrict the databases we are trying
+          ## to grab metrics for.
+          ##
+          address = "host=$PG_HOST user=$PG_USER password=$PG_PASSWD sslmode=disable"
+          ## A custom name for the database that will be used as the "server" tag in the
+          ## measurement output. If not specified, a default one generated from
+          ## the connection address is used.
+          # outputaddress = "db01"
+
+          ## connection configuration.
+          ## maxlifetime - specify the maximum lifetime of a connection.
+          ## default is forever (0s)
+          max_lifetime = "0s"
+
+          ## A  list of databases to explicitly ignore.  If not specified, metrics for all
+          ## databases are gathered.  Do NOT use with the 'databases' option.
+          # ignored_databases = ["postgres", "template0", "template1"]
+
+          ## A list of databases to pull metrics about. If not specified, metrics for all
+          ## databases are gathered.  Do NOT use with the 'ignored_databases' option.
+          # databases = ["app_production", "testing"]
+    name: Website Monitor
