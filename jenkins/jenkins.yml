@@ -1,0 +1,877 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: festive_jemison_127001
+spec:
+    color: '#326BBA'
+    name: jenkins
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: jovial_galois_127003
+spec:
+    name: regency-aloha-one
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: eerie_saha_527003
+spec:
+    associations:
+      - kind: Label
+        name: festive_jemison_127001
+    name: jenkinJobNames
+    type: constant
+    values:
+      - Static Files
+      - Front-End Application
+      - Front-End Application - Staging
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: rightful_ramanujan_127007
+spec:
+    associations:
+      - kind: Label
+        name: festive_jemison_127001
+    name: jenkinsBucket
+    type: constant
+    values:
+      - regency-aloha-one
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: zealous_kepler_527007
+spec:
+    associations:
+      - kind: Label
+        name: festive_jemison_127001
+    name: jenkinsHostnames
+    type: constant
+    values:
+      - regency-aloha-one
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: silly_chatelet_d27001
+spec:
+    associations:
+      - kind: Label
+        name: festive_jemison_127001
+    charts:
+      - colors:
+          - hex: '#513CC6'
+            name: planet
+            type: text
+          - hex: '#32B08C'
+            name: viridian
+            type: text
+            value: 2
+          - hex: '#F48D38'
+            name: tiger
+            type: text
+            value: 4
+          - hex: '#BF3D5E'
+            name: ruby
+            type: text
+            value: 6
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat
+        name: "\U0001F44E"
+        note: NO FAILED JOBS REPORTED
+        noteOnEmpty: true
+        queries:
+          - query: |-
+                from(bucket: v.jenkinsBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "jenkins_job")
+                  |> filter(fn: (r) => r.host == v.jenkinsHostnames)
+                  |> filter(fn: (r) => r._field == "result_code")
+                  |> filter(fn: (r) => r.result == "FAILURE")
+                  |> group(columns: ["result"])
+                  |> count()
+                  |> yield(name: "count")
+        width: 1
+      - colors:
+          - hex: '#BF3D5E'
+            name: ruby
+            type: text
+          - hex: '#F48D38'
+            name: tiger
+            type: text
+            value: 2
+          - hex: '#4ED8A0'
+            name: rainforest
+            type: text
+            value: 4
+          - hex: '#513CC6'
+            name: planet
+            type: text
+            value: 6
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: "\U0001F44D"
+        note: NO SUCCESSFUL JOBS (IS THIS OKAY??)
+        noteOnEmpty: true
+        queries:
+          - query: |-
+                from(bucket: v.jenkinsBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "jenkins_job")
+                  |> filter(fn: (r) => r.host == v.jenkinsHostnames)
+                  |> filter(fn: (r) => r._field == "result_code")
+                  |> filter(fn: (r) => r.result == "SUCCESS")
+                  |> group(columns: ["result"])
+                  |> count()
+                  |> yield(name: "count")
+        width: 1
+        yPos: 3
+      - axes:
+          - label: "\U0001F44D to \U0001F44E (grouped by job name)"
+            name: x
+        binCount: 2
+        colors:
+          - hex: '#FD7A5D'
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            name: Delorean
+            type: scale
+        height: 3
+        kind: Histogram
+        name: '(tip: hover for details)'
+        note: No reports found. Run some jobs!
+        noteOnEmpty: true
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: v.jenkinsBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "jenkins_job")
+                  |> filter(fn: (r) => r.host == "ctzen-ctrl.local")
+                  |> filter(fn: (r) => r._field == "result_code")
+                  |> filter(fn: (r) => r.result == "SUCCESS" or r.result == "FAILURE")
+                  |> group(columns: ["result"])
+                  |> yield()
+        width: 7
+        xCol: _value
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: duration
+            name: y
+            scale: linear
+            suffix: s
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: "\U0001F44E Job Durations (tip: hover for details)"
+        note: No reports found. Run some jobs!
+        noteOnEmpty: true
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.jenkinsBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "jenkins_job")
+                  |> filter(fn: (r) => r._field == "duration")
+                  |> filter(fn: (r) => r.result == "FAILURE")
+                  |> filter(fn: (r) => r.host == v.jenkinsHostnames)
+                  |> group(columns: ["name"])
+                  |> map(fn: (r) => ({
+                    r with
+                    _value: r._value / 1000
+                  }))
+        shade: true
+        width: 3
+        yPos: 8
+      - height: 2
+        kind: Markdown
+        name: Name this Cell
+        note: "# Node Metrics \U0001F575️‍♀️"
+        queries: null
+        width: 7
+        yPos: 10
+      - axes:
+          - name: y
+            scale: linear
+            suffix: B
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#FD7A5D'
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            name: Delorean
+            type: scale
+        geom: step
+        height: 2
+        kind: Xy
+        name: MEMORY
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.jenkinsBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "jenkins_node")
+                  |> filter(fn: (r) => r.host == v.jenkinsHostnames)
+                  |> filter(fn: (r) => r._field == "memory_available" or r._field == "memory_total")
+        shade: true
+        width: 2
+        yPos: 12
+      - colors:
+          - hex: '#F95F53'
+            name: curacao
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Recent Failed Job
+        note: no job failures reported
+        noteOnEmpty: true
+        queries:
+          - query: |-
+                from(bucket: v.jenkinsBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "jenkins_job")
+                  |> filter(fn: (r) => r._field == "result_code")
+                  |> filter(fn: (r) => r.host == "ctzen-ctrl.local")
+                  |> filter(fn: (r) => r.result == "FAILURE")
+                  |> group(columns: ["result"])
+                  |> sort(columns: ["_time"])
+                  |> last()
+                  |> drop(columns: ["_value"])
+                  |> rename(columns: {name: "_value"})
+                  |> yield(name: "sort")
+        width: 3
+        xPos: 1
+      - colors:
+          - hex: '#FFB94A'
+            name: pineapple
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Volitile Job
+        note: no job failures reported
+        noteOnEmpty: true
+        queries:
+          - query: |-
+                from(bucket: v.jenkinsBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "jenkins_job")
+                  |> filter(fn: (r) => r.host == v.jenkinsHostnames)
+                  |> filter(fn: (r) => r._field == "result_code")
+                  |> filter(fn: (r) => r.result == "FAILURE")
+                  |> group(columns: ["name"])
+                  |> count()
+                  |> group()
+                  |> max()
+                  |> drop(columns: ["_value"])
+                  |> rename(columns: {name: "_value"})
+                  |> yield()
+        width: 3
+        xPos: 1
+        yPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Recent Success Job
+        note: no job success reported (IS THIS OKAY??)
+        noteOnEmpty: true
+        queries:
+          - query: |-
+                from(bucket: v.jenkinsBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "jenkins_job")
+                  |> filter(fn: (r) => r._field == "result_code")
+                  |> filter(fn: (r) => r.host == "ctzen-ctrl.local")
+                  |> filter(fn: (r) => r.result == "SUCCESS")
+                  |> group(columns: ["result"])
+                  |> sort(columns: ["_time"])
+                  |> last()
+                  |> drop(columns: ["_value"])
+                  |> rename(columns: {name: "_value"})
+                  |> yield(name: "sort")
+        width: 3
+        xPos: 1
+        yPos: 3
+      - colors:
+          - hex: '#513CC6'
+            name: planet
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Most Stable
+        note: no job success reported (IS THIS OKAY??)
+        noteOnEmpty: true
+        queries:
+          - query: |-
+                from(bucket: v.jenkinsBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "jenkins_job")
+                  |> filter(fn: (r) => r.host == v.jenkinsHostnames)
+                  |> filter(fn: (r) => r._field == "result_code")
+                  |> filter(fn: (r) => r.result == "SUCCESS")
+                  |> group(columns: ["name"])
+                  |> count()
+                  |> group()
+                  |> max()
+                  |> drop(columns: ["_value"])
+                  |> rename(columns: {name: "_value"})
+                  |> yield()
+        width: 3
+        xPos: 1
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - name: y
+            scale: linear
+            suffix: B
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: DISK USAGE
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.jenkinsBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "jenkins_node")
+                  |> filter(fn: (r) => r.host == "ctzen-ctrl.local")
+                  |> filter(fn: (r) => r._field == "disk_available" or r._field == "swap_total" or r._field == "swap_available" or r._field == "temp_available")
+        shade: true
+        width: 2
+        xCol: _time
+        xPos: 2
+        yCol: _value
+        yPos: 12
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: duration
+            name: y
+            scale: linear
+            suffix: s
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: "\U0001F44D Job Durations (tip: hover for details)"
+        note: No reports found. Run some jobs!
+        noteOnEmpty: true
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.jenkinsBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "jenkins_job")
+                  |> filter(fn: (r) => r._field == "duration")
+                  |> filter(fn: (r) => r.result == "SUCCESS")
+                  |> filter(fn: (r) => r.host == v.jenkinsHostnames)
+                  |> group(columns: ["name"])
+                  |> map(fn: (r) => ({
+                    r with
+                    _value: r._value / 1000
+                  }))
+        shade: true
+        width: 4
+        xPos: 3
+        yPos: 8
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: min
+          - hex: '#BF3D5E'
+            name: ruby
+            type: max
+            value: 10
+        decimalPlaces: 0
+        height: 5
+        kind: Gauge
+        name: Status Temp
+        note: "✅ - Nothing to report \U0001F6A2"
+        noteOnEmpty: true
+        queries:
+          - query: |-
+                from(bucket: v.jenkinsBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "jenkins_job")
+                  |> filter(fn: (r) => r._field == "result_code")
+                  |> filter(fn: (r) => r.name == "Front-End Application" or r.name == "Front-End Application - Staging" or r.name == "Static Files")
+                  |> filter(fn: (r) => r.result == "FAILURE")
+                  |> group(columns: ["result"])
+                  |> count()
+                  |> yield(name: "count")
+        tickPrefix: "false"
+        width: 3
+        xPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Response Time
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.jenkinsBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "jenkins_node")
+                  |> filter(fn: (r) => r.host == "ctzen-ctrl.local")
+                  |> filter(fn: (r) => r._field == "response_time")
+        width: 3
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 12
+      - height: 10
+        kind: Markdown
+        name: Name this Cell
+        note: |-
+            My main approach for this dashboard was provide a quick pulse on a Jenkins node. If this were the first place I'd look for any clues on issues, what would I want to see?
+
+            Two Large Numbers - These are the good/bad reports.
+
+            Recent Failed/Success Job - Shows the most recent failing or successful jobs by name
+
+            Volitile/Stable Job - Shows the most failing or successful build from the "duration" specificied in the dashboard
+
+
+            "Gauge" cell - Something I was messing around with. note: I wish I could use a variable as a value for "customize - maximum threshold"
+
+            Histogram - Group all the jobs from the "duration" by their success or failure. Found a way to use the histogram, I feel like I could be doing it very wrong due to the labeling on the X axis
+
+            Job Duration - Two charts, one for successful jobs and the other failed jobs
+        queries: null
+        width: 5
+        xPos: 7
+      - height: 6
+        kind: Markdown
+        name: Name this Cell
+        note: Some metrics that are reported along with jobs. To get more useful data
+            out of here, try increasing the time range.
+        queries: null
+        width: 5
+        xPos: 7
+        yPos: 10
+    description: ""
+    name: Jenkins - High-Resolution
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: zen_taussig_127001
+spec:
+    associations:
+      - kind: Label
+        name: festive_jemison_127001
+    charts:
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: 'You Selected:'
+        queries:
+          - query: |-
+                from(bucket: v.jenkinsBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "jenkins_job")
+                  |> filter(fn: (r) => r.name == v.jenkinJobNames)
+                  |> keep(columns: ["name"])
+                  |> rename(columns: {name: "_value"})
+                  |> first()
+        width: 7
+      - colors:
+          - hex: '#513CC6'
+            name: planet
+            type: text
+          - hex: '#32B08C'
+            name: viridian
+            type: text
+            value: 2
+          - hex: '#F48D38'
+            name: tiger
+            type: text
+            value: 4
+          - hex: '#BF3D5E'
+            name: ruby
+            type: text
+            value: 6
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat
+        name: "\U0001F44E"
+        queries:
+          - query: |-
+                from(bucket: v.jenkinsBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "jenkins_job")
+                  |> filter(fn: (r) => r.host == v.jenkinsHostnames)
+                  |> filter(fn: (r) => r._field == "result_code")
+                  |> filter(fn: (r) => r.result == "FAILURE")
+                  |> filter(fn: (r) => r.name == v.jenkinJobNames)
+                  |> group(columns: ["result"])
+                  |> count()
+                  |> yield(name: "count")
+        width: 1
+        yPos: 2
+      - colors:
+          - hex: '#BF3D5E'
+            name: ruby
+            type: text
+          - hex: '#F48D38'
+            name: tiger
+            type: text
+            value: 2
+          - hex: '#4ED8A0'
+            name: rainforest
+            type: text
+            value: 4
+          - hex: '#513CC6'
+            name: planet
+            type: text
+            value: 6
+        decimalPlaces: 0
+        height: 3
+        kind: Single_Stat
+        name: "\U0001F44D"
+        queries:
+          - query: |-
+                from(bucket: v.jenkinsBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "jenkins_job")
+                  |> filter(fn: (r) => r.host == v.jenkinsHostnames)
+                  |> filter(fn: (r) => r._field == "result_code")
+                  |> filter(fn: (r) => r.result == "SUCCESS")
+                  |> filter(fn: (r) => r.name == v.jenkinJobNames)
+                  |> group(columns: ["result"])
+                  |> count()
+                  |> yield(name: "count")
+        width: 1
+        xPos: 1
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: duration in sections
+            name: y
+            scale: linear
+            suffix: s
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: 'Build Times (tip: hover for details)'
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.jenkinsBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "jenkins_job")
+                  |> filter(fn: (r) => r._field == "duration")
+                  |> filter(fn: (r) => r.host == v.jenkinsHostnames)
+                  |> filter(fn: (r) => r.name == v.jenkinJobNames)
+                  |> map(fn: (r) => ({
+                    r with
+                    _value: r._value / 1000
+                  }))
+        shade: true
+        width: 5
+        xPos: 2
+        yPos: 2
+      - height: 7
+        kind: Markdown
+        name: Name this Cell
+        note: |-
+            I want to show more details here about a Jenkins job but I think this is all that can be done
+
+            I added the "You Selected:" cell because it was difficult to tell which "jenkinsJobNames" value I had selected.
+        queries: null
+        width: 5
+        xPos: 7
+    description: ""
+    name: Jenkins - Single Job
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: wiggitty_huh_127001
+spec:
+    associations:
+      - kind: Label
+        name: festive_jemison_127001
+    config: |
+        # Telegraf Configuration
+        #
+        # Telegraf is entirely plugin driven. All metrics are gathered from the
+        # declared inputs, and sent to the declared outputs.
+        #
+        # Plugins must be declared in here to be active.
+        # To deactivate a plugin, comment out the name and any variables.
+        #
+        # Use 'telegraf -config telegraf.conf -test' to see what metrics a config
+        # file would generate.
+        #
+        # Environment variables can be used anywhere in this config file, simply surround
+        # them with ${}. For strings the variable must be within quotes (ie, "${STR_VAR}"),
+        # for numbers and booleans they should be plain (ie, ${INT_VAR}, ${BOOL_VAR})
+        # Global tags can be specified here in key="value" format.
+        [global_tags]
+          # dc = "us-east-1" # will tag all metrics with dc=us-east-1
+          # rack = "1a"
+          ## Environment variables can be used as tags, and throughout the config file
+          # user = "$USER"
+        # Configuration for telegraf agent
+        [agent]
+          ## Default data collection interval for all inputs
+          interval = "10s"
+          ## Rounds collection interval to 'interval'
+          ## ie, if interval="10s" then always collect on :00, :10, :20, etc.
+          round_interval = true
+          ## Telegraf will send metrics to outputs in batches of at most
+          ## metric_batch_size metrics.
+          ## This controls the size of writes that Telegraf sends to output plugins.
+          metric_batch_size = 1000
+          ## Maximum number of unwritten metrics per output.  Increasing this value
+          ## allows for longer periods of output downtime without dropping metrics at the
+          ## cost of higher maximum memory usage.
+          metric_buffer_limit = 10000
+          ## Collection jitter is used to jitter the collection by a random amount.
+          ## Each plugin will sleep for a random time within jitter before collecting.
+          ## This can be used to avoid many plugins querying things like sysfs at the
+          ## same time, which can have a measurable effect on the system.
+          collection_jitter = "0s"
+          ## Default flushing interval for all outputs. Maximum flush_interval will be
+          ## flush_interval + flush_jitter
+          flush_interval = "10s"
+          ## Jitter the flush interval by a random amount. This is primarily to avoid
+          ## large write spikes for users running a large number of telegraf instances.
+          ## ie, a jitter of 5s and interval 10s means flushes will happen every 10-15s
+          flush_jitter = "0s"
+          ## By default or when set to "0s", precision will be set to the same
+          ## timestamp order as the collection interval, with the maximum being 1s.
+          ##   ie, when interval = "10s", precision will be "1s"
+          ##       when interval = "250ms", precision will be "1ms"
+          ## Precision will NOT be used for service inputs. It is up to each individual
+          ## service input to set the timestamp at the appropriate precision.
+          ## Valid time units are "ns", "us" (or "µs"), "ms", "s".
+          precision = ""
+          ## Log at debug level.
+          # debug = false
+          ## Log only error level messages.
+          # quiet = false
+          ## Log target controls the destination for logs and can be one of "file",
+          ## "stderr" or, on Windows, "eventlog".  When set to "file", the output file
+          ## is determined by the "logfile" setting.
+          # logtarget = "file"
+          ## Name of the file to be logged to when using the "file" logtarget.  If set to
+          ## the empty string then logs are written to stderr.
+          # logfile = ""
+          ## The logfile will be rotated after the time interval specified.  When set
+          ## to 0 no time based rotation is performed.  Logs are rotated only when
+          ## written to, if there is no log activity rotation may be delayed.
+          # logfile_rotation_interval = "0d"
+          ## The logfile will be rotated when it becomes larger than the specified
+          ## size.  When set to 0 no size based rotation is performed.
+          # logfile_rotation_max_size = "0MB"
+          ## Maximum number of rotated archives to keep, any older logs are deleted.
+          ## If set to -1, no archives are removed.
+          # logfile_rotation_max_archives = 5
+          ## Override default hostname, if empty use os.Hostname()
+          hostname = "$APACHE_HOSTNAME"
+          ## If set to true, do no set the "host" tag in the telegraf agent.
+          omit_hostname = false
+        ###############################################################################
+        #                            OUTPUT PLUGINS                                   #
+        ###############################################################################
+        # Configuration for sending metrics to InfluxDB
+        [[outputs.influxdb_v2]]
+          ## The URLs of the InfluxDB cluster nodes.
+          ##
+          ## Multiple URLs can be specified for a single cluster, only ONE of the
+          ## urls will be written to each interval.
+          ##   ex: urls = ["https://us-west-2-1.aws.cloud2.influxdata.com"]
+          urls = ["$INFLUX_HOST"]
+
+          ## Token for authentication.
+          token = "$INFLUX_TOKEN"
+
+          ## Organization is the name of the organization you wish to write to; must exist.
+          organization = "$INFLUX_ORG"
+
+          ## Destination bucket to write into.
+          bucket = "$JENKINS_BUCKET"
+
+          ## The value of this tag will be used to determine the bucket.  If this
+          ## tag is not set the 'bucket' option is used as the default.
+          # bucket_tag = ""
+
+          ## If true, the bucket tag will not be added to the metric.
+          # exclude_bucket_tag = false
+
+          ## Timeout for HTTP messages.
+          # timeout = "5s"
+
+          ## Additional HTTP headers
+          # http_headers = {"X-Special-Header" = "Special-Value"}
+          ## HTTP Proxy override, if unset values the standard proxy environment
+          ## variables are consulted to determine which proxy, if any, should be used.
+          # http_proxy = "http://corporate.proxy:3128"
+
+          ## HTTP User-Agent
+          # user_agent = "telegraf"
+
+          ## Content-Encoding for write request body, can be set to "gzip" to
+          ## compress body or "identity" to apply no encoding.
+          # content_encoding = "gzip"
+
+          ## Enable or disable uint support for writing uints influxdb 2.0.
+          # influx_uint_support = false
+
+          ## Optional TLS Config for use on HTTP connections.
+          # tls_ca = "/etc/telegraf/ca.pem"
+          # tls_cert = "/etc/telegraf/cert.pem"
+          # tls_key = "/etc/telegraf/key.pem"
+
+          ## Use TLS but skip chain & host verification
+          # insecure_skip_verify = false
+        ###############################################################################
+        #                            PROCESSOR PLUGINS                                #
+        ###############################################################################
+        ###############################################################################
+        #                            AGGREGATOR PLUGINS                               #
+        ###############################################################################
+        ###############################################################################
+        #                            INPUT PLUGINS                                    #
+        ###############################################################################
+        [[inputs.jenkins]]
+        ## The Jenkins URL in the format "schema://host:port"
+        url = "$JENKINS_URL"
+        username = "$JENKINS_USERNAME"
+        password = "$JENKINS_PASSWORD"
+
+        ## Set response_timeout
+        response_timeout = "60s"
+
+        ## Optional TLS Config
+        # tls_ca = "/etc/telegraf/ca.pem"
+        # tls_cert = "/etc/telegraf/cert.pem"
+        # tls_key = "/etc/telegraf/key.pem"
+        ## Use SSL but skip chain & host verification
+        # insecure_skip_verify = false
+
+        ## Optional Max Job Build Age filter
+        ## Default 1 hour, ignore builds older than max_build_age
+        # max_build_age = "1h"
+
+        ## Optional Sub Job Depth filter
+        ## Jenkins can have unlimited layer of sub jobs
+        ## This config will limit the layers of pulling, default value 0 means
+        ## unlimited pulling until no more sub jobs
+        # max_subjob_depth = 0
+
+        ## Optional Sub Job Per Layer
+        ## In workflow-multibranch-plugin, each branch will be created as a sub job.
+        ## This config will limit to call only the lasted branches in each layer,
+        ## empty will use default value 10
+        # max_subjob_per_layer = 10
+
+        ## Jobs to exclude from gathering
+        # job_exclude = [ "job1", "job2/subjob1/subjob2", "job3/*"]
+
+        ## Nodes to exclude from gathering
+        # node_exclude = [ "node1", "node2" ]
+
+        ## Worker pool for jenkins plugin only
+        ## Empty this field will use default value 5
+        # max_connections = 5
+
+        ###############################################################################
+        #                            SERVICE INPUT PLUGINS                            #
+        ###############################################################################
+    name: Website Monitor
