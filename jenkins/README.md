@@ -9,7 +9,7 @@ This InfluxDB Template can be used to montior a Jenkins instance
 - `Jenkins - High-Resolution` Dashboard (see screenshot above)
 - `Jenkins - Single Job` Dashboard
 - `Jenkins` Telegraf configuration
-- Variables for `jenkinJobNames`, `jenkinsBucket`, and `jenkinsHostnames`
+- Variables for `jenkinJobNames`, `jenkinsBucket`, and `jenkinsHostnames`. You will need to update the value for these thru the InfluxDB UI `Settings` > `Variables` after you've installed this dashboard template
 - Bucket handled by variable `jenkinsBucket`
 - Label `jenkins` applied to all resources
 
@@ -34,10 +34,10 @@ No configuration is necessary to gather Jenkins data other than having valid cre
   - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your master token to get started.
   - `INFLUX_ORG` - The name of your Organization (this will be your email address on the InfluxDB Cloud free tier)
   - `INFLUX_HOST` - The URL of your InfluxDB host (this can your localhost, a remote instance, or InfluxDB Cloud)
-  - `$JENKINS_HOST` - The URL where your Jenkins is located
-  - `$JENKINS_USERNAME` - The username to use
-  - `$JENKINS_PASSWORD` - The password for your username
-  - `$JENKINS_BUCKET` - the bucket to store your data
+  - `JENKINS_HOST` - The URL where your Jenkins is located
+  - `JENKINS_USERNAME` - The username to use
+  - `JENKINS_PASSWORD` - The password for your username
+  - `JENKINS_BUCKET` - the bucket to store your data
 
   You **MUST** set these environment variables before running Telegraf using something similar to the following commands
 
@@ -53,4 +53,4 @@ Be sure to update the values for these variables: `jenkinJobNames`, `jenkinsBuck
 - Author: Ray Farias
 - Email: ray@sudokrew.com
 - Github: [@sgnl](https://github.com/sgnl)
-- Influx Slack: [@Michael Hall](https://influxdata.com/slack)
+- Influx Slack: [@Ray Farias](https://influxdata.com/slack)
