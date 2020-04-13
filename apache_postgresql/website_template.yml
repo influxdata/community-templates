@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: modest_wu_5b4001
+    name: zen_agnesi_cc4001
 spec:
     color: '#009f5f'
     name: website
@@ -9,11 +9,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Bucket
 metadata:
-    name: bettering_faraday_5b4005
+    name: cool_hofstadter_cc4005
 spec:
     associations:
       - kind: Label
-        name: modest_wu_5b4001
+        name: zen_agnesi_cc4001
     name: website
     retentionRules:
       - everySeconds: 2.592e+06
@@ -22,11 +22,39 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: CheckThreshold
 metadata:
-    name: earnest_cohen_9b4001
+    name: quizzical_hawking_0c4003
 spec:
     associations:
       - kind: Label
-        name: modest_wu_5b4001
+        name: zen_agnesi_cc4001
+    every: 1m0s
+    name: Low Disk Space
+    query: |-
+        from(bucket: "website")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r["_measurement"] == "disk")
+          |> filter(fn: (r) => r["_field"] == "free")
+          |> aggregateWindow(every: 1m, fn: mean)
+          |> yield(name: "mean")
+    status: active
+    statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }'
+    thresholds:
+      - level: WARN
+        type: lesser
+        value: 2.147483648e+09
+      - level: CRIT
+        type: lesser
+        value: 1.073741824e+09
+---
+apiVersion: influxdata.com/v2alpha1
+kind: CheckThreshold
+metadata:
+    name: quizzical_solomon_0c4007
+spec:
+    associations:
+      - kind: Label
+        name: zen_agnesi_cc4001
+    description: Checks for system load above 1 (10 for critical)
     every: 1m0s
     name: High Server Load
     query: |-
@@ -49,11 +77,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: bold_buck_9b4009
+    name: annoying_swartz_0c400b
 spec:
     associations:
       - kind: Label
-        name: modest_wu_5b4001
+        name: zen_agnesi_cc4001
     language: flux
     name: hostname
     query: |-
@@ -64,11 +92,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: sharp_kare_9b4005
+    name: toasty_bardeen_4c4003
 spec:
     associations:
       - kind: Label
-        name: modest_wu_5b4001
+        name: zen_agnesi_cc4001
     language: flux
     name: database
     query: |-
@@ -79,11 +107,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: sweet_noyce_db4001
+    name: peaceful_dirac_0c4001
 spec:
     associations:
       - kind: Label
-        name: modest_wu_5b4001
+        name: zen_agnesi_cc4001
     charts:
       - axes:
           - base: "10"
@@ -114,6 +142,7 @@ spec:
                   |> filter(fn: (r) => r._measurement == "apache")
                   |> filter(fn: (r) => r._field == "Load1" or r._field == "Load5" or r._field == "Load15")
                   |> filter(fn: (r) => r.host == v.hostname)
+                  |> aggregateWindow(every: 1m, fn: max)
         shade: true
         width: 3
         xCol: _time
@@ -193,10 +222,10 @@ spec:
         yPos: 6
       - axes:
           - base: "10"
-            name: y
+            name: x
             scale: linear
           - base: "10"
-            name: x
+            name: y
             scale: linear
         colors:
           - hex: '#FDC44F'
@@ -257,6 +286,7 @@ spec:
                   |> filter(fn: (r) => r._measurement == "mem")
                   |> filter(fn: (r) => r._field == "used_percent")
                   |> filter(fn: (r) => r.host == v.hostname)
+                  |> aggregateWindow(every: 1m, fn: max)
         shade: true
         width: 3
         xCol: _time
@@ -302,11 +332,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Telegraf
 metadata:
-    name: inspiring_clarke_5b4003
+    name: dangling_brown_4c4003
 spec:
     associations:
       - kind: Label
-        name: modest_wu_5b4001
+        name: zen_agnesi_cc4001
     config: |
         # Telegraf Configuration
         #
@@ -566,4 +596,6 @@ spec:
           ## A list of databases to pull metrics about. If not specified, metrics for all
           ## databases are gathered.  Do NOT use with the 'ignored_databases' option.
           # databases = ["app_production", "testing"]
+    description: A set of plugins for monitoring system resources, HTTP connection
+        to Apache  and database queries from Postgresl
     name: Website Monitor
