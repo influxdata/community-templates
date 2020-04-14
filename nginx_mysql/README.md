@@ -7,9 +7,9 @@ This InfluxDB Template can be used to monitor a website running on NGINX and MyS
 ### Included Resources
 
 - `NGINX + MySQL` Dashboard (see screenshot above)
-- `Jenkins` Telegraf configuration
+- Telegraf configuration for `nginx` and `mysql`
 - Bucket variables for `mysqlBucket` and `nginxBucket`. You will need to update the value for these thru the InfluxDB UI `Settings` > `Variables` after you've installed this dashboard template
-- Labels `nginx` and `mysql` included and utlized
+- Labels: `nginx` and `mysql`
 
 ## Setup Instructions
 
