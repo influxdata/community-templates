@@ -1,0 +1,589 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: interesting_raman_6ba003
+spec:
+    color: '#34bb55'
+    name: nginx
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: unbridled_jemison_6ba005
+spec:
+    color: '#326BBA'
+    name: mysql
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: rightful_shockley_6ba007
+spec:
+    name: nginx_mysql
+    retentionRules:
+      - everySeconds: 2.592e+06
+        type: expire
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: crumbling_rubin_6ba00f
+spec:
+    associations:
+      - kind: Label
+        name: unbridled_jemison_6ba005
+    name: mysqlBucket
+    type: constant
+    values:
+      - nginx_mysql
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: thirsty_galois_6ba013
+spec:
+    associations:
+      - kind: Label
+        name: interesting_raman_6ba003
+    name: nginxBucket
+    type: constant
+    values:
+      - nginx_mysql
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: realistic_swirles_eba001
+spec:
+    associations:
+      - kind: Label
+        name: interesting_raman_6ba003
+      - kind: Label
+        name: unbridled_jemison_6ba005
+    charts:
+      - axes:
+          - base: "10"
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat_Plus_Line
+        name: Active Connections
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.nginxBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "nginx")
+                  |> filter(fn: (r) => r._field == "active")
+        width: 3
+        xCol: _time
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Reading/Writing/Waiting
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.nginxBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "nginx")
+                  |> filter(fn: (r) => r._field == "reading" or r._field == "waiting" or r._field == "writing")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean)
+                  |> yield(name: "mean")
+        width: 8
+        xCol: _time
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "2"
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: DB rows queried per second
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.mysqlBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "mysql")
+                  |> filter(fn: (r) => r._field == "com_insert" or r._field == "com_update" or r._field == "com_delete")
+        shade: true
+        width: 4
+        xCol: _time
+        yCol: _value
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Connections to Errors
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.mysqlBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "mysql")
+                  |> filter(fn: (r) => r._field == "threads_connected" or r._field == "threads_running" or r._field == "connection_errors_internal" or r._field == "aborted_connects" or r._field == "connection_errors_max_connections")
+        width: 4
+        xCol: _time
+        yCol: _value
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat_Plus_Line
+        name: ACCEPTS/HANDLED
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.nginxBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "nginx")
+                  |> filter(fn: (r) => r._field == "accepts" or r._field == "handled")
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Update/Delete Multi-Table
+        position: overlaid
+        queries:
+          - query: |-
+                import "experimental/aggregate"
+                from(bucket: v.mysqlBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "mysql")
+                  |> filter(fn: (r) => r._field == "com_delete_multi" or r._field == "com_update_multi")
+                  |> aggregate.rate(every: 1m, unit: 1s)
+        shade: true
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Read from Memory vs Disk
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.mysqlBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "mysql")
+                  |> filter(fn: (r) => r._field == "innodb_buffer_pool_reads" or r._field == "innodb_buffer_pool_read_requests")
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat_Plus_Line
+        name: TOTAL REQUESTS
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.nginxBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "nginx")
+                  |> filter(fn: (r) => r._field == "requests")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean)
+                  |> yield(name: "mean")
+        width: 2
+        xCol: _time
+        xPos: 6
+        yCol: _value
+      - height: 5
+        kind: Markdown
+        name: Name this Cell
+        note: |-
+            # NGINX
+
+            This dashboard utilizes the `ngx_http_stub_status_module` module.
+
+            [Module documentation here](https://nginx.org/libxslt/en/docs/http/ngx_http_stub_status_module.html)
+        queries: null
+        width: 4
+        xPos: 8
+      - height: 10
+        kind: Markdown
+        name: Name this Cell
+        note: |-
+            # MySQL
+
+
+            [Server Status variable reference](https://dev.mysql.com/doc/refman/5.7/en/server-status-variable-reference.html)
+
+            ---
+
+            ## Cells
+            **DB rows queried per second**
+
+            Displays query throughput. `INSERT`, `UPDATE`, and `DELETE` statements are monitored here.
+
+            ---
+
+            **Update/Delete Multi-Table**
+
+            similar to **DB rows queried per second** but applies to DELETE and UPDATE statements that use multiple-table syntax.
+
+            ---
+
+            **Connections to Errors**
+
+            - `threads_connected`: Cumulative sum of connections. MySQL will return a “Too many connections” error and increment `connection_errors_max_connections` when overloaded
+            - `aborted_connects`: if your clients are trying and failing to connect to the database, this value will begin to increment
+
+            ---
+
+            **Read from Memory vs Disk**
+
+            - `innodb_buffer_pool_read_requests` tracks number of logical read requests
+
+            - `innodb_buffer_pool_reads` tracks the number of requests that read from disk
+
+            ---
+        queries: null
+        width: 4
+        xPos: 8
+        yPos: 5
+    description: Community Template
+    name: Nginx + MySQL
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: wiggitty_huh_127001
+spec:
+    associations:
+      - kind: Label
+        name: festive_jemison_127001
+    config: |
+        # Telegraf Configuration
+        #
+        # Telegraf is entirely plugin driven. All metrics are gathered from the
+        # declared inputs, and sent to the declared outputs.
+        #
+        # Plugins must be declared in here to be active.
+        # To deactivate a plugin, comment out the name and any variables.
+        #
+        # Use 'telegraf -config telegraf.conf -test' to see what metrics a config
+        # file would generate.
+        #
+        # Environment variables can be used anywhere in this config file, simply surround
+        # them with ${}. For strings the variable must be within quotes (ie, "${STR_VAR}"),
+        # for numbers and booleans they should be plain (ie, ${INT_VAR}, ${BOOL_VAR})
+        # Global tags can be specified here in key="value" format.
+        [global_tags]
+          # dc = "us-east-1" # will tag all metrics with dc=us-east-1
+          # rack = "1a"
+          ## Environment variables can be used as tags, and throughout the config file
+          # user = "$USER"
+        # Configuration for telegraf agent
+        [agent]
+          ## Default data collection interval for all inputs
+          interval = "10s"
+          ## Rounds collection interval to 'interval'
+          ## ie, if interval="10s" then always collect on :00, :10, :20, etc.
+          round_interval = true
+          ## Telegraf will send metrics to outputs in batches of at most
+          ## metric_batch_size metrics.
+          ## This controls the size of writes that Telegraf sends to output plugins.
+          metric_batch_size = 1000
+          ## Maximum number of unwritten metrics per output.  Increasing this value
+          ## allows for longer periods of output downtime without dropping metrics at the
+          ## cost of higher maximum memory usage.
+          metric_buffer_limit = 10000
+          ## Collection jitter is used to jitter the collection by a random amount.
+          ## Each plugin will sleep for a random time within jitter before collecting.
+          ## This can be used to avoid many plugins querying things like sysfs at the
+          ## same time, which can have a measurable effect on the system.
+          collection_jitter = "0s"
+          ## Default flushing interval for all outputs. Maximum flush_interval will be
+          ## flush_interval + flush_jitter
+          flush_interval = "10s"
+          ## Jitter the flush interval by a random amount. This is primarily to avoid
+          ## large write spikes for users running a large number of telegraf instances.
+          ## ie, a jitter of 5s and interval 10s means flushes will happen every 10-15s
+          flush_jitter = "0s"
+          ## By default or when set to "0s", precision will be set to the same
+          ## timestamp order as the collection interval, with the maximum being 1s.
+          ##   ie, when interval = "10s", precision will be "1s"
+          ##       when interval = "250ms", precision will be "1ms"
+          ## Precision will NOT be used for service inputs. It is up to each individual
+          ## service input to set the timestamp at the appropriate precision.
+          ## Valid time units are "ns", "us" (or "µs"), "ms", "s".
+          precision = ""
+          ## Log at debug level.
+          # debug = false
+          ## Log only error level messages.
+          # quiet = false
+          ## Log target controls the destination for logs and can be one of "file",
+          ## "stderr" or, on Windows, "eventlog".  When set to "file", the output file
+          ## is determined by the "logfile" setting.
+          # logtarget = "file"
+          ## Name of the file to be logged to when using the "file" logtarget.  If set to
+          ## the empty string then logs are written to stderr.
+          # logfile = ""
+          ## The logfile will be rotated after the time interval specified.  When set
+          ## to 0 no time based rotation is performed.  Logs are rotated only when
+          ## written to, if there is no log activity rotation may be delayed.
+          # logfile_rotation_interval = "0d"
+          ## The logfile will be rotated when it becomes larger than the specified
+          ## size.  When set to 0 no size based rotation is performed.
+          # logfile_rotation_max_size = "0MB"
+          ## Maximum number of rotated archives to keep, any older logs are deleted.
+          ## If set to -1, no archives are removed.
+          # logfile_rotation_max_archives = 5
+          ## Override default hostname, if empty use os.Hostname()
+          hostname = "$APACHE_HOSTNAME"
+          ## If set to true, do no set the "host" tag in the telegraf agent.
+          omit_hostname = false
+        ###############################################################################
+        #                            OUTPUT PLUGINS                                   #
+        ###############################################################################
+        # Configuration for sending metrics to InfluxDB
+        [[outputs.influxdb_v2]]
+          ## The URLs of the InfluxDB cluster nodes.
+          ##
+          ## Multiple URLs can be specified for a single cluster, only ONE of the
+          ## urls will be written to each interval.
+          ## urls exp: http://127.0.0.1:9999
+          urls = ["$INFLUX_HOST"]
+
+          ## Token for authentication.
+          token = "$INFLUX_TOKEN"
+
+          ## Organization is the name of the organization you wish to write to; must exist.
+          organization = "$INFLUX_ORG"
+
+          ## Destination bucket to write into.
+          bucket = "website"
+
+        ###############################################################################
+        #                            PROCESSOR PLUGINS                                #
+        ###############################################################################
+        ###############################################################################
+        #                            AGGREGATOR PLUGINS                               #
+        ###############################################################################
+        ###############################################################################
+        #                            INPUT PLUGINS                                    #
+        ###############################################################################
+        [[inputs.nginx]]
+          ## An array of Nginx stub_status URI to gather stats.
+          urls = ["$NGINX_STATUS_URL"]
+
+          ## Optional TLS Config
+          # tls_ca = "/etc/telegraf/ca.pem"
+          # tls_cert = "/etc/telegraf/cert.pem"
+          # tls_key = "/etc/telegraf/key.pem"
+          ## Use TLS but skip chain & host verification
+          # insecure_skip_verify = false
+
+          ## HTTP response timeout (default: 5s)
+          response_timeout = "5s"
+
+        ###############################################################################
+        #                            SERVICE INPUT PLUGINS                            #
+        ###############################################################################
+        [[inputs.mysql]]
+          ## specify servers via a url matching:
+          ##  [username[:password]@][protocol[(address)]]/[?tls=[true|false|skip-verify|custom]]
+          ##  see https://github.com/go-sql-driver/mysql#dsn-data-source-name
+          ##  e.g.
+          ##    servers = ["user:passwd@tcp(127.0.0.1:3306)/?tls=false"]
+          ##    servers = ["user@tcp(127.0.0.1:3306)/?tls=false"]
+          #
+          ## If no servers are specified, then localhost is used as the host.
+          servers = ["${MYSQL_USERNAME}:${MYSQL_PASSWORD}@tcp(${MYSQL_ADDRESS})/"]
+
+          ## Selects the metric output format.
+          ##
+          ## This option exists to maintain backwards compatibility, if you have
+          ## existing metrics do not set or change this value until you are ready to
+          ## migrate to the new format.
+          ##
+          ## If you do not have existing metrics from this plugin set to the latest
+          ## version.
+          ##
+          ## Telegraf >=1.6: metric_version = 2
+          ##           <1.6: metric_version = 1 (or unset)
+          metric_version = 2
+
+          ## if the list is empty, then metrics are gathered from all databasee tables
+          # table_schema_databases = []
+
+          ## gather metrics from INFORMATION_SCHEMA.TABLES for databases provided above list
+          # gather_table_schema = false
+
+          ## gather thread state counts from INFORMATION_SCHEMA.PROCESSLIST
+          # gather_process_list = false
+
+          ## gather user statistics from INFORMATION_SCHEMA.USER_STATISTICS
+          # gather_user_statistics = false
+
+          ## gather auto_increment columns and max values from information schema
+          # gather_info_schema_auto_inc = false
+
+          ## gather metrics from INFORMATION_SCHEMA.INNODB_METRICS
+          # gather_innodb_metrics = false
+
+          ## gather metrics from SHOW SLAVE STATUS command output
+          # gather_slave_status = false
+
+          ## gather metrics from SHOW BINARY LOGS command output
+          # gather_binary_logs = false
+
+          ## gather metrics from SHOW GLOBAL VARIABLES command output
+          # gather_global_variables = true
+
+          ## gather metrics from PERFORMANCE_SCHEMA.TABLE_IO_WAITS_SUMMARY_BY_TABLE
+          # gather_table_io_waits = false
+
+          ## gather metrics from PERFORMANCE_SCHEMA.TABLE_LOCK_WAITS
+          # gather_table_lock_waits = false
+
+          ## gather metrics from PERFORMANCE_SCHEMA.TABLE_IO_WAITS_SUMMARY_BY_INDEX_USAGE
+          # gather_index_io_waits = false
+
+          ## gather metrics from PERFORMANCE_SCHEMA.EVENT_WAITS
+          # gather_event_waits = false
+
+          ## gather metrics from PERFORMANCE_SCHEMA.FILE_SUMMARY_BY_EVENT_NAME
+          # gather_file_events_stats = false
+
+          ## gather metrics from PERFORMANCE_SCHEMA.EVENTS_STATEMENTS_SUMMARY_BY_DIGEST
+          # gather_perf_events_statements = false
+
+          ## the limits for metrics form perf_events_statements
+          # perf_events_statements_digest_text_limit = 120
+          # perf_events_statements_limit = 250
+          # perf_events_statements_time_limit = 86400
+
+          ## Some queries we may want to run less often (such as SHOW GLOBAL VARIABLES)
+          ##   example: interval_slow = "30m"
+          # interval_slow = ""
+
+          ## Optional TLS Config (will be used if tls=custom parameter specified in server uri)
+          # tls_ca = "/etc/telegraf/ca.pem"
+          # tls_cert = "/etc/telegraf/cert.pem"
+          # tls_key = "/etc/telegraf/key.pem"
+          ## Use TLS but skip chain & host verification
+          # insecure_skip_verify = false
+    name: Website Monitor
+
