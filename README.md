@@ -22,6 +22,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [Jenkins](jenkins/) | Monitor your Jenkins node and jobs. | Ray Farias |
 | [Network Interface Monitor](network_interface_performance/) | Monitor network interfaces on one or more hosts. | Russ Savage |
 | [Website Monitor (Apache/Postgresql)](apache_postgresql/) | Monitor a website that uses Apache and Postgresql | Michael Hall |
+| [Website Monitor (NGINX/MySQL)](nginx_mysql/) | Monitor a website that uses NGINX and MySQL | Ray Farias |
 | [Windows System Monitor](windows_system/) | Monitor system resources on one or more Windows hosts. | Russ Savage |
 | [Telegraf Dashboard](telegraf/) | View throughput and internal stats about your Telegraf instances | Steven Soroka |
 
