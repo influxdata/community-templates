@@ -29,7 +29,19 @@ To contribute a new template or enhance an existing template, submit a pull requ
 
     > **Tip:** Replace any hard-coded URLs to InfluxDB in your Telegraf configurations with the `$INFLUX_URL` environment variable so users can easily point it to their own InfluxDB instance location. For example: `urls = ["$INFLUX_URL"]`
 
-3. Add and commit your changes and push them to Github. Include the `--signoff` flag when committing your changes to include your author information in the commit message.
+3. If you are submitting a new Template, add it to the table of Templates in the main `README.md` file in the root of the repository.
+
+    * The table lists templates alphabetically, so add a new row in the appropriate location
+    * Use a short but descriptive name for your Template in the first column
+    * Link that name to your Template's directory
+    * Add a short (one sentence) description of what your Template's use case in the second column
+    * Add your name, either your real name, nickname or GitHub username to the last column
+  
+    ```
+    | [Template Name](template-directory/) | This is a description of the Template | Your Name |
+    ```
+
+4. Add and commit your changes and push them to Github. Include the `--signoff` flag when committing your changes to include your author information in the commit message.
 
     ```
     # Add your changes
@@ -42,7 +54,7 @@ To contribute a new template or enhance an existing template, submit a pull requ
     git push
     ```
 
-4. [Create the pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork) for your changes. InfluxData community template maintainers will review your changes and, upon approval, will merge them into this repository. Our goal is to review every submission within 5 business days.
+5. [Create the pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork) for your changes. InfluxData community template maintainers will review your changes and, upon approval, will merge them into this repository. Our goal is to review every submission within 5 business days.
 
 In the review process, we verify that you provide a manifest file and a README.md with instructions for using the template. We reserve the right to reject or remove a template from this repository for any reason.
 
