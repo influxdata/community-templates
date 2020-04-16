@@ -14,7 +14,9 @@ This InfluxDB Template can be used to monitor Docker.
 
 ## Setup Instructions
     
-  The data for the dashboard is populated by the included Telegraf configuration. The Telegraf Configuration requires the following environment variables
+  The data for the dashboard is populated by the included Telegraf configuration which includes the Docker Input. You may need to customize the input configuration, specific the `endpoint` value, depending on how you are running Docker. More information can be found in the [Telegraf Docker Input documentation](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/docker).
+  
+  The Telegraf Configuration requires the following environment variables:
     
   - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your master token to get started.
   - `INFLUX_ORG` - The name of your Organization (this will be your email address on the InfluxDB Cloud free tier)
@@ -33,7 +35,7 @@ This InfluxDB Template can be used to monitor Docker.
 
 ## Customizations
 
-You can customize it based on your Docker instalation. More information can be found in the [Telegraf Docker Input documentation](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/docker).
+You can customize it based on your Docker installation. More information can be found in the [Telegraf Docker Input documentation](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/docker).
 
 ## Contact
 
