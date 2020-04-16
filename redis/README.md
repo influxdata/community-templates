@@ -14,7 +14,9 @@ This InfluxDB Template can be used to monitor Redis.
 
 ## Setup Instructions
     
-  The data for the dashboard is populated by the included Telegraf configuration. The Telegraf Configuration requires the following environment variables
+  The data for the dashboard is populated by the included Telegraf configuration and the Redis Input plugin. The Redis Input defaults to using `tcp://localhost:6379` as the server. If your redis server is running at a different address or is using authentication, you will need to update this value in the Telegraf configuration. See the [Redis Input Documentation](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/redis#configuration) for more details.
+  
+  The Telegraf Configuration requires the following environment variables
     
   - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your master token to get started.
   - `INFLUX_ORG` - The name of your Organization (this will be your email address on the InfluxDB Cloud free tier)
@@ -33,7 +35,7 @@ This InfluxDB Template can be used to monitor Redis.
 
 ## Customizations
 
-You can customize it based on your Redis instalation. More information can be found in the [Telegraf Redis Input documentation](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/redis).
+You can customize it based on your Redis installation. More information can be found in the [Telegraf Redis Input documentation](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/redis).
 
 ## Contact
 
