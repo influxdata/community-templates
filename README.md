@@ -15,18 +15,18 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | Template             | Description | Author |
 |----------------------|-------------|:------:|
 | [Currency Exchange Rates](currency_exchange_rates/) | Visualize and analyze currency exchange rates using Quandl. | Wojciech Kocjan |
-| [Docker](docker/) | Monitor your running docker containers. | Russ Savage |
+| [Docker](docker/) | Monitor your running docker containers. | [@russorat](https://github.com/russorat) |
 | [Enviro+](enviro_plus/) | View the air quality readings from a Pimoroni Enviro+ particulate matter sensor. | Simon Loffler |
-| [InfluxDB 1.x Monitor](monitoring_influxdb_1.x/) | Monitor your already running InfluxDB 1.x instance. | Russ Savage |
-| [InfluxDB 2 OSS Metrics](influxdb2_oss_metrics/) | Monitor your InfluxDB 2 OSS instance using scrapers. | Russ Savage |
-| [Linux System Monitor](linux_system/) | Monitor system resources on one or more Linux hosts. | Russ Savage |
+| [InfluxDB 1.x Monitor](monitoring_influxdb_1.x/) | Monitor your already running InfluxDB 1.x instance. | [@russorat](https://github.com/russorat) |
+| [InfluxDB 2 OSS Metrics](influxdb2_oss_metrics/) | Monitor your InfluxDB 2 OSS instance using scrapers. | [@russorat](https://github.com/russorat) |
+| [Linux System Monitor](linux_system/) | Monitor system resources on one or more Linux hosts. | [@russorat](https://github.com/russorat) |
 | [Jenkins](jenkins/) | Monitor your Jenkins node and jobs. | Ray Farias |
-| [Network Interface Monitor](network_interface_performance/) | Monitor network interfaces on one or more hosts. | Russ Savage |
+| [Network Interface Monitor](network_interface_performance/) | Monitor network interfaces on one or more hosts. | [@russorat](https://github.com/russorat) |
+| [sFlow Traffic Monitor](sflow/) | Monitor your sFlow traffic. | [@russorat](https://github.com/russorat) |
+| [Telegraf Dashboard](telegraf/) | View throughput and internal stats about your Telegraf instances | Steven Soroka |
 | [Website Monitor (Apache/Postgresql)](apache_postgresql/) | Monitor a website that uses Apache and Postgresql | Michael Hall |
 | [Website Monitor (NGINX/MySQL)](nginx_mysql/) | Monitor a website that uses NGINX and MySQL | Ray Farias |
-| [Windows System Monitor](windows_system/) | Monitor system resources on one or more Windows hosts. | Russ Savage |
-| [Telegraf Dashboard](telegraf/) | View throughput and internal stats about your Telegraf instances | Steven Soroka |
-
+| [Windows System Monitor](windows_system/) | Monitor system resources on one or more Windows hosts. | [@russorat](https://github.com/russorat) |
 
 To submit a new template, see our [contributing guide](docs/submit_a_template.md).
 
