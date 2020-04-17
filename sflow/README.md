@@ -31,7 +31,7 @@ This InfluxDB Template can be used to monitor traffic from sFlow sources.
 
 ## Running Telegraf
 
-  To get resource data from your Docker hosts, [download and install Telegraf](https://portal.influxdata.com/downloads/) on those hosts. InfluxData provides native packages for a number of distributions as well as binaries that can be executed directly.
+  To gather sFlow data from your network, [download and install Telegraf](https://portal.influxdata.com/downloads/). InfluxData provides native packages for a number of distributions as well as binaries that can be executed directly.
 
   Start Telegraf using the instructions from the `Load Data` > `Telegraf` > `Setup Instructions` link in the UI.
 
