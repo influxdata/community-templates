@@ -15,6 +15,22 @@ spec:
     name: Network Monitoring
 ---
 apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: stubborn_hawking_f25000
+spec:
+    color: '#326BBA'
+    name: inputs.sflow
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: earnest_meninsky_c26001
+spec:
+    color: '#108174'
+    name: outputs.influxdb_v2
+---
+apiVersion: influxdata.com/v2alpha1
 kind: Bucket
 metadata:
     name: compassionate_lalande_725001
@@ -929,6 +945,10 @@ spec:
         name: eerie_newton_325000
       - kind: Label
         name: tasty_lamarr_325001
+      - kind: Label
+        name: stubborn_hawking_f25000
+      - kind: Label
+        name: earnest_meninsky_c26001
     config: |
         # Telegraf Configuration
         #

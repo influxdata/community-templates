@@ -8,11 +8,11 @@ This InfluxDB Template can be used to monitor traffic from sFlow sources.
 
 ### Included Resources
 
-- 1 Bucket: `sflow-data`, 7d retention
-- Labels: Telegraf Plugin Labels
+- 1 Bucket: `sflow_data`, 2d retention
+- Labels: `sFlow`, `Network Monitoring`, and Telegraf Plugin Labels
 - 1 Telegraf Configuration
-- 4 Dashboard: `Docker`
-- 1 Variable: `bucket`
+- 4 Dashboards: `sFlow - Top Talkers`, `sFlow - Source/Destination Traffic`, `sFlow - Ingress/Egress Traffic`, `sFlow - Bandwidth Usage`
+- 6 Variable: `sflow_dest`, `agent_host`, `egress_interface`, `sflow_source`, `ingress_interface`, `sflow_metric`
 
 ## Setup Instructions
     
