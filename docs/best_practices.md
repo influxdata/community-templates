@@ -85,7 +85,6 @@ However, if you create a unique label to identify those resources, you can use t
 influx pkg export all --filter=labelName=your_label_name
 ```
 
-
 ## Telegraf Configurations
 
 // TODO General advice on including Telegraf configurations in a Template
@@ -113,6 +112,10 @@ bucket = "$INFLUX_BUCKET"
 Depending on what input plugins you use, there will likely be others that you want to make variables, such as host names, databases, or authentication credentials.
 
 > **Note:** Be sure to document all of these variables in the `README.md` for your Template so that users will know what they need to set and what values they should use.
+
+### Telegraf Configuration Labels
+
+Sometimes, it's handy to group Telegraf connfigurations by specific plugins. For example, if I want to make a change to an input plugin, being able to quickly find all the Telegraf configurations using that plugin is helpful. To this end, it's useful to add labels such as `inputs.plugin_name` to your Telegraf configurations to help users filter in the UI. 
 
 ### Importing into InfluxDB
 
