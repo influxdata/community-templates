@@ -20,10 +20,10 @@ Rather than using duplicate graphs to show filtered views of thes same data, use
 
 The easiest option is to provide a uniquely named bucket to be used by your Dashboard and (optional) Telegraf configurations. This simplifies things for the user, but at the expense of flexibility in reusing an existing bucket. Another thing to consider is that the InfluxDB Cloud free tier has a limit of the number of buckets a user can have, so adding a new one with your Template might not be an option for those users.
 
-A common option in InfluxDB is to use a bucket named `telegraf` for all data coming in from the Telegraf agent. Existing users are likely to already have a bucket by this name that your Template can use. But be sure to let them know in your Template's README that they will need to create a bucket with this name if they don't already have one.
+A common option in InfluxDB is to use a bucket named `telegraf` for all data coming in from the Telegraf agent. Existing users are likely to already have a bucket by this name that your Template can use. But be sure to let them know in your Template's `README.md` that they will need to create a bucket with this name if they don't already have one.
 
 #### Reusing existing buckets
-The most flexible option is to let the user choose a bucket instead. You can do this with Variable that will provide them a drop-down list of their existing buckets to choose from. Simply create a Query Variable called `bucket` with the following Flux query:
+The most flexible option is to let the user choose a bucket instead. You can do this with a Variable that will provide them a drop-down list of their existing buckets to choose from. Simply create a Query Variable called `bucket` with the following Flux query:
 
 ```
 buckets()
@@ -31,18 +31,25 @@ buckets()
   |> rename(columns: {name: "_value"})
   |> keep(columns: ["_value"])
 ```
+> **Note:** the `filter()` call removes the system buckets `_monitoring` and `_tasks` from the list
 
-Then, in your dashboard, task or alert scripts you can read from the user's chosen bucket like this:
+Then, in your dashboard you can read from the user's chosen bucket in a cell query like this:
 
 ```
 from(bucket: v.bucket) 
 ```
 
-If you are including a Telegraf configuration, be sure to use an environment variable such as `$INFLUX_BUCKET` so the user can define which bucket they want it to send data to.
+Once a Variable is used in a Dashboard, it will be shown to the user at the top of the page as a drop-down menu where they can change which value to use for that variable.
+
+![Bucket variable](img/bucket_variable.png)
+
+> **Tip:** If you are including a Telegraf configuration in your Template, be sure to use an environment variable such as `$INFLUX_BUCKET` so the user can define which bucket they want it to send data to.
 
 ### Using Variables
 
-Variables are a great way to give users flexibility over your Template without them having to make any changes to it. In the previous sectoin you saw how a Variable can be used to display a list of Buckets to use, but they can also provide static or dynamic options anywhere you use Flux.
+Variables are a great way to give users flexibility over your Template without them having to make any changes to it. In the previous section you saw how a Variable can be used to display a list of Buckets to use, but they can also provide static or dynamic options anywhere you use Flux. You can create a Variable fromthe `Settings` -> `Variables` page of the InfluxDB UI.
+
+![Create a Variable](img/create_variable.png)
 
 #### Static Variables
 
