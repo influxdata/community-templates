@@ -36,10 +36,13 @@ To contribute a new template or enhance an existing template, submit a pull requ
     * Link that name to your Template's directory
     * Add a short (one sentence) description of what your Template's use case in the second column
     * Add your name, either your real name, nickname or GitHub username to the last column
-  
+
+    Your row should look like this:
     ```
     | [Template Name](template-directory/) | This is a description of the Template | Your Name |
     ```
+
+    > **Note:** Be sure to include the trailing `/` after your directory name.
 
 4. Add and commit your changes and push them to Github. Include the `--signoff` flag when committing your changes to include your author information in the commit message.
 
