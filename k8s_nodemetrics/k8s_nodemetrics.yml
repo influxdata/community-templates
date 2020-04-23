@@ -1,0 +1,466 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: pensive_beaver_bc8001
+spec:
+    color: '#7A65F2'
+    name: Linux System Template
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: stoic_elgamal_bc8007
+spec:
+    color: '#00a3ff'
+    name: inputs.kubernetes
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: wondrous_brown_bc8005
+spec:
+    color: '#FFB94A'
+    name: GCP
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: vigorous_kalam_bc8003
+spec:
+    associations:
+      - kind: Label
+        name: pensive_beaver_bc8001
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> rename(columns: {"name": "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: wondrous_saha_fc8001
+spec:
+    associations:
+      - kind: Label
+        name: wondrous_brown_bc8005
+      - kind: Label
+        name: stoic_elgamal_bc8007
+    charts:
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '# Nodes Overview'
+        width: 7
+      - colors:
+          - hex: '#545667'
+            name: graphite
+            type: background
+        decimalPlaces: 2
+        fieldOptions:
+          - displayName: _time
+            fieldName: _time
+          - displayName: Name
+            fieldName: _value
+            visible: true
+        height: 3
+        kind: Table
+        name: 'Current and Past Nodes '
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_node")
+                  //|> filter(fn: (r) => r._field == "cpu_usage_nanocores")
+                  |> last()
+                  |> keep(columns: ["node_name", "_time"])
+                  |> rename(columns: {node_name: "_value"})
+                  |> group(columns: ["node_name"], mode:"by")
+                  |> unique(column: "_value")
+                //  |> sort(columns: "_time")
+        tableOptions:
+            sortBy: _time
+            verticalTimeAxis: true
+        timeFormat: YYYY/MM/DD HH:mm:ss
+        width: 5
+        yPos: 1
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '# CPU Metrics'
+        width: 5
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            label: nanocores
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: monotoneX
+        height: 5
+        kind: Xy
+        name: CPU Usage
+        position: overlaid
+        queries:
+          - query: "import \"regexp\"\nfrom(bucket: v.bucket)\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"kubernetes_node\")\n
+                \ |> filter(fn: (r) => r._field == \"cpu_usage_nanocores\")\n//    |>
+                map(fn: (r) => ({ r with node_name: \n//   regexp.replaceAllString(r:
+                /placelongnamehere/, v: r.node_name, t: \"..\")\n//    }))\n  |> group(columns:
+                [\"node_name\"] )\n  |> aggregateWindow(every: v.windowPeriod, fn:
+                last)\n  |> yield(name: \"last\")"
+        width: 5
+        xCol: _time
+        yCol: _value
+        yPos: 5
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '# Memory Consumption Metrics'
+        width: 7
+        yPos: 10
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: bytes
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: monotoneX
+        height: 5
+        kind: Xy
+        name: Memory Usage Bytes
+        queries:
+          - query: "import \"regexp\"\nfrom(bucket: v.bucket)\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"kubernetes_node\")\n
+                \ |> filter(fn: (r) => r._field == \"memory_usage_bytes\")\n  |> keep(columns:
+                [\"_time\",\"_value\",\"node_name\"])\n  |> aggregateWindow(every:
+                v.windowPeriod, fn: last)\n//    |> map(fn: (r) => ({ r with node_name:
+                \n//    regexp.replaceAllString(r: /placelongnamehere/, v: r.node_name,
+                t: \"..\")\n//     }))\n  |> yield(name: \"last\")"
+        width: 5
+        yPos: 11
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '# Filesystem Metrics'
+        width: 7
+        yPos: 16
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 5
+        kind: Xy
+        name: Filesystem capacity / used
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_node")
+                  |> filter(fn: (r) => r._field == "fs_used_bytes" or r._field == "fs_capacity_bytes")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 7
+        xCol: _time
+        yCol: _value
+        yPos: 17
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '# Network Consumption Metrics'
+        width: 7
+        yPos: 22
+      - axes:
+          - base: "10"
+            label: Rate
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Network tx/rx
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_node")
+                  |> filter(fn: (r) => r._field == "network_rx_bytes" or r._field == "network_tx_bytes")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 7
+        xCol: _time
+        yCol: _value
+        yPos: 23
+      - colors:
+          - hex: '#545667'
+            name: graphite
+            type: text
+          - hex: '#4ED8A0'
+            name: rainforest
+            type: text
+            value: 2
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat
+        name: Node Count
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_node")
+                  |> keep(columns: ["node_name"])
+                  |> rename(columns: {node_name: "_value"})
+                  |> group(columns: ["table"], mode:"by")
+                  |> unique() |> count()
+        width: 2
+        xPos: 5
+        yPos: 1
+      - colors:
+          - hex: '#545667'
+            name: graphite
+            type: text
+          - hex: '#545667'
+            name: graphite
+            type: text
+            value: 100
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Pods capacity
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_node")
+                  |> filter(fn: (r) => r._field == "capacity_pods")
+                  |> last()
+        width: 1
+        xPos: 5
+        yPos: 4
+      - colors:
+          - hex: '#383846'
+            name: pepper
+            type: text
+          - hex: '#4591ED'
+            name: ocean
+            type: text
+            value: 2
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Allocatable CPU Cores
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_node")
+                  |> filter(fn: (r) => r._field == "allocatable_cpu_cores")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 1
+        xPos: 5
+        yPos: 5
+      - axes:
+          - name: x
+        binCount: 30
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        height: 3
+        kind: Histogram
+        name: Nanocore Distribution By Node
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_node")
+                  |> filter(fn: (r) => r._field == "cpu_usage_nanocores")
+                  |> group(columns: ["node_name"], mode:"by")
+        width: 2
+        xCol: _value
+        xPos: 5
+        yPos: 7
+      - axes:
+          - name: x
+        binCount: 30
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        height: 5
+        kind: Histogram
+        name: Mem Distribution
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_node")
+                  |> filter(fn: (r) => r._field == "memory_usage_bytes")
+                  |> keep(columns: ["_time","_value", "node_name"])
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 2
+        xCol: _value
+        xPos: 5
+        yPos: 11
+      - colors:
+          - hex: '#383846'
+            name: pepper
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Host Count
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_node")
+                  |> keep(columns: ["host"])
+                  |> rename(columns: {host: "_value"})
+                  |> group(columns: ["table"], mode:"by")
+                  |> unique() |> count()
+        width: 1
+        xPos: 6
+        yPos: 4
+      - colors:
+          - hex: '#545667'
+            name: graphite
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Average CPU Capacity
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_node")
+                  |> filter(fn: (r) => r._field == "capacity_cpu_cores")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> movingAverage(n: 1)
+        width: 1
+        xPos: 6
+        yPos: 5
+      - height: 27
+        kind: Markdown
+        name: Name this Cell
+        note: |
+            # Kubernetes Node Metrics Legend
+
+            **This dashboard can be used to display Kubernetes Node metrics. The K8S infrastrucure supports Google Cloud Platform.**
+
+            [Download](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/kubernetes) and install Telegraf `Kubernetes` input plugin to your monitoring namespace to collect data. The measurement `kubernetes_node` is used. Set `v.bucket` variable.
+
+            ### Basic K8S Concepts
+
+            A K8S `cluster` consists of a set of worker machines called nodes. A `node` may be a VM or physical machine, depending on the cluster. Nodes host pods. `Pod` is a set of running containers.
+
+            ### Application Description
+
+            The monitored application consists of:
+
+            1. Microservices providing REST APIs. Example technology stack can be based on eg "NodeJs > MySQL / Mongo app framework".
+            2. Application provides administration web UI.
+            3. Influxdata monitoring infrastructure, based on Telegraf plugins.
+
+            Telegraf note: host = node; and in Telegraf the meaning of host = pod hostname
+
+
+            ### CPU Units and Metrics
+
+            | Unit | Description |
+            | ---- | ----------- |
+            | Nanocore | 1024 M = 1G = 1 CPU |
+
+
+            `Allocatable` identifies the amount of compute resources available to pods. By explicitly reserving compute resources, the intention is to avoid overcommiting the node and not have system daemons compete with user pods.
+
+            ### Memory
+
+            Memory consumption. Based on the 'Memory usage bytes' metrics. Measure in bytes.
+
+            ### Filesystem
+
+            Filesystem consumption. Based on the 'filesystem used bytes' metrics.
+
+
+            ### Network
+
+            Network consumption, based on metrics of network bytes received / transferred.
+        width: 5
+        xPos: 7
+    description: From Telegraf Kubernetes Input Plugin. The dashboard shows K8S Node
+        metrics that are taken from an existing K8S environment. Google Cloud Platform
+        is supported.
+    name: GCP Kubernetes Node Metrics
