@@ -1,6 +1,6 @@
 # Creating Useful Templates
 
-// TODO: Intro to best practices and why they matter
+InfluxDB makes it easy to export your current setup as a Template, but there's more to making a good Template than just exporting it. You want your Template to be easy to use, easy to customize, and easy to extend as well. Fortunately InfluxDB provides all the tools you need to do just that! Here are some things to consider using or including to improve the quality and usefulness of your Template.
 
 ## InfluxDB Resources
 
@@ -120,4 +120,13 @@ Depending on what input plugins you use, there will likely be others that you wa
 
 ## Testing Your Template
 
-// TODO: Define the easiest way to test applying a template in a clean environment
+After you export your finished Template, you should always test it to make sure that it applies cleanly, has everything you wanted to include, and that the instructions your provide in your `README.md` have all the steps needed to use it.
+
+The easiest way to get a clean testing environment of InfluxDB is to run a new Docker container. You can start a new container with the latest InfluxDB 2.0 release by running:
+
+```
+ docker run -p 8086:8086 -p 9999:9999 quay.io/influxdb/influxdb:2.0.0-bet
+
+```
+
+After you create a new `Organization` and `Token` in your docker instance (available at http://localhost:9999), you can follow the [instructions for using a Template](./use_a_template.md) to apply yours.
