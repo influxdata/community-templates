@@ -1,0 +1,670 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: earning_herschel_f8c001
+spec:
+    color: '#00C9FF'
+    name: inputs.cloudwatch
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: jovial_yonath_f8c003
+spec:
+    color: '#0b3a8d'
+    name: AWS
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: epic_boyd_f8c005
+spec:
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> filter(fn: (r) => r.name !~ /^_/)
+          |> rename(columns: {name: "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: dangerous_ganguly_f8c001
+spec:
+    associations:
+      - kind: Label
+        name: earning_herschel_f8c001
+      - kind: Label
+        name: jovial_yonath_f8c003
+    charts:
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Overview'
+        queries: null
+        width: 3
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Healthy host count
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "cloudwatch_aws_network_elb")
+                  |> filter(fn: (r) => r._field == "healthy_host_count_sum")
+                  |> filter(fn: (r) => r.availability_zone == "us-west-2a")
+                  |> aggregateWindow(every: 1m, fn: last)
+                  |> yield(name: "last")
+        width: 1
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Active flow count
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "cloudwatch_aws_network_elb")
+                  |> filter(fn: (r) => r._field == "active_flow_count_average")
+                  |> filter(fn: (r) => r.availability_zone == "us-west-2a")
+                  |> aggregateWindow(every: 1m, fn: last)
+                  |> yield(name: "last")
+        width: 3
+        xCol: _time
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: TCP Client reset count
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "cloudwatch_aws_network_elb")
+                  |> filter(fn: (r) => r._field == "tcp_client_reset_count_sum")
+                  |> filter(fn: (r) => r.availability_zone == "us-west-2a")
+                  |> aggregateWindow(every: 1m, fn: last)
+                  |> yield(name: "last")
+        width: 3
+        xCol: _time
+        yCol: _value
+        yPos: 6
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Unhealthy host count
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "cloudwatch_aws_network_elb")
+                  |> filter(fn: (r) => r._field == "un_healthy_host_count_sum")
+                  |> filter(fn: (r) => r.availability_zone == "us-west-2a")
+                  |> aggregateWindow(every: 1m, fn: last)
+                  |> yield(name: "last")
+        width: 1
+        xPos: 1
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: TCP target reset count
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "cloudwatch_aws_network_elb")
+                  |> filter(fn: (r) => r._field == "tcp_target_reset_count_sum")
+                  |> filter(fn: (r) => r.availability_zone == "us-west-2a")
+                  |> aggregateWindow(every: 1m, fn: last)
+                  |> yield(name: "last")
+        width: 1
+        xPos: 2
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Consumed LCUs
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "cloudwatch_aws_network_elb")
+                  |> filter(fn: (r) => r._field == "consumed_lc_us_sum")
+                  |> aggregateWindow(every: 1m, fn: last)
+                  |> yield(name: "last")
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 5
+        kind: Xy
+        name: TCP ELB reset count
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "cloudwatch_aws_network_elb")
+                  |> filter(fn: (r) => r._field == "tcp_elb_reset_count_sum")
+                  |> filter(fn: (r) => r.availability_zone == "us-west-2a")
+                  |> aggregateWindow(every: 1m, fn: last)
+                  |> yield(name: "last")
+        width: 9
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Processed bytes
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "cloudwatch_aws_network_elb")
+                  |> filter(fn: (r) => r._field == "processed_bytes_sum")
+                  |> filter(fn: (r) => r.availability_zone == "us-west-2a")
+                  |> aggregateWindow(every: 1m, fn: last)
+                  |> yield(name: "last")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+    description: Monitoring Network Load Balancers in AWS/NetworkELB namespace & us-west-2a
+        Availability zone
+    name: AWS Cloudwatch NLB Monitoring
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: laughing_saha_b8c001
+spec:
+    associations:
+      - kind: Label
+        name: earning_herschel_f8c001
+      - kind: Label
+        name: jovial_yonath_f8c003
+    charts:
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat
+        name: Status check failed - Instance
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "cloudwatch_aws_ec2")
+                  |> filter(fn: (r) => r._field == "status_check_failed_instance_sum")
+                  |> aggregateWindow(every: 1m, fn: last)
+                  |> yield(name: "last")
+        width: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat_Plus_Line
+        name: CPU Credit balance
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "cloudwatch_aws_ec2")
+                  |> filter(fn: (r) => r._field == "cpu_credit_balance_sum")
+                  |> aggregateWindow(every: 1m, fn: last)
+                  |> yield(name: "last")
+        width: 3
+        xCol: _time
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: CPU Utilization
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "cloudwatch_aws_ec2")
+                  |> filter(fn: (r) => r._field == "cpu_utilization_sum")
+                  |> aggregateWindow(every: 1m, fn: last)
+                  |> yield(name: "last")
+        shade: true
+        width: 3
+        xCol: _time
+        yCol: _value
+        yPos: 6
+      - axes:
+          - name: x
+          - name: y
+        binSize: 10
+        colors:
+          - hex: '#000004'
+          - hex: '#110a30'
+          - hex: '#320a5e'
+          - hex: '#57106e'
+          - hex: '#781c6d'
+          - hex: '#9a2865'
+          - hex: '#bc3754'
+          - hex: '#d84c3e'
+          - hex: '#ed6925'
+          - hex: '#f98e09'
+          - hex: '#fbb61a'
+          - hex: '#f4df53'
+        height: 3
+        kind: Heatmap
+        name: Min/Max/Av cpu
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "cloudwatch_aws_ec2")
+                  |> filter(fn: (r) => r._field == "cpu_utilization_average" or r._field == "cpu_credit_usage_maximum" or r._field == "cpu_credit_usage_minimum" or r._field == "cpu_credit_usage_average")
+                  //|> last()
+        width: 12
+        xCol: _time
+        yCol: _value
+        yPos: 10
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat
+        name: Status check failed - system
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "cloudwatch_aws_ec2")
+                  |> filter(fn: (r) => r._field == "status_check_failed_system_sum")
+                  |> aggregateWindow(every: 1m, fn: last)
+                  |> yield(name: "last")
+        width: 1
+        xPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat
+        name: Status check failed - Instance & system
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "cloudwatch_aws_ec2")
+                  |> filter(fn: (r) => r._field == "status_check_failed_sum")
+                  |> aggregateWindow(every: 1m, fn: last)
+                  |> yield(name: "last")
+        width: 1
+        xPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: EBS byte balance in %
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "cloudwatch_aws_ec2")
+                  |> filter(fn: (r) => r._field == "ebs_byte_balance%_maximum")
+                  |> aggregateWindow(every: 1m, fn: last)
+                  |> yield(name: "last")
+        shade: true
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat_Plus_Line
+        name: CPU Credit usage
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "cloudwatch_aws_ec2")
+                  |> filter(fn: (r) => r._field == "cpu_credit_usage_sum")
+                  |> aggregateWindow(every: 1m, fn: last)
+                  |> yield(name: "last")
+        shade: true
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: EBS Byte Balance
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "cloudwatch_aws_ec2")
+                  |> filter(fn: (r) => r._field == "ebs_byte_balance%_average")
+                  |> aggregateWindow(every: 10m, fn: mean)
+        shade: true
+        width: 9
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: EBS IO balance in %
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "cloudwatch_aws_ec2")
+                  |> filter(fn: (r) => r._field == "ebsio_balance%_maximum")
+                  |> aggregateWindow(every: 1m, fn: last)
+                  |> yield(name: "last")
+        shade: true
+        width: 3
+        xCol: _time
+        xPos: 6
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat_Plus_Line
+        name: CPU credits charged
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "cloudwatch_aws_ec2")
+                  |> filter(fn: (r) => r._field == "cpu_surplus_credits_charged_sum")
+                  |> aggregateWindow(every: 1m, fn: last)
+                  |> yield(name: "last")
+        width: 3
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Network IN bytes / s
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "cloudwatch_aws_ec2")
+                  |> filter(fn: (r) => r._field == "network_in_sum")
+                  |> map(fn: (r) => ({r with _value: float(v: r._value) / 60.0}))
+                  |> aggregateWindow(every: 1m, fn: last)
+                  |> yield(name: "last")
+        shade: true
+        width: 3
+        xCol: _time
+        xPos: 9
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Network OUT bytes / s
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "cloudwatch_aws_ec2")
+                  |> filter(fn: (r) => r._field == "network_out_sum")
+                  |> map(fn: (r) => ({r with _value: float(v: r._value) / 60.0}))
+                  |> aggregateWindow(every: 1m, fn: last)
+                  |> yield(name: "last")
+        shade: true
+        width: 3
+        xCol: _time
+        xPos: 9
+        yCol: _value
+        yPos: 3
+    description: Monitoring AWS/EC2 namespace and specific instance_id
+    name: AWS Cloudwatch Instance Monitoring
