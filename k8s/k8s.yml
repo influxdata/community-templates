@@ -1,15 +1,15 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: flamboyant_shockley_08a003
+    name: burfect_greider_fac001
 spec:
-    color: '#00a3ff'
-    name: inputs.kubernetes
+    color: '#757888'
+    name: K8S
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: hungry_lamport_08a005
+    name: charming_wilbur_fac005
 spec:
     color: '#066fc5'
     name: inputs.kube_inventory
@@ -17,15 +17,15 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: practical_mirzakhani_08a001
+    name: practical_snyder_fac003
 spec:
-    color: '#757888'
-    name: K8S
+    color: '#00a3ff'
+    name: inputs.kubernetes
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: stubborn_blackburn_08a007
+    name: fervent_hodgkin_fac007
 spec:
     language: flux
     name: bucket
@@ -38,13 +38,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: thirsty_booth_48a001
+    name: focused_ritchie_3ac001
 spec:
     associations:
       - kind: Label
-        name: flamboyant_shockley_08a003
+        name: practical_snyder_fac003
       - kind: Label
-        name: practical_mirzakhani_08a001
+        name: burfect_greider_fac001
     charts:
       - height: 1
         kind: Markdown
@@ -465,13 +465,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: trusting_euler_08a001
+    name: loving_clarke_fac001
 spec:
     associations:
       - kind: Label
-        name: hungry_lamport_08a005
+        name: charming_wilbur_fac005
       - kind: Label
-        name: practical_mirzakhani_08a001
+        name: burfect_greider_fac001
     charts:
       - height: 1
         kind: Markdown
@@ -916,13 +916,13 @@ spec:
         yPos: 3
       - axes:
           - base: "10"
+            name: y2
+            scale: linear
+          - base: "10"
             name: x
             scale: linear
           - base: "10"
             name: y
-            scale: linear
-          - base: "10"
-            name: y2
             scale: linear
         geom: line
         height: 5
