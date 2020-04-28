@@ -8,20 +8,20 @@ Almost any InfluxDB resource can be exported as part of a Template, how many or 
 
 ### Effective Dashboards
 
-At a minimum your Template should include a dashboard, as this is the primary way a user is going to experience your Template. Your Dashboard should provide a cohesive view of related data over a span of time. 
+At a minimum your Template should include a Dashboard, as this is the primary way a user is going to experience your Template. Your Dashboard should provide a cohesive view of related data over a span of time. 
 
 Rather than using duplicate graphs to show filtered views of thes same data, use can use [Variables](https://v2.docs.influxdata.com/v2.0/visualize-data/variables/) in your graph queries (more on that below) to allow the user to easily switch between them in the same graph. Variables can be defined with a static list of values, or dynamically using Flux to query your data.
 
-> **Tip:** If you have multiple perspectives to share on a data set, consider providing multiple dashboards rathering than trying to put everything into one. With Templates, there's no limit on how many you can provide.
+> **Tip:** If you have multiple perspectives to share on a data set, consider providing multiple Dashboards rathering than trying to put everything into one. With Templates, there's no limit on how many you can provide.
 
 ### Bucket Choices
 
-The easiest option is to provide a uniquely named [bucket](https://v2.docs.influxdata.com/v2.0/reference/key-concepts/data-elements/#bucket) to be used by your Dashboard and (optional) Telegraf configurations. This simplifies things for the user, but at the expense of flexibility in reusing an existing bucket. Another thing to consider is that the InfluxDB Cloud free tier has a limit of the number of buckets a user can have, so adding a new one with your Template might not be an option for those users.
+The easiest option is to provide a uniquely named [Bucket](https://v2.docs.influxdata.com/v2.0/reference/key-concepts/data-elements/#bucket) to be used by your Dashboard and (optional) Telegraf configurations. This simplifies things for the user, but at the expense of flexibility in reusing an existing Bucket. Another thing to consider is that the InfluxDB Cloud free tier has a limit of the number of Buckets a user can have, so adding a new one with your Template might not be an option for those users.
 
-A common option in InfluxDB is to use a bucket named `telegraf` for all data coming in from the Telegraf agent. Existing users are likely to already have a bucket by this name that your Template can use. But be sure to let them know in your Template's `README.md` that they will need to create a bucket with this name if they don't already have one.
+A common option in InfluxDB is to use a Bucket named `telegraf` for all data coming in from the Telegraf agent. Existing users are likely to already have a Bucket by this name that your Template can use. But be sure to let them know in your Template's `README.md` that they will need to create a Bucket with this name if they don't already have one.
 
-#### Reusing existing buckets
-The most flexible option is to let the user choose a bucket instead. You can do this with a Variable that will provide them a drop-down list of their existing buckets to choose from. Simply create a Query Variable called `bucket` with the following Flux query. Our documentation has some [common Variable queries](https://v2.docs.influxdata.com/v2.0/visualize-data/variables/common-variables/) you might find useful.
+#### Reusing existing Buckets
+The most flexible option is to let the user choose a Bucket instead. You can do this with a Variable that will provide them a drop-down list of their existing Buckets to choose from. Simply create a Query Variable called `bucket` with the following Flux query. Our documentation has some [common Variable queries](https://v2.docs.influxdata.com/v2.0/visualize-data/variables/common-variables/) you might find useful.
 
 ```
 buckets()
@@ -29,19 +29,19 @@ buckets()
   |> rename(columns: {name: "_value"})
   |> keep(columns: ["_value"])
 ```
-> **Note:** the `filter()` call removes the system buckets `_monitoring` and `_tasks` from the list
+> **Note:** the `filter()` call removes the system Buckets `_monitoring` and `_tasks` from the list
 
-Then, in your dashboard you can read from the user's chosen bucket in a cell query like this:
+Then, in your Dashboard you can read from the user's chosen Bucket in a cell query like this:
 
 ```
 from(bucket: v.bucket) 
 ```
 
-Once a Variable is used in a Dashboard, it will be shown to the user at the top of the page as a drop-down menu where they can change which value to use for that variable.
+Once a Variable is used in a Dashboard, it will be shown to the user at the top of the page as a drop-down menu where they can change which value to use for that Variable.
 
-![Bucket variable](img/bucket_variable.png)
+![Bucket Variable](img/bucket_variable.png)
 
-> **Tip:** If you are including a Telegraf configuration in your Template, be sure to use an environment variable such as `$INFLUX_BUCKET` so the user can define which bucket they want it to send data to.
+> **Tip:** If you are including a Telegraf configuration in your Template, be sure to use an environment variable such as `$INFLUX_BUCKET` so the user can define which Bucket they want it to send data to.
 
 ### Using Variables
 
@@ -67,7 +67,7 @@ display3:value3
 
 #### Variables from tags
 
-A common use case is in InfluxDB is to filter data by one of the `tags` in the measurement. You can make this configurable in your dashboard by making a Variable out of them. Create a Query Variable with a Flux query like this one:
+A common use case is in InfluxDB is to filter data by one of the `tags` in the measurement. You can make this configurable in your Dashboard by making a Variable out of them. Create a Query Variable with a Flux query like this one:
 
 ```
 import "influxdata/influxdb/v1"
@@ -80,7 +80,7 @@ This will give the user a drop-down menu with all of the unique values of the ta
 
 [Labels](https://v2.docs.influxdata.com/v2.0/visualize-data/labels/) let you tag your resources for easier identification in the UI, and they will also make it easier to export them into a Template. If you have a mix of resources in your InfluxDB instance you will have to individually specify which ones to export so that you don't get them all.
 
-However, if you create a unique label to identify those resources, you can use that when exporting so that you don't have to know the IDs of each individual resource you want to include, like this:
+However, if you create a unique Label to identify those resources, you can use that when exporting so that you don't have to know the IDs of each individual resource you want to include, like this:
 
 ```
 influx pkg export all --filter=labelName=your_label_name
@@ -88,7 +88,7 @@ influx pkg export all --filter=labelName=your_label_name
 
 ## Telegraf Configurations
 
-A good Template needs to be more than just a dashboard, it should also include ways to send data to a user's InfluxDB instance. This can be done in a number of ways, from making calls directly to the [InfluxDB API](https://v2.docs.influxdata.com/v2.0/write-data/#influxdb-api), using the [InfluxDB Client libraries](https://v2.docs.influxdata.com/v2.0/reference/api/client-libraries/), or by [using Telegraf](https://v2.docs.influxdata.com/v2.0/write-data/use-telegraf/) and it's many plugins that do the bulk of the work for you.
+A good Template needs to be more than just a Dashboard, it should also include ways to send data to a user's InfluxDB instance. This can be done in a number of ways, from making calls directly to the [InfluxDB API](https://v2.docs.influxdata.com/v2.0/write-data/#influxdb-api), using the [InfluxDB Client libraries](https://v2.docs.influxdata.com/v2.0/reference/api/client-libraries/), or by [using Telegraf](https://v2.docs.influxdata.com/v2.0/write-data/use-telegraf/) and it's many plugins that do the bulk of the work for you.
 
 Telegraf is a widely used data collection agent with a large community that has contributed plugins for gathering data from a variety of sources. Whatever data you're collecting, chances are there's a Telegraf plugin that can help you do it. As such we encourage Templates to include a Telegraf configuration for data collection. If you use another method of sending data to InfluxDB, please include that and instructions on using it in your Template's `README.md`.
 
@@ -118,7 +118,7 @@ Depending on what input plugins you use, there will likely be others that you wa
 
 ### Telegraf Configuration Labels
 
-Sometimes, it's handy to group Telegraf connfigurations by specific plugins. For example, if I want to make a change to an input plugin, being able to quickly find all the Telegraf configurations using that plugin is helpful. To this end, it's useful to add labels such as `inputs.plugin_name` to your Telegraf configurations to help users filter in the UI. 
+Sometimes, it's handy to group Telegraf connfigurations by specific plugins. For example, if I want to make a change to an input plugin, being able to quickly find all the Telegraf configurations using that plugin is helpful. To this end, it's useful to add Labels such as `inputs.plugin_name` to your Telegraf configurations to help users filter in the UI. 
 
 ### Adding Telegraf to your Template
 
