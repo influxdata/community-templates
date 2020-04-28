@@ -29,6 +29,8 @@ It also shows how to use functions such as [timedMovingAverage()](https://v2.doc
   - 1 Variables: `bucket`
 
 ## Setup Instructions
+
+  General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
     
   The data for the dashboard is populated by the included Telegraf configuration. The Telegraf Configuration requires the following environment variables
     

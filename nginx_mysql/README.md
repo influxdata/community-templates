@@ -13,6 +13,8 @@ This InfluxDB Template can be used to monitor a website running on NGINX and MyS
 
 ## Setup Instructions
 
+General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
+
 ### NGINX
 
 In order to collect information from your NGINX server, you will need:

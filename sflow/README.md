@@ -15,6 +15,8 @@ This InfluxDB Template can be used to monitor traffic from sFlow sources.
 - 6 Variable: `sflow_dest`, `agent_host`, `egress_interface`, `sflow_source`, `ingress_interface`, `sflow_metric`
 
 ## Setup Instructions
+
+  General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
     
   The data for the dashboard is populated by the included Telegraf configuration which includes the sFlow Input. You may need to customize the input configuration, specific the `service_address` value, depending on where your sFlow packets are coming from. More information can be found in the [Telegraf sFlow Input documentation](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/sflow).
   

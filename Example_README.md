@@ -24,6 +24,8 @@ List what resources your template provides in this section. That will allow user
 
 ## Setup Instructions
 
+General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
+
 Describe any steps needed to finish setting up and running your template, including how to launch your Telegraf configurations and connect to any external services or data sources.
 
 **Example:**

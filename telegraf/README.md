@@ -14,6 +14,8 @@ Provided by: Steven Soroka
 
 ## Setup Instructions
 
+General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
+
 This Telegraf dashboard assumes you've enabled a the inputs.internal plugin in Telegraf, and that you're collecting them to a bucket named `Telegraf` in your Influx Cloud account. 
 
 **Example telegraf.conf**

@@ -13,6 +13,8 @@ This InfluxDB Template can be used to monitor Docker.
 - 1 Variable: `bucket`
 
 ## Setup Instructions
+
+  General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
     
   The data for the dashboard is populated by the included Telegraf configuration which includes the Docker Input. You may need to customize the input configuration, specific the `endpoint` value, depending on how you are running Docker. More information can be found in the [Telegraf Docker Input documentation](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/docker).
   

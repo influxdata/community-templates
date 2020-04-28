@@ -17,6 +17,8 @@ This InfluxDB Template can be used to monitor your already running InfluxDB 1.x 
 
 ## Setup Instructions
     
+  General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
+  
   The data for the dashboard is populated by the included Telegraf configuration. The Telegraf Configuration requires the following environment variables
     
   - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your master token to get started.
