@@ -13,6 +13,8 @@ View the air quality readings from a [Pimoroni Enviro+](https://shop.pimoroni.co
 
 ## Setup Instructions
 
+General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
+
 In your [InfluxDB Cloud 2 interface](https://cloud2.influxdata.com), create a bucket named: `enviroplus`.
 
 To export data to InfluxDB from the Enviro+, follow the installation instructions: https://github.com/sighmon/balena-enviro-plus

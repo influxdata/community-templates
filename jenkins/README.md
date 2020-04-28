@@ -15,6 +15,8 @@ This InfluxDB Template can be used to montior a Jenkins instance
 
 ## Setup Instructions
 
+General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
+
 ### Jenkins
 
 In order to collect information from your jenkins server, you will need:

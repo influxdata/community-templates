@@ -16,6 +16,8 @@ This InfluxDB Template can be used to monitor a website running on Apache HTTPd 
 
 ## Setup Instructions
 
+General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
+
 ### Apache
 
 In order to collect information from your Apache server, you will need to add the `mod_status` module for your site by adding the following section to your site configuration:

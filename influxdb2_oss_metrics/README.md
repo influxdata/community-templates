@@ -13,7 +13,9 @@ This InfluxDB Template can be used to monitor your already running InfluxDB 2 in
   - 1 Dashboard: `InfluxDB OSS Metrics`
 
 ## Setup Instructions
-    
+
+  General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
+
   The data for the dashboard is populated by data collected by scraping the prometheus metrics endpoint in your OSS instance. The best way to set this up is to first follow the instructions for installing any template. That will create the labels, bucket, and dashboard for you.
 
   Then, from the InfluxDB UI (usually found at http://localhost:9999 in your browser), configure a default scraper to write the scrape data from `http://localhost:9999/metrics` into the `oss_metrics` bucket. More information about scrapers can be found in our [documentation](https://v2.docs.influxdata.com/v2.0/write-data/scrape-data/).
