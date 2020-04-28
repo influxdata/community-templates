@@ -1,0 +1,1020 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: optimistic_lederberg_8ff001
+spec:
+    color: '#FFB94A'
+    name: GCP
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: rightful_booth_8ff003
+spec:
+    color: '#066fc5'
+    name: inputs.stackdriver
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: exciting_satoshi_4ff001
+spec:
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> rename(columns: {"name": "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: goofy_lichterman_cff001
+spec:
+    associations:
+      - kind: Label
+        name: optimistic_lederberg_8ff001
+      - kind: Label
+        name: rightful_booth_8ff003
+    charts:
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Backend Latencies - Mean'
+        width: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Platform - backend latencies mean
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "loadbalancing.googleapis.com/https")
+                  |> filter(fn: (r) => r._field == "backend_latencies_mean")
+                  |> filter(fn: (r) => r.matched_url_path_rule == "/platform/")
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum)
+                  |> yield(name: "sum")
+        width: 4
+        yPos: 1
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Platform - Total Latencies Mean'
+        width: 4
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Platform - total latencies mean
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "loadbalancing.googleapis.com/https")
+                  |> filter(fn: (r) => r._field == "total_latencies_mean")
+                  |> filter(fn: (r) => r.matched_url_path_rule == "/platform/")
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum)
+                  |> yield(name: "sum")
+        width: 4
+        yPos: 6
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Backend Request Count'
+        width: 5
+        xPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 4
+        kind: Single_Stat_Plus_Line
+        name: Platform - backend request count
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "loadbalancing.googleapis.com/https")
+                  |> filter(fn: (r) => r._field == "backend_request_count")
+                  |> filter(fn: (r) => r.matched_url_path_rule == "/platform/")
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum)
+                  |> yield(name: "sum")
+        width: 5
+        xPos: 4
+        yPos: 1
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## URL Request Count'
+        width: 5
+        xPos: 4
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Platform - request count
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "loadbalancing.googleapis.com/https")
+                  |> filter(fn: (r) => r._field == "request_count")
+                  |> filter(fn: (r) => r.matched_url_path_rule == "/platform/")
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum)
+                  |> yield(name: "sum")
+        width: 5
+        xPos: 4
+        yPos: 6
+      - height: 10
+        kind: Markdown
+        name: Name this Cell
+        note: "# LoadBalancing Metrics\n\n**Latency and count of requests, broken
+            down by response status code and proxy names, is the main subject of measurement
+            at this dashboard.**\n\nBased on the `loadbalancing.googleapis.com/https`
+            measurement, sourced from GCP monitoring service. \n\nMetrics are collected
+            via Stackdriver Telegraf plugin. \n\nConfiguration note: in the charts
+            there is a hardcoded path filter in order to select the the URL pattern
+            you can be interested in - in our charts case we call it /platform/. Feel
+            free to adjust the URL regexp pattern according to your needs."
+        width: 3
+        xPos: 9
+    description: From Telegraf Stackdriver plugin. This dashboard monitors network
+        load balancing in the cluster. Query data from Google Cloud Monitoring (formerly
+        Stackdriver) using the Cloud Monitoring API v3.
+    name: GCP Monitoring - HTTPS LoadBalancing
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: obstinate_neumann_0ff001
+spec:
+    associations:
+      - kind: Label
+        name: optimistic_lederberg_8ff001
+      - kind: Label
+        name: rightful_booth_8ff003
+    charts:
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Basic Status'
+        width: 3
+      - colors:
+          - hex: '#545667'
+            name: graphite
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Reserved cores
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cloudsql.googleapis.com/database/cpu")
+                  |> filter(fn: (r) => r["_field"] == "reserved_cores")
+                  |> aggregateWindow(every: 1m, fn: mean)
+                  |> fill(column: "_value", usePrevious: true)
+                  |> yield(name: "mean")
+        suffix: ' core(s)'
+        width: 1
+        yPos: 1
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Database Server Hardware Utilization'
+        width: 8
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            scale: linear
+            suffix: ' %'
+        colors:
+          - hex: '#545667'
+            name: graphite
+            type: text
+          - hex: '#34BB55'
+            name: Solid Green
+            type: scale
+          - hex: '#34BB55'
+            name: Solid Green
+            type: scale
+          - hex: '#34BB55'
+            name: Solid Green
+            type: scale
+        decimalPlaces: 1
+        height: 3
+        kind: Single_Stat_Plus_Line
+        name: CPU Utilization
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cloudsql.googleapis.com/database/cpu")
+                  |> filter(fn: (r) => r["_field"] == "utilization")
+                  |> map(fn: (r) => ({r with _value: r._value * 100.0 }))
+                  |> aggregateWindow(every: 1m, fn: mean)
+                  |> fill(column: "_value", usePrevious: true)
+                  |> yield(name: "mean")
+        shade: true
+        suffix: ' % '
+        width: 2
+        xCol: _time
+        yCol: _value
+        yPos: 4
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Other Metrics'
+        width: 8
+        yPos: 7
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            label: pages/sec
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Innodb pages read/written
+        position: overlaid
+        queries:
+          - query: |-
+                import "experimental/aggregate"
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cloudsql.googleapis.com/database/mysql")
+                  |> filter(fn: (r) => r["_field"] == "innodb_pages_written" or r["_field"] == "innodb_pages_read")
+                  |> aggregate.rate(every: 1m, unit: 1s)
+        shade: true
+        width: 2
+        xCol: _time
+        yCol: _value
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            label: ops/s
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Disk r/w IO
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cloudsql.googleapis.com/database/disk")
+                  |> filter(fn: (r) => r["_field"] == "write_ops_count" or r["_field"] == "read_ops_count")
+                  |> map(fn: (r) => ({r with _value: float(v: r._value) / 60.0}))
+                  |> fill(column: "_value", usePrevious: true)
+        shade: true
+        width: 2
+        xCol: _time
+        yCol: _value
+        yPos: 10
+      - colors:
+          - hex: '#32B08C'
+            name: viridian
+            type: text
+          - hex: '#FFB94A'
+            name: pineapple
+            type: text
+            value: 222
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Current state
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cloudsql.googleapis.com/database")
+                  |> filter(fn: (r) => r["_field"] == "instance_state")
+                  |> filter(fn: (r) => r["_value"] == true)
+                  |> keep(columns: ["state", "_value"])
+                  |> last()
+        width: 1
+        xPos: 1
+        yPos: 1
+      - colors:
+          - hex: '#545667'
+            name: graphite
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Up time
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cloudsql.googleapis.com/database")
+                  |> filter(fn: (r) => r["_field"] == "uptime")
+                  |> map(fn: (r) => ({ r with _value: r._value / 60 }))
+                  |> sum(column: "_value")
+        suffix: h
+        width: 1
+        xPos: 2
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            label: memory utilization
+            name: y
+            scale: linear
+            suffix: ' %'
+        colors:
+          - hex: '#34BB55'
+            name: Solid Green
+            type: scale
+          - hex: '#34BB55'
+            name: Solid Green
+            type: scale
+          - hex: '#34BB55'
+            name: Solid Green
+            type: scale
+          - hex: '#4ED8A0'
+            name: rainforest
+            type: text
+          - hex: '#FFD255'
+            name: thunder
+            type: text
+            value: 55
+        decimalPlaces: 1
+        height: 3
+        kind: Single_Stat_Plus_Line
+        name: Memory Utilization
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cloudsql.googleapis.com/database/memory")
+                  |> filter(fn: (r) => r["_field"] == "utilization")
+                  |> map(fn: (r) => ({r with _value: r._value * 100.0 }))
+                  |> aggregateWindow(every: 1m, fn: mean)
+                  |> fill(column: "_value", usePrevious: true)
+                  |> yield(name: "mean")
+        shade: true
+        suffix: ' %'
+        width: 2
+        xCol: _time
+        xPos: 2
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            label: B/s
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Sent/Received rate
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cloudsql.googleapis.com/database/mysql")
+                  |> filter(fn: (r) => r["_field"] == "received_bytes_count" or r["_field"] == "sent_bytes_count")
+                  |> aggregateWindow(every: 1m, fn: mean)
+                  |> map(fn: (r) => ({r with _value: r._value / 60.0}))
+                 // |> fill(column: "_value", usePrevious: true)
+        shade: true
+        width: 2
+        xCol: _time
+        xPos: 2
+        yCol: _value
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+            suffix: GB
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 3
+        height: 2
+        kind: Single_Stat_Plus_Line
+        name: Disk Gbytes used / total
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cloudsql.googleapis.com/database/disk")
+                  |> filter(fn: (r) => r["_field"] == "bytes_used" or r["_field"] == "quota")
+                  |> map(fn: (r) => ({r with _value: float(v: r._value) / 1073741824.0 }))
+                  |> aggregateWindow(every: 1m, fn: mean)
+                  |> fill(column: "_value", usePrevious: true)
+                  |> yield(name: "mean")
+        shade: true
+        suffix: ' GB'
+        width: 2
+        xCol: _time
+        xPos: 2
+        yCol: _value
+        yPos: 10
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Database Performance'
+        width: 5
+        xPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#545667'
+            name: graphite
+            type: text
+          - hex: '#FFB94A'
+            name: pineapple
+            type: text
+            value: 60
+          - hex: '#F95F53'
+            name: curacao
+            type: text
+            value: 200
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat_Plus_Line
+        name: Connections
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cloudsql.googleapis.com/database/network")
+                  |> filter(fn: (r) => r["_field"] == "connections")
+                  |> aggregateWindow(every: 1m, fn: mean)
+                  |> fill(column: "_value", usePrevious: true)
+                  |> yield(name: "mean")
+        shade: true
+        width: 2
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            scale: linear
+            suffix: ' %'
+        colors:
+          - hex: '#34BB55'
+            name: Solid Green
+            type: scale
+          - hex: '#34BB55'
+            name: Solid Green
+            type: scale
+          - hex: '#34BB55'
+            name: Solid Green
+            type: scale
+          - hex: '#4ED8A0'
+            name: rainforest
+            type: text
+        decimalPlaces: 1
+        height: 3
+        kind: Single_Stat_Plus_Line
+        name: Disk Utilization
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cloudsql.googleapis.com/database/disk")
+                  |> filter(fn: (r) => r["_field"] == "utilization")
+                  |> map(fn: (r) => ({r with _value: r._value * 100.0 }))
+                  |> aggregateWindow(every: 1m, fn: mean)
+                  |> fill(column: "_value", usePrevious: true)
+                  |> yield(name: "mean")
+        shade: true
+        suffix: ' %'
+        width: 2
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Innodb buffer pool pages
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cloudsql.googleapis.com/database/mysql")
+                  |> filter(fn: (r) => r["_field"] == "innodb_buffer_pool_pages_free" or r["_field"] == "innodb_buffer_pool_pages_dirty" or r["_field"] == "innodb_buffer_pool_pages_total")
+                //  |> map(fn: (r) => ({r with _value: float(v: r._value) / 1073741824.0 }))
+                  |> aggregateWindow(every: 1m, fn: mean)
+                  |> fill(column: "_value", usePrevious: true)
+                  |> yield(name: "mean")
+        shade: true
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            scale: linear
+            suffix: /s
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: step
+        height: 2
+        kind: Xy
+        name: Queries per second
+        position: overlaid
+        queries:
+          - query: |-
+                import "experimental/aggregate"
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cloudsql.googleapis.com/database/mysql")
+                  |> filter(fn: (r) => r["_field"] == "queries")
+                  |> map(fn: (r) => ({r with _value: r._value * 100 }))
+                  |> aggregate.rate(every: 1m, unit: 1s)
+                  |> fill(column: "_value", usePrevious: true)
+                  |> yield(name: "mean")
+        shade: true
+        width: 3
+        xCol: _time
+        xPos: 5
+        yCol: _value
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            scale: linear
+            suffix: GB
+        colors:
+          - hex: '#FDC44F'
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            name: Cthulhu
+            type: scale
+          - hex: '#545667'
+            name: graphite
+            type: text
+        decimalPlaces: 3
+        height: 3
+        kind: Single_Stat_Plus_Line
+        name: Memory Gbytes used / total
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cloudsql.googleapis.com/database/memory")
+                  |> filter(fn: (r) => r["_field"] == "quota" or r["_field"] == "usage")
+                  |> map(fn: (r) => ({r with _value: float(v: r._value) / 1073741824.0 }))
+                  |> aggregateWindow(every: 1m, fn: mean)
+                  |> fill(column: "_value", usePrevious: true)
+                  |> yield(name: "mean")
+        shade: true
+        suffix: ' GB'
+        width: 2
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 4
+      - height: 12
+        kind: Markdown
+        name: Name this Cell
+        note: |+
+            ## Dashboard Legend
+
+            **Selected useful system metrics of Google Cloud Engine Cloud SQL Service.**
+
+
+            This is pulling from Google Cloud's Monitoring (StackDriver) service, using the Telegraf StackDriver input plugin.
+
+            Cloud SQL metrics are taken from  `cloudsql.googleapis.com/database/mysql` measurement.
+
+            Set the `v.host` variable for your bucket.
+
+
+        width: 4
+        xPos: 8
+    description: MySQL database hosted in Google Cloud SQL
+    name: GCP Monitoring - CloudSQL (MySQL)
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: zealous_easley_cff001
+spec:
+    associations:
+      - kind: Label
+        name: optimistic_lederberg_8ff001
+      - kind: Label
+        name: rightful_booth_8ff003
+    charts:
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Relative Uptime'
+        width: 4
+      - colors:
+          - hex: '#ffffff'
+            name: white
+            type: text
+        decimalPlaces: 0
+        fieldOptions:
+          - displayName: Instance name
+            fieldName: instance_name
+            visible: true
+          - displayName: Age in Minutes
+            fieldName: _value
+            visible: true
+        height: 4
+        kind: Table
+        name: Instance uptime
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "compute.googleapis.com/instance")
+                  |> filter(fn: (r) => r._field == "uptime")
+                  |> keep(columns: ["_value", "instance_name"])
+                  |> sum()
+                  //turn seconds to minutes and add 10 because gcp lags behind 10minutes
+                  |> map(fn: (r) => ({r with _value: (r._value / 60.0) + 10.0 }))
+                  |> group(columns: ["table"])
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 4
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Instance Received/Sent bytes
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "compute.googleapis.com/instance/network")
+                  |> filter(fn: (r) => r._field == "received_bytes_count" or r._field == "sent_bytes_count")
+                  |> aggregateWindow(every: 1m, fn: sum)
+                  |> yield(name: "sum")
+        width: 4
+        xCol: _time
+        yCol: _value
+        yPos: 5
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Instance Utilization'
+        width: 4
+        xPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Instance CPU Utilization
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "compute.googleapis.com/instance/cpu")
+                  |> filter(fn: (r) => r._field == "utilization")
+                  |> aggregateWindow(every: 2m, fn: sum)
+                  |> yield(name: "sum")
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 1
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Instance Disk r/w Ops'
+        width: 8
+        xPos: 4
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Read/Write Ops [10 min buckets]
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "compute.googleapis.com/instance/disk")
+                  |> filter(fn: (r) => r._field == "read_ops_count" or r._field == "write_ops_count")
+                  |> keep(columns: ["_field", "_value", "instance_name", "_time"])
+                  |> aggregateWindow(every: 10m, fn: sum)
+                  |> yield(name: "sum")
+        width: 5
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 6
+      - height: 3
+        kind: Markdown
+        name: Name this Cell
+        note: |
+            ## Dashboard Legend
+
+            **Selected useful system metrics of Google Cloud Engine VM instances.**
+
+
+            This is pulling from Google Cloud's Monitoring (StackDriver) service, using the Telegraf StackDriver input plugin.
+
+            Set the `v.host` variable for your bucket.
+
+
+            Hint: You can use also preemptable instances that form your cluster. They are destroyed daily and recreated from scratch, so they are cheaper than reserved instances.
+        width: 4
+        xPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Instance firewall dropped packets
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "compute.googleapis.com/firewall")
+                  |> filter(fn: (r) => r._field == "dropped_packets_count")
+                  |> aggregateWindow(every: 1m, fn: sum)
+                  |> yield(name: "sum")
+        width: 4
+        xPos: 8
+        yPos: 3
+      - colors:
+          - hex: '#ffffff'
+            name: white
+            type: text
+        fieldOptions:
+          - displayName: _field
+            fieldName: _field
+            visible: true
+          - displayName: instance_name
+            fieldName: instance_name
+            visible: true
+          - displayName: _value
+            fieldName: _value
+            visible: true
+        height: 3
+        kind: Table
+        name: Instance disk r/w ops
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "compute.googleapis.com/instance/disk")
+                  |> filter(fn: (r) => r._field == "read_ops_count" or r._field == "write_ops_count")
+                  |> keep(columns: ["_value", "instance_name", "_time", "_field"])
+                //  |> aggregateWindow(every: 1m, fn: sum)
+                //  |> yield(name: "sum")
+                |> sum()
+                |> group(columns: ["table"])
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 3
+        xPos: 9
+        yPos: 6
+    description: From Telegraf Stackdriver plugin. The dashboard provides deeper insight
+        into the GCP compute services provided by GCP Stackdriver.  Query data from
+        Google Cloud Monitoring (formerly Stackdriver) using the Cloud Monitoring
+        API v3.
+    name: GCP Monitoring - Compute
