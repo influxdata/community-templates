@@ -4,24 +4,24 @@ InfluxDB makes it easy to export your current setup as a Template, but there's m
 
 ## InfluxDB Resources
 
-Almost any InfluxDB resource can be exported as part of a Template, how many or how few you provide is up to you. Try to strike a balance between providing a complete solution and allowing flexibility for combining it with existing resources.
+Almost any InfluxDB resource can be exported as part of a Template, how many or how few you provide is up to you. Try to strike a balance between providing a complete solution and allowing flexibility for combining it with existing resources. See the [full list of resources supported](https://v2.docs.influxdata.com/v2.0/influxdb-templates/#template-resources) in our documentation.
 
 ### Effective Dashboards
 
 At a minimum your Template should include a dashboard, as this is the primary way a user is going to experience your Template. Your Dashboard should provide a cohesive view of related data over a span of time. 
 
-Rather than using duplicate graphs to show filtered views of thes same data, use can use Variables in your graph queries (more on that below) to allow the user to easily switch between them in the same graph. Variables can be defined with a static list of values, or dynamically using Flux to query your data.
+Rather than using duplicate graphs to show filtered views of thes same data, use can use [Variables](https://v2.docs.influxdata.com/v2.0/visualize-data/variables/) in your graph queries (more on that below) to allow the user to easily switch between them in the same graph. Variables can be defined with a static list of values, or dynamically using Flux to query your data.
 
 > **Tip:** If you have multiple perspectives to share on a data set, consider providing multiple dashboards rathering than trying to put everything into one. With Templates, there's no limit on how many you can provide.
 
 ### Bucket Choices
 
-The easiest option is to provide a uniquely named bucket to be used by your Dashboard and (optional) Telegraf configurations. This simplifies things for the user, but at the expense of flexibility in reusing an existing bucket. Another thing to consider is that the InfluxDB Cloud free tier has a limit of the number of buckets a user can have, so adding a new one with your Template might not be an option for those users.
+The easiest option is to provide a uniquely named [bucket](https://v2.docs.influxdata.com/v2.0/reference/key-concepts/data-elements/#bucket) to be used by your Dashboard and (optional) Telegraf configurations. This simplifies things for the user, but at the expense of flexibility in reusing an existing bucket. Another thing to consider is that the InfluxDB Cloud free tier has a limit of the number of buckets a user can have, so adding a new one with your Template might not be an option for those users.
 
 A common option in InfluxDB is to use a bucket named `telegraf` for all data coming in from the Telegraf agent. Existing users are likely to already have a bucket by this name that your Template can use. But be sure to let them know in your Template's `README.md` that they will need to create a bucket with this name if they don't already have one.
 
 #### Reusing existing buckets
-The most flexible option is to let the user choose a bucket instead. You can do this with a Variable that will provide them a drop-down list of their existing buckets to choose from. Simply create a Query Variable called `bucket` with the following Flux query:
+The most flexible option is to let the user choose a bucket instead. You can do this with a Variable that will provide them a drop-down list of their existing buckets to choose from. Simply create a Query Variable called `bucket` with the following Flux query. Our documentation has some [common Variable queries](https://v2.docs.influxdata.com/v2.0/visualize-data/variables/common-variables/) you might find useful.
 
 ```
 buckets()
@@ -45,7 +45,7 @@ Once a Variable is used in a Dashboard, it will be shown to the user at the top 
 
 ### Using Variables
 
-Variables are a great way to give users flexibility over your Template without them having to make any changes to it. In the previous section you saw how a Variable can be used to display a list of Buckets to use, but they can also provide static or dynamic options anywhere you use Flux. You can create a Variable fromthe `Settings` -> `Variables` page of the InfluxDB UI.
+[Variables](https://v2.docs.influxdata.com/v2.0/visualize-data/variables/) are a great way to give users flexibility over your Template without them having to make any changes to it. In the previous section you saw how a Variable can be used to display a list of Buckets to use, but they can also provide static or dynamic options anywhere you use Flux. You can create a Variable fromthe `Settings` -> `Variables` page of the InfluxDB UI.
 
 ![Create a Variable](img/create_variable.png)
 
@@ -78,7 +78,7 @@ This will give the user a drop-down menu with all of the unique values of the ta
 
 ### Using Labels
 
-Labels let you tag your resources for easier identification in the UI, and they will also make it easier to export them into a Template. If you have a mix of resources in your InfluxDB instance you will have to individually specify which ones to export so that you don't get them all.
+[Labels](https://v2.docs.influxdata.com/v2.0/visualize-data/labels/) let you tag your resources for easier identification in the UI, and they will also make it easier to export them into a Template. If you have a mix of resources in your InfluxDB instance you will have to individually specify which ones to export so that you don't get them all.
 
 However, if you create a unique label to identify those resources, you can use that when exporting so that you don't have to know the IDs of each individual resource you want to include, like this:
 
@@ -94,7 +94,7 @@ Telegraf is a widely used data collection agent with a large community that has 
 
 ### Using Environment Variables
 
-In order to make your configuration usable by others, certain settings inside it will need to change. Fortunately Telegraf makes this easy by looking for variables in your configuration and replacing them with environment variables. Then users can run your Telegraf configuration unmodified by simply setting those values in their environment before running it.
+In order to make your configuration usable by others, certain settings inside it will need to change. Fortunately Telegraf makes this easy by looking for variables in your configuration and replacing them with [environment variables](https://github.com/influxdata/telegraf/blob/master/docs/CONFIGURATION.md#environment-variables). Then users can run your Telegraf configuration unmodified by simply setting those values in their environment before running it.
 
 The main settings you'll want to replace with variables are in the `[[outputs.influxdb_v2]]` section of your configuration:
 
@@ -143,10 +143,10 @@ To add a Telegraf config file to your template, you will need to edit the templa
 
 After you export your finished Template, you should always test it to make sure that it applies cleanly, has everything you wanted to include, and that the instructions your provide in your `README.md` have all the steps needed to use it.
 
-The easiest way to get a clean testing environment of InfluxDB is to run a new Docker container. You can start a new container with the latest InfluxDB 2.0 release by running:
+The easiest way to get a clean testing environment of InfluxDB is to run a new Docker container (other methods can be found in our [getting started guide](https://v2.docs.influxdata.com/v2.0/get-started/#start-with-influxdb-oss)). You can start a new container with the latest InfluxDB release by running:
 
 ```
- docker run -p 8086:8086 -p 9999:9999 quay.io/influxdb/influxdb:2.0.0-bet
+ docker run -p 8086:8086 -p 9999:9999 quay.io/influxdb/influxdb:2.0.0-beta
 
 ```
 
