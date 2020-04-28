@@ -276,7 +276,7 @@ spec:
         yCol: _value
     description: Monitoring Network Load Balancers in AWS/NetworkELB namespace & us-west-2a
         Availability zone
-    name: AWS Cloudwatch NLB Monitoring
+    name: AWS CloudWatch NLB Monitoring
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
@@ -667,4 +667,4 @@ spec:
         yCol: _value
         yPos: 3
     description: Monitoring AWS/EC2 namespace and specific instance_id
-    name: AWS Cloudwatch Instance Monitoring
+    name: AWS CloudWatch Instance Monitoring

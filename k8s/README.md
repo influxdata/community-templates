@@ -4,10 +4,10 @@ Provided by: [bonitoo.io](.)
 
 **This template provides 2 basic Kubernetes dashboards:
 `Kubernetes Node Metrics` and `Kubernetes Inventory`. The K8S infrastrucure
-supports Google Cloud Platform, AWS as well as on-premise K8S environments.**
+supports Google Cloud Platform, AWS and on-premise K8S environments.**
 
 
-Screenshots
+##### Dashboard examples
 
 ![Screenshot](img/k8s-nodemetrics-dashboard.png)
 ![Screenshot](img/k8s-inventory-dashboard.png)
@@ -15,7 +15,7 @@ Screenshots
 
 ## Included Resources
 
-The solution composes of the following resources:
+This template includes the following:
 
 - 2 Labels: `inputs.kubernetes`, `inputs.kube_inventory`, `K8S`
 - 2 Dashboards: `Kubernetes Node Metrics`, `Kubernetes Inventory`
@@ -29,8 +29,7 @@ Telegraf configmap.
 * https://github.com/influxdata/telegraf/tree/master/plugins/inputs/kubernetes
 * https://github.com/influxdata/telegraf/tree/master/plugins/inputs/kube
 
-Set the `v.bucket` variable in the dashboards or settings to let dashboards know
-what bucket holds the data.
+Visit the dashboard and use the `v.bucket` variable to select which bucket the data is stored in.
 
 ## Customizations
 

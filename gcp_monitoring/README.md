@@ -3,14 +3,15 @@
 Provided by: [bonitoo.io](.)
 
 **Display data from Google Cloud Monitoring -- formerly Stackdriver -- using the
-Cloud Monitoring API v3.**
+Cloud Monitoring API v3. There are three dashboards in this template.**
 
-1. MySQL database hosted in Google Cloud SQL
-2. The Compute dashboard provides deeper insight into the GCP compute services
-   provided by GCP Stackdriver.
-3. HTTPS LoadBalancing dashboard monitors network load balancing in the cluster.
+1. The CloudSQL dashboard -- displays metrics of MySQL database hosted in Google
+   Cloud SQL.
+2. The Compute dashboard -- it provides deeper insight into the GCP compute
+   services provided by GCP Stackdriver.
+3. The HTTPS LoadBalancing dashboard monitors network load balancing in the cluster.
 
-Dashboard examples
+##### Dashboard examples
 
 ![GCP Monitoring Cloud SQL](img/gcp-monitoring-cloudsql.png)
 ![GCP Monitoring Compute](img/gcp-monitoring-compute.png)
@@ -18,7 +19,7 @@ Dashboard examples
 
 ## Included Resources
 
-The solution composes of the following resources:
+This template includes the following:
 
 - 2 Labels: `inputs.stackdriver`, `GCP`
 - 3 Dashboards: `CloudSQL`, `Compute` and `HTTPS LoadBalancing`
@@ -26,11 +27,19 @@ The solution composes of the following resources:
 
 ## Setup Instructions
 
+
 Load the dashboards and use the Telegraf Stackdriver plugin into your
 environment.
 
-Set the `v.bucket` variable in the dashboards or settings to let dashboards know
-what bucket holds the data.
+An example command:
+```bash
+ $ ${INFLUX_PATH}/influx pkg --org qa --file ${myTemplateFile} -t ${INFLUX_TOKEN}
+```
+
+Include the [Telegraf Stackdriver plugin](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/stackdriver) in your Telegraf configuration and start Telegraf.
+
+
+Visit the dashboard and use the `v.bucket` variable to select which bucket the data is stored in.
 
 
 ## Customizations
@@ -38,8 +47,6 @@ what bucket holds the data.
 n/a
 
 ## Contact
-
-Provide a way for users to get in touch with you if they have questions or need help using your template. What information you give is up to you, but we encourage providing those below.
 
 Author: Ivan Kudibal, Tomas Klapka, https://www.bonitoo.io
 
