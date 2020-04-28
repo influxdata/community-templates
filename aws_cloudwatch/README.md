@@ -4,7 +4,7 @@ Provided by: [bonitoo.io](.)
 
 **Display data from AWS EC2 andn ELB using the AWS CloudWatch Service.**
 
-1. The AWS CloudWatch Network Load Balancers monitoring dashboard displays data from `cloudwatch_aws_network_elb` measurement.
+1. The AWS CloudWatch Network Load Balancers monitoring dashboard displays data from the `cloudwatch_aws_network_elb` measurement.
 2. The AWS CloudWatch Instance Monitoring dashboard displays data from the `cloudwatch_aws_ec2` measurement.
 
 ##### Dashboard examples
