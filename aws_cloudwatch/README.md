@@ -9,8 +9,8 @@ Provided by: [bonitoo.io](.)
 
 ##### Dashboard examples
 
-![AWS Cloudwatch Instance Monitoring](/img/aws-cloudwatch-instance-monitoring.png)
-![AWS CloudWatch NLB Monitoring](/img/aws-cloudwatch-nlb-monitoring.png)
+![AWS Cloudwatch Instance Monitoring](./img/aws-cloudwatch-instance-monitoring.png)
+![AWS CloudWatch NLB Monitoring](./img/aws-cloudwatch-nlb-monitoring.png)
 
 ## Included Resources
 
