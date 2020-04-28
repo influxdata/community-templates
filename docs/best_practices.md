@@ -10,8 +10,6 @@ Almost any InfluxDB resource can be exported as part of a Template, how many or 
 
 At a minimum your Template should include a dashboard, as this is the primary way a user is going to experience your Template. Your Dashboard should provide a cohesive view of related data over a span of time. 
 
-// TODO: Describe cell types and when to use them
-
 Rather than using duplicate graphs to show filtered views of thes same data, use can use Variables in your graph queries (more on that below) to allow the user to easily switch between them in the same graph. Variables can be defined with a static list of values, or dynamically using Flux to query your data.
 
 > **Tip:** If you have multiple perspectives to share on a data set, consider providing multiple dashboards rathering than trying to put everything into one. With Templates, there's no limit on how many you can provide.
@@ -78,10 +76,6 @@ v1.measurementTagValues(bucket: "your_bucket_name", measurement: "your_measureme
 
 This will give the user a drop-down menu with all of the unique values of the tag `your_tag_name` from the specified measurements.
 
-#### Variables from data
-
-// TODO: Give an example Flux query generating a Variable from field data
-
 ### Using Labels
 
 Labels let you tag your resources for easier identification in the UI, and they will also make it easier to export them into a Template. If you have a mix of resources in your InfluxDB instance you will have to individually specify which ones to export so that you don't get them all.
@@ -94,7 +88,9 @@ influx pkg export all --filter=labelName=your_label_name
 
 ## Telegraf Configurations
 
-// TODO General advice on including Telegraf configurations in a Template
+A good Template needs to be more than just a dashboard, it should also include ways to send data to a user's InfluxDB instance. This can be done in a number of ways, from making calls directly to the [InfluxDB API](https://v2.docs.influxdata.com/v2.0/write-data/#influxdb-api), using the [InfluxDB Client libraries](https://v2.docs.influxdata.com/v2.0/reference/api/client-libraries/), or by [using Telegraf](https://v2.docs.influxdata.com/v2.0/write-data/use-telegraf/) and it's many plugins that do the bulk of the work for you.
+
+Telegraf is a widely used data collection agent with a large community that has contributed plugins for gathering data from a variety of sources. Whatever data you're collecting, chances are there's a Telegraf plugin that can help you do it. As such we encourage Templates to include a Telegraf configuration for data collection. If you use another method of sending data to InfluxDB, please include that and instructions on using it in your Template's `README.md`.
 
 ### Using Environment Variables
 
@@ -124,9 +120,24 @@ Depending on what input plugins you use, there will likely be others that you wa
 
 Sometimes, it's handy to group Telegraf connfigurations by specific plugins. For example, if I want to make a change to an input plugin, being able to quickly find all the Telegraf configurations using that plugin is helpful. To this end, it's useful to add labels such as `inputs.plugin_name` to your Telegraf configurations to help users filter in the UI. 
 
-### Importing into InfluxDB
+### Adding Telegraf to your Template
 
-// TODO: Find the easiest way to get a Telegraf config into an InfluxDB instance
+To add a Telegraf config file to your template, you will need to edit the template file manually using the following steps:
+
+ 1. Export your template using the command in the [submitting a template](submit_a_template.md) doc.
+   
+ 2. Add the following to the end of the file, being sure to give a name for your Telegraf configuration:
+    ```
+        ---
+        apiVersion: influxdata.com/v2alpha1
+        kind: Telegraf
+        metadata:
+            name: The Name Of Your Configuration
+            config: |
+        ```
+        
+ 3. Copy/paste the content of your configuration file into the lines below what you just added, indenting it all until it is 4 spaces further indented than the `config:` line.
+    
 
 ## Testing Your Template
 
