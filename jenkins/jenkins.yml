@@ -1,67 +1,100 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: festive_jemison_127001
+    name: noshing_gagarin_8d2001
 spec:
     color: '#326BBA'
-    name: jenkins
+    name: Jenkins
 ---
 apiVersion: influxdata.com/v2alpha1
-kind: Bucket
+kind: CheckDeadman
 metadata:
-    name: jovial_galois_127003
+    name: crazy_booth_cd2003
 spec:
-    name: regency-aloha-one
+    associations:
+      - kind: Label
+        name: noshing_gagarin_8d2001
+    description: Availability via mem_total
+    every: 5m0s
+    level: CRIT
+    name: Node Health (mem_total)
+    query: |-
+        from(bucket: "regency-aloha-one")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r._measurement == "jenkins_node")
+          |> filter(fn: (r) => r._field == "memory_total")
+    staleTime: 10m0s
+    status: active
+    statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }'
+    timeSince: 1m30s
+---
+apiVersion: influxdata.com/v2alpha1
+kind: CheckThreshold
+metadata:
+    name: vigorous_mahavira_8d2005
+spec:
+    associations:
+      - kind: Label
+        name: noshing_gagarin_8d2001
+    every: 15m0s
+    name: Job Duration Check
+    query: |-
+        from(bucket: "regency-aloha-one")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r._measurement == "jenkins_job")
+          |> filter(fn: (r) => r._field == "duration")
+          |> aggregateWindow(every: 1m, fn: mean)
+          |> yield(name: "mean")
+    status: active
+    statusMessageTemplate: 'Check: Job duration of ${ r._check_name } is: ${ r._level
+        }'
+    thresholds:
+      - level: OK
+        type: lesser
+        value: 60069.76
+      - level: WARN
+        max: 150030
+        min: 60579.01
+        type: inside_range
+      - level: CRIT
+        type: greater
+        value: 150031
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: eerie_saha_527003
+    name: charming_khorana_cd2007
 spec:
     associations:
       - kind: Label
-        name: festive_jemison_127001
-    name: jenkinJobNames
-    type: constant
-    values:
-      - Static Files
-      - Front-End Application
-      - Front-End Application - Staging
----
-apiVersion: influxdata.com/v2alpha1
-kind: Variable
-metadata:
-    name: rightful_ramanujan_127007
-spec:
-    associations:
-      - kind: Label
-        name: festive_jemison_127001
-    name: jenkinsBucket
-    type: constant
-    values:
-      - regency-aloha-one
----
-apiVersion: influxdata.com/v2alpha1
-kind: Variable
-metadata:
-    name: zealous_kepler_527007
-spec:
-    associations:
-      - kind: Label
-        name: festive_jemison_127001
+        name: noshing_gagarin_8d2001
     name: jenkinsHostnames
     type: constant
     values:
+      - ctzen-ctrl.local
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: nifty_bohr_cd200b
+spec:
+    associations:
+      - kind: Label
+        name: noshing_gagarin_8d2001
+    name: jenkinsBucket
+    type: constant
+    values:
+      - sgnl's Bucket
       - regency-aloha-one
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: silly_chatelet_d27001
+    name: vigorous_pike_cd2001
 spec:
     associations:
       - kind: Label
-        name: festive_jemison_127001
+        name: noshing_gagarin_8d2001
     charts:
       - colors:
           - hex: '#513CC6'
@@ -205,22 +238,64 @@ spec:
                     _value: r._value / 1000
                   }))
         shade: true
-        width: 3
-        yPos: 8
-      - height: 2
-        kind: Markdown
-        name: Name this Cell
-        note: "# Node Metrics \U0001F575️‍♀️"
-        queries: null
         width: 7
-        yPos: 10
+        yPos: 8
       - axes:
-          - name: y
-            scale: linear
-            suffix: B
           - base: "10"
             name: x
             scale: linear
+          - base: "10"
+            label: duration
+            name: y
+            scale: linear
+            suffix: s
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: "\U0001F44D Job Durations (tip: hover for details)"
+        note: No reports found. Run some jobs!
+        noteOnEmpty: true
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.jenkinsBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "jenkins_job")
+                  |> filter(fn: (r) => r._field == "duration")
+                  |> filter(fn: (r) => r.result == "SUCCESS")
+                  |> filter(fn: (r) => r.host == v.jenkinsHostnames)
+                  |> group(columns: ["name"])
+                  |> map(fn: (r) => ({
+                    r with
+                    _value: r._value / 1000
+                  }))
+        shade: true
+        width: 7
+        yPos: 10
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '# Node Metrics'
+        queries: null
+        width: 7
+        yPos: 12
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - name: y
+            scale: linear
+            suffix: B
         colors:
           - hex: '#FD7A5D'
             name: Delorean
@@ -245,7 +320,9 @@ spec:
                   |> filter(fn: (r) => r._field == "memory_available" or r._field == "memory_total")
         shade: true
         width: 2
-        yPos: 12
+        xCol: _time
+        yCol: _value
+        yPos: 13
       - colors:
           - hex: '#F95F53'
             name: curacao
@@ -372,7 +449,7 @@ spec:
           - hex: '#FF7E27'
             name: Nineteen Eighty Four
             type: scale
-        geom: line
+        geom: step
         height: 2
         kind: Xy
         name: DISK USAGE
@@ -389,50 +466,7 @@ spec:
         xCol: _time
         xPos: 2
         yCol: _value
-        yPos: 12
-      - axes:
-          - base: "10"
-            name: x
-            scale: linear
-          - base: "10"
-            label: duration
-            name: y
-            scale: linear
-            suffix: s
-        colors:
-          - hex: '#31C0F6'
-            name: Nineteen Eighty Four
-            type: scale
-          - hex: '#A500A5'
-            name: Nineteen Eighty Four
-            type: scale
-          - hex: '#FF7E27'
-            name: Nineteen Eighty Four
-            type: scale
-        geom: line
-        height: 2
-        kind: Xy
-        name: "\U0001F44D Job Durations (tip: hover for details)"
-        note: No reports found. Run some jobs!
-        noteOnEmpty: true
-        position: overlaid
-        queries:
-          - query: |-
-                from(bucket: v.jenkinsBucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "jenkins_job")
-                  |> filter(fn: (r) => r._field == "duration")
-                  |> filter(fn: (r) => r.result == "SUCCESS")
-                  |> filter(fn: (r) => r.host == v.jenkinsHostnames)
-                  |> group(columns: ["name"])
-                  |> map(fn: (r) => ({
-                    r with
-                    _value: r._value / 1000
-                  }))
-        shade: true
-        width: 4
-        xPos: 3
-        yPos: 8
+        yPos: 13
       - colors:
           - hex: '#00C9FF'
             name: laser
@@ -494,14 +528,14 @@ spec:
         xCol: _time
         xPos: 4
         yCol: _value
-        yPos: 12
+        yPos: 13
       - height: 10
         kind: Markdown
         name: Name this Cell
         note: |-
             My main approach for this dashboard was provide a quick pulse on a Jenkins node. If this were the first place I'd look for any clues on issues, what would I want to see?
 
-            Two Large Numbers - These are the good/bad reports.
+            Two Large Numbers - Sum of total Failure/Success Jobs
 
             Recent Failed/Success Job - Shows the most recent failing or successful jobs by name
 
@@ -527,155 +561,7 @@ spec:
         yPos: 10
     description: ""
     name: Jenkins - High-Resolution
----
-apiVersion: influxdata.com/v2alpha1
-kind: Dashboard
-metadata:
-    name: zen_taussig_127001
-spec:
-    associations:
-      - kind: Label
-        name: festive_jemison_127001
-    charts:
-      - colors:
-          - hex: '#00C9FF'
-            name: laser
-            type: text
-        decimalPlaces: 2
-        height: 2
-        kind: Single_Stat
-        name: 'You Selected:'
-        queries:
-          - query: |-
-                from(bucket: v.jenkinsBucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "jenkins_job")
-                  |> filter(fn: (r) => r.name == v.jenkinJobNames)
-                  |> keep(columns: ["name"])
-                  |> rename(columns: {name: "_value"})
-                  |> first()
-        width: 7
-      - colors:
-          - hex: '#513CC6'
-            name: planet
-            type: text
-          - hex: '#32B08C'
-            name: viridian
-            type: text
-            value: 2
-          - hex: '#F48D38'
-            name: tiger
-            type: text
-            value: 4
-          - hex: '#BF3D5E'
-            name: ruby
-            type: text
-            value: 6
-        decimalPlaces: 2
-        height: 3
-        kind: Single_Stat
-        name: "\U0001F44E"
-        queries:
-          - query: |-
-                from(bucket: v.jenkinsBucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "jenkins_job")
-                  |> filter(fn: (r) => r.host == v.jenkinsHostnames)
-                  |> filter(fn: (r) => r._field == "result_code")
-                  |> filter(fn: (r) => r.result == "FAILURE")
-                  |> filter(fn: (r) => r.name == v.jenkinJobNames)
-                  |> group(columns: ["result"])
-                  |> count()
-                  |> yield(name: "count")
-        width: 1
-        yPos: 2
-      - colors:
-          - hex: '#BF3D5E'
-            name: ruby
-            type: text
-          - hex: '#F48D38'
-            name: tiger
-            type: text
-            value: 2
-          - hex: '#4ED8A0'
-            name: rainforest
-            type: text
-            value: 4
-          - hex: '#513CC6'
-            name: planet
-            type: text
-            value: 6
-        decimalPlaces: 0
-        height: 3
-        kind: Single_Stat
-        name: "\U0001F44D"
-        queries:
-          - query: |-
-                from(bucket: v.jenkinsBucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "jenkins_job")
-                  |> filter(fn: (r) => r.host == v.jenkinsHostnames)
-                  |> filter(fn: (r) => r._field == "result_code")
-                  |> filter(fn: (r) => r.result == "SUCCESS")
-                  |> filter(fn: (r) => r.name == v.jenkinJobNames)
-                  |> group(columns: ["result"])
-                  |> count()
-                  |> yield(name: "count")
-        width: 1
-        xPos: 1
-        yPos: 2
-      - axes:
-          - base: "10"
-            name: x
-            scale: linear
-          - base: "10"
-            label: duration in sections
-            name: y
-            scale: linear
-            suffix: s
-        colors:
-          - hex: '#31C0F6'
-            name: Nineteen Eighty Four
-            type: scale
-          - hex: '#A500A5'
-            name: Nineteen Eighty Four
-            type: scale
-          - hex: '#FF7E27'
-            name: Nineteen Eighty Four
-            type: scale
-        geom: line
-        height: 3
-        kind: Xy
-        name: 'Build Times (tip: hover for details)'
-        position: overlaid
-        queries:
-          - query: |-
-                from(bucket: v.jenkinsBucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "jenkins_job")
-                  |> filter(fn: (r) => r._field == "duration")
-                  |> filter(fn: (r) => r.host == v.jenkinsHostnames)
-                  |> filter(fn: (r) => r.name == v.jenkinJobNames)
-                  |> map(fn: (r) => ({
-                    r with
-                    _value: r._value / 1000
-                  }))
-        shade: true
-        width: 5
-        xPos: 2
-        yPos: 2
-      - height: 7
-        kind: Markdown
-        name: Name this Cell
-        note: |-
-            I want to show more details here about a Jenkins job but I think this is all that can be done
 
-            I added the "You Selected:" cell because it was difficult to tell which "jenkinsJobNames" value I had selected.
-        queries: null
-        width: 5
-        xPos: 7
-    description: ""
-    name: Jenkins - Single Job
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Telegraf
