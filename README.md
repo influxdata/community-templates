@@ -16,6 +16,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 |----------------------|-------------|:------:|
 | [AWS Cloudwatch Monitoring](aws_cloudwatch/) | Monitor AWS EC2 and ELB | [bonitoo.io](.) |
 | [Currency Exchange Rates](currency_exchange_rates/) | Visualize and analyze currency exchange rates using Quandl. | Wojciech Kocjan |
+| [Covid-19 in South America](InfluxDBv2_Covid19_SouthAmerica/) | Current data and graphs covering Covid-19 cases and deaths in South America | [@xe-nvdk](@xe-nvdk) |
 | [Docker](docker/) | Monitor your running docker containers. | [@russorat](https://github.com/russorat) |
 | [Enviro+](enviro_plus/) | View the air quality readings from a Pimoroni Enviro+ particulate matter sensor. | Simon Loffler |
 | [GCP Monitoring](gcp_monitoring/) | Monitor Google Cloud Platform.  | [bonitoo.io](.) |
