@@ -72,7 +72,7 @@ spec:
         name: TSM Disk Usage (MB)
         queries:
           - query: |-
-                from(bucket: "scrape_data")
+                from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "storage_tsm_files_disk_bytes")
                   |> filter(fn: (r) => r._field == "gauge")
