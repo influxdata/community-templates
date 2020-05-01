@@ -12,6 +12,8 @@ This InfluxDB Template can be used to montior a Jenkins instance
 - Variables for `jenkinJobNames`, `jenkinsBucket`, and `jenkinsHostnames`. You will need to update the value for these thru the InfluxDB UI `Settings` > `Variables` after you've installed this dashboard template
 - Bucket handled by variable `jenkinsBucket`
 - Label `jenkins` applied to all resources
+- `Job Duration Check` a **threshold** alert
+- `Node Health` a **deadman** alert based on the `mem_total`
 
 ## Setup Instructions
 
