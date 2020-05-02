@@ -25,7 +25,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [Kubernetes Dashboards](k8s/) | Monitor your Kubernetes cluster. | [bonitoo.io](.) |
 | [Linux System Monitor](linux_system/) | Monitor system resources on one or more Linux hosts. | [@russorat](https://github.com/russorat) |
 | [Jenkins](jenkins/) | Monitor your Jenkins node and jobs. | Ray Farias |
-| [MySQL / MariaDB](mysql_mariadb/) | View information MySQL Instance. Uptime, Current Queries, Active Threads, Connections, Traffic and more. | [@xe-nvdk](@xe-nvdk) Ignacio Van Droogenbroeck |
+| [MySQL / MariaDB](mysql_mariadb/) | View information of MySQL Instance. Uptime, Current Queries, Active Threads, Connections, Traffic and more. | [@xe-nvdk](@xe-nvdk) Ignacio Van Droogenbroeck |
 | [Network Interface Monitor](network_interface_performance/) | Monitor network interfaces on one or more hosts. | [@russorat](https://github.com/russorat) |
 | [sFlow Traffic Monitor](sflow/) | Monitor your sFlow traffic. | [@russorat](https://github.com/russorat) |
 | [Telegraf Dashboard](telegraf/) | View throughput and internal stats about your Telegraf instances | Steven Soroka |
