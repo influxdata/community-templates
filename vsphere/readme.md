@@ -2,7 +2,7 @@
 
 Provided by: Ignacio Van Droogenbroeck
 
-This Dashboard offers you informatino about your vSphere host. Uptime, CPU, RAM, Graph about CPU and RAM Utilization, Network Usage, Total Disk Latency (Write and Read) and Storage Adapter Latency
+This Dashboard offers you information about your vSphere host. Uptime, CPU, RAM, Graph about CPU and RAM Utilization, Network Usage, Total Disk Latency (Write and Read) and Storage Adapter Latency
 
 ![Dashboard Screenshot](screenshot.png)
 
