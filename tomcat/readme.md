@@ -1,15 +1,15 @@
-# MySQL / MariaDB Dashboard for InfluxDB v2
+# Tomcat Dashboard for InfluxDB v2
 
 Provided by: Ignacio Van Droogenbroeck
 
-This Dashboard offers you information about your MySQL/MariaDB instance. Uptime, Current Queries. Active Threads, Connections, Locks, Traffic and more.
+This Dashboard offers you information about your Apache Tomcat instance. Current Threads, Processing Time, Traffic, Request Count and more.
 
 ![Dashboard Screenshot](screenshot.png)
 
 ## Included Resources
 
     - 1 Telegraf Configuration
-    - 1 Dashboards: mysql_-_mariadb.json
+    - 1 Dashboards: apache_tomcat.json
 
 ## Setup Instructions
 
@@ -19,7 +19,7 @@ General instructions on using InfluxDB Templates can be found in the [use a temp
     - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your master token to get started.
     - `INFLUX_ORG` - The name of your Organization.
 
-    In orden to use this Dashboard, you need to specify the address to the mySQL/MariaDB instance, also, you need to provide username and password in Telegraf Configuration. Please. Don't use "root", use a user with read only permissions. 
+    In orden to use this Dashboard, you need to specify the address to the Apache Tomcat instance /manager/status/all?XML=true instance, also, you need to provide username and password in Telegraf Configuration. Please. Don't use "root", use a user with read only permissions. 
 
 ## Contact
 
