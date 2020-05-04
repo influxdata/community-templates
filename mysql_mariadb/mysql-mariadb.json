@@ -337,7 +337,7 @@
       "shape": "chronograf-v2",
       "queries": [
        {
-        "text": "from(bucket: \"mariadb\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"mysql\")\n  |> filter(fn: (r) => r[\"_field\"] == \"connections\" or r[\"_field\"] == \"max_used_connections\")",
+        "text": "from(bucket: \"mariadb\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"mysql\")\n  |> filter(fn: (r) => r[\"_field\"] == \"connections\" or r[\"_field\"] == \"max_used_connections\")\n  |> derivative(unit: v.windowPeriod, nonNegative: false)\n  |> yield(name: \"derivative\")",
         "editMode": "advanced",
         "name": "",
         "builderConfig": {
@@ -703,7 +703,7 @@
       "shape": "chronograf-v2",
       "queries": [
        {
-        "text": "from(bucket: \"mariadb\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"mysql\")\n  |> filter(fn: (r) => r[\"_field\"] == \"bytes_sent\" or r[\"_field\"] == \"bytes_received\")",
+        "text": "from(bucket: \"mariadb\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"mysql\")\n  |> filter(fn: (r) => r[\"_field\"] == \"bytes_sent\" or r[\"_field\"] == \"bytes_received\")\n  |> derivative(unit: v.windowPeriod, nonNegative: false)\n  |> yield(name: \"derivative\")",
         "editMode": "advanced",
         "name": "",
         "builderConfig": {
@@ -741,7 +741,7 @@
         ],
         "label": "",
         "prefix": "",
-        "suffix": " Mbps",
+        "suffix": "",
         "base": "10",
         "scale": "linear"
        }
@@ -791,7 +791,7 @@
       "shape": "chronograf-v2",
       "queries": [
        {
-        "text": "from(bucket: \"mariadb\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"mysql\")\n  |> filter(fn: (r) => r[\"_field\"] == \"select_full_join\" or r[\"_field\"] == \"select_full_range_join\" or r[\"_field\"] == \"select_range\" or r[\"_field\"] == \"select_range_check\" or r[\"_field\"] == \"select_scan\")",
+        "text": "from(bucket: \"mariadb\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"mysql\")\n  |> filter(fn: (r) => r[\"_field\"] == \"select_full_join\" or r[\"_field\"] == \"select_full_range_join\" or r[\"_field\"] == \"select_range\" or r[\"_field\"] == \"select_range_check\" or r[\"_field\"] == \"select_scan\")\n  |> derivative(unit: v.windowPeriod, nonNegative: false)\n  |> yield(name: \"derivative\")",
         "editMode": "advanced",
         "name": "",
         "builderConfig": {
@@ -879,7 +879,7 @@
       "shape": "chronograf-v2",
       "queries": [
        {
-        "text": "from(bucket: \"mariadb\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"mysql\")\n  |> filter(fn: (r) => r[\"_field\"] == \"created_tmp_tables\" or r[\"_field\"] == \"created_tmp_disk_tables\" or r[\"_field\"] == \"created_tmp_files\")",
+        "text": "from(bucket: \"mariadb\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"mysql\")\n  |> filter(fn: (r) => r[\"_field\"] == \"created_tmp_tables\" or r[\"_field\"] == \"created_tmp_disk_tables\" or r[\"_field\"] == \"created_tmp_files\")\n  |> derivative(unit: v.windowPeriod, nonNegative: false)\n  |> yield(name: \"derivative\")",
         "editMode": "advanced",
         "name": "",
         "builderConfig": {
@@ -1055,7 +1055,7 @@
       "shape": "chronograf-v2",
       "queries": [
        {
-        "text": "from(bucket: \"mariadb\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"mysql\")\n  |> filter(fn: (r) => r[\"_field\"] == \"com_insert\" or r[\"_field\"] == \"com_update\" or r[\"_field\"] == \"com_commit\" or r[\"_field\"] == \"com_begin\" or r[\"_field\"] == \"com_admin_commands\" or r[\"_field\"] == \"com_show_status\" or r[\"_field\"] == \"com_show_variables\" or r[\"_field\"] == \"com_set_option\")",
+        "text": "from(bucket: \"mariadb\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"mysql\")\n  |> filter(fn: (r) => r[\"_field\"] == \"com_insert\" or r[\"_field\"] == \"com_update\" or r[\"_field\"] == \"com_commit\" or r[\"_field\"] == \"com_begin\" or r[\"_field\"] == \"com_admin_commands\" or r[\"_field\"] == \"com_show_status\" or r[\"_field\"] == \"com_show_variables\" or r[\"_field\"] == \"com_set_option\")\n  |> derivative(unit: v.windowPeriod, nonNegative: false)\n  |> yield(name: \"derivative\")",
         "editMode": "advanced",
         "name": "",
         "builderConfig": {
@@ -1143,7 +1143,7 @@
       "shape": "chronograf-v2",
       "queries": [
        {
-        "text": "from(bucket: \"mariadb\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"mysql\")\n  |> filter(fn: (r) => r[\"_field\"] == \"handler_commit\" or r[\"_field\"] == \"handler_delete\" or r[\"_field\"] == \"handler_discover\" or r[\"_field\"] == \"handler_read_key\" or r[\"_field\"] == \"handler_read_rnd_next\" or r[\"_field\"] == \"handler_write\" or r[\"_field\"] == \"handler_update\")",
+        "text": "from(bucket: \"mariadb\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"mysql\")\n  |> filter(fn: (r) => r[\"_field\"] == \"handler_commit\" or r[\"_field\"] == \"handler_delete\" or r[\"_field\"] == \"handler_discover\" or r[\"_field\"] == \"handler_read_key\" or r[\"_field\"] == \"handler_read_rnd_next\" or r[\"_field\"] == \"handler_write\" or r[\"_field\"] == \"handler_update\")\n  |> derivative(unit: v.windowPeriod, nonNegative: false)\n  |> yield(name: \"derivative\")",
         "editMode": "advanced",
         "name": "",
         "builderConfig": {

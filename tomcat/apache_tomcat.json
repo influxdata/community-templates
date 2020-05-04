@@ -211,7 +211,7 @@
       "shape": "chronograf-v2",
       "queries": [
        {
-        "text": "from(bucket: \"tomcat\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"tomcat_connector\")\n  |> filter(fn: (r) => r[\"_field\"] == \"bytes_received\" or r[\"_field\"] == \"bytes_sent\")",
+        "text": "from(bucket: \"tomcat\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"tomcat_connector\")\n  |> filter(fn: (r) => r[\"_field\"] == \"bytes_received\" or r[\"_field\"] == \"bytes_sent\")\n  |> derivative(unit: v.windowPeriod, nonNegative: false)\n  |> yield(name: \"derivative\")",
         "editMode": "advanced",
         "name": "",
         "builderConfig": {
@@ -299,7 +299,7 @@
       "shape": "chronograf-v2",
       "queries": [
        {
-        "text": "from(bucket: \"tomcat\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"tomcat_connector\")\n  |> filter(fn: (r) => r[\"_field\"] == \"request_count\")",
+        "text": "from(bucket: \"tomcat\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"tomcat_connector\")\n  |> filter(fn: (r) => r[\"_field\"] == \"request_count\")\n  |> derivative(unit: v.windowPeriod, nonNegative: false)\n  |> yield(name: \"derivative\")",
         "editMode": "advanced",
         "name": "",
         "builderConfig": {
@@ -577,7 +577,7 @@
       "shape": "chronograf-v2",
       "queries": [
        {
-        "text": "from(bucket: \"tomcat\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"tomcat_connector\")\n  |> filter(fn: (r) => r[\"_field\"] == \"processing_time\")",
+        "text": "from(bucket: \"tomcat\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"tomcat_connector\")\n  |> filter(fn: (r) => r[\"_field\"] == \"processing_time\")\n  |> derivative(unit: v.windowPeriod, nonNegative: false)\n  |> yield(name: \"derivative\")",
         "editMode": "advanced",
         "name": "",
         "builderConfig": {
