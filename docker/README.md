@@ -11,6 +11,9 @@ This InfluxDB Template can be used to monitor Docker.
 - 1 Telegraf Configuration
 - 1 Dashboard: `Docker`
 - 1 Variable: `bucket`
+- 4 Alerts: Container cpu, mem, disk, non-zero exit
+- 1 Notification Endpoint: Http Post
+- 1 Notification Rules: Crit Alert
 
 ## Setup Instructions
 
