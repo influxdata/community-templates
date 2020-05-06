@@ -35,6 +35,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [Website Monitor (Apache/Postgresql)](apache_postgresql/) | Monitor a website that uses Apache and Postgresql | [Michael Hall](https://github.com/mhall119) |
 | [Website Monitor (NGINX/MySQL)](nginx_mysql/) | Monitor a website that uses NGINX and MySQL | Ray Farias |
 | [Windows System Monitor](windows_system/) | Monitor system resources on one or more Windows hosts. | [@russorat](https://github.com/russorat) |
+| [x509](x509/) | Simple dashboard for monitoring SSL certificates expiration. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Zookeeper](zookeeper/) | Dashboard for consuming data from Zookeeper client. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 
 To submit a new template, see our [contributing guide](docs/submit_a_template.md).
