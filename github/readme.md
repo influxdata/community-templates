@@ -21,7 +21,7 @@ General instructions on using InfluxDB Templates can be found in the [use a temp
 
 In order to use this dashboard, you need to get a Token Access Key from Github. You can generate one from this page: https://github.com/settings/tokens and export as variable.
 
-Ex: $ EXPORT GITHUB_ACCESS_TOKEN="your-token"
+Ex: <code>export GITHUB_ACCESS_TOKEN="your-token"</code>
 
 Also, you need to specify your Github's repos in telegraf.conf.
 
