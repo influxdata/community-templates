@@ -19,7 +19,18 @@ General instructions on using InfluxDB Templates can be found in the [use a temp
     - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your master token to get started.
     - `INFLUX_ORG` - The name of your Organization.
 
-In order to use this dashboard, you need to get a Token Access Key from Github. You can generate one from this page: https://github.com/settings/tokens 
+In order to use this dashboard, you need to get a Token Access Key from Github. You can generate one from this page: https://github.com/settings/tokens and export as variable.
+
+Ex: $ EXPORT GITHUB_ACCESS_TOKEN="your-token"
+
+Also, you need to specify your Github's repos in telegraf.conf.
+
+Ex:
+
+  <code>repositories = [
+	  "influxdata/telegraf",
+    "influxdata/influxdb"
+  ]</code>
 
 ## Contact
 
