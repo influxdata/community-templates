@@ -19,7 +19,11 @@ General instructions on using InfluxDB Templates can be found in the [use a temp
     - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your master token to get started.
     - `INFLUX_ORG` - The name of your Organization.
 
-   In orden to use this Dashboard, you need to specify the url of the address you wish monitor. Also, you can monitor files stored locally. 
+
+In orden to use this Dashboard, you need to specify the url of the address you wish monitor in the file telegraf.conf Also, you can monitor files stored locally.
+
+ex: <code>sources = ["/etc/ssl/certs/ssl-cert-snakeoil.pem", "https://google.com:443", "https://influxdata.com:443"]</code>
+
 
 ## Contact
 
