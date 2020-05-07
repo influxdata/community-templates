@@ -25,12 +25,7 @@ Ex: <code>export GITHUB_ACCESS_TOKEN="your-token"</code>
 
 Also, you need to specify your Github's repos in telegraf.conf.
 
-Ex:
-
-  <code>repositories = [
-	  "influxdata/telegraf",
-    "influxdata/influxdb"
-  ]</code>
+Ex: <code>repositories = ["influxdata/telegraf", "influxdata/influxdb"]</code>
 
 ## Contact
 
