@@ -20,6 +20,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [Docker](docker/) | Monitor your running docker containers. | [@russorat](https://github.com/russorat) |
 | [Enviro+](enviro_plus/) | View the air quality readings from a Pimoroni Enviro+ particulate matter sensor. | Simon Loffler |
 | [GCP Monitoring](gcp_monitoring/) | Monitor Google Cloud Platform.  | [bonitoo.io](.) |
+| [Github](github/) | Dashboard to get metrics of your Github Repositories | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [InfluxDB 1.x Monitor](monitoring_influxdb_1.x/) | Monitor your already running InfluxDB 1.x instance. | [@russorat](https://github.com/russorat) |
 | [InfluxDB 2 OSS Metrics](influxdb2_oss_metrics/) | Monitor your InfluxDB 2 OSS instance using scrapers. | [@russorat](https://github.com/russorat) |
 | [Kubernetes Dashboards](k8s/) | Monitor your Kubernetes cluster. | [bonitoo.io](.) |

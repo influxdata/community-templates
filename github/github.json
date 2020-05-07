@@ -1,0 +1,881 @@
+{
+ "meta": {
+  "version": "1",
+  "type": "dashboard",
+  "name": "Github - InfluxData [InfluxDB & Telegraf repos]-Template",
+  "description": "template created from dashboard: Github - InfluxData [InfluxDB & Telegraf repos]"
+ },
+ "content": {
+  "data": {
+   "type": "dashboard",
+   "attributes": {
+    "name": "Github - InfluxData [InfluxDB & Telegraf repos]",
+    "description": ""
+   },
+   "relationships": {
+    "label": {
+     "data": []
+    },
+    "cell": {
+     "data": [
+      {
+       "type": "cell",
+       "id": "05a732850e093000"
+      },
+      {
+       "type": "cell",
+       "id": "05a73311bbc93000"
+      },
+      {
+       "type": "cell",
+       "id": "05a73328f2093000"
+      },
+      {
+       "type": "cell",
+       "id": "05a73344e2893000"
+      },
+      {
+       "type": "cell",
+       "id": "05a733aeb3c93000"
+      },
+      {
+       "type": "cell",
+       "id": "05a733fd0fc93000"
+      },
+      {
+       "type": "cell",
+       "id": "05a73480fd493000"
+      },
+      {
+       "type": "cell",
+       "id": "05a734836e493000"
+      }
+     ]
+    },
+    "variable": {
+     "data": []
+    }
+   }
+  },
+  "included": [
+   {
+    "id": "05a732850e093000",
+    "type": "cell",
+    "attributes": {
+     "x": 0,
+     "y": 0,
+     "w": 3,
+     "h": 3
+    },
+    "relationships": {
+     "view": {
+      "data": {
+       "type": "view",
+       "id": "05a732850e093000"
+      }
+     }
+    }
+   },
+   {
+    "id": "05a73311bbc93000",
+    "type": "cell",
+    "attributes": {
+     "x": 3,
+     "y": 0,
+     "w": 3,
+     "h": 3
+    },
+    "relationships": {
+     "view": {
+      "data": {
+       "type": "view",
+       "id": "05a73311bbc93000"
+      }
+     }
+    }
+   },
+   {
+    "id": "05a73328f2093000",
+    "type": "cell",
+    "attributes": {
+     "x": 6,
+     "y": 0,
+     "w": 3,
+     "h": 3
+    },
+    "relationships": {
+     "view": {
+      "data": {
+       "type": "view",
+       "id": "05a73328f2093000"
+      }
+     }
+    }
+   },
+   {
+    "id": "05a73344e2893000",
+    "type": "cell",
+    "attributes": {
+     "x": 9,
+     "y": 0,
+     "w": 3,
+     "h": 3
+    },
+    "relationships": {
+     "view": {
+      "data": {
+       "type": "view",
+       "id": "05a73344e2893000"
+      }
+     }
+    }
+   },
+   {
+    "id": "05a733aeb3c93000",
+    "type": "cell",
+    "attributes": {
+     "x": 0,
+     "y": 3,
+     "w": 3,
+     "h": 3
+    },
+    "relationships": {
+     "view": {
+      "data": {
+       "type": "view",
+       "id": "05a733aeb3c93000"
+      }
+     }
+    }
+   },
+   {
+    "id": "05a733fd0fc93000",
+    "type": "cell",
+    "attributes": {
+     "x": 3,
+     "y": 3,
+     "w": 3,
+     "h": 3
+    },
+    "relationships": {
+     "view": {
+      "data": {
+       "type": "view",
+       "id": "05a733fd0fc93000"
+      }
+     }
+    }
+   },
+   {
+    "id": "05a73480fd493000",
+    "type": "cell",
+    "attributes": {
+     "x": 6,
+     "y": 3,
+     "w": 3,
+     "h": 3
+    },
+    "relationships": {
+     "view": {
+      "data": {
+       "type": "view",
+       "id": "05a73480fd493000"
+      }
+     }
+    }
+   },
+   {
+    "id": "05a734836e493000",
+    "type": "cell",
+    "attributes": {
+     "x": 9,
+     "y": 3,
+     "w": 3,
+     "h": 3
+    },
+    "relationships": {
+     "view": {
+      "data": {
+       "type": "view",
+       "id": "05a734836e493000"
+      }
+     }
+    }
+   },
+   {
+    "type": "view",
+    "id": "05a732850e093000",
+    "attributes": {
+     "name": "InfluxDB - Forks",
+     "properties": {
+      "shape": "chronograf-v2",
+      "queries": [
+       {
+        "text": "from(bucket: \"github\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"name\"] == \"influxdb\")\n  |> filter(fn: (r) => r[\"_field\"] == \"forks\")\n  |> aggregateWindow(every: v.windowPeriod, fn: max)\n  |> yield(name: \"max\")",
+        "editMode": "advanced",
+        "name": "",
+        "builderConfig": {
+         "buckets": [],
+         "tags": [
+          {
+           "key": "_measurement",
+           "values": [],
+           "aggregateFunctionType": "filter"
+          }
+         ],
+         "functions": [],
+         "aggregateWindow": {
+          "period": "auto"
+         }
+        }
+       }
+      ],
+      "axes": {
+       "x": {
+        "bounds": [
+         "",
+         ""
+        ],
+        "label": "",
+        "prefix": "",
+        "suffix": "",
+        "base": "10",
+        "scale": "linear"
+       },
+       "y": {
+        "bounds": [
+         "",
+         ""
+        ],
+        "label": "",
+        "prefix": "",
+        "suffix": "",
+        "base": "10",
+        "scale": "linear"
+       }
+      },
+      "type": "line-plus-single-stat",
+      "legend": {},
+      "colors": [
+       {
+        "id": "base",
+        "type": "text",
+        "hex": "#00C9FF",
+        "name": "laser",
+        "value": 0
+       }
+      ],
+      "prefix": "",
+      "suffix": "",
+      "decimalPlaces": {
+       "isEnforced": true,
+       "digits": 2
+      },
+      "note": "",
+      "showNoteWhenEmpty": false,
+      "xColumn": "_time",
+      "yColumn": "_value",
+      "shadeBelow": false,
+      "position": "overlaid"
+     }
+    }
+   },
+   {
+    "type": "view",
+    "id": "05a73311bbc93000",
+    "attributes": {
+     "name": "InfluxDB - Issues & Pull Requests",
+     "properties": {
+      "shape": "chronograf-v2",
+      "queries": [
+       {
+        "text": "from(bucket: \"github\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"name\"] == \"influxdb\")\n  |> filter(fn: (r) => r[\"_field\"] == \"open_issues\")",
+        "editMode": "advanced",
+        "name": "",
+        "builderConfig": {
+         "buckets": [],
+         "tags": [
+          {
+           "key": "_measurement",
+           "values": [],
+           "aggregateFunctionType": "filter"
+          }
+         ],
+         "functions": [],
+         "aggregateWindow": {
+          "period": "auto"
+         }
+        }
+       }
+      ],
+      "axes": {
+       "x": {
+        "bounds": [
+         "",
+         ""
+        ],
+        "label": "",
+        "prefix": "",
+        "suffix": "",
+        "base": "10",
+        "scale": "linear"
+       },
+       "y": {
+        "bounds": [
+         "",
+         ""
+        ],
+        "label": "",
+        "prefix": "",
+        "suffix": "",
+        "base": "10",
+        "scale": "linear"
+       }
+      },
+      "type": "line-plus-single-stat",
+      "legend": {},
+      "colors": [
+       {
+        "id": "base",
+        "type": "text",
+        "hex": "#4ED8A0",
+        "name": "rainforest",
+        "value": 0
+       },
+       {
+        "id": "89f0b588-f857-4f97-8266-b30f38893b70",
+        "type": "text",
+        "hex": "#F95F53",
+        "name": "curacao",
+        "value": 1000
+       }
+      ],
+      "prefix": "",
+      "suffix": "",
+      "decimalPlaces": {
+       "isEnforced": true,
+       "digits": 2
+      },
+      "note": "",
+      "showNoteWhenEmpty": false,
+      "xColumn": "_time",
+      "yColumn": "_value",
+      "shadeBelow": false,
+      "position": "overlaid"
+     }
+    }
+   },
+   {
+    "type": "view",
+    "id": "05a73328f2093000",
+    "attributes": {
+     "name": "InfluxDB - Stars",
+     "properties": {
+      "shape": "chronograf-v2",
+      "queries": [
+       {
+        "text": "from(bucket: \"github\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"name\"] == \"influxdb\")\n  |> filter(fn: (r) => r[\"_field\"] == \"stars\")",
+        "editMode": "advanced",
+        "name": "",
+        "builderConfig": {
+         "buckets": [],
+         "tags": [
+          {
+           "key": "_measurement",
+           "values": [],
+           "aggregateFunctionType": "filter"
+          }
+         ],
+         "functions": [],
+         "aggregateWindow": {
+          "period": "auto"
+         }
+        }
+       }
+      ],
+      "axes": {
+       "x": {
+        "bounds": [
+         "",
+         ""
+        ],
+        "label": "",
+        "prefix": "",
+        "suffix": "",
+        "base": "10",
+        "scale": "linear"
+       },
+       "y": {
+        "bounds": [
+         "",
+         ""
+        ],
+        "label": "",
+        "prefix": "",
+        "suffix": "",
+        "base": "10",
+        "scale": "linear"
+       }
+      },
+      "type": "line-plus-single-stat",
+      "legend": {},
+      "colors": [
+       {
+        "id": "base",
+        "type": "text",
+        "hex": "#00C9FF",
+        "name": "laser",
+        "value": 0
+       },
+       {
+        "id": "19c33918-2071-4438-8d2d-7f554d781771",
+        "type": "text",
+        "hex": "#7CE490",
+        "name": "honeydew",
+        "value": 18000
+       }
+      ],
+      "prefix": "",
+      "suffix": "",
+      "decimalPlaces": {
+       "isEnforced": true,
+       "digits": 2
+      },
+      "note": "",
+      "showNoteWhenEmpty": false,
+      "xColumn": "_time",
+      "yColumn": "_value",
+      "shadeBelow": false,
+      "position": "overlaid"
+     }
+    }
+   },
+   {
+    "type": "view",
+    "id": "05a73344e2893000",
+    "attributes": {
+     "name": "InfluxDB - Watchers",
+     "properties": {
+      "shape": "chronograf-v2",
+      "queries": [
+       {
+        "text": "from(bucket: \"github\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"name\"] == \"influxdb\")\n  |> filter(fn: (r) => r[\"_field\"] == \"subscribers\")",
+        "editMode": "advanced",
+        "name": "",
+        "builderConfig": {
+         "buckets": [],
+         "tags": [
+          {
+           "key": "_measurement",
+           "values": [],
+           "aggregateFunctionType": "filter"
+          }
+         ],
+         "functions": [],
+         "aggregateWindow": {
+          "period": "auto"
+         }
+        }
+       }
+      ],
+      "axes": {
+       "x": {
+        "bounds": [
+         "",
+         ""
+        ],
+        "label": "",
+        "prefix": "",
+        "suffix": "",
+        "base": "10",
+        "scale": "linear"
+       },
+       "y": {
+        "bounds": [
+         "",
+         ""
+        ],
+        "label": "",
+        "prefix": "",
+        "suffix": "",
+        "base": "10",
+        "scale": "linear"
+       }
+      },
+      "type": "line-plus-single-stat",
+      "legend": {},
+      "colors": [
+       {
+        "id": "base",
+        "type": "text",
+        "hex": "#00C9FF",
+        "name": "laser",
+        "value": 0
+       }
+      ],
+      "prefix": "",
+      "suffix": "",
+      "decimalPlaces": {
+       "isEnforced": true,
+       "digits": 2
+      },
+      "note": "",
+      "showNoteWhenEmpty": false,
+      "xColumn": "_time",
+      "yColumn": "_value",
+      "shadeBelow": false,
+      "position": "overlaid"
+     }
+    }
+   },
+   {
+    "type": "view",
+    "id": "05a733aeb3c93000",
+    "attributes": {
+     "name": "Telegraf - Forks",
+     "properties": {
+      "shape": "chronograf-v2",
+      "queries": [
+       {
+        "text": "from(bucket: \"github\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"name\"] == \"telegraf\")\n  |> filter(fn: (r) => r[\"_field\"] == \"forks\")\n  |> aggregateWindow(every: v.windowPeriod, fn: max)\n  |> yield(name: \"max\")",
+        "editMode": "advanced",
+        "name": "",
+        "builderConfig": {
+         "buckets": [],
+         "tags": [
+          {
+           "key": "_measurement",
+           "values": [],
+           "aggregateFunctionType": "filter"
+          }
+         ],
+         "functions": [],
+         "aggregateWindow": {
+          "period": "auto"
+         }
+        }
+       }
+      ],
+      "axes": {
+       "x": {
+        "bounds": [
+         "",
+         ""
+        ],
+        "label": "",
+        "prefix": "",
+        "suffix": "",
+        "base": "10",
+        "scale": "linear"
+       },
+       "y": {
+        "bounds": [
+         "",
+         ""
+        ],
+        "label": "",
+        "prefix": "",
+        "suffix": "",
+        "base": "10",
+        "scale": "linear"
+       }
+      },
+      "type": "line-plus-single-stat",
+      "legend": {},
+      "colors": [
+       {
+        "id": "base",
+        "type": "text",
+        "hex": "#00C9FF",
+        "name": "laser",
+        "value": 0
+       }
+      ],
+      "prefix": "",
+      "suffix": "",
+      "decimalPlaces": {
+       "isEnforced": true,
+       "digits": 2
+      },
+      "note": "",
+      "showNoteWhenEmpty": false,
+      "xColumn": "_time",
+      "yColumn": "_value",
+      "shadeBelow": false,
+      "position": "overlaid"
+     }
+    }
+   },
+   {
+    "type": "view",
+    "id": "05a733fd0fc93000",
+    "attributes": {
+     "name": "Telegraf - Issues & Pull Requests",
+     "properties": {
+      "shape": "chronograf-v2",
+      "queries": [
+       {
+        "text": "from(bucket: \"github\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"name\"] == \"telegraf\")\n  |> filter(fn: (r) => r[\"_field\"] == \"open_issues\")",
+        "editMode": "advanced",
+        "name": "",
+        "builderConfig": {
+         "buckets": [],
+         "tags": [
+          {
+           "key": "_measurement",
+           "values": [],
+           "aggregateFunctionType": "filter"
+          }
+         ],
+         "functions": [],
+         "aggregateWindow": {
+          "period": "auto"
+         }
+        }
+       }
+      ],
+      "axes": {
+       "x": {
+        "bounds": [
+         "",
+         ""
+        ],
+        "label": "",
+        "prefix": "",
+        "suffix": "",
+        "base": "10",
+        "scale": "linear"
+       },
+       "y": {
+        "bounds": [
+         "",
+         ""
+        ],
+        "label": "",
+        "prefix": "",
+        "suffix": "",
+        "base": "10",
+        "scale": "linear"
+       }
+      },
+      "type": "line-plus-single-stat",
+      "legend": {},
+      "colors": [
+       {
+        "id": "base",
+        "type": "text",
+        "hex": "#32B08C",
+        "name": "viridian",
+        "value": 0
+       },
+       {
+        "id": "e1fcfecb-a8dd-4fc3-9eb5-e12fe8287337",
+        "type": "text",
+        "hex": "#F95F53",
+        "name": "curacao",
+        "value": 1000
+       },
+       {
+        "id": "b9c40c1b-60bc-496f-ae15-1c2c7f40b8f4",
+        "type": "scale",
+        "hex": "#FDC44F",
+        "name": "Cthulhu",
+        "value": 0
+       },
+       {
+        "id": "aae13a03-3651-40af-b5d9-b1ade407f98d",
+        "type": "scale",
+        "hex": "#007C76",
+        "name": "Cthulhu",
+        "value": 0
+       },
+       {
+        "id": "f8a2f6d1-7df2-49f6-8ca3-f393015e23e9",
+        "type": "scale",
+        "hex": "#8983FF",
+        "name": "Cthulhu",
+        "value": 0
+       }
+      ],
+      "prefix": "",
+      "suffix": "",
+      "decimalPlaces": {
+       "isEnforced": true,
+       "digits": 2
+      },
+      "note": "",
+      "showNoteWhenEmpty": false,
+      "xColumn": "_time",
+      "yColumn": "_value",
+      "shadeBelow": false,
+      "position": "overlaid"
+     }
+    }
+   },
+   {
+    "type": "view",
+    "id": "05a73480fd493000",
+    "attributes": {
+     "name": "Telegraf - Stars",
+     "properties": {
+      "shape": "chronograf-v2",
+      "queries": [
+       {
+        "text": "from(bucket: \"github\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"name\"] == \"telegraf\")\n  |> filter(fn: (r) => r[\"_field\"] == \"stars\")",
+        "editMode": "advanced",
+        "name": "",
+        "builderConfig": {
+         "buckets": [],
+         "tags": [
+          {
+           "key": "_measurement",
+           "values": [],
+           "aggregateFunctionType": "filter"
+          }
+         ],
+         "functions": [],
+         "aggregateWindow": {
+          "period": "auto"
+         }
+        }
+       }
+      ],
+      "axes": {
+       "x": {
+        "bounds": [
+         "",
+         ""
+        ],
+        "label": "",
+        "prefix": "",
+        "suffix": "",
+        "base": "10",
+        "scale": "linear"
+       },
+       "y": {
+        "bounds": [
+         "",
+         ""
+        ],
+        "label": "",
+        "prefix": "",
+        "suffix": "",
+        "base": "10",
+        "scale": "linear"
+       }
+      },
+      "type": "line-plus-single-stat",
+      "legend": {},
+      "colors": [
+       {
+        "id": "base",
+        "type": "text",
+        "hex": "#00C9FF",
+        "name": "laser",
+        "value": 0
+       },
+       {
+        "id": "fdf50dbb-4f78-42a3-9b5d-eeedea2f6c7e",
+        "type": "text",
+        "hex": "#7CE490",
+        "name": "honeydew",
+        "value": 8000
+       }
+      ],
+      "prefix": "",
+      "suffix": "",
+      "decimalPlaces": {
+       "isEnforced": true,
+       "digits": 2
+      },
+      "note": "",
+      "showNoteWhenEmpty": false,
+      "xColumn": "_time",
+      "yColumn": "_value",
+      "shadeBelow": false,
+      "position": "overlaid"
+     }
+    }
+   },
+   {
+    "type": "view",
+    "id": "05a734836e493000",
+    "attributes": {
+     "name": "InfluxDB - Watchers",
+     "properties": {
+      "shape": "chronograf-v2",
+      "queries": [
+       {
+        "text": "from(bucket: \"github\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"name\"] == \"telegraf\")\n  |> filter(fn: (r) => r[\"_field\"] == \"subscribers\")",
+        "editMode": "advanced",
+        "name": "",
+        "builderConfig": {
+         "buckets": [],
+         "tags": [
+          {
+           "key": "_measurement",
+           "values": [],
+           "aggregateFunctionType": "filter"
+          }
+         ],
+         "functions": [],
+         "aggregateWindow": {
+          "period": "auto"
+         }
+        }
+       }
+      ],
+      "axes": {
+       "x": {
+        "bounds": [
+         "",
+         ""
+        ],
+        "label": "",
+        "prefix": "",
+        "suffix": "",
+        "base": "10",
+        "scale": "linear"
+       },
+       "y": {
+        "bounds": [
+         "",
+         ""
+        ],
+        "label": "",
+        "prefix": "",
+        "suffix": "",
+        "base": "10",
+        "scale": "linear"
+       }
+      },
+      "type": "line-plus-single-stat",
+      "legend": {},
+      "colors": [
+       {
+        "id": "base",
+        "type": "text",
+        "hex": "#00C9FF",
+        "name": "laser",
+        "value": 0
+       }
+      ],
+      "prefix": "",
+      "suffix": "",
+      "decimalPlaces": {
+       "isEnforced": true,
+       "digits": 2
+      },
+      "note": "",
+      "showNoteWhenEmpty": false,
+      "xColumn": "_time",
+      "yColumn": "_value",
+      "shadeBelow": false,
+      "position": "overlaid"
+     }
+    }
+   }
+  ]
+ },
+ "labels": []
+}
