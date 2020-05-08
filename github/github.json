@@ -801,7 +801,7 @@
     "type": "view",
     "id": "05a734836e493000",
     "attributes": {
-     "name": "InfluxDB - Watchers",
+     "name": "Telegraf- Watchers",
      "properties": {
       "shape": "chronograf-v2",
       "queries": [
