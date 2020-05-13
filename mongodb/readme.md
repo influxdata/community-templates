@@ -18,8 +18,13 @@ General instructions on using InfluxDB Templates can be found in the [use a temp
     Telegraf Configuration requires the following environment variables
     - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your master token to get started.
     - `INFLUX_ORG` - The name of your Organization.
+    - `INFLUX_BUCKET` - The name of the bucket you will store the data.
 
-   In orden to use this Dashboard, you need to specify the string connection to MongoDB instance.
+   In order to use this Dashboard, you need to specify the string connection to MongoDB instance.
+
+   Ex: <code>mongodb://user:auth_key@10.10.3.30:27017</code>
+   Ex without auth: <code>mongodb://10.10.3.33:18832</code>
+
 
 ## Contact
 
