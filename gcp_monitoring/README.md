@@ -24,6 +24,7 @@ This template includes the following:
 - 2 Labels: `inputs.stackdriver`, `GCP`
 - 3 Dashboards: `CloudSQL`, `Compute` and `HTTPS LoadBalancing`
 - 1 Variable: `bucket`
+- 1 Telegraf Config: `GCP Stackdriver`
 
 ## Setup Instructions
 

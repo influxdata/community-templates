@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: ecstatic-spence-2f4003
+    name: gifted-ramanujan-8a9001
 spec:
     color: '#FFB94A'
     name: GCP
@@ -9,7 +9,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: quizzical-lamarr-2f4005
+    name: sweet-nobel-8a9003
 spec:
     color: '#066fc5'
     name: inputs.stackdriver
@@ -17,7 +17,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: sad-euclid-2f4001
+    name: boring-black-4a9001
 spec:
     language: flux
     name: host
@@ -32,13 +32,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: angry-hopper-af4001
+    name: fasting-banzai-0a9001
 spec:
     associations:
       - kind: Label
-        name: ecstatic-spence-2f4003
+        name: gifted-ramanujan-8a9001
       - kind: Label
-        name: quizzical-lamarr-2f4005
+        name: sweet-nobel-8a9003
     charts:
       - height: 1
         kind: Markdown
@@ -287,13 +287,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: elastic-leakey-af4001
+    name: nice-cori-ca9001
 spec:
     associations:
       - kind: Label
-        name: ecstatic-spence-2f4003
+        name: gifted-ramanujan-8a9001
       - kind: Label
-        name: quizzical-lamarr-2f4005
+        name: sweet-nobel-8a9003
     charts:
       - height: 1
         kind: Markdown
@@ -656,13 +656,13 @@ spec:
         yCol: _value
         yPos: 1
       - axes:
-          - base: "10"
-            name: x
-            scale: linear
           - base: "2"
             name: y
             scale: linear
             suffix: ' %'
+          - base: "10"
+            name: x
+            scale: linear
         colors:
           - hex: '#34BB55'
             name: Solid Green
@@ -843,13 +843,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: strange-jones-2f4001
+    name: realistic-shaw-4a9001
 spec:
     associations:
       - kind: Label
-        name: ecstatic-spence-2f4003
+        name: gifted-ramanujan-8a9001
       - kind: Label
-        name: quizzical-lamarr-2f4005
+        name: sweet-nobel-8a9003
     charts:
       - height: 1
         kind: Markdown
@@ -897,10 +897,10 @@ spec:
         yPos: 5
       - axes:
           - base: "10"
-            name: x
+            name: y
             scale: linear
           - base: "10"
-            name: y
+            name: x
             scale: linear
         colors:
           - hex: '#31C0F6'
@@ -1020,3 +1020,40 @@ spec:
         load balancing in the cluster. Query data from Google Cloud Monitoring (formerly
         Stackdriver) using the Cloud Monitoring API v3.
     name: GCP Monitoring - HTTPS LoadBalancing
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: distracted-jang-ca9005
+spec:
+    associations:
+      - kind: Label
+        name: sweet-nobel-8a9003
+    config: |
+        [agent]
+          interval = "1m"
+          flush_interval = "10s"
+          metric_buffer_limit = 50000
+          debug = true
+          omit_hostname = false
+        [[outputs.influxdb_v2]]
+          urls = ["https://us-central1-1.gcp.cloud2.influxdata.com"]
+          token = "$INFLUX_TOKEN"
+          organization = "$INFLUX_ORG"
+        [[inputs.stackdriver]]
+          project = "proxitrek"
+          metric_type_prefix_include = [
+            "compute.googleapis.com/instance/",
+            "loadbalancing.googleapis.com/",
+            "cloudsql.googleapis.com/database/cpu/",
+            "cloudsql.googleapis.com/database/disk/",
+            "cloudsql.googleapis.com/database/disk/",
+            "cloudsql.googleapis.com/database/network/",
+            "cloudsql.googleapis.com/database/memory/",
+            "cloudsql.googleapis.com/database/mysql/",
+            ]
+          # metric_type_prefix_exclude = []
+          interval = "1m"
+          rate_limit = 20
+    description: Sample config
+    name: GCP Stackdriver
