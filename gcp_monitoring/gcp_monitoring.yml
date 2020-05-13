@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: optimistic_lederberg_8ff001
+    name: ecstatic-spence-2f4003
 spec:
     color: '#FFB94A'
     name: GCP
@@ -9,7 +9,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: rightful_booth_8ff003
+    name: quizzical-lamarr-2f4005
 spec:
     color: '#066fc5'
     name: inputs.stackdriver
@@ -17,145 +17,65 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: exciting_satoshi_4ff001
+    name: sad-euclid-2f4001
 spec:
     language: flux
-    name: bucket
+    name: host
     query: |-
-        buckets()
-          |> rename(columns: {"name": "_value"})
-          |> keep(columns: ["_value"])
+        import "influxdata/influxdb/v1"
+        v1.tagValues(
+          bucket: "demo",
+          tag: "host"
+        )
     type: query
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: goofy_lichterman_cff001
+    name: angry-hopper-af4001
 spec:
     associations:
       - kind: Label
-        name: optimistic_lederberg_8ff001
+        name: ecstatic-spence-2f4003
       - kind: Label
-        name: rightful_booth_8ff003
+        name: quizzical-lamarr-2f4005
     charts:
       - height: 1
         kind: Markdown
         name: Name this Cell
-        note: '## Backend Latencies - Mean'
+        note: '## Relative Uptime'
         width: 4
-      - axes:
-          - base: "10"
-            name: x
-            scale: linear
-          - base: "10"
-            name: y
-            scale: linear
-        colors:
-          - hex: '#31C0F6'
-            name: Nineteen Eighty Four
-            type: scale
-          - hex: '#A500A5'
-            name: Nineteen Eighty Four
-            type: scale
-          - hex: '#FF7E27'
-            name: Nineteen Eighty Four
-            type: scale
-        geom: line
-        height: 4
-        kind: Xy
-        name: Platform - backend latencies mean
-        position: overlaid
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "loadbalancing.googleapis.com/https")
-                  |> filter(fn: (r) => r._field == "backend_latencies_mean")
-                  |> filter(fn: (r) => r.matched_url_path_rule == "/platform/")
-                  |> aggregateWindow(every: v.windowPeriod, fn: sum)
-                  |> yield(name: "sum")
-        width: 4
-        yPos: 1
-      - height: 1
-        kind: Markdown
-        name: Name this Cell
-        note: '## Platform - Total Latencies Mean'
-        width: 4
-        yPos: 5
-      - axes:
-          - base: "10"
-            name: x
-            scale: linear
-          - base: "10"
-            name: y
-            scale: linear
-        colors:
-          - hex: '#31C0F6'
-            name: Nineteen Eighty Four
-            type: scale
-          - hex: '#A500A5'
-            name: Nineteen Eighty Four
-            type: scale
-          - hex: '#FF7E27'
-            name: Nineteen Eighty Four
-            type: scale
-        geom: line
-        height: 4
-        kind: Xy
-        name: Platform - total latencies mean
-        position: overlaid
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "loadbalancing.googleapis.com/https")
-                  |> filter(fn: (r) => r._field == "total_latencies_mean")
-                  |> filter(fn: (r) => r.matched_url_path_rule == "/platform/")
-                  |> aggregateWindow(every: v.windowPeriod, fn: sum)
-                  |> yield(name: "sum")
-        width: 4
-        yPos: 6
-      - height: 1
-        kind: Markdown
-        name: Name this Cell
-        note: '## Backend Request Count'
-        width: 5
-        xPos: 4
-      - axes:
-          - base: "10"
-            name: x
-            scale: linear
-          - base: "10"
-            name: y
-            scale: linear
-        colors:
-          - hex: '#00C9FF'
-            name: laser
+      - colors:
+          - hex: '#ffffff'
+            name: white
             type: text
-        decimalPlaces: 2
+        decimalPlaces: 0
+        fieldOptions:
+          - displayName: Instance name
+            fieldName: instance_name
+            visible: true
+          - displayName: Age in Minutes
+            fieldName: _value
+            visible: true
         height: 4
-        kind: Single_Stat_Plus_Line
-        name: Platform - backend request count
-        position: overlaid
+        kind: Table
+        name: Instance uptime
         queries:
           - query: |-
                 from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "loadbalancing.googleapis.com/https")
-                  |> filter(fn: (r) => r._field == "backend_request_count")
-                  |> filter(fn: (r) => r.matched_url_path_rule == "/platform/")
-                  |> aggregateWindow(every: v.windowPeriod, fn: sum)
-                  |> yield(name: "sum")
-        width: 5
-        xPos: 4
+                  |> filter(fn: (r) => r._measurement == "compute.googleapis.com/instance")
+                  |> filter(fn: (r) => r._field == "uptime")
+                  |> keep(columns: ["_value", "instance_name"])
+                  |> sum()
+                  //turn seconds to minutes and add 10 because gcp lags behind 10minutes
+                  |> map(fn: (r) => ({r with _value: (r._value / 60.0) + 10.0 }))
+                  |> group(columns: ["table"])
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 4
         yPos: 1
-      - height: 1
-        kind: Markdown
-        name: Name this Cell
-        note: '## URL Request Count'
-        width: 5
-        xPos: 4
-        yPos: 5
       - axes:
           - base: "10"
             name: x
@@ -176,48 +96,204 @@ spec:
         geom: line
         height: 4
         kind: Xy
-        name: Platform - request count
+        name: Instance Received/Sent bytes
         position: overlaid
         queries:
           - query: |-
                 from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "loadbalancing.googleapis.com/https")
-                  |> filter(fn: (r) => r._field == "request_count")
-                  |> filter(fn: (r) => r.matched_url_path_rule == "/platform/")
-                  |> aggregateWindow(every: v.windowPeriod, fn: sum)
+                  |> filter(fn: (r) => r._measurement == "compute.googleapis.com/instance/network")
+                  |> filter(fn: (r) => r._field == "received_bytes_count" or r._field == "sent_bytes_count")
+                  |> aggregateWindow(every: 1m, fn: sum)
                   |> yield(name: "sum")
-        width: 5
-        xPos: 4
-        yPos: 6
-      - height: 10
+        width: 4
+        xCol: _time
+        yCol: _value
+        yPos: 5
+      - height: 1
         kind: Markdown
         name: Name this Cell
-        note: "# LoadBalancing Metrics\n\n**Latency and count of requests, broken
-            down by response status code and proxy names, is the main subject of measurement
-            at this dashboard.**\n\nBased on the `loadbalancing.googleapis.com/https`
-            measurement, sourced from GCP monitoring service. \n\nMetrics are collected
-            via Stackdriver Telegraf plugin. \n\nConfiguration note: in the charts
-            there is a hardcoded path filter in order to select the the URL pattern
-            you can be interested in - in our charts case we call it /platform/. Feel
-            free to adjust the URL regexp pattern according to your needs."
+        note: '## Instance Utilization'
+        width: 4
+        xPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Instance CPU Utilization
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "compute.googleapis.com/instance/cpu")
+                  |> filter(fn: (r) => r._field == "utilization")
+                  |> aggregateWindow(every: 2m, fn: sum)
+                  |> yield(name: "sum")
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 1
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Instance Disk r/w Ops'
+        width: 8
+        xPos: 4
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Read/Write Ops [10 min buckets]
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "compute.googleapis.com/instance/disk")
+                  |> filter(fn: (r) => r._field == "read_ops_count" or r._field == "write_ops_count")
+                  |> keep(columns: ["_field", "_value", "instance_name", "_time"])
+                  |> aggregateWindow(every: 10m, fn: sum)
+                  |> yield(name: "sum")
+        width: 5
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 6
+      - height: 3
+        kind: Markdown
+        name: Name this Cell
+        note: |
+            ## Dashboard Legend
+
+            **Selected useful system metrics of Google Cloud Engine VM instances.**
+
+
+            This is pulling from Google Cloud's Monitoring (StackDriver) service, using the Telegraf StackDriver input plugin.
+
+            Set the `v.host` variable for your bucket.
+
+
+            Hint: You can use also preemptable instances that form your cluster. They are destroyed daily and recreated from scratch, so they are cheaper than reserved instances.
+        width: 4
+        xPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Instance firewall dropped packets
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "compute.googleapis.com/firewall")
+                  |> filter(fn: (r) => r._field == "dropped_packets_count")
+                  |> aggregateWindow(every: 1m, fn: sum)
+                  |> yield(name: "sum")
+        width: 4
+        xPos: 8
+        yPos: 3
+      - colors:
+          - hex: '#ffffff'
+            name: white
+            type: text
+        fieldOptions:
+          - displayName: _field
+            fieldName: _field
+            visible: true
+          - displayName: instance_name
+            fieldName: instance_name
+            visible: true
+          - displayName: _value
+            fieldName: _value
+            visible: true
+        height: 3
+        kind: Table
+        name: Instance disk r/w ops
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "compute.googleapis.com/instance/disk")
+                  |> filter(fn: (r) => r._field == "read_ops_count" or r._field == "write_ops_count")
+                  |> keep(columns: ["_value", "instance_name", "_time", "_field"])
+                //  |> aggregateWindow(every: 1m, fn: sum)
+                //  |> yield(name: "sum")
+                |> sum()
+                |> group(columns: ["table"])
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
         width: 3
         xPos: 9
-    description: From Telegraf Stackdriver plugin. This dashboard monitors network
-        load balancing in the cluster. Query data from Google Cloud Monitoring (formerly
-        Stackdriver) using the Cloud Monitoring API v3.
-    name: GCP Monitoring - HTTPS LoadBalancing
+        yPos: 6
+    description: From Telegraf Stackdriver plugin. The dashboard provides deeper insight
+        into the GCP compute services provided by GCP Stackdriver.  Query data from
+        Google Cloud Monitoring (formerly Stackdriver) using the Cloud Monitoring
+        API v3.
+    name: GCP Monitoring - Compute
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: obstinate_neumann_0ff001
+    name: elastic-leakey-af4001
 spec:
     associations:
       - kind: Label
-        name: optimistic_lederberg_8ff001
+        name: ecstatic-spence-2f4003
       - kind: Label
-        name: rightful_booth_8ff003
+        name: quizzical-lamarr-2f4005
     charts:
       - height: 1
         kind: Markdown
@@ -767,185 +843,132 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: zealous_easley_cff001
+    name: strange-jones-2f4001
 spec:
     associations:
       - kind: Label
-        name: optimistic_lederberg_8ff001
+        name: ecstatic-spence-2f4003
       - kind: Label
-        name: rightful_booth_8ff003
+        name: quizzical-lamarr-2f4005
     charts:
       - height: 1
         kind: Markdown
         name: Name this Cell
-        note: '## Relative Uptime'
+        note: '## Backend Latencies - Mean'
         width: 4
-      - colors:
-          - hex: '#ffffff'
-            name: white
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Platform - backend latencies mean
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "loadbalancing.googleapis.com/https")
+                  |> filter(fn: (r) => r._field == "backend_latencies_mean")
+                  |> filter(fn: (r) => r.matched_url_path_rule == "/platform/")
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum)
+                  |> yield(name: "sum")
+        width: 4
+        yPos: 1
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Platform - Total Latencies Mean'
+        width: 4
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Platform - total latencies mean
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "loadbalancing.googleapis.com/https")
+                  |> filter(fn: (r) => r._field == "total_latencies_mean")
+                  |> filter(fn: (r) => r.matched_url_path_rule == "/platform/")
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum)
+                  |> yield(name: "sum")
+        width: 4
+        yPos: 6
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Backend Request Count'
+        width: 5
+        xPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
             type: text
-        decimalPlaces: 0
-        fieldOptions:
-          - displayName: Instance name
-            fieldName: instance_name
-            visible: true
-          - displayName: Age in Minutes
-            fieldName: _value
-            visible: true
+        decimalPlaces: 2
         height: 4
-        kind: Table
-        name: Instance uptime
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "compute.googleapis.com/instance")
-                  |> filter(fn: (r) => r._field == "uptime")
-                  |> keep(columns: ["_value", "instance_name"])
-                  |> sum()
-                  //turn seconds to minutes and add 10 because gcp lags behind 10minutes
-                  |> map(fn: (r) => ({r with _value: (r._value / 60.0) + 10.0 }))
-                  |> group(columns: ["table"])
-        tableOptions:
-            verticalTimeAxis: true
-        timeFormat: YYYY-MM-DD HH:mm:ss
-        width: 4
-        yPos: 1
-      - axes:
-          - base: "10"
-            name: x
-            scale: linear
-          - base: "10"
-            name: y
-            scale: linear
-        colors:
-          - hex: '#31C0F6'
-            name: Nineteen Eighty Four
-            type: scale
-          - hex: '#A500A5'
-            name: Nineteen Eighty Four
-            type: scale
-          - hex: '#FF7E27'
-            name: Nineteen Eighty Four
-            type: scale
-        geom: line
-        height: 4
-        kind: Xy
-        name: Instance Received/Sent bytes
+        kind: Single_Stat_Plus_Line
+        name: Platform - backend request count
         position: overlaid
         queries:
           - query: |-
                 from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "compute.googleapis.com/instance/network")
-                  |> filter(fn: (r) => r._field == "received_bytes_count" or r._field == "sent_bytes_count")
-                  |> aggregateWindow(every: 1m, fn: sum)
-                  |> yield(name: "sum")
-        width: 4
-        xCol: _time
-        yCol: _value
-        yPos: 5
-      - height: 1
-        kind: Markdown
-        name: Name this Cell
-        note: '## Instance Utilization'
-        width: 4
-        xPos: 4
-      - axes:
-          - base: "10"
-            name: x
-            scale: linear
-          - base: "10"
-            name: y
-            scale: linear
-        colors:
-          - hex: '#31C0F6'
-            name: Nineteen Eighty Four
-            type: scale
-          - hex: '#A500A5'
-            name: Nineteen Eighty Four
-            type: scale
-          - hex: '#FF7E27'
-            name: Nineteen Eighty Four
-            type: scale
-        geom: line
-        height: 4
-        kind: Xy
-        name: Instance CPU Utilization
-        position: overlaid
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "compute.googleapis.com/instance/cpu")
-                  |> filter(fn: (r) => r._field == "utilization")
-                  |> aggregateWindow(every: 2m, fn: sum)
-                  |> yield(name: "sum")
-        width: 4
-        xCol: _time
-        xPos: 4
-        yCol: _value
-        yPos: 1
-      - height: 1
-        kind: Markdown
-        name: Name this Cell
-        note: '## Instance Disk r/w Ops'
-        width: 8
-        xPos: 4
-        yPos: 5
-      - axes:
-          - base: "10"
-            name: x
-            scale: linear
-          - base: "10"
-            name: y
-            scale: linear
-        colors:
-          - hex: '#31C0F6'
-            name: Nineteen Eighty Four
-            type: scale
-          - hex: '#A500A5'
-            name: Nineteen Eighty Four
-            type: scale
-          - hex: '#FF7E27'
-            name: Nineteen Eighty Four
-            type: scale
-        geom: line
-        height: 3
-        kind: Xy
-        name: Read/Write Ops [10 min buckets]
-        position: overlaid
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "compute.googleapis.com/instance/disk")
-                  |> filter(fn: (r) => r._field == "read_ops_count" or r._field == "write_ops_count")
-                  |> keep(columns: ["_field", "_value", "instance_name", "_time"])
-                  |> aggregateWindow(every: 10m, fn: sum)
+                  |> filter(fn: (r) => r._measurement == "loadbalancing.googleapis.com/https")
+                  |> filter(fn: (r) => r._field == "backend_request_count")
+                  |> filter(fn: (r) => r.matched_url_path_rule == "/platform/")
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum)
                   |> yield(name: "sum")
         width: 5
-        xCol: _time
         xPos: 4
-        yCol: _value
-        yPos: 6
-      - height: 3
+        yPos: 1
+      - height: 1
         kind: Markdown
         name: Name this Cell
-        note: |
-            ## Dashboard Legend
-
-            **Selected useful system metrics of Google Cloud Engine VM instances.**
-
-
-            This is pulling from Google Cloud's Monitoring (StackDriver) service, using the Telegraf StackDriver input plugin.
-
-            Set the `v.host` variable for your bucket.
-
-
-            Hint: You can use also preemptable instances that form your cluster. They are destroyed daily and recreated from scratch, so they are cheaper than reserved instances.
-        width: 4
-        xPos: 8
+        note: '## URL Request Count'
+        width: 5
+        xPos: 4
+        yPos: 5
       - axes:
           - base: "10"
             name: x
@@ -964,57 +987,36 @@ spec:
             name: Nineteen Eighty Four
             type: scale
         geom: line
-        height: 2
+        height: 4
         kind: Xy
-        name: Instance firewall dropped packets
+        name: Platform - request count
         position: overlaid
         queries:
           - query: |-
                 from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "compute.googleapis.com/firewall")
-                  |> filter(fn: (r) => r._field == "dropped_packets_count")
-                  |> aggregateWindow(every: 1m, fn: sum)
+                  |> filter(fn: (r) => r._measurement == "loadbalancing.googleapis.com/https")
+                  |> filter(fn: (r) => r._field == "request_count")
+                  |> filter(fn: (r) => r.matched_url_path_rule == "/platform/")
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum)
                   |> yield(name: "sum")
-        width: 4
-        xPos: 8
-        yPos: 3
-      - colors:
-          - hex: '#ffffff'
-            name: white
-            type: text
-        fieldOptions:
-          - displayName: _field
-            fieldName: _field
-            visible: true
-          - displayName: instance_name
-            fieldName: instance_name
-            visible: true
-          - displayName: _value
-            fieldName: _value
-            visible: true
-        height: 3
-        kind: Table
-        name: Instance disk r/w ops
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "compute.googleapis.com/instance/disk")
-                  |> filter(fn: (r) => r._field == "read_ops_count" or r._field == "write_ops_count")
-                  |> keep(columns: ["_value", "instance_name", "_time", "_field"])
-                //  |> aggregateWindow(every: 1m, fn: sum)
-                //  |> yield(name: "sum")
-                |> sum()
-                |> group(columns: ["table"])
-        tableOptions:
-            verticalTimeAxis: true
-        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 5
+        xPos: 4
+        yPos: 6
+      - height: 10
+        kind: Markdown
+        name: Name this Cell
+        note: "# LoadBalancing Metrics\n\n**Latency and count of requests, broken
+            down by response status code and proxy names, is the main subject of measurement
+            at this dashboard.**\n\nBased on the `loadbalancing.googleapis.com/https`
+            measurement, sourced from GCP monitoring service. \n\nMetrics are collected
+            via Stackdriver Telegraf plugin. \n\nConfiguration note: in the charts
+            there is a hardcoded path filter in order to select the the URL pattern
+            you can be interested in - in our charts case we call it /platform/. Feel
+            free to adjust the URL regexp pattern according to your needs."
         width: 3
         xPos: 9
-        yPos: 6
-    description: From Telegraf Stackdriver plugin. The dashboard provides deeper insight
-        into the GCP compute services provided by GCP Stackdriver.  Query data from
-        Google Cloud Monitoring (formerly Stackdriver) using the Cloud Monitoring
-        API v3.
-    name: GCP Monitoring - Compute
+    description: From Telegraf Stackdriver plugin. This dashboard monitors network
+        load balancing in the cluster. Query data from Google Cloud Monitoring (formerly
+        Stackdriver) using the Cloud Monitoring API v3.
+    name: GCP Monitoring - HTTPS LoadBalancing

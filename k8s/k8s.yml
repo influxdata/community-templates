@@ -1,15 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: burfect_greider_fac001
-spec:
-    color: '#757888'
-    name: K8S
----
-apiVersion: influxdata.com/v2alpha1
-kind: Label
-metadata:
-    name: charming_wilbur_fac005
+    name: keen-sutherland-9f8001
 spec:
     color: '#066fc5'
     name: inputs.kube_inventory
@@ -17,15 +9,23 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: practical_snyder_fac003
+    name: reverent-ardinghelli-9f8005
 spec:
     color: '#00a3ff'
     name: inputs.kubernetes
 ---
 apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: thirsty-matsumoto-9f8003
+spec:
+    color: '#757888'
+    name: K8S
+---
+apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: fervent_hodgkin_fac007
+    name: quirky-taussig-9f8007
 spec:
     language: flux
     name: bucket
@@ -38,13 +38,572 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: focused_ritchie_3ac001
+    name: competent-mendel-9f8001
 spec:
     associations:
       - kind: Label
-        name: practical_snyder_fac003
+        name: keen-sutherland-9f8001
       - kind: Label
-        name: burfect_greider_fac001
+        name: thirsty-matsumoto-9f8003
+    charts:
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Kubernetes Landscape - Overview'
+        width: 7
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Pods in replicas
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_deployment")
+                  |> filter(fn: (r) => r._field == "replicas_available")
+                  |> last()
+                  |> drop(columns: ["deployment_name"])
+                  |> sum(column: "_value")
+        width: 1
+        yPos: 1
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Containers List'
+        width: 5
+        yPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        fieldOptions:
+          - visible: true
+          - displayName: result
+            fieldName: result
+            visible: true
+          - displayName: table
+            fieldName: table
+            visible: true
+          - displayName: container_name
+            fieldName: container_name
+            visible: true
+          - displayName: namespace
+            fieldName: namespace
+            visible: true
+          - displayName: pod_name
+            fieldName: pod_name
+            visible: true
+          - displayName: state
+            fieldName: state
+            visible: true
+        height: 5
+        kind: Table
+        name: Running Containers
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_pod_container")
+                  |> filter(fn: (r) => r._field == "state_code")
+                  |> group(columns:["pod_name","container_name"])
+                  |> last()
+                  |> group(columns: ["host"])
+                  |> keep(columns:["namespace","container_name","pod_name", "state"])
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 7
+        yPos: 3
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Nodes CPU Usage'
+        width: 5
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: nanocore
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Pods CPU Usage in Nanocores
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_system_container")
+                  |> filter(fn: (r) => r._field == "cpu_usage_nanocores")
+                  |> filter(fn: (r) => r.container_name == "pods")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        shade: true
+        width: 5
+        xCol: _time
+        yCol: _value
+        yPos: 9
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Memory Consumption'
+        width: 6
+        yPos: 13
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+            suffix: B
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Pods MEM usage in bytes
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_system_container")
+                  |> filter(fn: (r) => r._field == "memory_usage_bytes")
+                  |> filter(fn: (r) => r.container_name == "pods")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        shade: true
+        width: 3
+        yPos: 14
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            scale: linear
+          - base: "10"
+            name: y2
+            scale: linear
+        geom: line
+        height: 3
+        kind: Xy
+        name: Node memory
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_node")
+                  |> filter(fn: (r) => r._field == "capacity_memory_bytes" or r._field == "allocatable_memory_bytes")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        shade: true
+        width: 3
+        xCol: _time
+        yCol: _value
+        yPos: 18
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Capacity Pods
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_node")
+                  |> filter(fn: (r) => r._field == "allocatable_pods")
+                  |> last()
+                  |> drop(columns: ["node_name"])
+                  |> sum(column: "_value")
+        width: 1
+        xPos: 1
+        yPos: 1
+      - colors:
+          - hex: '#545667'
+            name: graphite
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Allocatable Pods
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_node")
+                  |> filter(fn: (r) => r._field == "allocatable_pods")
+                  |> last()
+                  |> drop(columns: ["node_name"])
+                  |> sum(column: "_value")
+        width: 1
+        xPos: 2
+        yPos: 1
+      - colors:
+          - hex: '#4ED8A0'
+            name: rainforest
+            type: text
+          - hex: '#FFB94A'
+            name: pineapple
+            type: text
+            value: 30
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Running Pods
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_pod_container")
+                  |> filter(fn: (r) => r._field == "state_code")
+                  |> filter(fn: (r) => r.state == "running")
+                  |> last()
+                  |> drop(columns: ["container_name","node_name"])
+                  |> distinct(column: "pod_name")
+                  |> drop(columns: ["pod_name"])
+                  |> count()
+        width: 1
+        xPos: 3
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            scale: linear
+          - base: "10"
+            name: y2
+            scale: linear
+        geom: line
+        height: 7
+        kind: Xy
+        name: Resource memory
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_pod_container")
+                  |> filter(fn: (r) => r._field == "resource_requests_memory_bytes")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        shade: true
+        width: 4
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 14
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Replicas count
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_deployment")
+                  |> filter(fn: (r) => r._field == "replicas_available")
+                  |> last()
+                  |> drop(columns: ["deployment_name"])
+                  |> count(column: "_value")
+        width: 1
+        xPos: 4
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#4ED8A0'
+            name: rainforest
+            type: text
+            value: 20
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Running Containers
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_pod_container")
+                  |> filter(fn: (r) => r._field == "state_code")
+                  |> filter(fn: (r) => r.state == "running")
+                  |> last()
+                  |> drop(columns: ["container_name","pod_name","node_name"])
+                  |> count()
+        width: 2
+        xPos: 5
+        yPos: 1
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## CPU Cores'
+        width: 2
+        xPos: 5
+        yPos: 8
+      - colors:
+          - hex: '#545667'
+            name: graphite
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Allocatable
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_node")
+                  |> filter(fn: (r) => r._field == "allocatable_cpu_cores")
+                  |> last()
+                  |> drop(columns: ["node_name"])
+                  |> sum(column: "_value")
+                  |> yield(name: "last")
+        width: 1
+        xPos: 5
+        yPos: 9
+      - axes:
+          - base: "10"
+            name: y2
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        geom: monotoneX
+        height: 2
+        kind: Xy
+        name: Resource Requests CPU
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_pod_container")
+                  |> filter(fn: (r) => r._field == "resource_requests_millicpu_units")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        shade: true
+        width: 2
+        xCol: _time
+        xPos: 5
+        yCol: _value
+        yPos: 11
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: K8s Capacity CPUs
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_node")
+                  |> filter(fn: (r) => r._field == "capacity_cpu_cores")
+                  |> last()
+                  |> drop(columns: ["node_name"])
+                  |> sum(column: "_value")
+                  |> yield(name: "last")
+        width: 1
+        xPos: 6
+        yPos: 9
+      - colors:
+          - hex: '#7A65F2'
+            name: star
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Allocatable memory
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_node")
+                  |> filter(fn: (r) => r._field == "allocatable_memory_bytes")
+                  |> last()
+                  |> map(fn: (r) => ({r with _value: r._value / 1073741824}))
+                  |> drop(columns: ["node_name"])
+                  |> sum(column: "_value")
+        suffix: ' GB'
+        width: 1
+        xPos: 6
+        yPos: 13
+      - height: 3
+        kind: Markdown
+        name: Name this Cell
+        note: |-
+            ## Legend
+
+            **The dashboard shows Kubernetes metrics based on the `kube inventory` APIs.**
+
+            Collected via `Telegraf kube inventory plugin`.
+
+
+            Note: Make sure you have selected `v.bucket` variable.
+        width: 5
+        xPos: 7
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## DaemonSets'
+        width: 5
+        xPos: 7
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: y2
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        geom: line
+        height: 5
+        kind: Xy
+        name: DaemonSets
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_daemonset")
+                  |> filter(fn: (r) => r._field == "number_ready" or r._field == "number_available" or r._field == "number_unavailable" or r._field == "updated_number_scheduled" or r._field == "number_misscheduled")
+                  |> group(columns: ["daemonset_name","_field"])
+        width: 5
+        xCol: _time
+        xPos: 7
+        yCol: _value
+        yPos: 4
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Resources'
+        width: 5
+        xPos: 7
+        yPos: 9
+      - axes:
+          - base: "10"
+            name: y
+            scale: linear
+          - base: "10"
+            name: y2
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        geom: line
+        height: 3
+        kind: Xy
+        name: Resource limit milliscpu
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_pod_container" and  r._field == "resource_limits_millicpu_units")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+        shade: true
+        width: 5
+        xCol: _time
+        xPos: 7
+        yCol: _value
+        yPos: 10
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Persistent Volumes Status'
+        width: 5
+        xPos: 7
+        yPos: 13
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        fieldOptions:
+          - visible: true
+          - displayName: result
+            fieldName: result
+            visible: true
+          - displayName: table
+            fieldName: table
+            visible: true
+          - displayName: phase
+            fieldName: phase
+            visible: true
+          - displayName: pv_name
+            fieldName: pv_name
+            visible: true
+        height: 7
+        kind: Table
+        name: Persistent volumes status
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "kubernetes_persistentvolume")
+
+                  |> filter(fn: (r) => r._field == "phase_type")
+                  |> group(columns: ["host", "_measurement", "pv_name", "phase" ,"node_name"], mode:"by")
+                  |> last()
+                  |> keep(columns: ["pv_name", "phase"])
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 5
+        xPos: 7
+        yPos: 14
+    description: From Telegraf inputs.kube_inventory plugin - A collection of useful
+        visualizations for monitoring your Kubernetes Control Plane
+    name: Kubernetes Inventory
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: eager-swartz-df8001
+spec:
+    associations:
+      - kind: Label
+        name: reverent-ardinghelli-9f8005
+      - kind: Label
+        name: thirsty-matsumoto-9f8003
     charts:
       - height: 1
         kind: Markdown
@@ -64,7 +623,7 @@ spec:
             visible: true
         height: 3
         kind: Table
-        name: 'Current and Past Nodes '
+        name: Current and Past Nodes
         queries:
           - query: |-
                 from(bucket: v.bucket)
@@ -463,560 +1022,43 @@ spec:
     name: Kubernetes Node Metrics
 ---
 apiVersion: influxdata.com/v2alpha1
-kind: Dashboard
+kind: Telegraf
 metadata:
-    name: loving_clarke_fac001
+    name: funny-kare-df8005
 spec:
     associations:
       - kind: Label
-        name: charming_wilbur_fac005
+        name: keen-sutherland-9f8001
       - kind: Label
-        name: burfect_greider_fac001
-    charts:
-      - height: 1
-        kind: Markdown
-        name: Name this Cell
-        note: '## Kubernetes Landscape - Overview'
-        width: 7
-      - colors:
-          - hex: '#00C9FF'
-            name: laser
-            type: text
-        decimalPlaces: 2
-        height: 1
-        kind: Single_Stat
-        name: Pods in replicas
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "kubernetes_deployment")
-                  |> filter(fn: (r) => r._field == "replicas_available")
-                  |> last()
-                  |> drop(columns: ["deployment_name"])
-                  |> sum(column: "_value")
-        width: 1
-        yPos: 1
-      - height: 1
-        kind: Markdown
-        name: Name this Cell
-        note: '## Containers List'
-        width: 5
-        yPos: 2
-      - colors:
-          - hex: '#00C9FF'
-            name: laser
-            type: text
-        fieldOptions:
-          - visible: true
-          - displayName: result
-            fieldName: result
-            visible: true
-          - displayName: table
-            fieldName: table
-            visible: true
-          - displayName: container_name
-            fieldName: container_name
-            visible: true
-          - displayName: namespace
-            fieldName: namespace
-            visible: true
-          - displayName: pod_name
-            fieldName: pod_name
-            visible: true
-          - displayName: state
-            fieldName: state
-            visible: true
-        height: 5
-        kind: Table
-        name: Running Containers
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "kubernetes_pod_container")
-                  |> filter(fn: (r) => r._field == "state_code")
-                  |> group(columns:["pod_name","container_name"])
-                  |> last()
-                  |> group(columns: ["host"])
-                  |> keep(columns:["namespace","container_name","pod_name", "state"])
-        tableOptions:
-            verticalTimeAxis: true
-        timeFormat: YYYY-MM-DD HH:mm:ss
-        width: 7
-        yPos: 3
-      - height: 1
-        kind: Markdown
-        name: Name this Cell
-        note: '## Nodes CPU Usage'
-        width: 5
-        yPos: 8
-      - axes:
-          - base: "10"
-            name: x
-            scale: linear
-          - base: "10"
-            label: nanocore
-            name: y
-            scale: linear
-        colors:
-          - hex: '#31C0F6'
-            name: Nineteen Eighty Four
-            type: scale
-          - hex: '#A500A5'
-            name: Nineteen Eighty Four
-            type: scale
-          - hex: '#FF7E27'
-            name: Nineteen Eighty Four
-            type: scale
-        geom: line
-        height: 4
-        kind: Xy
-        name: Pods CPU Usage in Nanocores
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "kubernetes_system_container")
-                  |> filter(fn: (r) => r._field == "cpu_usage_nanocores")
-                  |> filter(fn: (r) => r.container_name == "pods")
-                  |> aggregateWindow(every: v.windowPeriod, fn: last)
-                  |> yield(name: "last")
-        shade: true
-        width: 5
-        xCol: _time
-        yCol: _value
-        yPos: 9
-      - height: 1
-        kind: Markdown
-        name: Name this Cell
-        note: '## Memory Consumption'
-        width: 6
-        yPos: 13
-      - axes:
-          - base: "10"
-            name: x
-            scale: linear
-          - base: "10"
-            name: y
-            scale: linear
-            suffix: B
-        colors:
-          - hex: '#31C0F6'
-            name: Nineteen Eighty Four
-            type: scale
-          - hex: '#A500A5'
-            name: Nineteen Eighty Four
-            type: scale
-          - hex: '#FF7E27'
-            name: Nineteen Eighty Four
-            type: scale
-        geom: line
-        height: 4
-        kind: Xy
-        name: Pods MEM usage in bytes
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "kubernetes_system_container")
-                  |> filter(fn: (r) => r._field == "memory_usage_bytes")
-                  |> filter(fn: (r) => r.container_name == "pods")
-                  |> aggregateWindow(every: v.windowPeriod, fn: last)
-                  |> yield(name: "last")
-        shade: true
-        width: 3
-        yPos: 14
-      - axes:
-          - base: "10"
-            name: y2
-            scale: linear
-          - base: "10"
-            name: x
-            scale: linear
-          - base: "2"
-            name: y
-            scale: linear
-        geom: line
-        height: 3
-        kind: Xy
-        name: Node memory
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "kubernetes_node")
-                  |> filter(fn: (r) => r._field == "capacity_memory_bytes" or r._field == "allocatable_memory_bytes")
-                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
-                  |> yield(name: "mean")
-        shade: true
-        width: 3
-        xCol: _time
-        yCol: _value
-        yPos: 18
-      - colors:
-          - hex: '#00C9FF'
-            name: laser
-            type: text
-        decimalPlaces: 2
-        height: 1
-        kind: Single_Stat
-        name: Capacity Pods
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "kubernetes_node")
-                  |> filter(fn: (r) => r._field == "allocatable_pods")
-                  |> last()
-                  |> drop(columns: ["node_name"])
-                  |> sum(column: "_value")
-        width: 1
-        xPos: 1
-        yPos: 1
-      - colors:
-          - hex: '#545667'
-            name: graphite
-            type: text
-        decimalPlaces: 0
-        height: 1
-        kind: Single_Stat
-        name: Allocatable Pods
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "kubernetes_node")
-                  |> filter(fn: (r) => r._field == "allocatable_pods")
-                  |> last()
-                  |> drop(columns: ["node_name"])
-                  |> sum(column: "_value")
-        width: 1
-        xPos: 2
-        yPos: 1
-      - colors:
-          - hex: '#4ED8A0'
-            name: rainforest
-            type: text
-          - hex: '#FFB94A'
-            name: pineapple
-            type: text
-            value: 30
-        decimalPlaces: 2
-        height: 1
-        kind: Single_Stat
-        name: Running Pods
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "kubernetes_pod_container")
-                  |> filter(fn: (r) => r._field == "state_code")
-                  |> filter(fn: (r) => r.state == "running")
-                  |> last()
-                  |> drop(columns: ["container_name","node_name"])
-                  |> distinct(column: "pod_name")
-                  |> drop(columns: ["pod_name"])
-                  |> count()
-        width: 1
-        xPos: 3
-        yPos: 1
-      - axes:
-          - base: "10"
-            name: x
-            scale: linear
-          - base: "2"
-            name: y
-            scale: linear
-          - base: "10"
-            name: y2
-            scale: linear
-        geom: line
-        height: 7
-        kind: Xy
-        name: Resource memory
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "kubernetes_pod_container")
-                  |> filter(fn: (r) => r._field == "resource_requests_memory_bytes")
-                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
-                  |> yield(name: "mean")
-        shade: true
-        width: 4
-        xCol: _time
-        xPos: 3
-        yCol: _value
-        yPos: 14
-      - colors:
-          - hex: '#00C9FF'
-            name: laser
-            type: text
-        decimalPlaces: 2
-        height: 1
-        kind: Single_Stat
-        name: Replicas count
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "kubernetes_deployment")
-                  |> filter(fn: (r) => r._field == "replicas_available")
-                  |> last()
-                  |> drop(columns: ["deployment_name"])
-                  |> count(column: "_value")
-        width: 1
-        xPos: 4
-        yPos: 1
-      - colors:
-          - hex: '#00C9FF'
-            name: laser
-            type: text
-          - hex: '#4ED8A0'
-            name: rainforest
-            type: text
-            value: 20
-        decimalPlaces: 2
-        height: 2
-        kind: Single_Stat
-        name: Running Containers
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "kubernetes_pod_container")
-                  |> filter(fn: (r) => r._field == "state_code")
-                  |> filter(fn: (r) => r.state == "running")
-                  |> last()
-                  |> drop(columns: ["container_name","pod_name","node_name"])
-                  |> count()
-        width: 2
-        xPos: 5
-        yPos: 1
-      - height: 1
-        kind: Markdown
-        name: Name this Cell
-        note: '## CPU Cores'
-        width: 2
-        xPos: 5
-        yPos: 8
-      - colors:
-          - hex: '#545667'
-            name: graphite
-            type: text
-        decimalPlaces: 0
-        height: 2
-        kind: Single_Stat
-        name: Allocatable
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "kubernetes_node")
-                  |> filter(fn: (r) => r._field == "allocatable_cpu_cores")
-                  |> last()
-                  |> drop(columns: ["node_name"])
-                  |> sum(column: "_value")
-                  |> yield(name: "last")
-        width: 1
-        xPos: 5
-        yPos: 9
-      - axes:
-          - base: "10"
-            name: x
-            scale: linear
-          - base: "10"
-            name: y
-            scale: linear
-          - base: "10"
-            name: y2
-            scale: linear
-        geom: monotoneX
-        height: 2
-        kind: Xy
-        name: Resource Requests CPU
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "kubernetes_pod_container")
-                  |> filter(fn: (r) => r._field == "resource_requests_millicpu_units")
-                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
-                  |> yield(name: "mean")
-        shade: true
-        width: 2
-        xCol: _time
-        xPos: 5
-        yCol: _value
-        yPos: 11
-      - colors:
-          - hex: '#00C9FF'
-            name: laser
-            type: text
-        decimalPlaces: 2
-        height: 2
-        kind: Single_Stat
-        name: K8s Capacity CPUs
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "kubernetes_node")
-                  |> filter(fn: (r) => r._field == "capacity_cpu_cores")
-                  |> last()
-                  |> drop(columns: ["node_name"])
-                  |> sum(column: "_value")
-                  |> yield(name: "last")
-        width: 1
-        xPos: 6
-        yPos: 9
-      - colors:
-          - hex: '#7A65F2'
-            name: star
-            type: text
-        decimalPlaces: 2
-        height: 1
-        kind: Single_Stat
-        name: Allocatable memory
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "kubernetes_node")
-                  |> filter(fn: (r) => r._field == "allocatable_memory_bytes")
-                  |> last()
-                  |> map(fn: (r) => ({r with _value: r._value / 1073741824}))
-                  |> drop(columns: ["node_name"])
-                  |> sum(column: "_value")
-        suffix: ' GB'
-        width: 1
-        xPos: 6
-        yPos: 13
-      - height: 3
-        kind: Markdown
-        name: Name this Cell
-        note: |-
-            ## Legend
-
-            **The dashboard shows Kubernetes metrics based on the `kube inventory` APIs.**
-
-            Collected via `Telegraf kube inventory plugin`.
-
-
-            Note: Make sure you have selected `v.bucket` variable.
-        width: 5
-        xPos: 7
-      - height: 1
-        kind: Markdown
-        name: Name this Cell
-        note: '## DaemonSets'
-        width: 5
-        xPos: 7
-        yPos: 3
-      - axes:
-          - base: "10"
-            name: y2
-            scale: linear
-          - base: "10"
-            name: x
-            scale: linear
-          - base: "10"
-            name: y
-            scale: linear
-        geom: line
-        height: 5
-        kind: Xy
-        name: DaemonSets
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "kubernetes_daemonset")
-                  |> filter(fn: (r) => r._field == "number_ready" or r._field == "number_available" or r._field == "number_unavailable" or r._field == "updated_number_scheduled" or r._field == "number_misscheduled")
-                  |> group(columns: ["daemonset_name","_field"])
-        width: 5
-        xCol: _time
-        xPos: 7
-        yCol: _value
-        yPos: 4
-      - height: 1
-        kind: Markdown
-        name: Name this Cell
-        note: '## Resources'
-        width: 5
-        xPos: 7
-        yPos: 9
-      - axes:
-          - base: "10"
-            name: x
-            scale: linear
-          - base: "10"
-            name: y
-            scale: linear
-          - base: "10"
-            name: y2
-            scale: linear
-        geom: line
-        height: 3
-        kind: Xy
-        name: Resource limit milliscpu
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "kubernetes_pod_container" and  r._field == "resource_limits_millicpu_units")
-                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
-        shade: true
-        width: 5
-        xCol: _time
-        xPos: 7
-        yCol: _value
-        yPos: 10
-      - height: 1
-        kind: Markdown
-        name: Name this Cell
-        note: '## Persistent Volumes Status'
-        width: 5
-        xPos: 7
-        yPos: 13
-      - colors:
-          - hex: '#00C9FF'
-            name: laser
-            type: text
-        fieldOptions:
-          - visible: true
-          - displayName: result
-            fieldName: result
-            visible: true
-          - displayName: table
-            fieldName: table
-            visible: true
-          - displayName: phase
-            fieldName: phase
-            visible: true
-          - displayName: pv_name
-            fieldName: pv_name
-            visible: true
-        height: 7
-        kind: Table
-        name: Persistent volumes status
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "kubernetes_persistentvolume")
-
-                  |> filter(fn: (r) => r._field == "phase_type")
-                  |> group(columns: ["host", "_measurement", "pv_name", "phase" ,"node_name"], mode:"by")
-                  |> last()
-                  |> keep(columns: ["pv_name", "phase"])
-        tableOptions:
-            verticalTimeAxis: true
-        timeFormat: YYYY-MM-DD HH:mm:ss
-        width: 5
-        xPos: 7
-        yPos: 14
-    description: From Telegraf inputs.kube_inventory plugin - A collection of useful
-        visualizations for monitoring your Kubernetes Control Plane
-    name: Kubernetes Inventory
+        name: reverent-ardinghelli-9f8005
+    config: |
+        # Configuration for telegraf agent
+        [agent]
+          interval = "1m"
+          round_interval = true
+          flush_interval = "10s"
+          metric_buffer_limit = 50000
+          debug = true
+        [[outputs.influxdb_v2]]	
+          urls = ["https://us-central1-1.gcp.cloud2.influxdata.com"]
+          token = "$INFLUX_TOKEN"
+          ## Organization is the name of the organization you wish to write to; must exist.
+          organization = "$INFLUX_ORG"
+          ## Destination bucket to write into.
+          bucket = "demo"
+        [[inputs.prometheus]]
+          monitor_kubernetes_pods = true
+          kubernetes_label_selector = "app=influxdb"
+          metric_version = 2
+          monitor_kubernetes_pods_namespace = ""
+          kubernetes_services = ["http://kube-state-metrics.kube-system.svc.cluster.local:8080/metrics","https://kubernetes.default.svc.cluster.local/metrics"]
+          bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
+          insecure_skip_verify = true
+        [[inputs.kube_inventory]]
+          url = "https://kubernetes.default"
+          bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
+          namespace = ""
+          insecure_skip_verify = true
+          resource_exclude = []
+          resource_include = []
+    name: K8S Configuration
