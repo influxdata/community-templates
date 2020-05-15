@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: earning-herschel-f8c001
+    name: dreamy-hamilton-294001
 spec:
     color: '#00C9FF'
     name: inputs.cloudwatch
@@ -9,7 +9,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: jovial-yonath-f8c003
+    name: thirsty-ritchie-294003
 spec:
     color: '#0b3a8d'
     name: AWS
@@ -17,7 +17,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: epic-boyd-f8c005
+    name: stubborn-ganguly-294005
 spec:
     language: flux
     name: bucket
@@ -31,19 +31,18 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: dangerous-ganguly-f8c001
+    name: bold-torvalds-694001
 spec:
     associations:
       - kind: Label
-        name: earning-herschel-f8c001
+        name: dreamy-hamilton-294001
       - kind: Label
-        name: jovial-yonath-f8c003
+        name: thirsty-ritchie-294003
     charts:
       - height: 1
         kind: Markdown
         name: Name this Cell
         note: '## Overview'
-        queries: null
         width: 3
       - colors:
           - hex: '#00C9FF'
@@ -281,13 +280,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: laughing-saha-b8c001
+    name: nervous-thompson-694001
 spec:
     associations:
       - kind: Label
-        name: earning-herschel-f8c001
+        name: dreamy-hamilton-294001
       - kind: Label
-        name: jovial-yonath-f8c003
+        name: thirsty-ritchie-294003
     charts:
       - colors:
           - hex: '#00C9FF'
@@ -335,10 +334,10 @@ spec:
         yPos: 3
       - axes:
           - base: "10"
-            name: y
+            name: x
             scale: linear
           - base: "10"
-            name: x
+            name: y
             scale: linear
         colors:
           - hex: '#31C0F6'
@@ -500,10 +499,10 @@ spec:
         yPos: 3
       - axes:
           - base: "10"
-            name: y
+            name: x
             scale: linear
           - base: "10"
-            name: x
+            name: y
             scale: linear
         colors:
           - hex: '#31C0F6'
@@ -569,10 +568,10 @@ spec:
         yCol: _value
       - axes:
           - base: "10"
-            name: x
+            name: y
             scale: linear
           - base: "10"
-            name: y
+            name: x
             scale: linear
         colors:
           - hex: '#00C9FF'
@@ -597,10 +596,10 @@ spec:
         yPos: 3
       - axes:
           - base: "10"
-            name: x
+            name: y
             scale: linear
           - base: "10"
-            name: y
+            name: x
             scale: linear
         colors:
           - hex: '#31C0F6'
@@ -668,3 +667,56 @@ spec:
         yPos: 3
     description: Monitoring AWS/EC2 namespace and specific instance_id
     name: AWS CloudWatch Instance Monitoring
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: thirsty-jang-694005
+spec:
+    associations:
+      - kind: Label
+        name: dreamy-hamilton-294001
+    config: |
+        [agent]
+          debug = true
+          interval = "30s"
+          flush_interval = "10s"
+          metric_buffer_limit = 50000
+        ## sample output, can be replaced by your influxdb servers
+        ## k8s
+        [[outputs.influxdb_v2]]
+          urls = ["http://influxdb.monitoring:9999"]
+          organization = "InfluxData"
+          bucket = "kubernetes"
+          token = "secret-token"
+        ## cloudv2 sample
+        [[outputs.influxdb_v2]]
+          urls = ["$INFLUX_HOST"]
+          token = "$INFLUX_TOKEN"
+          organization = "$INFLUX_ORG"
+          bucket = "cloudwatch"
+        ## EC Machines Monitoring
+        [[inputs.cloudwatch]]
+          region = "us-west-2"
+          shared_credential_file = "/root/.aws/credentials"
+          period = "1m"
+          delay = "5m"
+          interval = "1m"
+          namespace = "AWS/EC2"
+          ratelimit = 25
+          [[inputs.cloudwatch.metrics]]
+            names = ["StatusCheckFailed","EBSReadBytes","CPUSurplusCreditsCharged","EBSByteBalance%","StatusCheckFailed_System","EBSWriteBytes","NetworkIn","CPUCreditUsage","EBSIOBalance%","EBSReadOps","CPUCreditBalance","StatusCheckFailed_Instance","CPUUtilization","NetworkOut"]
+            [[inputs.cloudwatch.metrics.dimensions]]
+              name = "InstanceId"
+              value = "$INSTANCE_ID"
+        ## ELB Monitoring
+        [[inputs.cloudwatch]]
+          region = "us-west-2"
+          shared_credential_file = "/root/.aws/credentials"
+          period = "1m"
+          delay = "15m"
+          interval = "1m"
+          namespace = "AWS/NetworkELB"
+          ratelimit = 25
+    description: Sample Configuration
+    name: AWS Cloudwatch
