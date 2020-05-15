@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: kind_wilson_426003
+    name: kind-wilson-426003
 spec:
     language: flux
     name: bucket
@@ -15,7 +15,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: tender_hodgkin_c26001
+    name: tender-hodgkin-c26001
 spec:
     charts:
       - height: 1
@@ -455,7 +455,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: affectionate_swirles_c26003
+    name: affectionate-swirles-c26003
 spec:
     color: '#326BBA'
     name: inputs.net
@@ -463,7 +463,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: bold_darwin_c2600b
+    name: bold-darwin-c2600b
 spec:
     color: '#326BBA'
     name: inputs.kernel
@@ -471,7 +471,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: boring_dubinsky_c26009
+    name: boring-dubinsky-c26009
 spec:
     color: '#326BBA'
     name: inputs.diskio
@@ -479,7 +479,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: compassionate_lalande_c26215
+    name: compassionate-lalande-c26215
 spec:
     color: '#326BBA'
     name: inputs.redis
@@ -487,7 +487,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: earnest_meninsky_c26001
+    name: earnest-meninsky-c26001
 spec:
     color: '#108174'
     name: outputs.influxdb_v2
@@ -495,7 +495,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: flamboyant_dewdney_c2600d
+    name: flamboyant-dewdney-c2600d
 spec:
     color: '#326BBA'
     name: inputs.mem
@@ -503,7 +503,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: gifted_dirac_c26007
+    name: gifted-dirac-c26007
 spec:
     color: '#326BBA'
     name: inputs.disk
@@ -511,7 +511,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: modest_robinson_c26005
+    name: modest-robinson-c26005
 spec:
     color: '#326BBA'
     name: inputs.cpu
@@ -519,7 +519,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: practical_jang_c2600f
+    name: practical-jang-c2600f
 spec:
     color: '#326BBA'
     name: inputs.processes
@@ -527,7 +527,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: trusting_goldwasser_c26013
+    name: trusting-goldwasser-c26013
 spec:
     color: '#326BBA'
     name: inputs.system
@@ -535,7 +535,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: wonderful_bose_c26011
+    name: wonderful-bose-c26011
 spec:
     color: '#326BBA'
     name: inputs.swap
@@ -543,31 +543,31 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Telegraf
 metadata:
-    name: lucid_gauss_026001
+    name: lucid-gauss-026001
 spec:
     associations:
       - kind: Label
-        name: earnest_meninsky_c26001
+        name: earnest-meninsky-c26001
       - kind: Label
-        name: affectionate_swirles_c26003
+        name: affectionate-swirles-c26003
       - kind: Label
-        name: modest_robinson_c26005
+        name: modest-robinson-c26005
       - kind: Label
-        name: gifted_dirac_c26007
+        name: gifted-dirac-c26007
       - kind: Label
-        name: boring_dubinsky_c26009
+        name: boring-dubinsky-c26009
       - kind: Label
-        name: bold_darwin_c2600b
+        name: bold-darwin-c2600b
       - kind: Label
-        name: flamboyant_dewdney_c2600d
+        name: flamboyant-dewdney-c2600d
       - kind: Label
-        name: practical_jang_c2600f
+        name: practical-jang-c2600f
       - kind: Label
-        name: wonderful_bose_c26011
+        name: wonderful-bose-c26011
       - kind: Label
-        name: trusting_goldwasser_c26013
+        name: trusting-goldwasser-c26013
       - kind: Label
-        name: compassionate_lalande_c26215
+        name: compassionate-lalande-c26215
     config: |
         # Telegraf Configuration
         #
@@ -828,7 +828,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Bucket
 metadata:
-    name: sleepy_napier_826201
+    name: sleepy-napier-826201
 spec:
     name: redis
     retentionRules:

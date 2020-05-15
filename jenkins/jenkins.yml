@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: noshing_gagarin_8d2001
+    name: noshing-gagarin-8d2001
 spec:
     color: '#326BBA'
     name: Jenkins
@@ -9,11 +9,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: CheckDeadman
 metadata:
-    name: crazy_booth_cd2003
+    name: crazy-booth-cd2003
 spec:
     associations:
       - kind: Label
-        name: noshing_gagarin_8d2001
+        name: noshing-gagarin-8d2001
     description: Availability via mem_total
     every: 5m0s
     level: CRIT
@@ -31,11 +31,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: CheckThreshold
 metadata:
-    name: vigorous_mahavira_8d2005
+    name: vigorous-mahavira-8d2005
 spec:
     associations:
       - kind: Label
-        name: noshing_gagarin_8d2001
+        name: noshing-gagarin-8d2001
     every: 15m0s
     name: Job Duration Check
     query: |-
@@ -63,11 +63,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: charming_khorana_cd2007
+    name: charming-khorana-cd2007
 spec:
     associations:
       - kind: Label
-        name: noshing_gagarin_8d2001
+        name: noshing-gagarin-8d2001
     name: jenkinsHostnames
     type: constant
     values:
@@ -76,11 +76,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: nifty_bohr_cd200b
+    name: nifty-bohr-cd200b
 spec:
     associations:
       - kind: Label
-        name: noshing_gagarin_8d2001
+        name: noshing-gagarin-8d2001
     name: jenkinsBucket
     type: constant
     values:
@@ -90,11 +90,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: vigorous_pike_cd2001
+    name: vigorous-pike-cd2001
 spec:
     associations:
       - kind: Label
-        name: noshing_gagarin_8d2001
+        name: noshing-gagarin-8d2001
     charts:
       - colors:
           - hex: '#513CC6'
@@ -565,11 +565,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: zen_taussig_127001
+    name: zen-taussig-127001
 spec:
     associations:
       - kind: Label
-        name: festive_jemison_127001
+        name: festive-jemison-127001
     charts:
       - colors:
           - hex: '#00C9FF'
@@ -713,11 +713,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Telegraf
 metadata:
-    name: wiggitty_huh_127001
+    name: wiggitty-huh-127001
 spec:
     associations:
       - kind: Label
-        name: festive_jemison_127001
+        name: festive-jemison-127001
     config: |
         # Telegraf Configuration
         #

@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: eerie_newton_325000
+    name: eerie-newton-325000
 spec:
     color: '#326BBA'
     name: sFlow
@@ -9,7 +9,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: tasty_lamarr_325001
+    name: tasty-lamarr-325001
 spec:
     color: '#326BBA'
     name: Network Monitoring
@@ -17,7 +17,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: stubborn_hawking_f25000
+    name: stubborn-hawking-f25000
 spec:
     color: '#326BBA'
     name: inputs.sflow
@@ -25,7 +25,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: earnest_meninsky_c26001
+    name: earnest-meninsky-c26001
 spec:
     color: '#108174'
     name: outputs.influxdb_v2
@@ -33,13 +33,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Bucket
 metadata:
-    name: compassionate_lalande_725001
+    name: compassionate-lalande-725001
 spec:
     associations:
       - kind: Label
-        name: eerie_newton_325000
+        name: eerie-newton-325000
       - kind: Label
-        name: tasty_lamarr_325001
+        name: tasty-lamarr-325001
     name: sflow_data
     retentionRules:
       - everySeconds: 259200
@@ -48,13 +48,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: busy_greider_b25001
+    name: busy-greider-b25001
 spec:
     associations:
       - kind: Label
-        name: eerie_newton_325000
+        name: eerie-newton-325000
       - kind: Label
-        name: tasty_lamarr_325001
+        name: tasty-lamarr-325001
     language: flux
     name: sflow_dest
     query: |-
@@ -66,13 +66,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: intelligent_chaum_725002
+    name: intelligent-chaum-725002
 spec:
     associations:
       - kind: Label
-        name: eerie_newton_325000
+        name: eerie-newton-325000
       - kind: Label
-        name: tasty_lamarr_325001
+        name: tasty-lamarr-325001
     language: flux
     name: agent_host
     query: |-
@@ -84,13 +84,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: modest_elion_725006
+    name: modest-elion-725006
 spec:
     associations:
       - kind: Label
-        name: eerie_newton_325000
+        name: eerie-newton-325000
       - kind: Label
-        name: tasty_lamarr_325001
+        name: tasty-lamarr-325001
     language: flux
     name: egress_interface
     query: |-
@@ -102,13 +102,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: nervous_curie_325001
+    name: nervous-curie-325001
 spec:
     associations:
       - kind: Label
-        name: eerie_newton_325000
+        name: eerie-newton-325000
       - kind: Label
-        name: tasty_lamarr_325001
+        name: tasty-lamarr-325001
     language: flux
     name: sflow_source
     query: |-
@@ -120,13 +120,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: romantic_perlman_325005
+    name: romantic-perlman-325005
 spec:
     associations:
       - kind: Label
-        name: eerie_newton_325000
+        name: eerie-newton-325000
       - kind: Label
-        name: tasty_lamarr_325001
+        name: tasty-lamarr-325001
     language: flux
     name: ingress_interface
     query: |-
@@ -138,13 +138,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: xenodochial_lumiere_f25003
+    name: xenodochial-lumiere-f25003
 spec:
     associations:
       - kind: Label
-        name: eerie_newton_325000
+        name: eerie-newton-325000
       - kind: Label
-        name: tasty_lamarr_325001
+        name: tasty-lamarr-325001
     name: sflow_metric
     type: constant
     values:
@@ -154,13 +154,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: affectionate_panini_b25001
+    name: affectionate-panini-b25001
 spec:
     associations:
       - kind: Label
-        name: eerie_newton_325000
+        name: eerie-newton-325000
       - kind: Label
-        name: tasty_lamarr_325001
+        name: tasty-lamarr-325001
     charts:
       - colors:
           - hex: '#ffffff'
@@ -388,13 +388,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: ecstatic_grothendieck_725001
+    name: ecstatic-grothendieck-725001
 spec:
     associations:
       - kind: Label
-        name: eerie_newton_325000
+        name: eerie-newton-325000
       - kind: Label
-        name: tasty_lamarr_325001
+        name: tasty-lamarr-325001
     charts:
       - axes:
           - base: "10"
@@ -577,11 +577,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: rightful_fermat_f25001
+    name: rightful-fermat-f25001
 spec:
     associations:
       - kind: Label
-        name: eerie_newton_325000
+        name: eerie-newton-325000
     charts:
       - axes:
           - base: "10"
@@ -760,13 +760,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: spectacular_joliot_b25001
+    name: spectacular-joliot-b25001
 spec:
     associations:
       - kind: Label
-        name: eerie_newton_325000
+        name: eerie-newton-325000
       - kind: Label
-        name: tasty_lamarr_325001
+        name: tasty-lamarr-325001
     charts:
       - axes:
           - base: "10"
@@ -938,17 +938,17 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Telegraf
 metadata:
-    name: lucid_gauss_022001
+    name: lucid-gauss-022001
 spec:
     associations:
       - kind: Label
-        name: eerie_newton_325000
+        name: eerie-newton-325000
       - kind: Label
-        name: tasty_lamarr_325001
+        name: tasty-lamarr-325001
       - kind: Label
-        name: stubborn_hawking_f25000
+        name: stubborn-hawking-f25000
       - kind: Label
-        name: earnest_meninsky_c26001
+        name: earnest-meninsky-c26001
     config: |
         # Telegraf Configuration
         #

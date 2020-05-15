@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: burfect_greider_fac001
+    name: burfect-greider-fac001
 spec:
     color: '#757888'
     name: K8S
@@ -9,7 +9,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: charming_wilbur_fac005
+    name: charming-wilbur-fac005
 spec:
     color: '#066fc5'
     name: inputs.kube_inventory
@@ -17,7 +17,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: practical_snyder_fac003
+    name: practical-snyder-fac003
 spec:
     color: '#00a3ff'
     name: inputs.kubernetes
@@ -25,7 +25,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: fervent_hodgkin_fac007
+    name: fervent-hodgkin-fac007
 spec:
     language: flux
     name: bucket
@@ -38,13 +38,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: focused_ritchie_3ac001
+    name: focused-ritchie-3ac001
 spec:
     associations:
       - kind: Label
-        name: practical_snyder_fac003
+        name: practical-snyder-fac003
       - kind: Label
-        name: burfect_greider_fac001
+        name: burfect-greider-fac001
     charts:
       - height: 1
         kind: Markdown
@@ -465,13 +465,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: loving_clarke_fac001
+    name: loving-clarke-fac001
 spec:
     associations:
       - kind: Label
-        name: charming_wilbur_fac005
+        name: charming-wilbur-fac005
       - kind: Label
-        name: burfect_greider_fac001
+        name: burfect-greider-fac001
     charts:
       - height: 1
         kind: Markdown

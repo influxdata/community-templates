@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: earning_herschel_f8c001
+    name: earning-herschel-f8c001
 spec:
     color: '#00C9FF'
     name: inputs.cloudwatch
@@ -9,7 +9,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: jovial_yonath_f8c003
+    name: jovial-yonath-f8c003
 spec:
     color: '#0b3a8d'
     name: AWS
@@ -17,7 +17,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: epic_boyd_f8c005
+    name: epic-boyd-f8c005
 spec:
     language: flux
     name: bucket
@@ -31,13 +31,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: dangerous_ganguly_f8c001
+    name: dangerous-ganguly-f8c001
 spec:
     associations:
       - kind: Label
-        name: earning_herschel_f8c001
+        name: earning-herschel-f8c001
       - kind: Label
-        name: jovial_yonath_f8c003
+        name: jovial-yonath-f8c003
     charts:
       - height: 1
         kind: Markdown
@@ -281,13 +281,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: laughing_saha_b8c001
+    name: laughing-saha-b8c001
 spec:
     associations:
       - kind: Label
-        name: earning_herschel_f8c001
+        name: earning-herschel-f8c001
       - kind: Label
-        name: jovial_yonath_f8c003
+        name: jovial-yonath-f8c003
     charts:
       - colors:
           - hex: '#00C9FF'
