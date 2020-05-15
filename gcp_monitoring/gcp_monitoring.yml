@@ -1037,7 +1037,7 @@ spec:
           debug = true
           omit_hostname = false
         [[outputs.influxdb_v2]]
-          urls = ["https://us-central1-1.gcp.cloud2.influxdata.com"]
+          urls = ["$INFLUX_HOST"]
           token = "$INFLUX_TOKEN"
           organization = "$INFLUX_ORG"
         [[inputs.stackdriver]]

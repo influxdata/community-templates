@@ -1039,7 +1039,7 @@ spec:
           metric_buffer_limit = 50000
           debug = true
         [[outputs.influxdb_v2]]	
-          urls = ["https://us-central1-1.gcp.cloud2.influxdata.com"]
+          urls = ["$INFLUX_HOST"]
           token = "$INFLUX_TOKEN"
           ## Organization is the name of the organization you wish to write to; must exist.
           organization = "$INFLUX_ORG"

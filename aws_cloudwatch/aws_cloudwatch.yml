@@ -691,9 +691,9 @@ spec:
           token = "secret-token"
         ## cloudv2 sample
         [[outputs.influxdb_v2]]
-          urls = ["https://eu-central-1-1.aws.cloud2.influxdata.com"]
+          urls = ["$INFLUX_HOST"]
           token = "$INFLUX_TOKEN"
-          organization = "$INFLUX_CLOUDV2_USERNAME"
+          organization = "$INFLUX_ORG"
           bucket = "cloudwatch"
         ## EC Machines Monitoring
         [[inputs.cloudwatch]]
@@ -708,7 +708,7 @@ spec:
             names = ["StatusCheckFailed","EBSReadBytes","CPUSurplusCreditsCharged","EBSByteBalance%","StatusCheckFailed_System","EBSWriteBytes","NetworkIn","CPUCreditUsage","EBSIOBalance%","EBSReadOps","CPUCreditBalance","StatusCheckFailed_Instance","CPUUtilization","NetworkOut"]
             [[inputs.cloudwatch.metrics.dimensions]]
               name = "InstanceId"
-              value = "i-06025f2fbf47c26ac"
+              value = "$INSTANCE_ID"
         ## ELB Monitoring
         [[inputs.cloudwatch]]
           region = "us-west-2"
