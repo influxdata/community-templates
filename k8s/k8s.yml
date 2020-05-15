@@ -1032,7 +1032,6 @@ spec:
       - kind: Label
         name: reverent-ardinghelli-9f8005
     config: |
-        # Configuration for telegraf agent
         [agent]
           interval = "1m"
           round_interval = true
