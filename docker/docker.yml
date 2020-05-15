@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-  name: adoring_pasteur_d4d00d
+  name: adoring-pasteur-d4d00d
 spec:
   color: '#326BBA'
   name: inputs.net
@@ -9,7 +9,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-  name: agreeing_goldberg_d4d013
+  name: agreeing-goldberg-d4d013
 spec:
   color: '#326BBA'
   name: inputs.kernel
@@ -17,7 +17,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-  name: dreamy_heyrovsky_d4d011
+  name: dreamy-heyrovsky-d4d011
 spec:
   color: '#326BBA'
   name: inputs.disk
@@ -25,7 +25,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-  name: elastic_morse_d4d001
+  name: elastic-morse-d4d001
 spec:
   color: '#326BBA'
   name: inputs.swap
@@ -33,7 +33,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-  name: elegant_yonath_d4d015
+  name: elegant-yonath-d4d015
 spec:
   color: '#326BBA'
   name: inputs.system
@@ -41,7 +41,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-  name: gallant_sanderson_d4d003
+  name: gallant-sanderson-d4d003
 spec:
   color: '#326BBA'
   name: inputs.processes
@@ -49,7 +49,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-  name: goofy_yalow_d4d005
+  name: goofy-yalow-d4d005
 spec:
   color: '#326BBA'
   name: inputs.diskio
@@ -57,7 +57,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-  name: inspiring_goodall_d4d00b
+  name: inspiring-goodall-d4d00b
 spec:
   color: '#326BBA'
   name: inputs.docker
@@ -65,7 +65,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-  name: nice_kilby_d4d009
+  name: nice-kilby-d4d009
 spec:
   color: '#108174'
   name: outputs.influxdb_v2
@@ -73,7 +73,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-  name: unruffled_benz_d4d007
+  name: unruffled-benz-d4d007
 spec:
   color: '#326BBA'
   name: inputs.cpu
@@ -81,7 +81,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-  name: vigilant_chatelet_d4d00f
+  name: vigilant-chatelet-d4d00f
 spec:
   color: '#326BBA'
   name: inputs.mem
@@ -89,7 +89,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Bucket
 metadata:
-  name: heuristic_sinoussi_d4d017
+  name: heuristic-sinoussi-d4d017
 spec:
   name: docker
   retentionRules:
@@ -99,14 +99,14 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Bucket
 metadata:
-  name: relaxed_turing_d4d019
+  name: relaxed-turing-d4d019
 spec:
   name: dave
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: CheckThreshold
 metadata:
-  name: crumbling_meitner_14d002
+  name: crumbling-meitner-14d002
 spec:
   description: Container mem usage is above 80% for 15 minutes
   every: 15m0s
@@ -135,7 +135,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: CheckThreshold
 metadata:
-  name: ecstatic_mendeleev_d4d01b
+  name: ecstatic-mendeleev-d4d01b
 spec:
   description: Container disk usage is above 80%
   every: 15m0s
@@ -163,7 +163,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: CheckThreshold
 metadata:
-  name: frosty_greider_14d004
+  name: frosty-greider-14d004
 spec:
   description: Container exits with a non zero exit status
   every: 5m0s
@@ -187,7 +187,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: CheckThreshold
 metadata:
-  name: gracious_bose_14d000
+  name: gracious-bose-14d000
 spec:
   description: Container cpu usage is above 80% for 15 minutes
   every: 15m0s
@@ -216,7 +216,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: NotificationEndpointHTTP
 metadata:
-  name: earnest_ishizaka_14d006
+  name: earnest-ishizaka-14d006
 spec:
   method: POST
   name: HTTP POST
@@ -227,9 +227,9 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: NotificationRule
 metadata:
-  name: gifted_haslett_14d008
+  name: gifted-haslett-14d008
 spec:
-  endpointName: earnest_ishizaka_14d006
+  endpointName: earnest-ishizaka-14d006
   every: 5m0s
   name: Crit Notifier
   statusRules:
@@ -239,7 +239,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-  name: tender_mayer_14d00a
+  name: tender-mayer-14d00a
 spec:
   language: flux
   name: bucket
@@ -253,13 +253,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-  name: earning_boyd_94d001
+  name: earning-boyd-94d001
 spec:
   associations:
     - kind: Label
-      name: inspiring_goodall_d4d00b
+      name: inspiring-goodall-d4d00b
     - kind: Label
-      name: elegant_yonath_d4d015
+      name: elegant-yonath-d4d015
   charts:
     - height: 1
       kind: Markdown
@@ -723,31 +723,31 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Telegraf
 metadata:
-  name: lucid_goodall_d4d017
+  name: lucid-goodall-d4d017
 spec:
   associations:
     - kind: Label
-      name: agreeing_goldberg_d4d013
+      name: agreeing-goldberg-d4d013
     - kind: Label
-      name: vigilant_chatelet_d4d00f
+      name: vigilant-chatelet-d4d00f
     - kind: Label
-      name: elastic_morse_d4d001
+      name: elastic-morse-d4d001
     - kind: Label
-      name: gallant_sanderson_d4d003
+      name: gallant-sanderson-d4d003
     - kind: Label
-      name: goofy_yalow_d4d005
+      name: goofy-yalow-d4d005
     - kind: Label
-      name: unruffled_benz_d4d007
+      name: unruffled-benz-d4d007
     - kind: Label
-      name: adoring_pasteur_d4d00d
+      name: adoring-pasteur-d4d00d
     - kind: Label
-      name: dreamy_heyrovsky_d4d011
+      name: dreamy-heyrovsky-d4d011
     - kind: Label
-      name: inspiring_goodall_d4d00b
+      name: inspiring-goodall-d4d00b
     - kind: Label
-      name: elegant_yonath_d4d015
+      name: elegant-yonath-d4d015
     - kind: Label
-      name: nice_kilby_d4d009
+      name: nice-kilby-d4d009
   config: |
     # Global tags can be specified here in key="value" format.
     [global_tags]

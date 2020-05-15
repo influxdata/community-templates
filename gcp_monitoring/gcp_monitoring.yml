@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: optimistic_lederberg_8ff001
+    name: optimistic-lederberg-8ff001
 spec:
     color: '#FFB94A'
     name: GCP
@@ -9,7 +9,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: rightful_booth_8ff003
+    name: rightful-booth-8ff003
 spec:
     color: '#066fc5'
     name: inputs.stackdriver
@@ -17,7 +17,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: exciting_satoshi_4ff001
+    name: exciting-satoshi-4ff001
 spec:
     language: flux
     name: bucket
@@ -30,13 +30,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: goofy_lichterman_cff001
+    name: goofy-lichterman-cff001
 spec:
     associations:
       - kind: Label
-        name: optimistic_lederberg_8ff001
+        name: optimistic-lederberg-8ff001
       - kind: Label
-        name: rightful_booth_8ff003
+        name: rightful-booth-8ff003
     charts:
       - height: 1
         kind: Markdown
@@ -211,13 +211,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: obstinate_neumann_0ff001
+    name: obstinate-neumann-0ff001
 spec:
     associations:
       - kind: Label
-        name: optimistic_lederberg_8ff001
+        name: optimistic-lederberg-8ff001
       - kind: Label
-        name: rightful_booth_8ff003
+        name: rightful-booth-8ff003
     charts:
       - height: 1
         kind: Markdown
@@ -767,13 +767,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: zealous_easley_cff001
+    name: zealous-easley-cff001
 spec:
     associations:
       - kind: Label
-        name: optimistic_lederberg_8ff001
+        name: optimistic-lederberg-8ff001
       - kind: Label
-        name: rightful_booth_8ff003
+        name: rightful-booth-8ff003
     charts:
       - height: 1
         kind: Markdown

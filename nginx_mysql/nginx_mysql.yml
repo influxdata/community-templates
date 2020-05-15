@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: interesting_raman_6ba003
+    name: interesting-raman-6ba003
 spec:
     color: '#34bb55'
     name: nginx
@@ -9,7 +9,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: unbridled_jemison_6ba005
+    name: unbridled-jemison-6ba005
 spec:
     color: '#326BBA'
     name: mysql
@@ -17,7 +17,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Bucket
 metadata:
-    name: rightful_shockley_6ba007
+    name: rightful-shockley-6ba007
 spec:
     name: nginx_mysql
     retentionRules:
@@ -27,11 +27,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: crumbling_rubin_6ba00f
+    name: crumbling-rubin-6ba00f
 spec:
     associations:
       - kind: Label
-        name: unbridled_jemison_6ba005
+        name: unbridled-jemison-6ba005
     name: mysqlBucket
     type: constant
     values:
@@ -40,11 +40,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: thirsty_galois_6ba013
+    name: thirsty-galois-6ba013
 spec:
     associations:
       - kind: Label
-        name: interesting_raman_6ba003
+        name: interesting-raman-6ba003
     name: nginxBucket
     type: constant
     values:
@@ -53,13 +53,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: realistic_swirles_eba001
+    name: realistic-swirles-eba001
 spec:
     associations:
       - kind: Label
-        name: interesting_raman_6ba003
+        name: interesting-raman-6ba003
       - kind: Label
-        name: unbridled_jemison_6ba005
+        name: unbridled-jemison-6ba005
     charts:
       - axes:
           - base: "10"
@@ -368,11 +368,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Telegraf
 metadata:
-    name: wiggitty_huh_127001
+    name: wiggitty-huh-127001
 spec:
     associations:
       - kind: Label
-        name: festive_jemison_127001
+        name: festive-jemison-127001
     config: |
         # Telegraf Configuration
         #

@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: loving_austin_c26005
+    name: loving-austin-c26005
 spec:
     language: flux
     name: network_host
@@ -13,7 +13,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: relaxed_dijkstra_c26003
+    name: relaxed-dijkstra-c26003
 spec:
     language: flux
     name: bucket
@@ -27,7 +27,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: stupefied_galileo_c26007
+    name: stupefied-galileo-c26007
 spec:
     language: flux
     name: network_interface
@@ -46,7 +46,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: dangerous_williamson_426001
+    name: dangerous-williamson-426001
 spec:
     charts:
       - colors:
@@ -370,7 +370,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: focused_albattani_026001
+    name: focused-albattani-026001
 spec:
     color: '#108174'
     name: outputs.influxdb_v2
@@ -378,7 +378,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: noshing_shamir_026003
+    name: noshing-shamir-026003
 spec:
     color: '#326BBA'
     name: inputs.net
@@ -386,13 +386,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Telegraf
 metadata:
-    name: toasty_gould_426001
+    name: toasty-gould-426001
 spec:
     associations:
       - kind: Label
-        name: focused_albattani_026001
+        name: focused-albattani-026001
       - kind: Label
-        name: noshing_shamir_026003
+        name: noshing-shamir-026003
     config: |
         # Telegraf Configuration
         #
@@ -560,7 +560,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Bucket
 metadata:
-    name: sleepy_napier_826001
+    name: sleepy-napier-826001
 spec:
     name: network_data
     retentionRules:

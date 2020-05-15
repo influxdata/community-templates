@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: zen_agnesi_cc4001
+    name: zen-agnesi-cc4001
 spec:
     color: '#009f5f'
     name: website
@@ -9,11 +9,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Bucket
 metadata:
-    name: cool_hofstadter_cc4005
+    name: cool-hofstadter-cc4005
 spec:
     associations:
       - kind: Label
-        name: zen_agnesi_cc4001
+        name: zen-agnesi-cc4001
     name: website
     retentionRules:
       - everySeconds: 2.592e+06
@@ -22,11 +22,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: CheckThreshold
 metadata:
-    name: quizzical_hawking_0c4003
+    name: quizzical-hawking-0c4003
 spec:
     associations:
       - kind: Label
-        name: zen_agnesi_cc4001
+        name: zen-agnesi-cc4001
     every: 1m0s
     name: Low Disk Space
     query: |-
@@ -49,11 +49,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: CheckThreshold
 metadata:
-    name: quizzical_solomon_0c4007
+    name: quizzical-solomon-0c4007
 spec:
     associations:
       - kind: Label
-        name: zen_agnesi_cc4001
+        name: zen-agnesi-cc4001
     description: Checks for system load above 1 (10 for critical)
     every: 1m0s
     name: High Server Load
@@ -77,11 +77,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: annoying_swartz_0c400b
+    name: annoying-swartz-0c400b
 spec:
     associations:
       - kind: Label
-        name: zen_agnesi_cc4001
+        name: zen-agnesi-cc4001
     language: flux
     name: hostname
     query: |-
@@ -92,11 +92,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: toasty_bardeen_4c4003
+    name: toasty-bardeen-4c4003
 spec:
     associations:
       - kind: Label
-        name: zen_agnesi_cc4001
+        name: zen-agnesi-cc4001
     language: flux
     name: database
     query: |-
@@ -107,11 +107,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: peaceful_dirac_0c4001
+    name: peaceful-dirac-0c4001
 spec:
     associations:
       - kind: Label
-        name: zen_agnesi_cc4001
+        name: zen-agnesi-cc4001
     charts:
       - axes:
           - base: "10"
@@ -332,11 +332,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Telegraf
 metadata:
-    name: dangling_brown_4c4003
+    name: dangling-brown-4c4003
 spec:
     associations:
       - kind: Label
-        name: zen_agnesi_cc4001
+        name: zen-agnesi-cc4001
     config: |
         # Telegraf Configuration
         #
