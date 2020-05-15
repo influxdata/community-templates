@@ -20,6 +20,7 @@ This template includes the following:
 - 2 Labels: `inputs.cloudwatch`, `AWS`
 - 2 Dashboards: `AWS Cloudwatch Instance Monitoring`, `AWS CloudWatch NLB Monitoring`
 - 1 Variable: `bucket`
+- 1 Telegraf Configuration: `AWS CloudWatch`
 
 ## Setup Instructions
 
