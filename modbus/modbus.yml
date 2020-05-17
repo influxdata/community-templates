@@ -1,0 +1,1667 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: agitated-driscoll-46e001
+spec:
+    color: '#00C9FF'
+    name: island_pulse
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: wondrous-blackburn-46e005
+spec:
+    associations:
+      - kind: Label
+        name: agitated-driscoll-46e001
+    name: node8
+---
+apiVersion: influxdata.com/v2alpha1
+kind: CheckThreshold
+metadata:
+    name: ecstatic-pasteur-c6e001
+spec:
+    associations:
+      - kind: Label
+        name: agitated-driscoll-46e001
+    every: 15m0s
+    name: Kailua Threshold
+    query: |-
+        from(bucket: "node8")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r["_measurement"] == "modbus")
+          |> filter(fn: (r) => r["_field"] == "Central/Wahiawa")
+          |> aggregateWindow(every: 1m, fn: mean)
+          |> yield(name: "mean")
+    status: active
+    statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }'
+    thresholds:
+      - level: CRIT
+        type: greater
+        value: 5
+      - level: WARN
+        max: 5
+        min: 3
+        type: inside_range
+      - level: OK
+        type: lesser
+        value: 3
+---
+apiVersion: influxdata.com/v2alpha1
+kind: CheckThreshold
+metadata:
+    name: fasting-mahavira-06e001
+spec:
+    associations:
+      - kind: Label
+        name: agitated-driscoll-46e001
+    every: 15m0s
+    name: University/Manoa Threshold
+    query: |-
+        from(bucket: "node8")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r["_measurement"] == "modbus")
+          |> filter(fn: (r) => r["_field"] == "University/Manoa")
+          |> aggregateWindow(every: 1m, fn: mean)
+          |> yield(name: "mean")
+    status: active
+    statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }'
+    thresholds:
+      - level: CRIT
+        type: greater
+        value: 3
+      - level: WARN
+        max: 3
+        min: 2
+        type: inside_range
+      - level: OK
+        type: lesser
+        value: 2
+---
+apiVersion: influxdata.com/v2alpha1
+kind: CheckThreshold
+metadata:
+    name: gallant-swartz-c6e000
+spec:
+    associations:
+      - kind: Label
+        name: agitated-driscoll-46e001
+    every: 15m0s
+    name: Kahuku Threshold
+    query: |-
+        from(bucket: "node8")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r["_measurement"] == "modbus")
+          |> filter(fn: (r) => r["_field"] == "Central/Wahiawa")
+          |> aggregateWindow(every: 1m, fn: mean)
+          |> yield(name: "mean")
+    status: active
+    statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }'
+    thresholds:
+      - level: CRIT
+        type: greater
+        value: 8
+      - level: WARN
+        max: 8
+        min: 5
+        type: inside_range
+      - level: OK
+        type: lesser
+        value: 5
+---
+apiVersion: influxdata.com/v2alpha1
+kind: CheckThreshold
+metadata:
+    name: goofy-wright-06e005
+spec:
+    associations:
+      - kind: Label
+        name: agitated-driscoll-46e001
+    every: 15m0s
+    name: Kalihi Threshold
+    query: |-
+        from(bucket: "node8")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r["_measurement"] == "modbus")
+          |> filter(fn: (r) => r["_field"] == "Kalihi")
+          |> aggregateWindow(every: 1m, fn: mean)
+          |> yield(name: "mean")
+    status: active
+    statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }'
+    thresholds:
+      - level: CRIT
+        type: greater
+        value: 7
+      - level: WARN
+        max: 7
+        min: 5
+        type: inside_range
+      - level: OK
+        type: lesser
+        value: 5
+---
+apiVersion: influxdata.com/v2alpha1
+kind: CheckThreshold
+metadata:
+    name: practical-colden-06e001
+spec:
+    associations:
+      - kind: Label
+        name: agitated-driscoll-46e001
+    every: 15m0s
+    name: Island Pulse `Total_System_Generation` Threshold
+    query: |-
+        from(bucket: "node8")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r["_measurement"] == "modbus")
+          |> filter(fn: (r) => r["_field"] == "Total_System_Generation")
+          |> aggregateWindow(every: 1m, fn: mean)
+          |> yield(name: "mean")
+    status: active
+    statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }'
+    thresholds:
+      - level: CRIT
+        type: lesser
+        value: 430
+      - level: WARN
+        max: 600
+        min: 431
+        type: inside_range
+      - level: INFO
+        max: 720
+        min: 601
+        type: inside_range
+      - level: OK
+        type: greater
+        value: 721
+---
+apiVersion: influxdata.com/v2alpha1
+kind: CheckThreshold
+metadata:
+    name: rustling-wu-46e001
+spec:
+    associations:
+      - kind: Label
+        name: agitated-driscoll-46e001
+    every: 15m0s
+    name: Ewa Threshold
+    query: |-
+        from(bucket: "node8")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r["_measurement"] == "modbus")
+          |> filter(fn: (r) => r["_field"] == "Central/Wahiawa")
+          |> aggregateWindow(every: 1m, fn: mean)
+          |> yield(name: "mean")
+    status: active
+    statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }'
+    thresholds:
+      - level: CRIT
+        type: greater
+        value: 7
+      - level: OK
+        type: lesser
+        value: 5
+      - level: WARN
+        max: 7
+        min: 5
+        type: inside_range
+---
+apiVersion: influxdata.com/v2alpha1
+kind: CheckThreshold
+metadata:
+    name: terrifying-ride-c6e004
+spec:
+    associations:
+      - kind: Label
+        name: agitated-driscoll-46e001
+    every: 15m0s
+    name: Downtown Threshold
+    query: |-
+        from(bucket: "node8")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r["_measurement"] == "modbus")
+          |> filter(fn: (r) => r["_field"] == "Central/Wahiawa")
+          |> aggregateWindow(every: 1m, fn: mean)
+          |> yield(name: "mean")
+    status: active
+    statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }'
+    thresholds:
+      - level: CRIT
+        type: greater
+        value: 28
+      - level: WARN
+        max: 28
+        min: 20
+        type: inside_range
+      - level: OK
+        type: lesser
+        value: 20
+---
+apiVersion: influxdata.com/v2alpha1
+kind: CheckThreshold
+metadata:
+    name: vivid-bhabha-c6e008
+spec:
+    associations:
+      - kind: Label
+        name: agitated-driscoll-46e001
+    every: 15m0s
+    name: Airport Threshold
+    query: |-
+        from(bucket: "node8")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r["_measurement"] == "modbus")
+          |> filter(fn: (r) => r["_field"] == "Airport")
+          |> aggregateWindow(every: 1m, fn: mean)
+          |> yield(name: "mean")
+    status: active
+    statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }'
+    thresholds:
+      - level: CRIT
+        type: greater
+        value: 10
+      - level: WARN
+        max: 9
+        min: 6
+        type: inside_range
+      - level: OK
+        type: lesser
+        value: 6
+---
+apiVersion: influxdata.com/v2alpha1
+kind: CheckThreshold
+metadata:
+    name: wizardly-wilson-c6e00c
+spec:
+    associations:
+      - kind: Label
+        name: agitated-driscoll-46e001
+    every: 15m0s
+    name: Central/Wahiawa Threshold
+    query: |-
+        from(bucket: "node8")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r["_measurement"] == "modbus")
+          |> filter(fn: (r) => r["_field"] == "Central/Wahiawa")
+          |> aggregateWindow(every: 1m, fn: mean)
+          |> yield(name: "mean")
+    status: active
+    statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }'
+    thresholds:
+      - level: WARN
+        max: 7
+        min: 5
+        type: inside_range
+      - level: OK
+        type: lesser
+        value: 5
+      - level: CRIT
+        type: greater
+        value: 7
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: sharp-mahavira-06e00d
+spec:
+    associations:
+      - kind: Label
+        name: agitated-driscoll-46e001
+    name: area_names
+    type: constant
+    values:
+      - Airport
+      - Central/Wahiawa
+      - Downtown
+      - Ewa
+      - Kahuku
+      - Kailua
+      - Kalihi
+      - University/Manoa
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: suspicious-kare-06e009
+spec:
+    associations:
+      - kind: Label
+        name: agitated-driscoll-46e001
+    name: energy_types
+    type: constant
+    values:
+      - Total_System_Generation
+      - BioFuel
+      - Coal
+      - Fossil_Fuel
+      - Solar
+      - Waste2Energy
+      - WindFarm
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: agreeing-chatelet-46e001
+spec:
+    associations:
+      - kind: Label
+        name: agitated-driscoll-46e001
+    charts:
+      - colors:
+          - hex: '#7CE490'
+            name: honeydew
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: "\U0001F50C Today's usage"
+        queries:
+          - query: |-
+                from(bucket: "node8")
+                  |> range(start: -1d, stop: now())
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == "Airport" or r["_field"] == "Central/Wahiawa" or r["_field"] == "Downtown" or r["_field"] == "Ewa" or r["_field"] == "Kahuku" or r["_field"] == "Kailua" or r["_field"] == "Kalihi" or r["_field"] == "University/Manoa")
+                  |> group(columns: ["_measurement"])
+                  |> sum(column: "_value")
+                  |> map(fn: (r) => ({ r with _value: r._value / 100.0 }))
+        suffix: ' MWs'
+        width: 4
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: "\U0001F50C Yesterday's usage"
+        queries:
+          - query: |-
+                from(bucket: "node8")
+                  |> range(start: -2d, stop: -12h)
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == "Airport" or r["_field"] == "Central/Wahiawa" or r["_field"] == "Downtown" or r["_field"] == "Ewa" or r["_field"] == "Kahuku" or r["_field"] == "Kailua" or r["_field"] == "Kalihi" or r["_field"] == "University/Manoa")
+                  |> group(columns: ["_measurement"])
+                  |> map(fn: (r) => ({ r with _value: r._value / 100.0 }))
+                  |> sum(column: "_value")
+        suffix: ' MWs'
+        width: 4
+        yPos: 1
+      - colors:
+          - hex: '#32B08C'
+            name: viridian
+            type: min
+          - hex: '#BF3D5E'
+            name: ruby
+            type: max
+            value: 200
+        decimalPlaces: 2
+        height: 3
+        kind: Gauge
+        name: "\U0001F50C Today Highest Usage"
+        queries:
+          - query: |-
+                from(bucket: "node8")
+                  |> range(start: -1d, stop: now())
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == "Airport" or r["_field"] == "Central/Wahiawa" or r["_field"] == "Downtown" or r["_field"] == "Ewa" or r["_field"] == "Kahuku" or r["_field"] == "Kailua" or r["_field"] == "Kalihi" or r["_field"] == "University/Manoa")
+                  |> aggregateWindow(every: v.windowPeriod, fn: max)
+                  |> group(columns: ["holding_register"])
+                  |> max()
+        suffix: ' MW'
+        width: 4
+        yPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: min
+          - hex: '#32B08C'
+            name: viridian
+            type: max
+            value: 200
+        decimalPlaces: 2
+        height: 3
+        kind: Gauge
+        name: "\U0001F50C Yesterday Lowest Usage"
+        queries:
+          - query: |-
+                from(bucket: "node8")
+                  |> range(start: -1d, stop: -3h)
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == "Airport" or r["_field"] == "Central/Wahiawa" or r["_field"] == "Downtown" or r["_field"] == "Ewa" or r["_field"] == "Kahuku" or r["_field"] == "Kailua" or r["_field"] == "Kalihi" or r["_field"] == "University/Manoa")
+                  |> aggregateWindow(every: v.windowPeriod, fn: min)
+                  |> group(columns: ["holding_register"])
+                  |> unique()
+                  |> min()
+        suffix: ' MW'
+        width: 4
+        yPos: 5
+      - height: 2
+        kind: Markdown
+        name: Name this Cell
+        note: |-
+            # ♻️ Energy Production
+
+            **tip**: use the `v.energy_types` dashboard variable to control the cells below
+        width: 12
+        yPos: 8
+      - colors:
+          - hex: '#32B08C'
+            name: viridian
+            type: min
+          - hex: '#7CE490'
+            name: honeydew
+            type: max
+            value: 1000
+        decimalPlaces: 2
+        height: 4
+        kind: Gauge
+        name: ♻️ Production avg. past 1d
+        queries:
+          - query: |-
+                from(bucket: "node8")
+                  |> range(start: -1d, stop: now())
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == v.energy_types)
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean)
+        width: 4
+        yPos: 10
+      - colors:
+          - hex: '#32B08C'
+            name: viridian
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: ♻️ CLEAN ENERGY
+        queries:
+          - query: |-
+                sum_result = from(bucket: "node8")
+                  |> range(start: -30m, stop: now())
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == "WindFarm" or r["_field"] == "Waste2Energy" or r["_field"] == "Solar" or r["_field"] == "BioFuel")
+                  |> fill(value: 0.0)
+                  |> sum(column: "_value")
+                  |> group(columns: ["_measurement"])
+                  |> map(fn: (r) => ({ r with _value: r._value / 100.0 }))
+                  |> sum(column: "_value")
+                  |> yield(name: "sum")
+        suffix: ' MWs'
+        width: 6
+        yPos: 14
+      - height: 2
+        kind: Markdown
+        name: Name this Cell
+        note: |-
+            # Single Area Information
+            **tip**: use the `v.area_names` dashboard variable to control the cells below
+        width: 12
+        yPos: 16
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: MW
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00A3FF'
+            name: Solid Blue
+            type: scale
+          - hex: '#00A3FF'
+            name: Solid Blue
+            type: scale
+          - hex: '#00A3FF'
+            name: Solid Blue
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: "\U0001F50C Usage by `area_names` last two days"
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "node8")
+                  |> range(start: -2d, stop: now())
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == v.area_names)
+                  |> aggregateWindow(every: v.windowPeriod, fn: max)
+                  |> yield(name: "mean")
+        shade: true
+        width: 12
+        xCol: _time
+        yCol: _value
+        yPos: 18
+      - colors:
+          - hex: '#F48D38'
+            name: tiger
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: "\U0001F50C \U0001F4C8 Today highest usage"
+        queries:
+          - query: |-
+                from(bucket: "node8")
+                  |> range(start: -1d, stop: now())
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == v.area_names)
+                  |> aggregateWindow(every: v.windowPeriod, fn: max)
+                  |> unique()
+                  |> max()
+                  |> group(columns: ["holding_register"])
+                  |> sort(desc: true)
+                  |> yield(name: "max")
+        suffix: ' MW'
+        width: 2
+        yPos: 22
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: "\U0001F50C Today lowest MW usage"
+        queries:
+          - query: |-
+                from(bucket: "node8")
+                  |> range(start: -1d, stop: now())
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == v.area_names)
+                  |> aggregateWindow(every: v.windowPeriod, fn: min)
+                  |> unique()
+                  |> min()
+                  |> group(columns: ["holding_register"])
+                  |> sort(desc: true)
+                  |> yield(name: "min")
+        suffix: ' MW'
+        width: 2
+        yPos: 23
+      - colors:
+          - hex: '#FFB94A'
+            name: pineapple
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: "\U0001F50C \U0001F4C8-1d highest usage"
+        queries:
+          - query: |-
+                from(bucket: "node8")
+                  |> range(start: -2d, stop: -1d)
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == v.area_names)
+                  |> aggregateWindow(every: v.windowPeriod, fn: max)
+                  |> unique()
+                  |> max()
+                  |> group(columns: ["holding_register"])
+                  |> sort(desc: true)
+                  |> yield(name: "max")
+        suffix: ' MW'
+        width: 2
+        xPos: 2
+        yPos: 22
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: "\U0001F50C -1d lowest MW usage"
+        note: No data for yesterday
+        noteOnEmpty: true
+        queries:
+          - query: |-
+                from(bucket: "node8")
+                  |> range(start: -2d, stop: -1d)
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == v.area_names)
+                  |> aggregateWindow(every: v.windowPeriod, fn: min)
+                  |> unique()
+                  |> min()
+                  |> group(columns: ["holding_register"])
+                  |> sort(desc: true)
+                  |> yield(name: "min")
+        suffix: ' MW'
+        width: 2
+        xPos: 2
+        yPos: 23
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: MW
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: ♻️ Energy creation by energy_type
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "node8")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == "BioFuel" or r["_field"] == "Coal" or r["_field"] == "Fossil_Fuel" or r["_field"] == "Solar" or r["_field"] == "Waste2Energy" or r["_field"] == "WindFarm")
+                  |> aggregateWindow(every: v.windowPeriod, fn: max)
+                  |> yield(name: "max")
+        shade: true
+        width: 8
+        xCol: _time
+        xPos: 4
+        yCol: _value
+      - colors:
+          - hex: '#ffffff'
+            name: white
+            type: text
+        fieldOptions:
+          - displayName: _start
+            fieldName: _start
+            visible: true
+          - displayName: _stop
+            fieldName: _stop
+            visible: true
+          - displayName: _time
+            fieldName: _time
+            visible: true
+          - displayName: _value
+            fieldName: _value
+            visible: true
+          - displayName: _field
+            fieldName: _field
+            visible: true
+          - displayName: _measurement
+            fieldName: _measurement
+            visible: true
+          - displayName: host
+            fieldName: host
+            visible: true
+          - displayName: name
+            fieldName: name
+            visible: true
+          - displayName: type
+            fieldName: type
+            visible: true
+        height: 4
+        kind: Table
+        name: ♻️ Consolidated Prouction
+        queries:
+          - query: |-
+                from(bucket: "node8")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == "BioFuel" or r["_field"] == "Coal" or r["_field"] == "Fossil_Fuel" or r["_field"] == "Solar" or r["_field"] == "Waste2Energy" or r["_field"] == "WindFarm")
+                  |> group(columns: ["_field"])
+                  |> unique()
+                  |> drop(columns: ["_start", "_stop", "_measurement", "host", "name", "type"])
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: hh:mm a
+        width: 4
+        xPos: 4
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: MW
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00A3FF'
+            name: Solid Blue
+            type: scale
+          - hex: '#00A3FF'
+            name: Solid Blue
+            type: scale
+          - hex: '#00A3FF'
+            name: Solid Blue
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: ♻️ Energy Production past 1d
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "node8")
+                  |> range(start: -1d, stop: now())
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == v.energy_types)
+                  |> aggregateWindow(every: v.windowPeriod, fn: max)
+                  |> yield(name: "mean")
+        shade: true
+        width: 8
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 10
+      - colors:
+          - hex: '#FFB94A'
+            name: pineapple
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: "\U0001F50C \U0001F4C8 -2d highest usage"
+        queries:
+          - query: |-
+                from(bucket: "node8")
+                  |> range(start: -3d, stop: -2d)
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == v.area_names)
+                  |> aggregateWindow(every: v.windowPeriod, fn: max)
+                  |> unique()
+                  |> max()
+                  |> group(columns: ["holding_register"])
+                  |> sort(desc: true)
+                  |> yield(name: "max")
+        suffix: ' MW'
+        width: 2
+        xPos: 4
+        yPos: 22
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: "\U0001F50C -2d lowest usage"
+        queries:
+          - query: |-
+                from(bucket: "node8")
+                  |> range(start: -3d, stop: -2d)
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == v.area_names)
+                  |> aggregateWindow(every: v.windowPeriod, fn: min)
+                  |> unique()
+                  |> min()
+                  |> group(columns: ["holding_register"])
+                  |> sort(desc: true)
+                  |> yield(name: "min")
+        suffix: ' MW'
+        width: 2
+        xPos: 4
+        yPos: 23
+      - colors:
+          - hex: '#513CC6'
+            name: planet
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: ♻️ Total System Generation
+        queries:
+          - query: |-
+                sum_result = from(bucket: "node8")
+                  |> range(start: -30m, stop: now())
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == "Total_System_Generation")
+                  |> fill(value: 0.0)
+                  |> sum(column: "_value")
+                  |> group(columns: ["_measurement"])
+                  |> sum(column: "_value")
+                  |> map(fn: (r) => ({ r with _value: r._value / 100.0 }))
+                  |> yield(name: "sum")
+        suffix: ' MWs'
+        width: 6
+        xPos: 6
+        yPos: 14
+      - colors:
+          - hex: '#7CE490'
+            name: honeydew
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: "\U0001F50C \U0001F4C8 -3d highest usage"
+        queries:
+          - query: |-
+                from(bucket: "node8")
+                  |> range(start: -4d, stop: -3d)
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == v.area_names)
+                  |> aggregateWindow(every: v.windowPeriod, fn: max)
+                  |> unique()
+                  |> max()
+                  |> group(columns: ["holding_register"])
+                  |> sort(desc: true)
+                  |> yield(name: "max")
+        suffix: ' MW'
+        width: 2
+        xPos: 6
+        yPos: 22
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: "\U0001F50C -3d lowest usage"
+        queries:
+          - query: |-
+                from(bucket: "node8")
+                  |> range(start: -4d, stop: -3d)
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == v.area_names)
+                  |> aggregateWindow(every: v.windowPeriod, fn: min)
+                  |> unique()
+                  |> min()
+                  |> group(columns: ["holding_register"])
+                  |> sort(desc: true)
+                  |> yield(name: "min")
+        suffix: ' MW'
+        width: 2
+        xPos: 6
+        yPos: 23
+      - colors:
+          - hex: '#ffffff'
+            name: white
+            type: text
+        fieldOptions:
+          - displayName: _start
+            fieldName: _start
+            visible: true
+          - displayName: _stop
+            fieldName: _stop
+            visible: true
+          - displayName: _time
+            fieldName: _time
+            visible: true
+          - displayName: _value
+            fieldName: _value
+            visible: true
+          - displayName: _field
+            fieldName: _field
+            visible: true
+          - displayName: _measurement
+            fieldName: _measurement
+            visible: true
+          - displayName: host
+            fieldName: host
+            visible: true
+          - displayName: name
+            fieldName: name
+            visible: true
+          - displayName: type
+            fieldName: type
+            visible: true
+        height: 4
+        kind: Table
+        name: "\U0001F50C Consolidated Usage"
+        queries:
+          - query: |-
+                from(bucket: "node8")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == "Airport" or r["_field"] == "Central/Wahiawa" or r["_field"] == "Downtown" or r["_field"] == "Ewa" or r["_field"] == "Kahuku" or r["_field"] == "Kailua" or r["_field"] == "Kalihi" or r["_field"] == "University/Manoa")
+                  |> group(columns: ["_field"])
+                  |> unique()
+                  |> drop(columns: ["_start", "_stop", "_measurement", "host", "name", "type"])
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: hh:mm a
+        width: 4
+        xPos: 8
+        yPos: 4
+      - colors:
+          - hex: '#FFB94A'
+            name: pineapple
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: "\U0001F50C \U0001F4C8 -4d highest usage"
+        queries:
+          - query: |-
+                from(bucket: "node8")
+                  |> range(start: -5d, stop: -4d)
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == v.area_names)
+                  |> aggregateWindow(every: v.windowPeriod, fn: max)
+                  |> unique()
+                  |> max()
+                  |> group(columns: ["holding_register"])
+                  |> sort(desc: true)
+                  |> yield(name: "max")
+        suffix: ' MW'
+        width: 2
+        xPos: 8
+        yPos: 22
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: "\U0001F50C -4d lowest usage"
+        queries:
+          - query: |-
+                from(bucket: "node8")
+                  |> range(start: -5d, stop: -4d)
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == v.area_names)
+                  |> aggregateWindow(every: v.windowPeriod, fn: min)
+                  |> unique()
+                  |> min()
+                  |> group(columns: ["holding_register"])
+                  |> sort(desc: true)
+                  |> yield(name: "min")
+        suffix: ' MW'
+        width: 2
+        xPos: 8
+        yPos: 23
+      - colors:
+          - hex: '#4591ED'
+            name: ocean
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: "\U0001F50C \U0001F4C8 -5d highest usage"
+        queries:
+          - query: |-
+                from(bucket: "node8")
+                  |> range(start: -6d, stop: -5d)
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == v.area_names)
+                  |> aggregateWindow(every: v.windowPeriod, fn: max)
+                  |> unique()
+                  |> max()
+                  |> group(columns: ["holding_register"])
+                  |> sort(desc: true)
+                  |> yield(name: "max")
+        suffix: ' MW'
+        width: 2
+        xPos: 10
+        yPos: 22
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: "\U0001F50C -5d lowest usage"
+        queries:
+          - query: |-
+                from(bucket: "node8")
+                  |> range(start: -6d, stop: -5d)
+                  |> filter(fn: (r) => r["_measurement"] == "modbus")
+                  |> filter(fn: (r) => r["_field"] == v.area_names)
+                  |> aggregateWindow(every: v.windowPeriod, fn: min)
+                  |> unique()
+                  |> min()
+                  |> group(columns: ["holding_register"])
+                  |> sort(desc: true)
+                  |> yield(name: "min")
+        suffix: ' MW'
+        width: 2
+        xPos: 10
+        yPos: 23
+    description: Oahu energy usage and generation
+    name: Island Pulse
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: wiggitty_huh_127002
+spec:
+    associations:
+      - kind: Label
+        name: agitated-driscoll-46e001
+    config: |
+        # Telegraf Configuration
+        #
+        # Telegraf is entirely plugin driven. All metrics are gathered from the
+        # declared inputs, and sent to the declared outputs.
+        #
+        # Plugins must be declared in here to be active.
+        # To deactivate a plugin, comment out the name and any variables.
+        #
+        # Use 'telegraf -config telegraf.conf -test' to see what metrics a config
+        # file would generate.
+        #
+        # Environment variables can be used anywhere in this config file, simply surround
+        # them with ${}. For strings the variable must be within quotes (ie, "${STR_VAR}"),
+        # for numbers and booleans they should be plain (ie, ${INT_VAR}, ${BOOL_VAR})
+
+
+        # Global tags can be specified here in key="value" format.
+        [global_tags]
+          # dc = "us-east-1" # will tag all metrics with dc=us-east-1
+          # rack = "1a"
+          ## Environment variables can be used as tags, and throughout the config file
+          # user = "$USER"
+
+
+        # Configuration for telegraf agent
+        [agent]
+          ## Default data collection interval for all inputs
+          interval = "10s"
+          ## Rounds collection interval to 'interval'
+          ## ie, if interval="10s" then always collect on :00, :10, :20, etc.
+          round_interval = true
+
+          ## Telegraf will send metrics to outputs in batches of at most
+          ## metric_batch_size metrics.
+          ## This controls the size of writes that Telegraf sends to output plugins.
+          metric_batch_size = 100000
+
+          ## Maximum number of unwritten metrics per output.  Increasing this value
+          ## allows for longer periods of output downtime without dropping metrics at the
+          ## cost of higher maximum memory usage.
+          metric_buffer_limit = 100000
+
+          ## Collection jitter is used to jitter the collection by a random amount.
+          ## Each plugin will sleep for a random time within jitter before collecting.
+          ## This can be used to avoid many plugins querying things like sysfs at the
+          ## same time, which can have a measurable effect on the system.
+          collection_jitter = "0s"
+
+          ## Default flushing interval for all outputs. Maximum flush_interval will be
+          ## flush_interval + flush_jitter
+          flush_interval = "10s"
+          ## Jitter the flush interval by a random amount. This is primarily to avoid
+          ## large write spikes for users running a large number of telegraf instances.
+          ## ie, a jitter of 5s and interval 10s means flushes will happen every 10-15s
+          flush_jitter = "4s"
+
+          ## By default or when set to "0s", precision will be set to the same
+          ## timestamp order as the collection interval, with the maximum being 1s.
+          ##   ie, when interval = "10s", precision will be "1s"
+          ##       when interval = "250ms", precision will be "1ms"
+          ## Precision will NOT be used for service inputs. It is up to each individual
+          ## service input to set the timestamp at the appropriate precision.
+          ## Valid time units are "ns", "us" (or "µs"), "ms", "s".
+          precision = "s"
+
+          ## Log at debug level.
+          # debug = true
+          ## Log only error level messages.
+          # quiet = false
+
+          ## Log target controls the destination for logs and can be one of "file",
+          ## "stderr" or, on Windows, "eventlog".  When set to "file", the output file
+          ## is determined by the "logfile" setting.
+          # logtarget = "file"
+
+          ## Name of the file to be logged to when using the "file" logtarget.  If set to
+          ## the empty string then logs are written to stderr.
+          # logfile = ""
+
+          ## The logfile will be rotated after the time interval specified.  When set
+          ## to 0 no time based rotation is performed.  Logs are rotated only when
+          ## written to, if there is no log activity rotation may be delayed.
+          # logfile_rotation_interval = "0d"
+
+          ## The logfile will be rotated when it becomes larger than the specified
+          ## size.  When set to 0 no size based rotation is performed.
+          # logfile_rotation_max_size = "0MB"
+
+          ## Maximum number of rotated archives to keep, any older logs are deleted.
+          ## If set to -1, no archives are removed.
+          # logfile_rotation_max_archives = 5
+
+          ## Override default hostname, if empty use os.Hostname()
+          hostname = ""
+          ## If set to true, do no set the "host" tag in the telegraf agent.
+          omit_hostname = false
+
+
+        ###############################################################################
+        #                            OUTPUT PLUGINS                                   #
+        ###############################################################################
+
+
+        # Configuration for sending metrics to InfluxDB
+        [[outputs.influxdb_v2]]
+          ## The full HTTP or UDP URL for your InfluxDB instance.
+          ##
+          ## Multiple URLs can be specified for a single cluster, only ONE of the
+          ## urls will be written to each interval.
+          # urls = ["unix:///var/run/influxdb.sock"]
+          # urls = ["udp://127.0.0.1:8089"]
+          # urls = ["http://127.0.0.1:8086"]
+          urls = ["http://localhost:9999/"]
+
+          ## Token for authentication.
+          token = "USE TOKEN HERE"
+
+          ## Organization is the name of the organization you wish to write to; must exist.
+          organization = "regency_aloha"
+          bucket="node8"
+
+          ## The target database for metrics; will be created as needed.
+          ## For UDP url endpoint database needs to be configured on server side.
+          # database="node1"
+
+          ## The value of this tag will be used to determine the database.  If this
+          ## tag is not set the 'database' option is used as the default.
+          # database_tag = ""
+
+          ## If true, the database tag will not be added to the metric.
+          # exclude_database_tag = false
+
+          ## If true, no CREATE DATABASE queries will be sent.  Set to true when using
+          ## Telegraf with a user without permissions to create databases or when the
+          ## database already exists.
+          # skip_database_creation = false
+
+          ## Name of existing retention policy to write to.  Empty string writes to
+          ## the default retention policy.  Only takes effect when using HTTP.
+          # retention_policy = ""
+
+          ## Write consistency (clusters only), can be: "any", "one", "quorum", "all".
+          ## Only takes effect when using HTTP.
+          # write_consistency = "any"
+
+          ## Timeout for HTTP messages.
+          timeout = "5s"
+
+          ## HTTP Basic Auth
+          # username = "telegraf"
+          # password = "metricsmetricsmetricsmetrics"
+
+          ## HTTP User-Agent
+          # user_agent = "telegraf"
+
+          ## UDP payload size is the maximum packet size to send.
+          # udp_payload = "512B"
+
+          ## Optional TLS Config for use on HTTP connections.
+          # tls_ca = "/etc/telegraf/ca.pem"
+          # tls_cert = "/etc/telegraf/cert.pem"
+          # tls_key = "/etc/telegraf/key.pem"
+          ## Use TLS but skip chain & host verification
+          # insecure_skip_verify = false
+
+          ## HTTP Proxy override, if unset values the standard proxy environment
+          ## variables are consulted to determine which proxy, if any, should be used.
+          # http_proxy = "http://corporate.proxy:3128"
+
+          ## Additional HTTP headers
+          # http_headers = {"X-Special-Header" = "Special-Value"}
+
+          ## HTTP Content-Encoding for write request body, can be set to "gzip" to
+          ## compress body or "identity" to apply no encoding.
+          # content_encoding = "identity"
+
+          ## When true, Telegraf will output unsigned integers as unsigned values,
+          ## i.e.: "42u".  You will need a version of InfluxDB supporting unsigned
+          ## integer values.  Enabling this option will result in field type errors if
+          ## existing data has been written.
+          # influx_uint_support = false
+
+
+        ###############################################################################
+        #                            PROCESSOR PLUGINS                                #
+        ###############################################################################
+
+
+        # # Clone metrics and apply modifications.
+        # [[processors.clone]]
+        #   ## All modifications on inputs and aggregators can be overridden:
+        #   # name_override = "new_name"
+        #   # name_prefix = "new_name_prefix"
+        #   # name_suffix = "new_name_suffix"
+        #
+        #   ## Tags to be added (all values must be strings)
+        #   # [processors.clone.tags]
+        #   #   additional_tag = "tag_value"
+
+
+        # # Convert values to another metric value type
+        # [[processors.converter]]
+        #   ## Tags to convert
+        #   ##
+        #   ## The table key determines the target type, and the array of key-values
+        #   ## select the keys to convert.  The array may contain globs.
+        #   ##   <target-type> = [<tag-key>...]
+        #   [processors.converter.tags]
+        #     string = []
+        #     integer = []
+        #     unsigned = []
+        #     boolean = []
+        #     float = []
+        #
+        #   ## Fields to convert
+        #   ##
+        #   ## The table key determines the target type, and the array of key-values
+        #   ## select the keys to convert.  The array may contain globs.
+        #   ##   <target-type> = [<field-key>...]
+        #   [processors.converter.fields]
+        #     tag = []
+        #     string = []
+        #     integer = []
+        #     unsigned = []
+        #     boolean = []
+        #     float = []
+
+
+        # # Dates measurements, tags, and fields that pass through this filter.
+        # [[processors.date]]
+        #   ## New tag to create
+        #   tag_key = "month"
+        #
+        #   ## Date format string, must be a representation of the Go "reference time"
+        #   ## which is "Mon Jan 2 15:04:05 -0700 MST 2006".
+        #   date_format = "Jan"
+
+
+        # # Map enum values according to given table.
+        # [[processors.enum]]
+        #   [[processors.enum.mapping]]
+        #     ## Name of the field to map
+        #     field = "status"
+        #
+        #     ## Name of the tag to map
+        #     # tag = "status"
+        #
+        #     ## Destination tag or field to be used for the mapped value.  By default the
+        #     ## source tag or field is used, overwriting the original value.
+        #     dest = "status_code"
+        #
+        #     ## Default value to be used for all values not contained in the mapping
+        #     ## table.  When unset, the unmodified value for the field will be used if no
+        #     ## match is found.
+        #     # default = 0
+        #
+        #     ## Table of mappings
+        #     [processors.enum.mapping.value_mappings]
+        #       green = 1
+        #       amber = 2
+        #       red = 3
+
+
+        # # Apply metric modifications using override semantics.
+        # [[processors.override]]
+        #   ## All modifications on inputs and aggregators can be overridden:
+        #   # name_override = "new_name"
+        #   # name_prefix = "new_name_prefix"
+        #   # name_suffix = "new_name_suffix"
+        #
+        #   ## Tags to be added (all values must be strings)
+        #   # [processors.override.tags]
+        #   #   additional_tag = "tag_value"
+
+
+        # # Parse a value in a specified field/tag(s) and add the result in a new metric
+        # [[processors.parser]]
+        #   ## The name of the fields whose value will be parsed.
+        #   parse_fields = []
+        #
+        #   ## If true, incoming metrics are not emitted.
+        #   drop_original = false
+        #
+        #   ## If set to override, emitted metrics will be merged by overriding the
+        #   ## original metric using the newly parsed metrics.
+        #   merge = "override"
+        #
+        #   ## The dataformat to be read from files
+        #   ## Each data format has its own unique set of configuration options, read
+        #   ## more about them here:
+        #   ## https://github.com/influxdata/telegraf/blob/master/docs/DATA_FORMATS_INPUT.md
+        #   data_format = "influx"
+
+
+        # # Rotate a single valued metric into a multi field metric
+        # [[processors.pivot]]
+        #   ## Tag to use for naming the new field.
+        #   tag_key = "name"
+        #   ## Field to use as the value of the new field.
+        #   value_key = "value"
+
+
+        # # Print all metrics that pass through this filter.
+        # [[processors.printer]]
+
+
+        # # Transforms tag and field values with regex pattern
+        # [[processors.regex]]
+        #   ## Tag and field conversions defined in a separate sub-tables
+        #   # [[processors.regex.tags]]
+        #   #   ## Tag to change
+        #   #   key = "resp_code"
+        #   #   ## Regular expression to match on a tag value
+        #   #   pattern = "^(\\d)\\d\\d$"
+        #   #   ## Matches of the pattern will be replaced with this string.  Use ${1}
+        #   #   ## notation to use the text of the first submatch.
+        #   #   replacement = "${1}xx"
+        #
+        #   # [[processors.regex.fields]]
+        #   #   ## Field to change
+        #   #   key = "request"
+        #   #   ## All the power of the Go regular expressions available here
+        #   #   ## For example, named subgroups
+        #   #   pattern = "^/api(?P<method>/[\\w/]+)\\S*"
+        #   #   replacement = "${method}"
+        #   #   ## If result_key is present, a new field will be created
+        #   #   ## instead of changing existing field
+        #   #   result_key = "method"
+        #
+        #   ## Multiple conversions may be applied for one field sequentially
+        #   ## Let's extract one more value
+        #   # [[processors.regex.fields]]
+        #   #   key = "request"
+        #   #   pattern = ".*category=(\\w+).*"
+        #   #   replacement = "${1}"
+        #   #   result_key = "search_category"
+
+
+        # # Rename measurements, tags, and fields that pass through this filter.
+        # [[processors.rename]]
+
+
+        # # Perform string processing on tags, fields, and measurements
+        # [[processors.strings]]
+        #   ## Convert a tag value to uppercase
+        #   # [[processors.strings.uppercase]]
+        #   #   tag = "method"
+        #
+        #   ## Convert a field value to lowercase and store in a new field
+        #   # [[processors.strings.lowercase]]
+        #   #   field = "uri_stem"
+        #   #   dest = "uri_stem_normalised"
+        #
+        #   ## Trim leading and trailing whitespace using the default cutset
+        #   # [[processors.strings.trim]]
+        #   #   field = "message"
+        #
+        #   ## Trim leading characters in cutset
+        #   # [[processors.strings.trim_left]]
+        #   #   field = "message"
+        #   #   cutset = "\t"
+        #
+        #   ## Trim trailing characters in cutset
+        #   # [[processors.strings.trim_right]]
+        #   #   field = "message"
+        #   #   cutset = "\r\n"
+        #
+        #   ## Trim the given prefix from the field
+        #   # [[processors.strings.trim_prefix]]
+        #   #   field = "my_value"
+        #   #   prefix = "my_"
+        #
+        #   ## Trim the given suffix from the field
+        #   # [[processors.strings.trim_suffix]]
+        #   #   field = "read_count"
+        #   #   suffix = "_count"
+        #
+        #   ## Replace all non-overlapping instances of old with new
+        #   # [[processors.strings.replace]]
+        #   #   measurement = "*"
+        #   #   old = ":"
+        #   #   new = "_"
+        #
+        #   ## Trims strings based on width
+        #   # [[processors.strings.left]]
+        #   #   field = "message"
+        #   #   width = 10
+        #
+        #   ## Decode a base64 encoded utf-8 string
+        #   # [[processors.strings.base64decode]]
+        #   #   field = "message"
+
+
+        # # Restricts the number of tags that can pass through this filter and chooses which tags to preserve when over the limit.
+        # [[processors.tag_limit]]
+        #   ## Maximum number of tags to preserve
+        #   limit = 10
+        #
+        #   ## List of tags to preferentially preserve
+        #   keep = ["foo", "bar", "baz"]
+
+
+        # # Print all metrics that pass through this filter.
+        # [[processors.topk]]
+        #   ## How many seconds between aggregations
+        #   # period = 10
+        #
+        #   ## How many top metrics to return
+        #   # k = 10
+        #
+        #   ## Over which tags should the aggregation be done. Globs can be specified, in
+        #   ## which case any tag matching the glob will aggregated over. If set to an
+        #   ## empty list is no aggregation over tags is done
+        #   # group_by = ['*']
+        #
+        #   ## Over which fields are the top k are calculated
+        #   # fields = ["value"]
+        #
+        #   ## What aggregation to use. Options: sum, mean, min, max
+        #   # aggregation = "mean"
+        #
+        #   ## Instead of the top k largest metrics, return the bottom k lowest metrics
+        #   # bottomk = false
+        #
+        #   ## The plugin assigns each metric a GroupBy tag generated from its name and
+        #   ## tags. If this setting is different than "" the plugin will add a
+        #   ## tag (which name will be the value of this setting) to each metric with
+        #   ## the value of the calculated GroupBy tag. Useful for debugging
+        #   # add_groupby_tag = ""
+        #
+        #   ## These settings provide a way to know the position of each metric in
+        #   ## the top k. The 'add_rank_field' setting allows to specify for which
+        #   ## fields the position is required. If the list is non empty, then a field
+        #   ## will be added to each and every metric for each string present in this
+        #   ## setting. This field will contain the ranking of the group that
+        #   ## the metric belonged to when aggregated over that field.
+        #   ## The name of the field will be set to the name of the aggregation field,
+        #   ## suffixed with the string '_topk_rank'
+        #   # add_rank_fields = []
+        #
+        #   ## These settings provide a way to know what values the plugin is generating
+        #   ## when aggregating metrics. The 'add_agregate_field' setting allows to
+        #   ## specify for which fields the final aggregation value is required. If the
+        #   ## list is non empty, then a field will be added to each every metric for
+        #   ## each field present in this setting. This field will contain
+        #   ## the computed aggregation for the group that the metric belonged to when
+        #   ## aggregated over that field.
+        #   ## The name of the field will be set to the name of the aggregation field,
+        #   ## suffixed with the string '_topk_aggregate'
+        #   # add_aggregate_fields = []
+
+
+        # # Rotate multi field metric into several single field metrics
+        # [[processors.unpivot]]
+        #   ## Tag to use for the name.
+        #   tag_key = "name"
+        #   ## Field to use for the name of the value.
+        #   value_key = "value"
+
+
+        ###############################################################################
+        #                            AGGREGATOR PLUGINS                               #
+        ###############################################################################
+
+
+        # # Keep the aggregate basicstats of each metric passing through.
+        # [[aggregators.basicstats]]
+        #   ## The period on which to flush & clear the aggregator.
+        #   period = "30s"
+        #
+        #   ## If true, the original metric will be dropped by the
+        #   ## aggregator and will not get sent to the output plugins.
+        #   drop_original = false
+        #
+        #   ## Configures which basic stats to push as fields
+        #   # stats = ["count", "min", "max", "mean", "stdev", "s2", "sum"]
+
+
+        # # Report the final metric of a series
+        # [[aggregators.final]]
+        #   ## The period on which to flush & clear the aggregator.
+        #   period = "30s"
+        #   ## If true, the original metric will be dropped by the
+        #   ## aggregator and will not get sent to the output plugins.
+        #   drop_original = false
+        #
+        #   ## The time that a series is not updated until considering it final.
+        #   series_timeout = "5m"
+
+
+        # # Create aggregate histograms.
+        # [[aggregators.histogram]]
+        #   ## The period in which to flush the aggregator.
+        #   period = "30s"
+        #
+        #   ## If true, the original metric will be dropped by the
+        #   ## aggregator and will not get sent to the output plugins.
+        #   drop_original = false
+        #
+        #   ## If true, the histogram will be reset on flush instead
+        #   ## of accumulating the results.
+        #   reset = false
+        #
+        #   ## Example config that aggregates all fields of the metric.
+        #   # [[aggregators.histogram.config]]
+        #   #   ## The set of buckets.
+        #   #   buckets = [0.0, 15.6, 34.5, 49.1, 71.5, 80.5, 94.5, 100.0]
+        #   #   ## The name of metric.
+        #   #   measurement_name = "cpu"
+        #
+        #   ## Example config that aggregates only specific fields of the metric.
+        #   # [[aggregators.histogram.config]]
+        #   #   ## The set of buckets.
+        #   #   buckets = [0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0]
+        #   #   ## The name of metric.
+        #   #   measurement_name = "diskio"
+        #   #   ## The concrete fields of metric
+        #   #   fields = ["io_time", "read_time", "write_time"]
+
+
+        # # Merge metrics into multifield metrics by series key
+        # [[aggregators.merge]]
+        #   ## If true, the original metric will be dropped by the
+        #   ## aggregator and will not get sent to the output plugins.
+        #   drop_original = true
+
+
+        # # Keep the aggregate min/max of each metric passing through.
+        # [[aggregators.minmax]]
+        #   ## General Aggregator Arguments:
+        #   ## The period on which to flush & clear the aggregator.
+        #   period = "30s"
+        #   ## If truAe, the original metric will be dropped by the
+        #   ## aggregator and will not get sent to the output plugins.
+        #   drop_original = false
+
+
+        # # Count the occurrence of values in fields.
+        # [[aggregators.valuecounter]]
+        #   ## General Aggregator Arguments:
+        #   ## The period on which to flush & clear the aggregator.
+        #   period = "30s"
+        #   ## If true, the original metric will be dropped by the
+        #   ## aggregator and will not get sent to the output plugins.
+        #   drop_original = false
+        #   ## The fields for which the values will be counted
+        #   fields = []
+
+
+        ###############################################################################
+        #                            INPUT PLUGINS                                    #
+        ###############################################################################
+
+        [[inputs.modbus]]
+          ## Connection Configuration
+          ##
+          ## The module supports connections to PLCs via MODBUS/TCP or
+          ## via serial line communication in binary (RTU) or readable (ASCII) encoding
+          ##
+          ## Device name
+          name = "Device"
+
+          ## Slave ID - addresses a MODBUS device on the bus
+          ## Range: 0 - 255 [0 = broadcast; 248 - 255 = reserved]
+          slave_id = 1
+
+          ## Timeout for each request
+          timeout = "1m"
+
+          ## Maximum number of retries and the time to wait between retries
+          ## when a slave-device is busy.
+          # busy_retries = 10
+          # busy_retries_wait = "100ms"
+
+          # TCP - connect via Modbus/TCP
+          controller = "tcp://0.0.0.0:8502"
+
+          ## Serial (RS485; RS232)
+          # controller = "file:///dev/ttyUSB0"
+          # baud_rate = 9600
+          # data_bits = 8
+          # parity = "N"
+          # stop_bits = 1
+          # transmission_mode = "RTU"
+
+
+          ## Measurements
+          ##
+
+          ## Digital Variables, Discrete Inputs and Coils
+          ## name    - the variable name
+          ## address - variable address
+
+          # discrete_inputs = [
+          #   { name = "Start",          address = [0]},
+          #   { name = "Stop",           address = [1]},
+          #   { name = "Reset",          address = [2]},
+          #   { name = "EmergencyStop",  address = [3]},
+          # ]
+          # coils = [
+          #   { name = "Motor1-Run",     address = [0]},
+          #   { name = "Motor1-Jog",     address = [1]},
+          #   { name = "Motor1-Stop",    address = [2]},
+          # ]
+
+          ## Analog Variables, Input Registers and Holding Registers
+          ## measurement - the (optional) measurement name, defaults to "modbus"
+          ## name       - the variable name
+          ## byte_order - the ordering of bytes
+          ##  |---AB, ABCD   - Big Endian
+          ##  |---BA, DCBA   - Little Endian
+          ##  |---BADC       - Mid-Big Endian
+          ##  |---CDAB       - Mid-Little Endian
+          ## data_type  - INT16, UINT16, INT32, UINT32, INT64, UINT64, FLOAT32, FLOAT32-IEEE (the IEEE 754 binary representation)
+          ## scale      - the final numeric variable representation
+          ## address    - variable address
+
+          holding_registers = [
+            { name = "Airport", byte_order = "AB",   data_type = "FLOAT32", scale=0.1,  address = [0]},
+            { name = "Central/Wahiawa", byte_order = "AB",   data_type = "FLOAT32", scale=0.1,  address = [1]},
+            { name = "Downtown", byte_order = "AB",   data_type = "FLOAT32", scale=0.1,  address = [2]},
+            { name = "Ewa", byte_order = "AB",   data_type = "FLOAT32", scale=0.1,  address = [3]},
+            { name = "Kahuku", byte_order = "AB",   data_type = "FLOAT32", scale=0.1,  address = [4]},
+            { name = "Kailua", byte_order = "AB",   data_type = "FLOAT32", scale=0.1,  address = [5]},
+            { name = "Kalihi", byte_order = "AB",   data_type = "FLOAT32", scale=0.1,  address = [6]},
+            { name = "Total_System_Generation", byte_order = "AB",   data_type = "FLOAT32", scale=0.1,  address = [7]},
+            { name = "University/Manoa", byte_order = "AB",   data_type = "FLOAT32", scale=0.1,  address = [8]},
+            { name = "BioFuel", byte_order = "AB",   data_type = "FLOAT32", scale=0.1,  address = [9]},
+            { name = "Coal", byte_order = "AB",   data_type = "FLOAT32", scale=0.1,  address = [10]},
+            { name = "Fossil_Fuel", byte_order = "AB",   data_type = "FLOAT32", scale=0.1,  address = [11]},
+            { name = "Solar", byte_order = "AB",   data_type = "FLOAT32", scale=0.1,  address = [12]},
+            { name = "Waste2Energy", byte_order = "AB",   data_type = "FLOAT32", scale=0.1,  address = [13]},
+            { name = "WindFarm", byte_order = "AB",   data_type = "FLOAT32", scale=0.1,  address = [14]},
+          ]
+
+      name: Modbus Monitor
