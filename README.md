@@ -29,6 +29,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [MongoDB](mongodb/) | View information of MongoDB Server. Uptime, Connectios, Queries, Documents Operations and more. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [MySQL / MariaDB](mysql_mariadb/) | View information of MySQL Instance. Uptime, Current Queries, Active Threads, Connections, Traffic and more. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Network Interface Monitor](network_interface_performance/) | Monitor network interfaces on one or more hosts. | [@russorat](https://github.com/russorat) |
+| [PV-output Solar Panel Dashboard](pvoutput/) | Monitor solar data output gathered from pvoutput. | [@peterpeerdeman](https://github.com/peterpeerdeman) |
 | [Redis Monitor](redis/) | Monitor your Redis server. | [@russorat](https://github.com/russorat) |
 | [sFlow Traffic Monitor](sflow/) | Monitor your sFlow traffic. | [@russorat](https://github.com/russorat) |
 | [Telegraf Dashboard](telegraf/) | View throughput and internal stats about your Telegraf instances | Steven Soroka |
