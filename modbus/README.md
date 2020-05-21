@@ -1,6 +1,9 @@
-## Modbus Monitoring Template
+## Island Pulse Monitoring Template
 
 This InfluxDB Template can be used to gather data from a Modbus slave
+
+The goal of this template is to provide an example of using Telgraf's Modbus input plugin to gather information from a device then insert it into infux for storage and processing.
+
 
 ![Website Monitoring Dashboard Screenshot](img/Dashboard.png)
 
@@ -16,11 +19,13 @@ This InfluxDB Template can be used to gather data from a Modbus slave
 
 General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
 
-### Telegraf
-  See `[[inputs.modbus]]` section in this template for [more information](./modbus.yml).
+The data for the dashboard is populated by communicating to a modbus device. You may refer to the [Island Pulse Demo Modbus Device](https://github.com/sgnl/islandpulse_demo_modbus_device) repository for a working demo device you can use while you explore this template.
 
-## Customizations
+Telegraf Configuration requires the following environment variables:
 
+- `INFLUX_HOST`
+- `INFLUX_TOKEN`
+- `INFLUX_ORG`
 
 ## Contact
 
