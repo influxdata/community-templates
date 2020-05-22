@@ -140,6 +140,8 @@ To add a custom Telegraf configuration file to your template:
         apiVersion: influxdata.com/v2alpha1
         kind: Telegraf
         metadata:
+            name: unique-name-for-your-config
+        spec:
             name: The Name Of Your Configuration
             config: |
         ```
