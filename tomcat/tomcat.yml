@@ -1,0 +1,314 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: terrifying-hodgkin-1cb001
+spec:
+    color: '#326BBA'
+    name: tomcat
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: sharp-babbage-1cb005
+spec:
+    associations:
+      - kind: Label
+        name: terrifying-hodgkin-1cb001
+    name: tomcat
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: happy-kilby-5cb001
+spec:
+    associations:
+      - kind: Label
+        name: terrifying-hodgkin-1cb001
+    charts:
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Current Threads
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "tomcat")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "tomcat_connector")
+                  |> filter(fn: (r) => r["_field"] == "current_thread_count" or r["_field"] == "current_threads_busy")
+        width: 5
+        xCol: _time
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Traffic (5m)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "tomcat")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "tomcat_connector")
+                  |> filter(fn: (r) => r["_field"] == "bytes_received" or r["_field"] == "bytes_sent")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: JVM Memory Commited
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "tomcat")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "tomcat_jvm_memorypool")
+                  |> filter(fn: (r) => r["_field"] == "committed")
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 6
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Max Time
+        queries:
+          - query: |-
+                from(bucket: "tomcat")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "tomcat_connector")
+                  |> filter(fn: (r) => r["_field"] == "max_time")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        suffix: ' ms'
+        width: 1
+        xPos: 5
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Total Errors
+        queries:
+          - query: |-
+                from(bucket: "tomcat")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "tomcat_connector")
+                  |> filter(fn: (r) => r["_field"] == "error_count")
+        width: 1
+        xPos: 5
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+            suffix: ' s'
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Processing Time
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "tomcat")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "tomcat_connector")
+                  |> filter(fn: (r) => r["_field"] == "processing_time")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Request Count (5m)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "tomcat")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "tomcat_connector")
+                  |> filter(fn: (r) => r["_field"] == "request_count")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: JVM Memory Pool Used
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "tomcat")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "tomcat_jvm_memorypool")
+                  |> filter(fn: (r) => r["_field"] == "used")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 6
+    name: Apache Tomcat
+
+---
+
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: apache-tomcat
+spec:
+    config: | 
+         [[outputs.influxdb_v2]]
+          ## The URLs of the InfluxDB cluster nodes.
+          ##
+          ## Multiple URLs can be specified for a single cluster, only ONE of the
+          ## urls will be written to each interval.
+          ## urls exp: http://127.0.0.1:9999
+          urls = ["$INFLUX_HOST"]
+
+          ## Token for authentication.
+          token = "$INFLUX_TOKEN"
+
+          ## Organization is the name of the organization you wish to write to; must exist
+          organization = "$INFLUX_ORG"
+
+          ## Destination bucket to write into.
+          bucket = "$INFLUX_BUCKET"
+
+
+
+          # Gather metrics from the Tomcat server status page.
+            [[inputs.tomcat]]
+            ## URL of the Tomcat server status
+            # url = "$TOMCAT_CONNECTION_STRING"
+
+            ## HTTP Basic Auth Credentials
+            # username = "$tomcat_user"
+            # password = "$tomcat_password"
+
+            ## Request timeout
+            # timeout = "5s"
+
+            ## Optional TLS Config
+            # tls_ca = "/etc/telegraf/ca.pem"
+            # tls_cert = "/etc/telegraf/cert.pem"
+            # tls_key = "/etc/telegraf/key.pem"
+            ## Use TLS but skip chain & host verification
+            # insecure_skip_verify = false
+    name: Apache Tomcat
+    Description: Dashboard to monitor Apache Tomcat
+        
+         
