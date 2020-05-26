@@ -293,11 +293,11 @@ spec:
           # Gather metrics from the Tomcat server status page.
             [[inputs.tomcat]]
             ## URL of the Tomcat server status
-            # url = "$TOMCAT_CONNECTION_STRING"
+            url = "$TOMCAT_CONNECTION_STRING"
 
             ## HTTP Basic Auth Credentials
-            # username = "$tomcat_user"
-            # password = "$tomcat_password"
+            username = "$tomcat_user"
+            password = "$tomcat_password"
 
             ## Request timeout
             # timeout = "5s"

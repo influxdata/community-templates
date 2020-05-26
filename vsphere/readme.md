@@ -23,7 +23,7 @@ General instructions on using InfluxDB Templates can be found in the [use a temp
     - `INFLUX_HOST` - The address of you InfluxDB
     - `INFLUX_BUCKET` - The name of the Bucket. If you going to use the bucket included, you need to export the variable. Ex: <code>export INFLUX_BUCKET=vsphere</code>
 
-In order to use this Dashboard, you need to specify the address to the vSphere (EX: https://vsphere/sdk), also, you need to provide username and password in Telegraf Configuration.
+In order to use this Dashboard, you need to specify as variable the address to the vSphere (EX: https://vsphere/sdk), also, you need to provide the username and password as variable too.
 
 ## Contact
 

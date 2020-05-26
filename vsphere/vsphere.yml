@@ -378,8 +378,8 @@ spec:
           ## List of vCenter URLs to be monitored. These three lines must be uncommented
           ## and edited for the plugin to work.
           # vcenters = [ "https://$VSPHERE_HOST/sdk" ]
-          # username = "root"
-          # password = "your-secret"
+          username = "$vsphere-user"
+          password = "$vsphere-password"
 
           ## VMs
           ## Typical VM metrics (if omitted or empty, all metrics are collected)
