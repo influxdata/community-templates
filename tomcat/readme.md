@@ -22,9 +22,7 @@ General instructions on using InfluxDB Templates can be found in the [use a temp
     - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your master token to get started.
     - `INFLUX_ORG` - The name of your Organization.
 
-As the bucket was provided in this template, you need to set the following environment data <k>export INFLUX_BUCKET=tomcat</k>.
-
-In order to use this Dashboard, you need to specify the address to the Apache Tomcat instance /manager/status/all?XML=true instance, also, you need to provide username and password in Telegraf Configuration. Please. Don't use "root", use a user with read only permissions. 
+As the bucket was provided in this template, you need to set the following environment data <k>export INFLUX_BUCKET=tomcat</k>. Also is required to specify trough variables the connection string of Tomcat using <k>export TOMCAT_CONNECTION_STRING="you-server:8080//manager/status/all?XML=true"</k> and the user and password.
 
 ## Contact
 
