@@ -9,7 +9,9 @@ This Dashboard is very simple but can help you with information about your x509 
 ## Included Resources
 
     - 1 Telegraf Configuration
-    - 1 Dashboards: x509.json
+    - 1 Dashboards: x509.yml
+    - 1 bucket: 'x509'
+    - 1 label: 'x509' 
 
 ## Setup Instructions
 
@@ -18,8 +20,10 @@ General instructions on using InfluxDB Templates can be found in the [use a temp
     Telegraf Configuration requires the following environment variables
     - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your master token to get started.
     - `INFLUX_ORG` - The name of your Organization.
+    - `INFLUX_HOST` - The address of you InfluxDB
+    - `INFLUX_BUCKET` - The name of the Bucket. If you going to use the bucket included, you need to export the variable. Ex: <code>export INFLUX_BUCKET=x509</code>
 
-   In orden to use this Dashboard, you need to specify the url of the address you wish monitor. Also, you can monitor files stored locally. 
+In order to use this template, before import, you need to specify the certificates you want monitor in the x509.yml file.
 
 ## Contact
 
