@@ -1,78 +1,89 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: Linux System Template
+    name: linux-system-template
 spec:
+    name: Linux System Template
     color: '#7A65F2'
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
+    name: inputs-cpu
+spec:
     name: inputs.cpu
-spec:
     color: '#326BBA'
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
+    name: inputs-disk
+spec:
     name: inputs.disk
-spec:
     color: '#326BBA'
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
+    name: inputs-diskio
+spec:
     name: inputs.diskio
-spec:
     color: '#326BBA'
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
+    name: inputs-kernel
+spec:
     name: inputs.kernel
-spec:
     color: '#326BBA'
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
+    name: inputs-mem
+spec:
     name: inputs.mem
-spec:
     color: '#326BBA'
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
+    name: inputs-net
+spec:
     name: inputs.net
-spec:
     color: '#326BBA'
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
+    name: inputs-processes
+spec:
     name: inputs.processes
-spec:
     color: '#326BBA'
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
+    name: inputs-swap
+spec:
     name: inputs.swap
-spec:
     color: '#326BBA'
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
+    name: inputs-system
+spec:
     name: inputs.system
-spec:
     color: '#326BBA'
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: outputs.influxdb_v2
+    name: outputs-influxdb-v2
 spec:
+    name: outputs.influxdb_v2
     color: '#108174'
 ---
 apiVersion: influxdata.com/v2alpha1
@@ -80,6 +91,7 @@ kind: Bucket
 metadata:
     name: telegraf
 spec:
+    name: telegraf
     retentionRules:
       - everySeconds: 604800
         type: expire
@@ -89,9 +101,10 @@ kind: Variable
 metadata:
     name: bucket
 spec:
+    name: bucket
     associations:
       - kind: Label
-        name: Linux System Template
+        name: linux-system-template
     language: flux
     query: |-
         buckets()
@@ -103,11 +116,12 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: linux_host
+    name: linux-host
 spec:
+    name: linux_host
     associations:
       - kind: Label
-        name: Linux System Template
+        name: linux-system-template
     language: flux
     query: |-
         import "influxdata/influxdb/v1"
@@ -117,31 +131,32 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Telegraf
 metadata:
-    name: Linux System Monitoring
+    name: linux-system-monitoring
 spec:
+    name: Linux System Monitoring
     associations:
       - kind: Label
-        name: inputs.cpu
+        name: inputs-cpu
       - kind: Label
-        name: inputs.system
+        name: inputs-system
       - kind: Label
-        name: inputs.swap
+        name: inputs-swap
       - kind: Label
-        name: inputs.processes
+        name: inputs-processes
       - kind: Label
-        name: inputs.net
+        name: inputs-net
       - kind: Label
-        name: inputs.mem
+        name: inputs-mem
       - kind: Label
-        name: inputs.kernel
+        name: inputs-kernel
       - kind: Label
-        name: inputs.disk
+        name: inputs-disk
       - kind: Label
-        name: inputs.diskio
+        name: inputs-diskio
       - kind: Label
-        name: outputs.influxdb_v2
+        name: outputs-influxdb-v2
       - kind: Label
-        name: Linux System Template
+        name: linux-system-template
     config: |
         # Telegraf Configuration
         #
@@ -383,11 +398,12 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: Linux System
+    name: linux-system
 spec:
+    name: Linux System
     associations:
       - kind: Label
-        name: Linux System Template
+        name: linux-system-template
     charts:
       - height: 1
         kind: Markdown

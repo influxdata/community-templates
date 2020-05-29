@@ -1,8 +1,9 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Bucket
 metadata:
-    name: oss_metrics
+    name: oss-metrics
 spec:
+    name: oss_metrics
     retentionRules:
       - everySeconds: 604800
         type: expire
@@ -10,8 +11,9 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: InfluxDB2
+    name: influxdb2
 spec:
+    name: InfluxDB2
     color: '#326BBA'
 ---
 apiVersion: influxdata.com/v2alpha1
@@ -19,16 +21,18 @@ kind: Label
 metadata:
     name: prometheus
 spec:
+    name: prometheus
     color: '#326BBA'
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: InfluxDB OSS Metrics
+    name: influxdb-oss-metrics
 spec:
+    name: InfluxDB OSS Metrics
     associations:
       - kind: Label
-        name: InfluxDB2
+        name: influxdb2
       - kind: Label
         name: prometheus
     charts:

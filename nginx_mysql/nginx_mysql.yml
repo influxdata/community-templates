@@ -370,9 +370,6 @@ kind: Telegraf
 metadata:
     name: wiggitty-huh-127001
 spec:
-    associations:
-      - kind: Label
-        name: festive-jemison-127001
     config: |
         # Telegraf Configuration
         #
