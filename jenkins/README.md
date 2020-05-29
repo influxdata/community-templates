@@ -4,6 +4,14 @@ This InfluxDB Template can be used to montior a Jenkins instance
 
 ![Website Monitoring Dashboard Screenshot](img/Dashboard.png)
 
+### Quick Install
+
+If you have your `INFLUX_HOST`, `INFLUX_ORG` and `INFLUX_TOKEN` environment variables setup, you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/jenkins/jenkins.yml
+```
+
 ### Included Resources
 
 - `Jenkins - High-Resolution` Dashboard (see screenshot above)

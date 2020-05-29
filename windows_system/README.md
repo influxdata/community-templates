@@ -4,6 +4,14 @@ This InfluxDB Template can be used to monitor your Windows System.
 
 ![Windows System Dashboard Screenshot](img/windows_system_dashboard.png)
 
+### Quick Install
+
+If you have your `INFLUX_HOST`, `INFLUX_ORG` and `INFLUX_TOKEN` environment variables setup, you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/windows_system/windows_system.yml
+```
+
 ### Included Resources
 
 - 1 Bucket: `telegraf`, 7d retention

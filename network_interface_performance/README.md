@@ -6,6 +6,14 @@ This InfluxDB Template can be used to monitor your network traffic across multip
 
 ![Network Interface Performance Screenshot](img/network-dashboard.png)
 
+### Quick Install
+
+If you have your `INFLUX_HOST`, `INFLUX_ORG` and `INFLUX_TOKEN` environment variables setup, you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/network_interface_performance/network_interface_performance.yml
+```
+
 ## Included Resources
 
   - 1 Bucket: `network_data`, 7d retention

@@ -20,6 +20,14 @@ It also shows how to use functions such as [timedMovingAverage()](https://v2.doc
 
 ![Exchange Rates Screenshot](img/exchange-rates-dashboard.png)
 
+### Quick Install
+
+If you have your `INFLUX_HOST`, `INFLUX_ORG` and `INFLUX_TOKEN` environment variables setup, you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/currency_exchange_rates/currency_exchange_rates.yml
+```
+
 ## Included Resources
 
   - 1 Bucket: `quandl`, 30d retention

@@ -6,6 +6,14 @@ This Dashboard offers you information about your ZooKeeper. Almost all of the me
 
 ![Dashboard Screenshot](screenshot.png)
 
+### Quick Install
+
+If you have your `INFLUX_HOST`, `INFLUX_ORG` and `INFLUX_TOKEN` environment variables setup, you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/zookeeper/zookeeper.yml
+```
+
 ## Included Resources
 
     - 1 Telegraf Configuration

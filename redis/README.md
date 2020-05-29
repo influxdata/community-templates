@@ -4,6 +4,14 @@ This InfluxDB Template can be used to monitor Redis.
 
 ![Redis Dashboard Screenshot](img/redis_dashboard.png)
 
+### Quick Install
+
+If you have your `INFLUX_HOST`, `INFLUX_ORG` and `INFLUX_TOKEN` environment variables setup, you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/redis/redis.yml
+```
+
 ### Included Resources
 
 - 1 Bucket: `redis`, 7d retention

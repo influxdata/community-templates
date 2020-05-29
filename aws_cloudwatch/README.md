@@ -13,6 +13,14 @@ Provided by: [bonitoo.io](.)
 
 ![AWS CloudWatch NLB Monitoring](img/aws-cloudwatch-nlb-monitoring.png)
 
+### Quick Install
+
+If you have your `INFLUX_HOST`, `INFLUX_ORG` and `INFLUX_TOKEN` environment variables setup, you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/aws_cloudwatch/aws_cloudwatch.yml
+```
+
 ## Included Resources
 
 This template includes the following:

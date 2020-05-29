@@ -17,6 +17,14 @@ Cloud Monitoring API v3. There are three dashboards in this template.**
 ![GCP Monitoring Compute](img/gcp-monitoring-compute.png)
 ![GCP Monitoring LoadBalancing](img/gcp-monitoring-loadbalancing.png)
 
+### Quick Install
+
+If you have your `INFLUX_HOST`, `INFLUX_ORG` and `INFLUX_TOKEN` environment variables setup, you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/gcp_monitoring/gcp_monitoring.yml
+```
+
 ## Included Resources
 
 This template includes the following:

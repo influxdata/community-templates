@@ -6,6 +6,14 @@ This Dashboard offers you information about your Apache Tomcat instance. Current
 
 ![Dashboard Screenshot](screenshot.png)
 
+### Quick Install
+
+If you have your `INFLUX_HOST`, `INFLUX_ORG` and `INFLUX_TOKEN` environment variables setup, you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/tomcat/tomcat.yml
+```
+
 ## Included Resources
 
     - 1 Telegraf: 'Tomcat Inputs'

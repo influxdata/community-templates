@@ -6,6 +6,14 @@ This InfluxDB Template can be used to monitor traffic from sFlow sources.
 
 ![sFlow Top Talkers Screenshot](img/sflow_dashboard_2.png)
 
+### Quick Install
+
+If you have your `INFLUX_HOST`, `INFLUX_ORG` and `INFLUX_TOKEN` environment variables setup, you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/sflow/sflow.yml
+```
+
 ### Included Resources
 
 - 1 Bucket: `sflow_data`, 2d retention

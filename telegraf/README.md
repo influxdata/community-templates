@@ -6,6 +6,14 @@ Provided by: Steven Soroka
 
 ![Telegraf Dashboard Screenshot](telegraf-dashboard.png)
 
+### Quick Install
+
+If you have your `INFLUX_HOST`, `INFLUX_ORG` and `INFLUX_TOKEN` environment variables setup, you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/telegraf/manifest.yml
+```
+
 ## Included Resources
 
 - 1 Dashboard: `Telegraf`

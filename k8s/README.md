@@ -13,6 +13,14 @@ supports Google Cloud Platform, AWS and on-premise K8S environments.**
 ![Screenshot](img/k8s-inventory-dashboard.png)
 
 
+### Quick Install
+
+If you have your `INFLUX_HOST`, `INFLUX_ORG` and `INFLUX_TOKEN` environment variables setup, you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/k8s/k8s.yml
+```
+
 ## Included Resources
 
 This template includes the following:

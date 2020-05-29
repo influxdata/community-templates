@@ -6,6 +6,14 @@ View the air quality readings from a [Pimoroni Enviro+](https://shop.pimoroni.co
 
 ![Enviro+ dashboard](img/enviro-plus-influxdb-template.png)
 
+### Quick Install
+
+If you have your `INFLUX_HOST`, `INFLUX_ORG` and `INFLUX_TOKEN` environment variables setup, you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/enviro_plus/enviro_plus.json
+```
+
 ## Included Resources
 
 - 3 Labels: `air quality`,`raspberry pi`,`enviro+`

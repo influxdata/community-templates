@@ -4,6 +4,14 @@ This InfluxDB Template can be used to monitor a website running on NGINX and MyS
 
 ![Website Monitoring Dashboard Screenshot](img/Dashboard.png)
 
+### Quick Install
+
+If you have your `INFLUX_HOST`, `INFLUX_ORG` and `INFLUX_TOKEN` environment variables setup, you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/nginx_mysql/nginx_mysql.yml
+```
+
 ### Included Resources
 
 - `NGINX + MySQL` Dashboard (see screenshot above)

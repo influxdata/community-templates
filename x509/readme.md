@@ -6,6 +6,14 @@ This Dashboard is very simple but can help you with information about your x509 
 
 ![Dashboard Screenshot](screenshot.png)
 
+### Quick Install
+
+If you have your `INFLUX_HOST`, `INFLUX_ORG` and `INFLUX_TOKEN` environment variables setup, you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/x509/x509.yml
+```
+
 ## Included Resources
 
     - 1 Telegraf Configuration
