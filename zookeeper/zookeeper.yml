@@ -1,0 +1,1048 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: sloppy-tesla-708001
+spec:
+    color: '#326BBA'
+    name: zookeeper
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: tender-bose-b08003
+spec:
+    associations:
+      - kind: Label
+        name: sloppy-tesla-708001
+    name: zookeeper
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: jovial-dewdney-f08001
+spec:
+    associations:
+      - kind: Label
+        name: sloppy-tesla-708001
+    charts:
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: znode count
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "znode_count")
+        width: 4
+        xCol: _time
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Avg, Max and Min Close Session Prep Time
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "avg_close_session_prep_time" or r["_field"] == "cnt_close_session_prep_time" or r["_field"] == "max_close_session_prep_time" or r["_field"] == "min_close_session_prep_time" or r["_field"] == "sum_close_session_prep_time")
+        width: 4
+        xCol: _time
+        yCol: _value (number)
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Update Latency
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "avg_updatelatency" or r["_field"] == "cnt_updatelatency" or r["_field"] == "max_updatelatency" or r["_field"] == "min_updatelatency")
+        width: 3
+        xCol: _time
+        yCol: _value (number)
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Read After In Session Queue
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "avg_reads_after_write_in_session_queue" or r["_field"] == "cnt_reads_after_write_in_session_queue" or r["_field"] == "max_reads_after_write_in_session_queue" or r["_field"] == "min_reads_after_write_in_session_queue")
+        width: 3
+        xCol: _time
+        yCol: _value (number)
+        yPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Session Queues Drained
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "avg_session_queues_drained" or r["_field"] == "cnt_session_queues_drained" or r["_field"] == "max_session_queues_drained" or r["_field"] == "min_session_queues_drained")
+        width: 3
+        xCol: _time
+        yCol: _value (number)
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Client Response Size
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "last_client_response_size" or r["_field"] == "max_client_response_size" or r["_field"] == "min_client_response_size")
+        width: 3
+        yPos: 10
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Prep Processor Queue Size
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "avg_prep_processor_queue_size" or r["_field"] == "cnt_prep_processor_queue_size" or r["_field"] == "max_prep_processor_queue_size" or r["_field"] == "min_prep_processor_queue_size")
+        width: 3
+        xCol: _time
+        yCol: _value (number)
+        yPos: 12
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Prep Processor Request Queued
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "prep_processor_request_queued" or r["_field"] == "sync_processor_request_queued")
+        width: 3
+        xCol: _time
+        yCol: _value
+        yPos: 14
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: min
+          - hex: '#9394FF'
+            name: comet
+            type: max
+            value: 100
+        decimalPlaces: 2
+        height: 3
+        kind: Gauge
+        name: Quorum Size
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "cnt_quorum_ack_latency")
+        width: 3
+        yPos: 16
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Min & Max Latency
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "max_latency" or r["_field"] == "min_latency")
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Request in Session Queue
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "cnt_requests_in_session_queue" or r["_field"] == "max_requests_in_session_queue" or r["_field"] == "min_requests_in_session_queue" or r["_field"] == "avg_requests_in_session_queue")
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value (number)
+        yPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Connection Request Count
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "connection_request_count")
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Client Drop Count
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "connection_drop_count")
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 10
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Prep Process Time
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "avg_prep_process_time" or r["_field"] == "min_prep_process_time" or r["_field"] == "max_prep_process_time" or r["_field"] == "cnt_prep_process_time")
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value (number)
+        yPos: 12
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Sync Processor Queue Flush Time
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "avg_sync_processor_queue_flush_time_ms" or r["_field"] == "cnt_sync_processor_queue_flush_time_ms" or r["_field"] == "max_sync_processor_queue_flush_time_ms" or r["_field"] == "min_sync_processor_queue_flush_time_ms")
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value (number)
+        yPos: 14
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Learner Commit and Proposal Received
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "learner_commit_received_count" or r["_field"] == "learner_proposal_received_count")
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 16
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Ephemerals Count
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "ephemerals_count")
+        width: 5
+        xCol: _time
+        xPos: 4
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Pending Session Queue Size
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "avg_pending_session_queue_size" or r["_field"] == "max_pending_session_queue_size" or r["_field"] == "min_pending_session_queue_size")
+        width: 5
+        xCol: _time
+        xPos: 4
+        yCol: _value (number)
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Read Issued from Session Queue
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "avg_reads_issued_from_session_queue" or r["_field"] == "cnt_reads_issued_from_session_queue" or r["_field"] == "max_reads_issued_from_session_queue" or r["_field"] == "min_reads_issued_from_session_queue")
+        width: 3
+        xCol: _time
+        xPos: 6
+        yCol: _value (number)
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Snapshot Time
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "min_snapshottime" or r["_field"] == "max_snapshottime" or r["_field"] == "cnt_snapshottime" or r["_field"] == "avg_snapshottime")
+        width: 3
+        xCol: _time
+        xPos: 6
+        yCol: _value (number)
+        yPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Connection Rejected
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "connection_request_count")
+        width: 3
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Prep Processor Queue Time
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "avg_prep_processor_queue_time_ms" or r["_field"] == "cnt_prep_processor_queue_time_ms" or r["_field"] == "max_prep_processor_queue_time_ms" or r["_field"] == "min_prep_processor_queue_time_ms")
+        width: 3
+        xCol: _time
+        xPos: 6
+        yCol: _value (number)
+        yPos: 10
+      - axes:
+          - base: "10"
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Sync Processor Request Queued
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "sync_processor_request_queued")
+        width: 3
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 12
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Sync Process Time
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "avg_sync_process_time" or r["_field"] == "cnt_sync_process_time" or r["_field"] == "max_sync_process_time" or r["_field"] == "min_sync_process_time")
+        width: 3
+        xCol: _time
+        xPos: 6
+        yCol: _value (number)
+        yPos: 14
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: min
+          - hex: '#9394FF'
+            name: comet
+            type: max
+            value: 100
+        decimalPlaces: 2
+        height: 3
+        kind: Gauge
+        name: Global Sessions
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "global_sessions")
+        width: 3
+        xPos: 9
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: min
+          - hex: '#9394FF'
+            name: comet
+            type: max
+            value: 100
+        decimalPlaces: 2
+        height: 3
+        kind: Gauge
+        name: Local Sessions
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "local_sessions")
+        width: 3
+        xPos: 9
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Fsynctime
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "avg_fsynctime" or r["_field"] == "cnt_fsynctime" or r["_field"] == "max_fsynctime" or r["_field"] == "min_fsynctime")
+        width: 3
+        xCol: _time
+        xPos: 9
+        yCol: _value (number)
+        yPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Connection Drop Probability
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "connection_drop_probability")
+        width: 3
+        xCol: _time
+        xPos: 9
+        yCol: _start
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Outstanding Changes Queue
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "outstanding_changes_queued")
+        width: 3
+        xCol: _time
+        xPos: 9
+        yCol: _value
+        yPos: 10
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Sync Processor Batch Size
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "min_sync_processor_batch_size" or r["_field"] == "max_sync_processor_batch_size" or r["_field"] == "cnt_sync_processor_batch_size" or r["_field"] == "avg_sync_processor_batch_size")
+        width: 3
+        xCol: _time
+        xPos: 9
+        yCol: _value (number)
+        yPos: 12
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: 'Sync Processor Queue Size '
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "zookeeper")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "zookeeper")
+                  |> filter(fn: (r) => r["_field"] == "max_sync_processor_queue_size" or r["_field"] == "min_sync_processor_queue_size")
+        width: 3
+        xCol: _time
+        xPos: 9
+        yCol: _value
+        yPos: 14
+    name: Zookeeper
+
+---
+
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: zookeeper
+spec:
+    config: |
+        [[outputs.influxdb_v2]]
+          ## The URLs of the InfluxDB cluster nodes.
+          ##
+          ## Multiple URLs can be specified for a single cluster, only ONE of the
+          ## urls will be written to each interval.
+          ## urls exp: http://127.0.0.1:9999
+          urls = ["$INFLUX_HOST"]
+
+          ## Token for authentication.
+          token = "$INFLUX_TOKEN"
+
+          ## Organization is the name of the organization you wish to write to; must exist.
+          organization = "$INFLUX_ORG"
+
+          ## Destination bucket to write into.
+          bucket = "$INFLUX_BUCKET"
+
+        # Reads 'mntr' stats from one or many zookeeper servers
+        [[inputs.zookeeper]]
+          ## An array of address to gather stats about. Specify an ip or hostname
+          ## with port. ie localhost:2181, 10.0.0.1:2181, etc.
+
+          ## If no servers are specified, then localhost is used as the host.
+          ## If no port is specified, 2181 is used
+          servers = ["$ZOOKEEPER_HOST"]
+
+          ## Timeout for metric collections from all servers.  Minimum timeout is "1s".
+          # timeout = "5s"
+
+          ## Optional TLS Config
+          # enable_tls = true
+          # tls_ca = "/etc/telegraf/ca.pem"
+          # tls_cert = "/etc/telegraf/cert.pem"
+          # tls_key = "/etc/telegraf/key.pem"
+          ## If false, skip chain & host verification
+          # insecure_skip_verify = true
+
+    

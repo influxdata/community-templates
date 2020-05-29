@@ -9,7 +9,9 @@ This Dashboard offers you information about your ZooKeeper. Almost all of the me
 ## Included Resources
 
     - 1 Telegraf Configuration
-    - 1 Dashboards: zookeeper.json
+    - 1 Dashboards: 'zookeeper'
+    - 1 Bucket: 'zookeeper'
+    - 1 Label: 'zookeeper'
 
 ## Setup Instructions
 
@@ -18,8 +20,12 @@ General instructions on using InfluxDB Templates can be found in the [use a temp
     Telegraf Configuration requires the following environment variables
     - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your master token to get started.
     - `INFLUX_ORG` - The name of your Organization.
+    - `INFLUX_HOST` - The address of you InfluxDB
+    - `INFLUX_BUCKET` - The name of the Bucket. In this case, the bucket was included, so, you need to specify 'INFLUX_BUCKET=zookeeper'
+    
+In order to use this Dashboard, you need to specify the address to the ZooKeeper client (EX: https://localhost:2181) as variable 'ZOOKEEPER_HOST'
 
-    In orden to use this Dashboard, you need to specify the address to the ZooKeeper client (EX: https://localhost:2181).
+<code>$ export ZOOKEEPER_HOST=https://localhost:2181</code>
 
 ## Contact
 

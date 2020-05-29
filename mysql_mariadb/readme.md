@@ -8,8 +8,10 @@ This Dashboard offers you information about your MySQL/MariaDB instance. Uptime,
 
 ## Included Resources
 
-    - 1 Telegraf Configuration
-    - 1 Dashboards: mysql-mariadb.json
+    - 1 Telegraf Configuration: 'mysql-mariadb'
+    - 1 Dashboards: 'MySQL - MariaDB'
+    - 1 Label: 'mysql'
+    - 1 Bucket: 'mariadb'
 
 ## Setup Instructions
 
@@ -18,8 +20,12 @@ General instructions on using InfluxDB Templates can be found in the [use a temp
     Telegraf Configuration requires the following environment variables
     - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your master token to get started.
     - `INFLUX_ORG` - The name of your Organization.
+    - `INFLUX_HOST` - The address of you InfluxDB
+    - `INFLUX_BUCKET` - The name of the Bucket. If you going to use the bucket included, you need to export the variable. Ex: <code>export INFLUX_BUCKET=mariadb</code>
 
-   In orden to use this Dashboard, you need to specify the address to the mySQL/MariaDB instance, also, you need to provide username and password in Telegraf Configuration. Please. Don't use "root", use a user with read only permissions. 
+In order to use this Dashboard, you need to specify the connection string to the mySQL/MariaDB instance as variable. The same needs to define user and password (read only recommended)
+
+ex: <code>$ export $MYSQL_CONNECTION_STRING=user@tcp(127.0.0.1:3306)/?tls=false</code>
 
 ## Contact
 
