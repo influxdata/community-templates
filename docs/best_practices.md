@@ -136,15 +136,15 @@ To add a custom Telegraf configuration file to your template:
    
  2. Add the following to the end of the file, being sure to give a name for your Telegraf configuration:
     ```
-        ---
-        apiVersion: influxdata.com/v2alpha1
-        kind: Telegraf
-        metadata:
-            name: unique-name-for-your-config
-        spec:
-            name: The Name Of Your Configuration
-            config: |
-        ```
+    ---
+    apiVersion: influxdata.com/v2alpha1
+    kind: Telegraf
+    metadata:
+        name: unique-name-for-your-config
+    spec:
+        name: The Name Of Your Configuration
+        config: |
+    ```
         
  3. Copy and paste the contents of your Telegraf configuration file below what you just added, indenting it all until it is 4 spaces further indented than the `config:` line.
     
