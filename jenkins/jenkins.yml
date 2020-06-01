@@ -567,9 +567,6 @@ kind: Dashboard
 metadata:
     name: zen-taussig-127001
 spec:
-    associations:
-      - kind: Label
-        name: festive-jemison-127001
     charts:
       - colors:
           - hex: '#00C9FF'
@@ -715,9 +712,6 @@ kind: Telegraf
 metadata:
     name: wiggitty-huh-127001
 spec:
-    associations:
-      - kind: Label
-        name: festive-jemison-127001
     config: |
         # Telegraf Configuration
         #

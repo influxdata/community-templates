@@ -1,22 +1,25 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: Windows System Template
+    name: windows-system-template
 spec:
+    name: Windows System Template
     color: '#7A65F2'
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: inputs.win_perf_counters
+    name: inputs-win-perf-counters
 spec:
+    name: inputs.win_perf_counters
     color: '#326BBA'
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: outputs.influxdb_v2
+    name: outputs-influxdb-v2
 spec:
+    name: outputs.influxdb_v2
     color: '#108174'
 ---
 apiVersion: influxdata.com/v2alpha1
@@ -24,6 +27,7 @@ kind: Bucket
 metadata:
     name: telegraf
 spec:
+    name: telegraf
     retentionRules:
       - everySeconds: 604800
         type: expire
@@ -33,9 +37,10 @@ kind: Variable
 metadata:
     name: bucket
 spec:
+    name: bucket
     associations:
       - kind: Label
-        name: Windows System Template
+        name: windows-system-template
     language: flux
     query: |-
         buckets()
@@ -47,11 +52,12 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: windows_host
+    name: windows-host
 spec:
+    name: windows_host
     associations:
       - kind: Label
-        name: Windows System Template
+        name: windows-system-template
     language: flux
     query: |-
         import "influxdata/influxdb/v1"
@@ -61,15 +67,16 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Telegraf
 metadata:
-    name: Windows System Monitoring
+    name: windows-system-monitoring
 spec:
+    name: Windows System Monitoring
     associations:
       - kind: Label
-        name: inputs.win_perf_counters
+        name: inputs-win-perf-counters
       - kind: Label
-        name: outputs.influxdb_v2
+        name: outputs-influxdb-v2
       - kind: Label
-        name: Windows System Template
+        name: windows-system-template
     config: |
         # Telegraf Configuration
         #
@@ -344,11 +351,12 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: Windows System
+    name: windows-system
 spec:
+    name: Windows System
     associations:
       - kind: Label
-        name: Windows System Template
+        name: windows-system-template
     charts:
       - height: 1
         kind: Markdown

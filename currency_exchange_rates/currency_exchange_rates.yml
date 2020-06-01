@@ -2,36 +2,41 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: Exchange Rates
+    name: exchange-rates
 spec:
+    name: Exchange Rates
     color: '#7A65F2'
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
+    name: outputs-influxdb-v2
+spec:
     name: outputs.influxdb_v2
-spec:
     color: '#108174'
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
+    name: inputs-http
+spec:
     name: inputs.http
-spec:
     color: '#108174'
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
+    name: processors-regex
+spec:
     name: processors.regex
-spec:
     color: '#108174'
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: processors.pivot
+    name: processors-pivot
 spec:
+    name: processors.pivot
     color: '#108174'
 ---
 apiVersion: influxdata.com/v2alpha1
@@ -39,6 +44,7 @@ kind: Bucket
 metadata:
     name: quandl
 spec:
+    name: quandl
     retentionRules:
       - everySeconds: 2592000
         type: expire
@@ -46,17 +52,18 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Telegraf
 metadata:
-    name: Exchange Rates Data Retrieval
+    name: exchange-rates-data-retrieval
 spec:
+    name: Exchange Rates Data Retrieval
     associations:
       - kind: Label
-        name: outputs.influxdb_v2
+        name: outputs-influxdb-v2
       - kind: Label
-        name: inputs.http
+        name: inputs-http
       - kind: Label
-        name: processors.regex
+        name: processors-regex
       - kind: Label
-        name: processors.pivot
+        name: processors-pivot
     config: |
         [agent]
           interval = "1m"
@@ -122,8 +129,9 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: Exchange Rates
+    name: exchange-rates
 spec:
+    name: Exchange Rates
     charts:
       - axes:
           - base: "10"
