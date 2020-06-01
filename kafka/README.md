@@ -21,6 +21,8 @@
 
 ## Requirements
 
+* Set environment variables on host/s from which Telegraf will be sending metrics.  These are:
+  - `INFLUX_ORG`, `INFLUX_TOKEN`, `INFLUX_HOST`, and `INFLUX_BUCKET`
 * [Jolokia JVM Agent](https://jolokia.org/agent/jvm.html)
 * [Apache Kafka](https://kafka.apache.org/documentation/)
 * [Apache Zookeeper](https://zookeeper.apache.org/)
