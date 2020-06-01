@@ -8,7 +8,7 @@ This Dashboard is very simple but can help you with information about your x509 
 
 ### Quick Install
 
-If you have your `INFLUX_HOST`, `INFLUX_ORG` and `INFLUX_TOKEN` environment variables setup, you can install this template with:
+If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
 influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/x509/x509.yml

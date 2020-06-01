@@ -6,7 +6,7 @@ This InfluxDB Template can be used to monitor your Linux System.
 
 ### Quick Install
 
-If you have your `INFLUX_HOST`, `INFLUX_ORG` and `INFLUX_TOKEN` environment variables setup, you can install this template with:
+If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
 influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/linux_system/linux_system.yml
