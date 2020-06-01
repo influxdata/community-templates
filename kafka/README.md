@@ -3,7 +3,12 @@
 ## Visualized insights
 
 **<<screenshot/s here>>**
-
+<p align="left">
+  <img src="https://github.com/influxdata/community-templates/kafka/kafka-dash-light.png"/>
+</p>
+<p align="right">
+  <img src="https://github.com/influxdata/community-templates/kafka/kafka-dash.png"/>
+</p>
 
 **Observability questions answered by this template**
 * Are applications receiving all data?
