@@ -4,6 +4,14 @@ This InfluxDB Template can be used to monitor Docker.
 
 ![Docker Dashboard Screenshot](img/docker_dashboard.png)
 
+### Quick Install
+
+If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/docker/docker.yml
+```
+
 ### Included Resources
 
 - 1 Bucket: `docker`, 7d retention

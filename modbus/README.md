@@ -7,6 +7,14 @@ The goal of this template is to provide an example of using Telgraf's Modbus inp
 
 ![Website Monitoring Dashboard Screenshot](img/Dashboard.png)
 
+### Quick Install
+
+If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/modbus/modbus.yml
+```
+
 ### Included Resources
 
 - 1 label: `island_pulse`

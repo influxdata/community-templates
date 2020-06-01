@@ -6,6 +6,14 @@ This Dashboard offers you information about your MySQL/MariaDB instance. Uptime,
 
 ![Dashboard Screenshot](screenshot.png)
 
+### Quick Install
+
+If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/mysql_mariadb/mysql_mariadb.yml
+```
+
 ## Included Resources
 
     - 1 Telegraf Configuration: 'mysql-mariadb'

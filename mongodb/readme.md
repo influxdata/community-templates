@@ -6,6 +6,14 @@ This Dashboard offers you information about your MongoDB instance. Uptime, Conne
 
 ![Dashboard Screenshot](screenshot.png)
 
+### Quick Install
+
+If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/mongodb/mongodb.yml
+```
+
 ## Included Resources
 
     - 1 Telegraf Configuration: 'mongodb-config'
