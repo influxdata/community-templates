@@ -2,9 +2,7 @@
 
 ## Visualized insights
 
-  <img src="https://github.com/influxdata/community-templates/blob/kafka_template/kafka/kafka-dash-light.png" width="425"/>
-
-  <img src="https://github.com/influxdata/community-templates/blob/kafka_template/kafka/kafka-dash.png" width="425"/>
+   <img src="https://github.com/influxdata/community-templates/blob/kafka_template/kafka/kafka-dash.png" width="425"/> <img src="https://github.com/influxdata/community-templates/blob/kafka_template/kafka/kafka-dash-light.png" width="425"/>
 
 **Observability questions answered by this template**
 * Are applications receiving all data?
