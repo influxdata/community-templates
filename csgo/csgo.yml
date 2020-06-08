@@ -1,0 +1,1113 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: optimistic-newton-b2f001
+spec:
+    color: '#ce58eb'
+    name: csgo
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: naughty-merkle-72f003
+spec:
+    associations:
+      - kind: Label
+        name: optimistic-newton-b2f001
+    name: csgo
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: dreamy-germain-f2f001
+spec:
+    associations:
+      - kind: Label
+        name: optimistic-newton-b2f001
+    charts:
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#DA6FF1'
+            name: Ectoplasm
+            type: scale
+          - hex: '#00717A'
+            name: Ectoplasm
+            type: scale
+          - hex: '#ACFF76'
+            name: Ectoplasm
+            type: scale
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat_Plus_Line
+        name: Last Match - Kills
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_last_match_kills_value")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 2
+        xCol: _time
+        yCol: _value
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Total Kills
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_kills_value")
+        width: 4
+        yPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Total Bombs Planted
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_TR_planted_bombs_value")
+                  |> sort()
+                  |> yield(name: "sort")
+        width: 2
+        yPos: 4
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Stats by Weapon'
+        width: 12
+        yPos: 6
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: AK47 Shots
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_shots_ak47_value")
+        width: 1
+        yPos: 7
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: AK47 Hits
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_hits_ak47_value")
+        width: 1
+        yPos: 8
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: AK47 Kills
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_kills_ak47_value")
+        width: 1
+        yPos: 9
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: AUG Shots
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_shots_aug_value")
+        width: 1
+        xPos: 1
+        yPos: 7
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: AUG Hits
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_hits_aug_value")
+        width: 1
+        xPos: 1
+        yPos: 8
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: AUG Kills
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_kills_aug_value")
+        width: 1
+        xPos: 1
+        yPos: 9
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#FDC44F'
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            name: Cthulhu
+            type: scale
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat_Plus_Line
+        name: Last Match - Deaths
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_last_match_deaths_value")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 2
+        xCol: _time
+        xPos: 2
+        yCol: _value
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Total Defused Bombs
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_defused_bombs_value")
+        width: 2
+        xPos: 2
+        yPos: 4
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: AWP Shots
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_shots_awp_value")
+        width: 1
+        xPos: 2
+        yPos: 7
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: AWP Hits
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_hits_awp_value")
+        width: 1
+        xPos: 2
+        yPos: 8
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: AWP Kills
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_kills_awp_value")
+        width: 1
+        xPos: 2
+        yPos: 9
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Bizon Shots
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_shots_bizon_value")
+        width: 1
+        xPos: 3
+        yPos: 7
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Bizon Hits
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_hits_bizon_value")
+        width: 1
+        xPos: 3
+        yPos: 8
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Bizon Kills
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_kills_bizon_value")
+        width: 1
+        xPos: 3
+        yPos: 9
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#FDC44F'
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            name: Cthulhu
+            type: scale
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat_Plus_Line
+        name: Last Match - MVP
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_last_match_mvps_value")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 2
+        xCol: _time
+        xPos: 4
+        yCol: _value
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Total Deaths
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_deaths_value")
+        width: 4
+        xPos: 4
+        yPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Headshots
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_kills_headshot_value")
+        width: 2
+        xPos: 4
+        yPos: 4
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Famas Shots
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_shots_famas_value")
+        width: 1
+        xPos: 4
+        yPos: 7
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Famas Hits
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_hits_famas_value")
+        width: 1
+        xPos: 4
+        yPos: 8
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Famas Kills
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_kills_famas_value")
+        width: 1
+        xPos: 4
+        yPos: 9
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: MP7 Shots
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_shots_mp7_value")
+        width: 1
+        xPos: 5
+        yPos: 7
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: MP7 Hits
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_hits_mp7_value")
+        width: 1
+        xPos: 5
+        yPos: 8
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: MP7 Kills
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_kills_mp7_value")
+        width: 1
+        xPos: 5
+        yPos: 9
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#FDC44F'
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            name: Cthulhu
+            type: scale
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat_Plus_Line
+        name: Last Match - CT Wins
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_last_match_ct_wins_value")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 2
+        xCol: _time
+        xPos: 6
+        yCol: _value
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Total Damage Done
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_damage_done_value")
+        width: 2
+        xPos: 6
+        yPos: 4
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Galilar Shots
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_shots_galilar_value")
+        width: 1
+        xPos: 6
+        yPos: 7
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Galilar Hits
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_hits_galilar_value")
+        width: 1
+        xPos: 6
+        yPos: 8
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Galilar Kills
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_kills_galilar_value")
+        width: 1
+        xPos: 6
+        yPos: 9
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: G3GS1 Shots
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_shots_g3sg1_value")
+        width: 1
+        xPos: 7
+        yPos: 7
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: G3GS1 Hits
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_hits_g3sg1_value")
+        width: 1
+        xPos: 7
+        yPos: 8
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: G3GS1 Kills
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_kills_g3sg1_value")
+        width: 1
+        xPos: 7
+        yPos: 9
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#DA6FF1'
+            name: Ectoplasm
+            type: scale
+          - hex: '#00717A'
+            name: Ectoplasm
+            type: scale
+          - hex: '#ACFF76'
+            name: Ectoplasm
+            type: scale
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat_Plus_Line
+        name: Last Match - T Wins
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_last_match_t_wins_value")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 2
+        xCol: _time
+        xPos: 8
+        yCol: _value
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Total MVP
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_mvps_value")
+        width: 2
+        xPos: 8
+        yPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Total Rounds Win
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_wins_value")
+        width: 2
+        xPos: 8
+        yPos: 4
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Glock Shots
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_shots_glock_value")
+        width: 1
+        xPos: 8
+        yPos: 7
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Glock Hits
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_hits_glock_value")
+        width: 1
+        xPos: 8
+        yPos: 8
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Glock Kills
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_kills_glock_value")
+        width: 1
+        xPos: 8
+        yPos: 9
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: P250 Shots
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_shots_p250_value")
+        width: 1
+        xPos: 9
+        yPos: 7
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: P250 Hits
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_hits_p250_value")
+        width: 1
+        xPos: 9
+        yPos: 8
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: P250 Kills
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_hits_p250_value")
+        width: 1
+        xPos: 9
+        yPos: 9
+      - axes:
+          - base: "10"
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#34BB55'
+            name: Solid Green
+            type: scale
+          - hex: '#34BB55'
+            name: Solid Green
+            type: scale
+          - hex: '#34BB55'
+            name: Solid Green
+            type: scale
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat_Plus_Line
+        name: Last Match - Money Spent
+        position: overlaid
+        prefix: '$ '
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_last_match_money_spent_value")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 2
+        xCol: _time
+        xPos: 10
+        yCol: _value
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Pistol Round Wins
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_wins_pistolround_value")
+        width: 2
+        xPos: 10
+        yPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Broken Windows
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_broken_windows_value")
+        width: 2
+        xPos: 10
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Kills Enemy Weapons
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_kills_enemy_weapon_value")
+        width: 2
+        xPos: 10
+        yPos: 4
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Kills Zoomed Sniper
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_kills_against_zoomed_sniper_value")
+        width: 2
+        xPos: 10
+        yPos: 5
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: M4A1 Shots
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_shots_m4a1_value")
+        width: 1
+        xPos: 10
+        yPos: 7
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: M4A1 Hits
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_hits_m4a1_value")
+        width: 1
+        xPos: 10
+        yPos: 8
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: M4A1 Kills
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_kills_m4a1_value")
+        width: 1
+        xPos: 10
+        yPos: 9
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TEC9 Shots
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_shots_tec9_value")
+        width: 1
+        xPos: 11
+        yPos: 7
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TEC9 Hits
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_hits_tec9_value")
+        width: 1
+        xPos: 11
+        yPos: 8
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TEC9 Kills
+        queries:
+          - query: |-
+                from(bucket: "csgo")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_csgo")
+                  |> filter(fn: (r) => r["_field"] == "playerstats_stats_total_kills_tec9_value")
+        width: 1
+        xPos: 11
+        yPos: 9
+    name: 'CSGO (Counter Strike: Global Offensive)'
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: csgo-telegraf
+spec:
+    config: |
+          [[outputs.influxdb_v2]]
+            ## The URLs of the InfluxDB cluster nodes.
+            ##
+            ## Multiple URLs can be specified for a single cluster, only ONE of the
+            ## urls will be written to each interval.
+            ## urls exp: http://127.0.0.1:9999
+            urls = ["$INFLUX_HOST"]
+          
+            ## Token for authentication.
+            token = "$INFLUX_TOKEN"
+          
+            ## Organization is the name of the organization you wish to write to; must exist.
+            organization = "$INFLUX_ORG"
+          
+            ## Destination bucket to write into.
+            bucket = "$INFLUX_BUCKET"
+          
+          [agent]
+          interval = "30m"
+          
+          [[inputs.exec]]
+            ## Commands array
+            commands = [
+              "sh csgo.sh"
+            ]
+          
+            ## Timeout for each command to complete.
+            timeout = "5s"
+          
+            ## measurement name suffix (for separating different commands)
+            name_suffix = "_csgo"
+          
+            ## Data format to consume.
+            ## Each data format has its own unique set of configuration options, read
+            ## more about them here:
+            ## https://github.com/influxdata/telegraf/blob/master/docs/DATA_FORMATS_INPUT.md
+            data_format = "json"
