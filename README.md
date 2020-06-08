@@ -15,6 +15,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | Template             | Description | Author |
 |----------------------|-------------|:------:|
 | [AWS Cloudwatch Monitoring](aws_cloudwatch/) | Monitor AWS EC2 and ELB | [bonitoo.io](.) |
+| [Counter Strike: Global Offensive](csgo/) | Get stats about your game. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Currency Exchange Rates](currency_exchange_rates/) | Visualize and analyze currency exchange rates using Quandl. | Wojciech Kocjan |
 | [Covid-19 in South America](InfluxDBv2_Covid19_SouthAmerica/) | Current data and graphs covering Covid-19 cases and deaths in South America | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Docker](docker/) | Monitor your running docker containers. | [@russorat](https://github.com/russorat) |
