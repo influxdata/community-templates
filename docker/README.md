@@ -4,6 +4,14 @@ This InfluxDB Template can be used to monitor Docker.
 
 ![Docker Dashboard Screenshot](img/docker_dashboard.png)
 
+### Quick Install
+
+If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/docker/docker.yml
+```
+
 ### Included Resources
 
 - 1 Bucket: `docker`, 7d retention
@@ -11,8 +19,13 @@ This InfluxDB Template can be used to monitor Docker.
 - 1 Telegraf Configuration
 - 1 Dashboard: `Docker`
 - 1 Variable: `bucket`
+- 4 Alerts: Container cpu, mem, disk, non-zero exit
+- 1 Notification Endpoint: Http Post
+- 1 Notification Rules: Crit Alert
 
 ## Setup Instructions
+
+  General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
     
   The data for the dashboard is populated by the included Telegraf configuration which includes the Docker Input. You may need to customize the input configuration, specific the `endpoint` value, depending on how you are running Docker. More information can be found in the [Telegraf Docker Input documentation](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/docker).
   

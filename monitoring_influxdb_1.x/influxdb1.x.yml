@@ -1,22 +1,25 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: InfluxDB1.x
+    name: influxdb1-x
 spec:
+    name: InfluxDB1.x
     color: '#311F94'
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: Solution
+    name: solution
 spec:
+    name: Solution
     color: '#FFD255'
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: Telegraf
+    name: telegraf
 spec:
+    name: Telegraf
     color: '#C9D0FF'
 ---
 apiVersion: influxdata.com/v2alpha1
@@ -24,6 +27,7 @@ kind: Bucket
 metadata:
     name: telegraf
 spec:
+    name: telegraf
     retentionRules:
       - everySeconds: 604800
         type: expire
@@ -31,8 +35,9 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: CheckDeadman
 metadata:
-    name: Host Deadman
+    name: host-deadman
 spec:
+    name: Host Deadman
     every: 1m0s
     level: CRIT
     query: |-
@@ -48,8 +53,9 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: CheckThreshold
 metadata:
-    name: Disk Usage Check
+    name: disk-usage-check
 spec:
+    name: Disk Usage Check
     every: 1m0s
     query: |-
         from(bucket: "telegraf")
@@ -73,8 +79,9 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: CheckThreshold
 metadata:
-    name: Memory Usage Check
+    name: memory-usage-check
 spec:
+    name: Memory Usage Check
     every: 1m0s
     query: |-
         from(bucket: "telegraf")
@@ -98,6 +105,7 @@ kind: Variable
 metadata:
     name: bucket
 spec:
+    name: bucket
     language: flux
     query: |-
         buckets()
@@ -109,8 +117,9 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: influxdb_host
+    name: influxdb-host
 spec:
+    name: influxdb_host
     language: flux
     query: |-
         import "influxdata/influxdb/v1"
@@ -120,8 +129,9 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: telegraf_host
+    name: telegraf-host
 spec:
+    name: telegraf_host
     language: flux
     query: |-
         import "influxdata/influxdb/v1"
@@ -131,15 +141,16 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Telegraf
 metadata:
-    name: InfluxDB_1.x.conf
+    name: influxdb-1-x-conf
 spec:
+    name: InfluxDB_1.x.conf
     associations:
       - kind: Label
-        name: Solution
+        name: solution
       - kind: Label
-        name: InfluxDB1.x
+        name: influxdb1-x
       - kind: Label
-        name: Telegraf
+        name: telegraf
     config: |
         # Global tags can be specified here in key="value" format.
         [global_tags]
@@ -366,13 +377,14 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: InfluxDB 1.x
+    name: influxdb-1-x
 spec:
+    name: InfluxDB 1.x
     associations:
       - kind: Label
-        name: Solution
+        name: solution
       - kind: Label
-        name: InfluxDB1.x
+        name: influxdb1-x
     charts:
       - colors:
           - hex: '#00C9FF'
@@ -1188,15 +1200,16 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: Telegraf
+    name: telegraf
 spec:
+    name: Telegraf
     associations:
       - kind: Label
-        name: Solution
+        name: solution
       - kind: Label
-        name: InfluxDB1.x
+        name: influxdb1-x
       - kind: Label
-        name: Telegraf
+        name: telegraf
     charts:
       - axes:
           - base: "10"

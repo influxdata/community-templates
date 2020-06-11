@@ -1,0 +1,553 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: distracted-yonath-5cb001
+spec:
+    color: '#326BBA'
+    name: vsphere
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: noshing-fermat-5cb005
+spec:
+    associations:
+      - kind: Label
+        name: distracted-yonath-5cb001
+    name: vsphere
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: vsphere
+spec:
+    associations:
+      - kind: Label
+        name: distracted-yonath-5cb001
+    charts:
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat
+        name: Uptime
+        queries:
+          - query: |-
+                from(bucket: "vsphere")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "vsphere_host_sys")
+                  |> filter(fn: (r) => r["_field"] == "uptime_latest")
+                  |> skew()
+                  |> yield(name: "skew")
+        suffix: ' Days'
+        width: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+            suffix: ' kBs'
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Network Usage
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "vsphere")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "vsphere_host_net")
+                  |> filter(fn: (r) => r["_field"] == "usage_average")
+        width: 5
+        xCol: _time
+        yCol: _value
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat
+        name: CPU Usage
+        queries:
+          - query: |-
+                from(bucket: "vsphere")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "vsphere_host_cpu")
+                  |> filter(fn: (r) => r["_field"] == "usagemhz_average")
+        suffix: ' MHz'
+        width: 1
+        xPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 1
+        height: 3
+        kind: Single_Stat
+        name: RAM Usage
+        queries:
+          - query: |-
+                from(bucket: "vsphere")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "vsphere_host_mem")
+                  |> filter(fn: (r) => r["_field"] == "totalCapacity_average")
+                  |> aggregateWindow(every: v.windowPeriod, fn: max)
+                  |> yield(name: "max")
+        suffix: ' MB'
+        width: 1
+        xPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: CPU Utilization Avg %
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "vsphere")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "vsphere_host_cpu")
+                  |> filter(fn: (r) => r["_field"] == "usage_average")
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Total Disk Latency
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "vsphere")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "vsphere_host_disk")
+                  |> filter(fn: (r) => r["_field"] == "totalReadLatency_average" or r["_field"] == "totalWriteLatency_average")
+        width: 4
+        xCol: _time
+        xPos: 5
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - name: y
+            scale: linear
+            suffix: ' MB'
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: RAM Utilization
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: "vsphere")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "vsphere_host_mem")
+                  |> filter(fn: (r) => r["_field"] == "totalCapacity_average")
+                  |> aggregateWindow(every: v.windowPeriod, fn: max)
+                  |> yield(name: "max")
+        shade: true
+        width: 4
+        xCol: _time
+        xPos: 8
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Storage Adapter Latency
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "vsphere")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "vsphere_host_storageAdapter")
+                  |> filter(fn: (r) => r["_field"] == "read_average" or r["_field"] == "write_average")
+        width: 3
+        xCol: _time
+        xPos: 9
+        yCol: _value
+        yPos: 3
+
+---
+
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: vsphere
+spec:
+    config: |
+        # Telegraf Configuration
+        #
+        # Telegraf is entirely plugin driven. All metrics are gathered from the
+        # declared inputs, and sent to the declared outputs.
+        #
+        # Plugins must be declared in here to be active.
+        # To deactivate a plugin, comment out the name and any variables.
+        #
+        # Use 'telegraf -config telegraf.conf -test' to see what metrics a config
+        # file would generate.
+        #
+        # Environment variables can be used anywhere in this config file, simply surround
+        # them with ${}. For strings the variable must be within quotes (ie, "${STR_VAR}"),
+        # for numbers and booleans they should be plain (ie, ${INT_VAR}, ${BOOL_VAR})
+        
+        
+        # Global tags can be specified here in key="value" format.
+        [global_tags]
+        # dc = "us-east-1" # will tag all metrics with dc=us-east-1
+        # rack = "1a"
+        ## Environment variables can be used as tags, and throughout the config file
+        # user = "$USER"
+        
+        
+        # Configuration for telegraf agent
+        [agent]
+        ## Default data collection interval for all inputs
+        interval = "10s"
+        ## Rounds collection interval to 'interval'
+        ## ie, if interval="10s" then always collect on :00, :10, :20, etc.
+        round_interval = true
+        
+        ## Telegraf will send metrics to outputs in batches of at most
+        ## metric_batch_size metrics.
+        ## This controls the size of writes that Telegraf sends to output plugins.
+        metric_batch_size = 1000
+        
+        ## Maximum number of unwritten metrics per output.  Increasing this value
+        ## allows for longer periods of output downtime without dropping metrics at the
+        ## cost of higher maximum memory usage.
+        metric_buffer_limit = 10000
+        
+        ## Collection jitter is used to jitter the collection by a random amount.
+        ## Each plugin will sleep for a random time within jitter before collecting.
+        ## This can be used to avoid many plugins querying things like sysfs at the
+        ## same time, which can have a measurable effect on the system.
+        collection_jitter = "0s"
+        
+        ## Default flushing interval for all outputs. Maximum flush_interval will be
+        ## flush_interval + flush_jitter
+        flush_interval = "10s"
+        ## Jitter the flush interval by a random amount. This is primarily to avoid
+        ## large write spikes for users running a large number of telegraf instances.
+        ## ie, a jitter of 5s and interval 10s means flushes will happen every 10-15s
+        flush_jitter = "0s"
+        
+        ## By default or when set to "0s", precision will be set to the same
+        ## timestamp order as the collection interval, with the maximum being 1s.
+        ##   ie, when interval = "10s", precision will be "1s"
+        ##       when interval = "250ms", precision will be "1ms"
+        ## Precision will NOT be used for service inputs. It is up to each individual
+        ## service input to set the timestamp at the appropriate precision.
+        ## Valid time units are "ns", "us" (or "µs"), "ms", "s".
+        precision = ""
+        
+        ## Log at debug level.
+        # debug = false
+        ## Log only error level messages.
+        # quiet = false
+        
+        ## Log target controls the destination for logs and can be one of "file",
+        ## "stderr" or, on Windows, "eventlog".  When set to "file", the output file
+        ## is determined by the "logfile" setting.
+        # logtarget = "file"
+        
+        ## Name of the file to be logged to when using the "file" logtarget.  If set to
+        ## the empty string then logs are written to stderr.
+        # logfile = ""
+        
+        ## The logfile will be rotated after the time interval specified.  When set
+        ## to 0 no time based rotation is performed.  Logs are rotated only when
+        ## written to, if there is no log activity rotation may be delayed.
+        # logfile_rotation_interval = "0d"
+        
+        ## The logfile will be rotated when it becomes larger than the specified
+        ## size.  When set to 0 no size based rotation is performed.
+        # logfile_rotation_max_size = "0MB"
+        
+        ## Maximum number of rotated archives to keep, any older logs are deleted.
+        ## If set to -1, no archives are removed.
+        # logfile_rotation_max_archives = 5
+        
+        ## Override default hostname, if empty use os.Hostname()
+        hostname = ""
+        ## If set to true, do no set the "host" tag in the telegraf agent.
+        omit_hostname = false
+        
+        
+        ###############################################################################
+        #                            OUTPUT PLUGINS                                   #
+        ###############################################################################
+
+        [[outputs.influxdb_v2]]
+          ## The URLs of the InfluxDB cluster nodes.
+          ##
+          ## Multiple URLs can be specified for a single cluster, only ONE of the
+          ## urls will be written to each interval.
+          ## urls exp: http://127.0.0.1:9999
+          urls = ["$INFLUX_HOST"]
+
+          ## Token for authentication.
+          token = "$INFLUX_TOKEN"
+
+          ## Organization is the name of the organization you wish to write to; must exist.
+          organization = "$INFLUX_ORG"
+
+          ## Destination bucket to write into.
+          bucket = "$INFLUX_BUCKET"
+
+        # Read metrics from one or many vCenters
+        [[inputs.vsphere]]
+          ## List of vCenter URLs to be monitored. These three lines must be uncommented
+          ## and edited for the plugin to work.
+          vcenters = [ "https://$VSPHERE_HOST/sdk" ]
+          username = "$vsphere-user"
+          password = "$vsphere-password"
+
+          ## VMs
+          ## Typical VM metrics (if omitted or empty, all metrics are collected)
+          # vm_include = [ "/*/vm/**"] # Inventory path to VMs to collect (by default all are collected)
+          # vm_exclude = [] # Inventory paths to exclude
+          vm_metric_include = [
+            "cpu.demand.average",
+            "cpu.idle.summation",
+            "cpu.latency.average",
+            "cpu.readiness.average",
+            "cpu.ready.summation",
+            "cpu.run.summation",
+            "cpu.usagemhz.average",
+            "cpu.used.summation",
+            "cpu.wait.summation",
+            "mem.active.average",
+            "mem.granted.average",
+            "mem.latency.average",
+            "mem.swapin.average",
+            "mem.swapinRate.average",
+            "mem.swapout.average",
+            "mem.swapoutRate.average",
+            "mem.usage.average",
+            "mem.vmmemctl.average",
+            "net.bytesRx.average",
+            "net.bytesTx.average",
+            "net.droppedRx.summation",
+            "net.droppedTx.summation",
+            "net.usage.average",
+            "power.power.average",
+            "virtualDisk.numberReadAveraged.average",
+            "virtualDisk.numberWriteAveraged.average",
+            "virtualDisk.read.average",
+            "virtualDisk.readOIO.latest",
+            "virtualDisk.throughput.usage.average",
+            "virtualDisk.totalReadLatency.average",
+            "virtualDisk.totalWriteLatency.average",
+            "virtualDisk.write.average",
+            "virtualDisk.writeOIO.latest",
+            "sys.uptime.latest",
+          ]
+          # vm_metric_exclude = [] ## Nothing is excluded by default
+          # vm_instances = true ## true by default
+
+          ## Hosts
+          ## Typical host metrics (if omitted or empty, all metrics are collected)
+          # host_include = [ "/*/host/**"] # Inventory path to hosts to collect (by default all are collected)
+          # host_exclude [] # Inventory paths to exclude
+          host_metric_include = [
+            "cpu.coreUtilization.average",
+            "cpu.costop.summation",
+            "cpu.demand.average",
+            "cpu.idle.summation",
+            "cpu.latency.average",
+            "cpu.readiness.average",
+            "cpu.ready.summation",
+            "cpu.swapwait.summation",
+            "cpu.usage.average",
+            "cpu.usagemhz.average",
+            "cpu.used.summation",
+            "cpu.utilization.average",
+            "cpu.wait.summation",
+            "disk.deviceReadLatency.average",
+            "disk.deviceWriteLatency.average",
+            "disk.kernelReadLatency.average",
+            "disk.kernelWriteLatency.average",
+            "disk.numberReadAveraged.average",
+            "disk.numberWriteAveraged.average",
+            "disk.read.average",
+            "disk.totalReadLatency.average",
+            "disk.totalWriteLatency.average",
+            "disk.write.average",
+            "mem.active.average",
+            "mem.latency.average",
+            "mem.state.latest",
+            "mem.swapin.average",
+            "mem.swapinRate.average",
+            "mem.swapout.average",
+            "mem.swapoutRate.average",
+            "mem.totalCapacity.average",
+            "mem.usage.average",
+            "mem.vmmemctl.average",
+            "net.bytesRx.average",
+            "net.bytesTx.average",
+            "net.droppedRx.summation",
+            "net.droppedTx.summation",
+            "net.errorsRx.summation",
+            "net.errorsTx.summation",
+            "net.usage.average",
+            "power.power.average",
+            "storageAdapter.numberReadAveraged.average",
+            "storageAdapter.numberWriteAveraged.average",
+            "storageAdapter.read.average",
+            "storageAdapter.write.average",
+            "sys.uptime.latest",
+          ]
+            ## Collect IP addresses? Valid values are "ipv4" and "ipv6"
+          # ip_addresses = ["ipv6", "ipv4" ]
+
+          # host_metric_exclude = [] ## Nothing excluded by default
+          # host_instances = true ## true by default
+
+
+          ## Clusters
+          # cluster_include = [ "/*/host/**"] # Inventory path to clusters to collect (by default all are collected)
+          # cluster_exclude = [] # Inventory paths to exclude
+          # cluster_metric_include = [] ## if omitted or empty, all metrics are collected
+          # cluster_metric_exclude = [] ## Nothing excluded by default
+          # cluster_instances = false ## false by default
+
+          ## Datastores
+          # datastore_include = [ "/*/datastore/**"] # Inventory path to datastores to collect (by default all are collected)
+          # datastore_exclude = [] # Inventory paths to exclude
+          # datastore_metric_include = [] ## if omitted or empty, all metrics are collected
+          # datastore_metric_exclude = [] ## Nothing excluded by default
+          # datastore_instances = false ## false by default
+
+          ## Datacenters
+          # datacenter_include = [ "/*/host/**"] # Inventory path to clusters to collect (by default all are collected)
+          # datacenter_exclude = [] # Inventory paths to exclude
+          datacenter_metric_include = [] ## if omitted or empty, all metrics are collected
+          datacenter_metric_exclude = [ "*" ] ## Datacenters are not collected by default.
+          # datacenter_instances = false ## false by default
+
+          ## Plugin Settings
+          ## separator character to use for measurement and field names (default: "_")
+          # separator = "_"
+
+          ## number of objects to retreive per query for realtime resources (vms and hosts)
+          ## set to 64 for vCenter 5.5 and 6.0 (default: 256)
+          # max_query_objects = 256
+
+          ## number of metrics to retreive per query for non-realtime resources (clusters and datastores)
+          ## set to 64 for vCenter 5.5 and 6.0 (default: 256)
+          # max_query_metrics = 256
+
+          ## number of go routines to use for collection and discovery of objects and metrics
+          # collect_concurrency = 1
+          # discover_concurrency = 1
+
+          ## the interval before (re)discovering objects subject to metrics collection (default: 300s)
+          # object_discovery_interval = "300s"
+
+          ## timeout applies to any of the api request made to vcenter
+          # timeout = "60s"
+
+          ## When set to true, all samples are sent as integers. This makes the output
+          ## data types backwards compatible with Telegraf 1.9 or lower. Normally all
+          ## samples from vCenter, with the exception of percentages, are integer
+          ## values, but under some conditions, some averaging takes place internally in
+          ## the plugin. Setting this flag to "false" will send values as floats to
+          ## preserve the full precision when averaging takes place.
+          # use_int_samples = true
+
+          ## Custom attributes from vCenter can be very useful for queries in order to slice the
+          ## metrics along different dimension and for forming ad-hoc relationships. They are disabled
+          ## by default, since they can add a considerable amount of tags to the resulting metrics. To
+          ## enable, simply set custom_attribute_exlude to [] (empty set) and use custom_attribute_include
+          ## to select the attributes you want to include.
+          ## By default, since they can add a considerable amount of tags to the resulting metrics. To
+          ## enable, simply set custom_attribute_exlude to [] (empty set) and use custom_attribute_include
+          ## to select the attributes you want to include.
+          # custom_attribute_include = []
+          # custom_attribute_exclude = ["*"]
+
+          ## Optional SSL Config
+          # ssl_ca = "/path/to/cafile"
+          # ssl_cert = "/path/to/certfile"
+          # ssl_key = "/path/to/keyfile"
+          ## Use SSL but skip chain & host verification
+          insecure_skip_verify = true

@@ -4,6 +4,14 @@ This InfluxDB Template can be used to monitor a website running on Apache HTTPd 
 
 ![Website Monitoring Dashboard Screenshot](img/Dashboard.png)
 
+### Quick Install
+
+If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/apache_postgresql/website_template.yml
+```
+
 ### Included Resources
 
 - `Website Monitoring` Dashboard (see screenshot above)
@@ -15,6 +23,8 @@ This InfluxDB Template can be used to monitor a website running on Apache HTTPd 
 
 
 ## Setup Instructions
+
+General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
 
 ### Apache
 
@@ -35,6 +45,7 @@ In order to collect information from your Apache server, you will need to add th
   - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your master token to get started.
   - `INFLUX_ORG` - The name of your Organization (this will be your email address on the InfluxDB Cloud free tier)
   - `INFLUX_HOST` - The URL of your InfluxDB host (this can your localhost, a remote instance, or InfluxDB Cloud)
+  - `APACHE_HOSTNAME` - The website name, will be used for the `host` tag in measurements
   - `APACHE_STATUS_URL` - The URL where your Apache `server-status` is located
   - `PG_HOST` - The hostname of your Postgresql database
   - `PG_USER` - The user account to authenticate to your Postgresql database

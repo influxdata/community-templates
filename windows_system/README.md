@@ -4,6 +4,14 @@ This InfluxDB Template can be used to monitor your Windows System.
 
 ![Windows System Dashboard Screenshot](img/windows_system_dashboard.png)
 
+### Quick Install
+
+If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/windows_system/windows_system.yml
+```
+
 ### Included Resources
 
 - 1 Bucket: `telegraf`, 7d retention
@@ -13,6 +21,8 @@ This InfluxDB Template can be used to monitor your Windows System.
 - 2 Variables: `bucket` and `windows_host`
 
 ## Setup Instructions
+  
+  General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
     
   The data for the dashboard is populated by the included Telegraf configuration. The Telegraf Configuration requires the following environment variables
     

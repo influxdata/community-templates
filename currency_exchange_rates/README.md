@@ -20,6 +20,14 @@ It also shows how to use functions such as [timedMovingAverage()](https://v2.doc
 
 ![Exchange Rates Screenshot](img/exchange-rates-dashboard.png)
 
+### Quick Install
+
+If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/currency_exchange_rates/currency_exchange_rates.yml
+```
+
 ## Included Resources
 
   - 1 Bucket: `quandl`, 30d retention
@@ -29,6 +37,8 @@ It also shows how to use functions such as [timedMovingAverage()](https://v2.doc
   - 1 Variables: `bucket`
 
 ## Setup Instructions
+
+  General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
     
   The data for the dashboard is populated by the included Telegraf configuration. The Telegraf Configuration requires the following environment variables
     

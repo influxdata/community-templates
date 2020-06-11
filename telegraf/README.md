@@ -6,6 +6,14 @@ Provided by: Steven Soroka
 
 ![Telegraf Dashboard Screenshot](telegraf-dashboard.png)
 
+### Quick Install
+
+If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/telegraf/manifest.yml
+```
+
 ## Included Resources
 
 - 1 Dashboard: `Telegraf`
@@ -13,6 +21,8 @@ Provided by: Steven Soroka
 - 1 Telegraf config - Internal metrics collection and InfluxDB v2 output
 
 ## Setup Instructions
+
+General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
 
 This Telegraf dashboard assumes you've enabled a the inputs.internal plugin in Telegraf, and that you're collecting them to a bucket named `Telegraf` in your Influx Cloud account. 
 

@@ -9,6 +9,14 @@ Provide a short description of your template and use case here. Try to keep it t
 
 ![Example Dashboard Screenshot](Example_Screenshot.png)
 
+### Quick Install
+
+If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
+
+```
+influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/{your_template_dir}/{your_template_file}
+```
+
 ## Included Resources
 
 List what resources your template provides in this section. That will allow users to know at a glance what comes with it.
@@ -23,6 +31,8 @@ List what resources your template provides in this section. That will allow user
     - 3 Variables: `bucket`, `influxdb_host`, and `telegraf_host`
 
 ## Setup Instructions
+
+General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
 
 Describe any steps needed to finish setting up and running your template, including how to launch your Telegraf configurations and connect to any external services or data sources.
 

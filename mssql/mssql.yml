@@ -1,0 +1,876 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: sharp-carson-258001
+spec:
+    color: '#FFE480'
+    name: mssql
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: gifted-snyder-a58001
+spec:
+    associations:
+      - kind: Label
+        name: sharp-carson-258001
+    name: mssql
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: exciting-thompson-658001
+spec:
+    associations:
+      - kind: Label
+        name: sharp-carson-258001
+    charts:
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Uptime (days)
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_server_properties")
+                  |> filter(fn: (r) => r["_field"] == "uptime")
+                  |> last()
+                  |> map(fn: (r) => ({r with _value: r._value / 1440 }))
+        width: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Target Memory
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["counter"] == "Target Server Memory (KB)")
+                  |> last()
+                  |> map(fn: (r) => ({r with _value: r._value / 1024.00}))
+        suffix: ' GB'
+        width: 2
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: SQL Server Activity
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> filter(fn: (r) => r["counter"] == "SQL Compilations/sec" or r["counter"] == "SQL Re-Compilations/sec" or r["counter"] == "User Connections" or r["counter"] == "Batch Requests/sec" or r["counter"] == "Logouts/sec" or r["counter"] == "Logins/sec" or r["counter"] == "Processes blocked")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Buffer Cache - Disk
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> filter(fn: (r) => r["counter"] == "Full Scans/sec" or r["counter"] == "Index Searches/sec" or r["counter"] == "Page Splits/sec" or r["counter"] == "Page lookups/sec" or r["counter"] == "Page reads/sec" or r["counter"] == "Page writes/sec" or r["counter"] == "Readahead pages/sec" or r["counter"] == "Lazy writes/sec" or r["counter"] == "Checkpoint pages/sec")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Wait Time
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_waitstats")
+                  |> filter(fn: (r) => r["_field"] == "wait_time_ms")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 7
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Database | Log Size
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_performance")
+                  |> filter(fn: (r) => r["counter"] == "Log File(s) Size (KB)")
+                  |> filter(fn: (r) => r["instance"] == "master" or r["instance"] == "model" or r["instance"] == "msdb" or r["instance"] == "mssqlsystemresource" or r["instance"] == "tempdb")
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 9
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Reads | Row and Log Bytes
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_database_io")
+                  |> filter(fn: (r) => r["_field"] == "read_bytes")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_database_io")
+                  |> filter(fn: (r) => r["_field"] == "read_bytes")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 11
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Reads | Row and Log (ms)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_database_io")
+                  |> filter(fn: (r) => r["_field"] == "read_latency_ms" or r["_field"] == "rg_read_stall_ms")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_database_io")
+                  |> filter(fn: (r) => r["_field"] == "read_latency_ms" or r["_field"] == "rg_read_stall_ms")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 13
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat_Plus_Line
+        name: CPU Usage by SQL
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> filter(fn: (r) => r["counter"] == "CPU usage %")
+        width: 2
+        xCol: _time
+        xPos: 2
+        yCol: _value
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Used Memory
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["counter"] == "Used memory (KB)")
+                  |> last()
+                  |> map(fn: (r) => ({r with _value: r._value / 100024.00}))
+        suffix: ' GB'
+        width: 2
+        xPos: 2
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#FD7A5D'
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            name: Delorean
+            type: scale
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat_Plus_Line
+        name: Windows CPU Idle
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "win_cpu")
+                  |> filter(fn: (r) => r["_field"] == "Percent_Idle_Time")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 2
+        xCol: _time
+        xPos: 4
+        yCol: _value
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: User Connections
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_performance")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> filter(fn: (r) => r["counter"] == "User Connections")
+        width: 2
+        xPos: 4
+        yPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Online
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_server_properties")
+                  |> filter(fn: (r) => r["_field"] == "db_online")
+        width: 1
+        xPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Disk Write Time
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "win_disk")
+                  |> filter(fn: (r) => r["_field"] == "Percent_Disk_Write_Time")
+        width: 3
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Databases Activity
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> filter(fn: (r) => r["counter"] == "Transactions/sec" or r["counter"] == "Write Transactions/sec" or r["counter"] == "Log Flush Wait Time" or r["counter"] == "Log Flushes/sec" or r["counter"] == "Lock Timeouts/sec" or r["counter"] == "Number of Deadlocks/sec" or r["counter"] == "Lock Waits/sec" or r["counter"] == "Latch Waits/sec")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Memory Manager
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_memory_clerks")
+                  |> filter(fn: (r) => r["_field"] == "size_kb")
+                  |> filter(fn: (r) => r["database_name"] == "master")
+                  |> filter(fn: (r) => r["host"] == "WIN-8EI77QDB3SL")
+                  |> derivative(unit: v.windowPeriod, nonNegative: true)
+                  |> yield(name: "nonnegative derivative")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Wait Tasks
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_waitstats")
+                  |> filter(fn: (r) => r["_field"] == "waiting_tasks_count")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 7
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Database | Data Size
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_performance")
+                  |> filter(fn: (r) => r["counter"] == "Data File(s) Size (KB)")
+                  |> filter(fn: (r) => r["instance"] == "master" or r["instance"] == "model" or r["instance"] == "msdb" or r["instance"] == "mssqlsystemresource" or r["instance"] == "tempdb")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 9
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Writes | Row and Log Bytes
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_database_io")
+                  |> filter(fn: (r) => r["_field"] == "write_bytes" or r["_field"] == "writes")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 11
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Writes | Row and Log (ms)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_database_io")
+                  |> filter(fn: (r) => r["_field"] == "write_latency_ms" or r["_field"] == "rg_write_stall_ms")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 13
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Offline
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_server_properties")
+                  |> filter(fn: (r) => r["_field"] == "db_offline")
+        width: 1
+        xPos: 7
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Restoring
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_server_properties")
+                  |> filter(fn: (r) => r["_field"] == "db_restoring")
+        width: 1
+        xPos: 8
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Recovering
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_server_properties")
+                  |> filter(fn: (r) => r["_field"] == "db_recovering")
+        width: 1
+        xPos: 9
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Disk Read Time
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "win_disk")
+                  |> filter(fn: (r) => r["_field"] == "Percent_Disk_Read_Time")
+        width: 3
+        xCol: _time
+        xPos: 9
+        yCol: _value
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Pending
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_server_properties")
+                  |> filter(fn: (r) => r["_field"] == "db_recoveryPending")
+        width: 1
+        xPos: 10
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Suspect
+        queries:
+          - query: |-
+                from(bucket: "mssql")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_server_properties")
+                  |> filter(fn: (r) => r["_field"] == "db_suspect")
+        width: 1
+        xPos: 11
+    name: MSSQL
+
+---
+
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: mssql-config
+spec:
+    config: |
+          [[outputs.influxdb_v2]]
+            ## The URLs of the InfluxDB cluster nodes.
+            ##
+            ## Multiple URLs can be specified for a single cluster, only ONE of the
+            ## urls will be written to each interval.
+            ## urls exp: http://127.0.0.1:9999
+            urls = ["$INFLUX_HOST"]
+
+            ## Token for authentication.
+            token = "$INFLUX_TOKEN"
+
+            ## Organization is the name of the organization you wish to write to; must exist.
+            organization = "$INFLUX_ORG"
+
+            ## Destination bucket to write into.
+            bucket = "$INFLUX_BUCKET"
+
+          [agent]
+            ## Default data collection interval for all inputs, can be changed as per collection interval needs
+            interval = "10s"
+
+          # Read metrics from Microsoft SQL Server
+          [[inputs.sqlserver]]
+            ## Specify instances to monitor with a list of connection strings.
+            ## All connection parameters are optional.
+            ## By default, the host is localhost, listening on default port, TCP 1433.
+            ##   for Windows, the user is the currently running AD user (SSO).
+            ##   See https://github.com/denisenkom/go-mssqldb for detailed connection
+            ##   parameters, in particular, tls connections can be created like so:
+            ##   "encrypt=true;certificate=<cert>;hostNameInCertificate=<SqlServer host fqdn>"
+            # servers = [
+            #  "Server=192.168.1.10;Port=1433;User Id=<user>;Password=<pw>;app name=telegraf;log=1;",
+            # ]
+
+            ## Optional parameter, setting this to 2 will use a new version
+            ## of the collection queries that break compatibility with the original
+            ## dashboards.
+            ## Version 2 - is compatible from SQL Server 2012 and later versions and also for SQL Azure DB
+            query_version = 2
+
+            ## If you are using AzureDB, setting this to true will gather resource utilization metrics
+            # azuredb = false
+
+            ## Possible queries
+            ## Version 2:
+            ## - PerformanceCounters
+            ## - WaitStatsCategorized
+            ## - DatabaseIO
+            ## - ServerProperties
+            ## - MemoryClerk
+            ## - Schedulers
+            ## - SqlRequests
+            ## - VolumeSpace
+            ## - Cpu
+            ## Version 1:
+            ## - PerformanceCounters
+            ## - WaitStatsCategorized
+            ## - CPUHistory
+            ## - DatabaseIO
+            ## - DatabaseSize
+            ## - DatabaseStats
+            ## - DatabaseProperties
+            ## - MemoryClerk
+            ## - VolumeSpace
+            ## - PerformanceMetrics
+
+            ## A list of queries to include. If not specified, all the above listed queries are used.
+            # include_query = []
+
+            ## A list of queries to explicitly ignore.
+            exclude_query = [ 'Schedulers' , 'SqlRequests' ]
+
+          [[inputs.win_perf_counters]]
+            [[inputs.win_perf_counters.object]]
+              # Processor usage, alternative to native, reports on a per core.
+              ObjectName = "Processor"
+              Instances = ["*"]
+              Counters = ["% Idle Time", "% Interrupt Time", "% Privileged Time", "% User Time", "% Processor Time"]
+              Measurement = "win_cpu"
+              #IncludeTotal=false #Set to true to include _Total instance when querying for all (*).
+
+            [[inputs.win_perf_counters.object]]
+              # Disk times and queues
+              ObjectName = "LogicalDisk"
+              Instances = ["*"]
+              Counters = ["% Idle Time", "% Disk Time","% Disk Read Time", "% Disk Write Time", "% User Time", "Current Disk Queue Length"]
+              Measurement = "win_disk"
+              #IncludeTotal=false #Set to true to include _Total instance when querying for all (*).
+
+            [[inputs.win_perf_counters.object]]
+              ObjectName = "System"
+              Counters = ["Context Switches/sec","System Calls/sec", "Processor Queue Length"]
+              Instances = ["------"]
+              Measurement = "win_system"
+              #IncludeTotal=false #Set to true to include _Total instance when querying for all (*).
+
+            [[inputs.win_perf_counters.object]]
+              # Example query where the Instance portion must be removed to get data back, such as from the Memory object.
+              ObjectName = "Memory"
+              Counters = ["Available Bytes","Cache Faults/sec","Demand Zero Faults/sec","Page Faults/sec","Pages/sec","Transition Faults/sec","Pool Nonpaged Bytes","Pool Paged Bytes"]
+              Instances = ["------"] # Use 6 x - to remove the Instance bit from the query.
+              Measurement = "win_mem"
+              #IncludeTotal=false #Set to true to include _Total instance when querying for all (*).
+
+            [[inputs.win_perf_counters.object]]
+              # more counters for the Network Interface Object can be found at
+              # https://msdn.microsoft.com/en-us/library/ms803962.aspx
+              ObjectName = "Network Interface"
+              Counters = ["Bytes Received/sec","Bytes Sent/sec","Packets Received/sec","Packets Sent/sec"]
+              Instances = ["*"] # Use 6 x - to remove the Instance bit from the query.
+              Measurement = "win_net"
+              #IncludeTotal=false #Set to true to include _Total instance when querying for all (*).
