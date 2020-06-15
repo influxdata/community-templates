@@ -1,0 +1,620 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: flamboyant-dubinsky-332001
+spec:
+    color: '#F95F53'
+    name: postgres
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: vivid-heisenberg-732003
+spec:
+    associations:
+      - kind: Label
+        name: flamboyant-dubinsky-332001
+    name: postgres
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: jovial-montalcini-f32001
+spec:
+    associations:
+      - kind: Label
+        name: flamboyant-dubinsky-332001
+    charts:
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: min
+          - hex: '#9394FF'
+            name: comet
+            type: max
+            value: 100
+        decimalPlaces: 2
+        height: 3
+        kind: Gauge
+        name: Current IOwait
+        queries:
+          - query: |-
+                from(bucket: "postgres")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cpu")
+                  |> filter(fn: (r) => r["_field"] == "usage_iowait")
+        width: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Fetch Data (Select)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "postgres")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "postgresql")
+                  |> filter(fn: (r) => r["_field"] == "tup_fetched")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        shade: true
+        width: 4
+        xCol: _time
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Insert Data
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "postgres")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "postgresql")
+                  |> filter(fn: (r) => r["_field"] == "tup_inserted")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        shade: true
+        width: 4
+        xCol: _time
+        yCol: _value
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Disk Used %
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "postgres")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "disk")
+                  |> filter(fn: (r) => r["_field"] == "used_percent")
+        shade: true
+        width: 4
+        xCol: _time
+        yCol: _value
+        yPos: 7
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Blocks Read
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "postgres")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "postgresql")
+                  |> filter(fn: (r) => r["_field"] == "blks_read")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        shade: true
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 9
+      - colors:
+          - hex: '#4ED8A0'
+            name: rainforest
+            type: min
+          - hex: '#BF3D5E'
+            name: ruby
+            type: threshold
+            value: 85
+          - hex: '#BF3D5E'
+            name: ruby
+            type: max
+            value: 100
+        decimalPlaces: 2
+        height: 3
+        kind: Gauge
+        name: Current CPU
+        queries:
+          - query: |-
+                from(bucket: "postgres")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cpu")
+                  |> filter(fn: (r) => r["_field"] == "usage_user")
+        width: 3
+        xPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Returned Data
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "postgres")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "postgresql")
+                  |> filter(fn: (r) => r["_field"] == "tup_returned")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        shade: true
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Deleted Data
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "postgres")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "postgresql")
+                  |> filter(fn: (r) => r["_field"] == "tup_deleted")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        shade: true
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Disk Read Time
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "postgres")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "diskio")
+                  |> filter(fn: (r) => r["_field"] == "read_time")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        shade: true
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 7
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: min
+          - hex: '#9394FF'
+            name: comet
+            type: max
+            value: 100
+        decimalPlaces: 2
+        height: 3
+        kind: Gauge
+        name: RAM Used (%)
+        queries:
+          - query: |-
+                from(bucket: "postgres")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "mem")
+                  |> filter(fn: (r) => r["_field"] == "used_percent")
+        width: 2
+        xPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Blocks Hit
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "postgres")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "postgresql")
+                  |> filter(fn: (r) => r["_field"] == "blks_hit")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        shade: true
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 9
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 3
+        kind: Single_Stat
+        name: RAM Available (GB)
+        queries:
+          - query: |-
+                from(bucket: "postgres")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "mem")
+                  |> filter(fn: (r) => r["_field"] == "available")
+                  |> last()
+                  |> map(fn: (r) => ({r with _value: r._value / 1000024}))
+        width: 2
+        xPos: 8
+      - axes:
+          - base: "10"
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Update Data
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "postgres")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "postgresql")
+                  |> filter(fn: (r) => r["_field"] == "tup_updated")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        shade: true
+        width: 4
+        xCol: _time
+        xPos: 8
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat_Plus_Line
+        name: Conflicts
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "postgres")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "postgresql")
+                  |> filter(fn: (r) => r["_field"] == "conflicts")
+        width: 2
+        xCol: _time
+        xPos: 8
+        yCol: _value
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#74D495'
+            name: Atlantis
+            type: scale
+          - hex: '#3F3FBA'
+            name: Atlantis
+            type: scale
+          - hex: '#FF4D9E'
+            name: Atlantis
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Disk Write Time
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "postgres")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "diskio")
+                  |> filter(fn: (r) => r["_field"] == "write_time")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        shade: true
+        width: 4
+        xCol: _time
+        xPos: 8
+        yCol: _value
+        yPos: 7
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 1
+        height: 3
+        kind: Single_Stat
+        name: RAM Cached (GB)
+        queries:
+          - query: |-
+                from(bucket: "postgres")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "mem")
+                  |> filter(fn: (r) => r["_field"] == "cached")
+                  |> last()
+                  |> map(fn: (r) => ({r with _value: r._value / 1000024}))
+        width: 2
+        xPos: 10
+      - axes:
+          - base: "10"
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat_Plus_Line
+        name: Deadlocks
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "postgres")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "postgresql")
+                  |> filter(fn: (r) => r["_field"] == "deadlocks")
+        width: 2
+        xCol: _time
+        xPos: 10
+        yCol: _value
+        yPos: 5
+    name: Postgres
+
+---
+
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: postgres-config
+spec:
+    config: |
+
+        [[outputs.influxdb_v2]]
+          ## The URLs of the InfluxDB cluster nodes.
+          ##
+          ## Multiple URLs can be specified for a single cluster, only ONE of the
+          ## urls will be written to each interval.
+          ## urls exp: http://127.0.0.1:9999
+          urls = ["$INFLUX_HOST"]
+        
+          ## Token for authentication.
+          token = "$INFLUX_TOKEN"
+        
+          ## Organization is the name of the organization you wish to write to; must exist.
+          organization = "$INFLUX_ORG"
+        
+          ## Destination bucket to write into.
+          bucket = "$INFLUX_BUCKET"
+              
+          [agent]
+          interval = "1m"
+          
+        [[inputs.postgresql]]
+          # address = "postgres://postgres:mysecretpassword@localhost:5432"
+          address = "$PSQL_STRING_CONNECTION"
+          ignored_databases = ["template0", "template1"]
+        
+        [[inputs.cpu]]
+          ## Whether to report per-cpu stats or not
+          percpu = true
+          ## Whether to report total system cpu stats or not
+          totalcpu = true
+          ## If true, collect raw CPU time metrics.
+          collect_cpu_time = false
+          ## If true, compute and report the sum of all non-idle CPU states.
+          report_active = false
+        
+        [[inputs.disk]]
+          ## By default stats will be gathered for all mount points.
+          ## Set mount_points will restrict the stats to only the specified mount points.
+          # mount_points = ["/"]
+        
+          ## Ignore mount points by filesystem type.
+          ignore_fs = ["tmpfs", "devtmpfs", "devfs", "iso9660", "overlay", "aufs", "squashfs"]
+        
+        # Read metrics about disk IO by device
+        [[inputs.diskio]]
+          ## By default, telegraf will gather stats for all devices including
+          ## disk partitions.
+          ## Setting devices will restrict the stats to the specified devices.
+          # devices = ["sda", "sdb"]
+          ## Uncomment the following line if you need disk serial numbers.
+          # skip_serial_number = false
+          #
+          ## On systems which support it, device metadata can be added in the form of
+          ## tags.
+          ## Currently only Linux is supported via udev properties. You can view
+          ## available properties for a device by running:
+          ## 'udevadm info -q property -n /dev/sda'
+          ## Note: Most, but not all, udev properties can be accessed this way. Properties
+          ## that are currently inaccessible include DEVTYPE, DEVNAME, and DEVPATH.
+          # device_tags = ["ID_FS_TYPE", "ID_FS_USAGE"]
+          #
+          ## Using the same metadata source as device_tags, you can also customize the
+          ## name of the device via templates.
+          ## The 'name_templates' parameter is a list of templates to try and apply to
+          ## the device. The template may contain variables in the form of '$PROPERTY' or
+          ## '${PROPERTY}'. The first template which does not contain any variables not
+          ## present for the device is used as the device name tag.
+          ## The typical use case is for LVM volumes, to get the VG/LV name instead of
+          ## the near-meaningless DM-0 name.
+          # name_templates = ["$ID_FS_LABEL","$DM_VG_NAME/$DM_LV_NAME"]
+        
+        # Read metrics about memory usage
+        [[inputs.mem]]
+          # no configuration
+      

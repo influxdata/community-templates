@@ -15,7 +15,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | Template             | Description | Author |
 |----------------------|-------------|:------:|
 | [AWS Cloudwatch Monitoring](aws_cloudwatch/) | Monitor AWS EC2 and ELB | [bonitoo.io](.) |
-| [Counter Strike: Global Offensive](csgo/) | Get stats about your game. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
+| [Counter Strike: Global Offensive](csgo/) | Get stats about your game. Kills, Deaths and stats by weapon. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Currency Exchange Rates](currency_exchange_rates/) | Visualize and analyze currency exchange rates using Quandl. | Wojciech Kocjan |
 | [Covid-19 in South America](InfluxDBv2_Covid19_SouthAmerica/) | Current data and graphs covering Covid-19 cases and deaths in South America | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Docker](docker/) | Monitor your running docker containers. | [@russorat](https://github.com/russorat) |
@@ -32,6 +32,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [Microsoft SQL Server](mssql/) | View information of SQL Server Instance. Uptime, Databases Activities, Read and Write times and more | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [MySQL / MariaDB](mysql_mariadb/) | View information of MySQL Instance. Uptime, Current Queries, Active Threads, Connections, Traffic and more. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Network Interface Monitor](network_interface_performance/) | Monitor network interfaces on one or more hosts. | [@russorat](https://github.com/russorat) |
+| [Postgres Monitor](postgresql/) | Monitor Postgres Server. CPU, Deadlocks, Data and more | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Redis Monitor](redis/) | Monitor your Redis server. | [@russorat](https://github.com/russorat) |
 | [sFlow Traffic Monitor](sflow/) | Monitor your sFlow traffic. | [@russorat](https://github.com/russorat) |
 | [Telegraf Dashboard](telegraf/) | View throughput and internal stats about your Telegraf instances | Steven Soroka |
