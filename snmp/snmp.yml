@@ -1,0 +1,413 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: mystifying-ride-f7f001
+spec:
+    color: '#326BBA'
+    name: inputs.net
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: naughty-williamson-f7f003
+spec:
+    color: '#326BBA'
+    name: inputs.system
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: pensive-darwin-f7f005
+spec:
+    color: '#545667'
+    name: SNMP
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: hardcore-greider-b7f001
+spec:
+    associations:
+      - kind: Label
+        name: mystifying-ride-f7f001
+      - kind: Label
+        name: naughty-williamson-f7f003
+      - kind: Label
+        name: pensive-darwin-f7f005
+    charts:
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 4
+        kind: Single_Stat
+        name: System Uptime
+        queries:
+          - query: |-
+                from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "uptime" and r["agent_host"] == v.snmp_host)
+                  |> map(fn: (r) => ({ r with _value: float(v: r._value) / 86400.0 / 100.0 }))
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        suffix: ' days'
+        width: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: CPU Load
+        position: overlaid
+        queries:
+          - query: "from(bucket: \"snmp\")\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_field\"] ==
+                \"laLoad1\" and r[\"agent_host\"] == v.snmp_host)\r\n  |> aggregateWindow(every:
+                v.windowPeriod, fn: max)\r\n  |> yield(name: \"max\")"
+        shade: true
+        width: 5
+        xCol: _time
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: System IO
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["agent_host"] == v.snmp_host and (r["_field"] == "ssIOSent" or r["_field"] == "ssIOReceive"))
+                  |> map(fn: (r) => ({ r with _value: +r._value}))
+                  |> aggregateWindow(every: v.windowPeriod, fn: max)
+                  |> yield(name: "max")
+        shade: true
+        width: 5
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: IOPS
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["agent_host"] == v.snmp_host and (r["_field"] == "diskIOReads" or r["_field"] == "diskIOWrites"))
+                  |> map(fn: (r) => ({ r with _value: +r._value}))
+                  |> derivative(unit: 1s, nonNegative: true, columns: ["_value"], timeColumn: "_time")
+                  |> aggregateWindow(every: v.windowPeriod, fn: max)
+                  |> yield(name: "max")
+        shade: true
+        width: 5
+        xCol: _time
+        yCol: _value
+        yPos: 12
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: IO Volume
+        position: overlaid
+        queries:
+          - query: "from(bucket: \"snmp\")\n  |> range(start: v.timeRangeStart, stop:
+                v.timeRangeStop)\n  |> filter(fn: (r) => r[\"agent_host\"] == v.snmp_host
+                and (r[\"_field\"] == \"diskIONRead\" or r[\"_field\"] == \"diskIONWritten\"))\n
+                \ |> map(fn: (r) => ({ r with _value: +r._value}))\n  |> derivative(unit:
+                1s, nonNegative: true, columns: [\"_value\"], timeColumn: \"_time\")
+                \ \n  |> aggregateWindow(every: v.windowPeriod, fn: max)\n  |> yield(name:
+                \"max\")"
+        shade: true
+        width: 5
+        yPos: 16
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: min
+          - hex: '#BF3D5E'
+            name: ruby
+            type: max
+            value: 100
+        decimalPlaces: 2
+        height: 4
+        kind: Gauge
+        name: 'CPU Utilization % '
+        queries:
+          - query: |-
+                from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "laLoad1" and r["agent_host"] == v.snmp_host)
+                  |> last()
+                  |> map(fn: (r) => ({ r with _value: float(v: r._value) * 100.0 }))
+                  |> yield(name: "last")
+        suffix: ' %'
+        width: 3
+        xPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: min
+          - hex: '#F48D38'
+            name: tiger
+            type: threshold
+            value: 70
+          - hex: '#BF3D5E'
+            name: ruby
+            type: threshold
+            value: 90
+          - hex: '#BF3D5E'
+            name: ruby
+            type: max
+            value: 100
+        decimalPlaces: 2
+        height: 4
+        kind: Gauge
+        name: Memory Allocation %
+        queries:
+          - query: |-
+                memAvailReal = from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "memAvailReal" and r["agent_host"] == v.snmp_host)
+                  |> drop(columns: ["_start", "_stop"])
+
+                memTotalReal = from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "memTotalReal" and r["agent_host"] == v.snmp_host)
+                  |> drop(columns: ["_start", "_stop"])
+
+                join(tables:{key1: memAvailReal, key2: memTotalReal}, on: ["_time"], method: "inner")
+                                  |> map(fn: (r) => ({
+                                    _time: r._time,
+                                    _value: 100.0 - ((float(v: r._value_key1) / float(v: r._value_key2)) * 100.0),
+                                    _field: "Memory Usage Percent"
+                                  }))
+                                  |> last()
+                                  |> yield(name:"percentage")
+
+
+
+                //100 - ( float( v: memAvailReal) / float( v: memTotalReal) * 100.0)
+        suffix: ' %'
+        tickSuffix: "false"
+        width: 2
+        xPos: 5
+      - axes:
+          - base: "10"
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#74D495'
+            name: Atlantis
+            type: scale
+          - hex: '#3F3FBA'
+            name: Atlantis
+            type: scale
+          - hex: '#FF4D9E'
+            name: Atlantis
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Free Memory
+        position: overlaid
+        queries:
+          - query: "from(bucket: \"snmp\")\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_field\"] ==
+                \"memAvailReal\" and r[\"agent_host\"] == v.snmp_host)\r\n  |> aggregateWindow(every:
+                v.windowPeriod, fn: min)\r\n  |> yield(name: \"min\")"
+        shade: true
+        width: 5
+        xCol: _time
+        xPos: 5
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Used Memory
+        position: overlaid
+        queries:
+          - query: |-
+                memAvailReal = from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "memAvailReal" and r["agent_host"] == v.snmp_host)
+                  |> drop(columns: ["_start", "_stop"])
+
+                memTotalReal = from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "memTotalReal" and r["agent_host"] == v.snmp_host)
+                  |> drop(columns: ["_start", "_stop"])
+
+                join(tables:{key1: memAvailReal, key2: memTotalReal}, on: ["_time"], method: "inner")
+                                  |> map(fn: (r) => ({
+                                    _time: r._time,
+                                    _value: (float(v: r._value_key2) - float(v: r._value_key1)) / 1024.0 / 1024.0,
+                                    _field: "Memory Usage MB"
+                                  }))
+                                  |> aggregateWindow(every: v.windowPeriod, fn: max)
+                                  |> yield(name: "max")
+        shade: true
+        width: 5
+        xCol: _time
+        xPos: 5
+        yCol: _value
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: IO Load
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["agent_host"] == v.snmp_host and ( r["_field"] == "diskIOLA1" or r["_field"] == "diskIOLA5" or r["_field"] == "diskIOLA15"))
+                  |> aggregateWindow(every: v.windowPeriod, fn: max)
+                  |> yield(name: "max")
+        shade: true
+        width: 5
+        xCol: _time
+        xPos: 5
+        yCol: _value
+        yPos: 12
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: min
+          - hex: '#BF3D5E'
+            name: ruby
+            type: max
+            value: 4
+        decimalPlaces: 2
+        height: 4
+        kind: Gauge
+        name: Used Memory
+        queries:
+          - query: |-
+                memAvailReal = from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "memAvailReal" and r["agent_host"] == v.snmp_host)
+                  |> drop(columns: ["_start", "_stop"])
+
+                memTotalReal = from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "memTotalReal" and r["agent_host"] == v.snmp_host)
+                  |> drop(columns: ["_start", "_stop"])
+
+                join(tables:{key1: memAvailReal, key2: memTotalReal}, on: ["_time"], method: "inner")
+                                  |> map(fn: (r) => ({
+                                    _time: r._time,
+                                    _value: (float(v: r._value_key2) - float(v: r._value_key1)) / 1024.0 / 1024.0,
+                                    _field: "Memory Usage MB"
+                                  }))
+                                  |> last()
+                                  |> yield(name:"MB")
+        suffix: ' MB'
+        tickSuffix: "false"
+        width: 3
+        xPos: 7
+    name: SNMP System Monitoring
