@@ -1,15 +1,15 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: mystifying-ride-f7f001
+    name: earning-wescoff-353005
 spec:
-    color: '#326BBA'
-    name: inputs.net
+    color: '#545667'
+    name: SNMP
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: naughty-williamson-f7f003
+    name: lucid-wilson-353003
 spec:
     color: '#326BBA'
     name: inputs.system
@@ -17,23 +17,45 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: pensive-darwin-f7f005
+    name: zealous-kilby-353001
 spec:
-    color: '#545667'
-    name: SNMP
+    color: '#326BBA'
+    name: inputs.net
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: relaxed-sanderson-f53003
+spec:
+    language: flux
+    name: snmp_ifName
+    query: "import \"influxdata/influxdb/v1\"\r\nv1.tagValues(bucket: \"snmp\", tag:
+        \"ifName\")"
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: sad-lovelace-f53001
+spec:
+    language: flux
+    name: snmp_host
+    query: "import \"influxdata/influxdb/v1\"\r\nv1.tagValues(bucket: \"snmp\", tag:
+        \"agent_host\")"
+    type: query
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: hardcore-greider-b7f001
+    name: stupefied-mccarthy-f53001
 spec:
     associations:
       - kind: Label
-        name: mystifying-ride-f7f001
+        name: zealous-kilby-353001
       - kind: Label
-        name: naughty-williamson-f7f003
+        name: lucid-wilson-353003
       - kind: Label
-        name: pensive-darwin-f7f005
+        name: earning-wescoff-353005
     charts:
       - colors:
           - hex: '#00C9FF'
@@ -260,10 +282,10 @@ spec:
         xPos: 5
       - axes:
           - base: "10"
-            name: y
+            name: x
             scale: linear
           - base: "10"
-            name: x
+            name: y
             scale: linear
         colors:
           - hex: '#74D495'
@@ -341,10 +363,10 @@ spec:
         yPos: 8
       - axes:
           - base: "10"
-            name: x
+            name: y
             scale: linear
           - base: "10"
-            name: y
+            name: x
             scale: linear
         colors:
           - hex: '#31C0F6'
