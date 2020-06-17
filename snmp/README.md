@@ -2,7 +2,7 @@
 
 Provided by: [bonitoo.io](.)
 
-This template provides several dashboards showing metrics provided via SNMP protocol. It provides both an example of generic SNMP metrics and examples from Mikrotik and Cisco devices.
+This template provides several dashboards showing metrics provided via SNMP protocol. It provides both an example of standard SNMP stats and examples from Mikrotik and Cisco devices.
 
 ### Dashboard examples
 
@@ -32,7 +32,14 @@ This template includes the following:
 Load the dashboards and use the [SNMP plugin](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/snmp) into your
 environment.
 
-Include the Telegraf `inputs.snmp` plugin in your Telegraf configuration and start Telegraf.
+Include the Telegraf `inputs.snmp` plugin in your Telegraf configuration and start Telegraf. There are multiple configuration files per specific device.
+SNMP tools must be installed on the device with telegraf. If labels are used in OIDs, appropritae MIB files must be installed as well.
+
+Example for Ubuntu: `sudo apt install snmp snmp-mibs-downloader`
+
+For Linux SNMP monitoring SNMP server must be installed and proprely configured.
+
+Example for Ubuntu: `sudo apt install snmpd`
 
 ## Customizations
 
