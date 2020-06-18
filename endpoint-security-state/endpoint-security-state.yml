@@ -81,7 +81,7 @@ spec:
                       and exists r.common_name
                     )
                   )
-                  |> drop(columns: [ "method","result","_field","common_name", "issuer_common_name","organizational_unit", "public_key_algorithm","san","serial_number", "signature_algorithm","country","locality", "province","organization","verification" ])
+                  |> drop(columns: ["method","result","_field","common_name","issuer_common_name","organizational_unit","public_key_algorithm","san","serial_number","signature_algorithm","country","locality","province","organization","verification","server","source"])
                   |> map(fn: (r) => ({ r with authon: 0, authwork: 0, available: 0, expires: 0}))
                   |> group(columns: ["_start","_stop","_time","Endpoint"])
                   |> map(fn: (r) => ({
