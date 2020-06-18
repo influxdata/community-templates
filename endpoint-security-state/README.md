@@ -1,7 +1,7 @@
 # Endpoint Security State Template
 
+This InfluxDB template works by connecting to secure endpoints and attempting to log in. Using the `http_response` and `x509_cert` Telegraf plugins, availability, authentication, and certificate information is collected.
 The dashboard displays the general availability for each endpoint along with the x509 certificate status and authentication state.
-This InfluxDB template works by connecting to secure endpoints and attempting to log in. Using the `http_response` and `x509` Telegraf plugins, availability, authentication, and certificate information is collected.
 
 ![Endpoint Security State Dashboard Screenshot](endpoint-security-state.png)
 
@@ -21,12 +21,12 @@ This InfluxDB template works by connecting to secure endpoints and attempting to
     - Authentication is enabled
     - Authentication is working
 - 1 Dashboard: `Endpoint Security State`
-- 1 Variables: `bucket`
+- 1 Variable: `bucket`
 
 ## Setup Instructions
 
 ### Install the template package
-From your CLI environment [configured in the CLI](https://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/):
+From your [InfluxDB configured CLI environment](https://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/):
 ```
 influx apply --template-url `https://raw.githubusercontent.com/influxdata/community-templates/master/endpoint-security-state/endpoint-security-state.yml`
 ```
