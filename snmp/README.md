@@ -2,7 +2,7 @@
 
 Provided by: [bonitoo.io](.)
 
-This template provides several dashboards showing metrics provided via SNMP protocol. It provides both an example of standard SNMP stats and examples from Mikrotik and Cisco devices.
+This template provides several dashboards showing metrics provided via SNMP protocol. It provides both an example of system SNMP stats and examples from Mikrotik and Cisco devices.
 
 ### Dashboard examples
 
@@ -24,7 +24,7 @@ This template includes the following:
     - 3 Labels: `inputs.net`,`inputs.system`,`SNMP`
     - 3 Telegraf Configurations
     - 0 Checks: 
-    - 3 Dashboards: `SNMP System Monitoring`, `SNMP Cisco Monitoring`, `SNMP Mikrotik Monitoring`
+    - 3 Dashboards: `SNMP System Monitoring`, `SNMP Mikrotik Monitoring`, `SNMP Network Monitoring`
     - 2 Variables: `snmp_host`, and `snmp_ifName`
 
 ## Setup Instructions
