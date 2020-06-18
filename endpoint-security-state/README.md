@@ -40,11 +40,11 @@ For authentication verfification, configure the `urls` list in the `http_respons
 `http_response` configurations without credentials will determine if an endpoint is protected by authentication requirements. Make sure the URI will not be redirected to another site for authentication if it is enabled.
 `http_response` configurations with credentials will determine if we are able to login to a protected endpoint.
 
-## Customizations
-
-Create a notification if access is still available but authentication is has been turned off.
-Send out a notification or trigger an outside workflow when the certificate is getting close to expiration.
-Add an endpoint variable, a couple of histograms and the user can see other performance details for each endpoint.
+## Additional Uses
+Here are a few more possibilities for extending this template:
+- If access is still available but authentication is has been turned off, send a notification.
+- Send out a notification or trigger an outside workflow when the certificate is getting close to expiration.
+- Add an endpoint variable, a couple of histograms and the user can see other performance details for each endpoint.
 
 ## Contact
 
