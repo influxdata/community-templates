@@ -1,0 +1,169 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: telegraf
+spec:
+    color: '#C9D0FF'
+    name: Telegraf
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: outputs-influxdb-v2
+spec:
+    color: '#108174'
+    name: outputs.influxdb_v2
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: security
+spec:
+    color: '#F95F53'
+    name: security
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: solution
+spec:
+    color: '#FFD255'
+    name: Solution
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: endpoint-security-state
+spec:
+    associations:
+      - kind: Label
+        name: telegraf
+      - kind: Label
+        name: outputs-influxdb-v2
+      - kind: Label
+        name: security
+      - kind: Label
+        name: solution
+    charts:
+      - colors:
+          - hex: '#ffffff'
+            name: white
+            type: text
+        fieldOptions:
+          - displayName: Endpoint
+            fieldName: Endpoint
+            visible: true
+          - displayName: AuthenticationOn
+            fieldName: AuthenticationOn
+            visible: true
+          - displayName: AuthenticationWorks
+            fieldName: AuthenticationWorks
+            visible: true
+          - displayName: Available
+            fieldName: Available
+            visible: true
+          - displayName: Certificate
+            fieldName: Certificate
+            visible: true
+        height: 4
+        kind: Table
+        name: Name this Cell
+        queries:
+          - query: "from(bucket: v.bucket)\n  |> range(start: v.timeRangeStart, stop:
+                v.timeRangeStop)\n  |> filter(fn: (r) =>\n    ( r._measurement ==
+                \"http_response\" and r._field == \"http_response_code\" )\n    or
+                (\n      r._measurement == \"x509_cert\"\n      and r._field == \"expiry\"\n
+                \     and exists r.san\n      and exists r.common_name\n    )\n  )\n
+                \ |> drop(columns: [ \"method\",\"result\",\"_field\",\"common_name\",
+                \"issuer_common_name\",\"organizational_unit\", \"public_key_algorithm\",\"san\",\"serial_number\",
+                \"signature_algorithm\",\"country\",\"locality\", \"province\",\"organization\",\"verification\"
+                ])\n  |> map(fn: (r) => ({ r with authon: 0, authwork: 0, available:
+                0, expires: 0}))\n  |> group(columns: [\"_start\",\"_stop\",\"_time\",\"Endpoint\"])\n
+                \ |> map(fn: (r) => ({\n    r with available: if ( r._measurement
+                == \"http_response\" and exists r.status_code )\n      and ( ( r._value
+                >= 400 and r._value < 500 ) or ( r._value == 200 ) )\n      then r.available
+                + 1 else r.available + 0,\n    authon: if ( r._measurement == \"http_response\"
+                and exists r.status_code )\n      and ( ( r._value >= 400 and r._value
+                < 500 ) or ( r._value == 200 ) )\n      then r.authon + 1 else r.authon
+                + 0,\n    authwork: if ( r._measurement == \"http_response\" and exists
+                r.status_code )\n      and r._value == 200 then r.authwork + 1 else
+                r.authwork + 0,\n    expires: if ( r._measurement == \"x509_cert\"
+                ) then r._value / 86400 else 0\n  }))\n  |> group(columns: [\"Endpoint\"])\n
+                \ |> drop(columns: [\"_time\",\"_start\",\"_stop\",\"_measurement\",\"status_code\",\"_value\"])\n
+                \ |> reduce(\n    identity: {aosum: 0, awsum: 0, avsum: 0, exsum:
+                0},\n    fn: (r, accumulator) => ({\n      aosum: r.authon + accumulator.aosum,\n
+                \     awsum: r.authwork + accumulator.awsum,\n      avsum: r.available
+                + accumulator.avsum,\n      exsum: r.expires + accumulator.exsum\n
+                \   })\n  )\n  |> map(fn: (r) => ({ r with\n    AuthenticationOn:
+                if r.aosum >= 1 then \"✅\" else \"\U0001F534\",\n    AuthenticationWorks:
+                if r.awsum >= 1 then \"✅\" else \"\U0001F534\",\n    Available: if
+                r.avsum >= 1 then \"✅\" else \"\U0001F534\",\n    Certificate: if
+                r.exsum > 30 then \"✅\"\n      else if r.exsum > 2 then \"\U0001F7E1\"\n
+                \     else if r.exsum > 0 then \"\U0001F534\"\n      else \"❓\"\n
+                \ }))\n  |> drop(columns: [\"aosum\",\"avsum\",\"awsum\",\"exsum\"])\n
+                \ |> group()"
+        tableOptions:
+            sortBy: Endpoint
+            verticalTimeAxis: true
+        timeFormat: YYYY/MM/DD HH:mm:ss
+        width: 12
+    name: Endpoint Security State
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: endpoint-security-state
+spec:
+    config: "[agent]\r\n  ## Default data collection interval for all inputs\r\n  interval
+        = \"12h\"\r\n  ## Rounds collection interval to 'interval'\r\n  ## ie, if
+        interval=\"10s\" then always collect on :00, :10, :20, etc.\r\n  round_interval
+        = false\r\n\r\n  ## Telegraf will send metrics to outputs in batches of at
+        most\r\n  ## metric_batch_size metrics.\r\n  ## This controls the size of
+        writes that Telegraf sends to output plugins.\r\n  metric_batch_size = 10\r\n\r\n
+        \ ## For failed writes, telegraf will cache metric_buffer_limit metrics for
+        each\r\n  ## output, and will flush this buffer on a successful write. Oldest
+        metrics\r\n  ## are dropped first when this buffer fills.\r\n  ## This buffer
+        only fills when writes fail to output plugin(s).\r\n  metric_buffer_limit
+        = 100\r\n\r\n  ## Collection jitter is used to jitter the collection by a
+        random amount.\r\n  ## Each plugin will sleep for a random time within jitter
+        before collecting.\r\n  ## This can be used to avoid many plugins querying
+        things like sysfs at the\r\n  ## same time, which can have a measurable effect
+        on the system.\r\n  collection_jitter = \"0s\"\r\n\r\n  ## Default flushing
+        interval for all outputs. Maximum flush_interval will be\r\n  ## flush_interval
+        + flush_jitter\r\n  flush_interval = \"10s\"\r\n  ## Jitter the flush interval
+        by a random amount. This is primarily to avoid\r\n  ## large write spikes
+        for users running a large number of telegraf instances.\r\n  ## ie, a jitter
+        of 5s and interval 10s means flushes will happen every 10-15s\r\n  flush_jitter
+        = \"0s\"\r\n\r\n  ## By default or when set to \"0s\", precision will be set
+        to the same\r\n  ## timestamp order as the collection interval, with the maximum
+        being 1s.\r\n  ##   ie, when interval = \"10s\", precision will be \"1s\"\r\n
+        \ ##       when interval = \"250ms\", precision will be \"1ms\"\r\n  ## Precision
+        will NOT be used for service inputs. It is up to each individual\r\n  ## service
+        input to set the timestamp at the appropriate precision.\r\n  ## Valid time
+        units are \"ns\", \"us\" (or \"µs\"), \"ms\", \"s\".\r\n  precision = \"\"\r\n\r\n
+        \ ## Logging configuration:\r\n  ## Run telegraf with debug log messages.\r\n
+        \ debug = false\r\n  ## Run telegraf in quiet mode (error log messages only).\r\n
+        \ quiet = false\r\n  ## Specify the log file name. The empty string means
+        to log to stderr.\r\n  logfile = \"\"\r\n\r\n  ## Override default hostname,
+        if empty use os.Hostname()\r\n  hostname = \"\"\r\n  ## If set to true, do
+        no set the \"host\" tag in the telegraf agent.\r\n  omit_hostname = true\r\n[[outputs.influxdb_v2]]\t\r\n
+        \ ## The URLs of the InfluxDB cluster nodes.\r\n  ##\r\n  ## Multiple URLs
+        can be specified for a single cluster, only ONE of the\r\n  ## urls will be
+        written to each interval.\r\n  ## urls exp: http://127.0.0.1:9999\r\n  urls
+        = [\"$INFLUX_HOST\"]\r\n  ## Token for authentication.\r\n  token = \"$INFLUX_TOKEN\"\r\n
+        \ ## Organization is the name of the organization you wish to write to; must
+        exist.\r\n  organization = \"$INFLUX_ORG\"\r\n  ## Destination bucket to write
+        into.\r\n  bucket = \"telegraf\"\r\n\r\n###############################################################################\r\n#
+        \                           INPUT PLUGINS                                    #\r\n###############################################################################\r\n#\r\n#
+        We must include the port for all of the URLs ( urls[] and sources[] ) below.\r\n#
+        x509_cert requires this and we need the URLs ( endpoints ) to match for\r\n#
+        display correlation\r\n#\r\n\r\n[[inputs.x509_cert]]\r\n  sources = [\r\n
+        \   \"https://test.example.com:443/\"\r\n  ]\r\n\r\n[[inputs.http_response]]\r\n
+        \ urls = [\r\n    \"https://test.example.com:443/\"\r\n  ]\r\n\r\n[[inputs.http_response]]\r\n
+        \ urls = [\r\n    \"https://test.example.com:443/\"\r\n  ]\r\n  username =
+        \"testuser\"\r\n  password = \"testpassword\"\r\n\r\n###############################################################################\r\n#
+        \                       PROCESSOR PLUGINS                                    #\r\n###############################################################################\r\n\r\n[[processors.rename]]\r\n\r\n
+        \ [[processors.rename.replace]]\r\n    tag = \"source\"\r\n    dest = \"Endpoint\"\r\n\r\n
+        \ [[processors.rename.replace]]\r\n    tag = \"server\"\r\n    dest = \"Endpoint\"\r\n"
+    description: Endpoint security state checks
+    name: Endpoint Security State
