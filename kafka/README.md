@@ -4,14 +4,6 @@
 
    <img src="https://github.com/influxdata/community-templates/blob/kafka_template/kafka/kafka-dash.png" width="425"/> <img src="https://github.com/influxdata/community-templates/blob/kafka_template/kafka/kafka-dash-light.png" width="425"/>
 
-**Observability questions answered by this template**
-* Are applications receiving all data?
-* Are my business applications showing the latest data?
-* Why are the applications running slowly?
-* Do we need to scale up?
-* Can any data get lost?
-* Will there be service interruptions?
-* Are there assurances in case of a disaster event?
 
 ## Requirements
 
@@ -66,4 +58,4 @@
 * kafka_network
 * zk_client (Kafka perspective)
 
-**add ZK metrics**
+**add ZK metrics**: https://github.com/influxdata/telegraf/tree/master/plugins/inputs/zookeeper#metrics
