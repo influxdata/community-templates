@@ -32,10 +32,10 @@ spec:
         width: 2
       - axes:
           - base: "10"
-            name: x
+            name: y
             scale: linear
           - base: "10"
-            name: y
+            name: x
             scale: linear
         colors:
           - hex: '#31C0F6'
@@ -63,6 +63,8 @@ spec:
                     else r["topic"] == v.kafka_topic))
                   |> group(columns: ["topic"])
                   |> sort(columns: ["_time"])
+                  |> derivative(unit: 1s, nonNegative: true, columns: ["_value"], timeColumn: "_time")
+        shade: true
         width: 6
         xCol: _time
         yCol: _value
@@ -96,6 +98,7 @@ spec:
                   |> filter(fn: (r) => r["_measurement"] == "kafka_topics")
                   |> filter(fn: (r) => r["_field"] == "TotalFetchRequestsPerSec")
                   |> group(columns: ["topic"])
+        shade: true
         width: 4
         xCol: _time
         yCol: _value
@@ -128,6 +131,7 @@ spec:
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "zookeeper")
                   |> filter(fn: (r) => r["_field"] == "max_latency" or r["_field"] == "min_latency" or r["_field"] == "avg_latency")
+        shade: true
         width: 6
         xCol: _time
         yCol: _value
@@ -169,12 +173,12 @@ spec:
         width: 2
         xPos: 4
       - axes:
-          - base: "10"
-            name: x
-            scale: linear
           - base: "2"
             label: Bytes
             name: y
+            scale: linear
+          - base: "10"
+            name: x
             scale: linear
         colors:
           - hex: '#31C0F6'
@@ -265,6 +269,7 @@ spec:
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "kafka_requests")
                   |> filter(fn: (r) => r["_field"] == "BytesMax")
+        shade: true
         width: 6
         xCol: _time
         xPos: 6
@@ -298,6 +303,7 @@ spec:
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "zookeeper")
                   |> filter(fn: (r) => r["_field"] == "num_alive_connections")
+        shade: true
         width: 6
         xCol: _time
         xPos: 6
@@ -321,11 +327,11 @@ spec:
         width: 4
         xPos: 8
       - axes:
-          - base: "10"
-            name: x
-            scale: linear
           - base: "2"
             name: y
+            scale: linear
+          - base: "10"
+            name: x
             scale: linear
         colors:
           - hex: '#31C0F6'
@@ -351,6 +357,7 @@ spec:
                   |> group(columns: ["request"])
                   |> sort(columns: ["_time"])
                   |> derivative(unit: 1s, nonNegative: true, columns: ["_value"], timeColumn: "_time")
+        shade: true
         width: 4
         xCol: _time
         xPos: 8
