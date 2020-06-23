@@ -67,7 +67,7 @@ spec:
             visible: true
         height: 4
         kind: Table
-        name: Name this Cell
+        name: Endpoints State
         queries:
           - query: |-
                 from(bucket: v.bucket)
