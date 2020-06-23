@@ -30,7 +30,6 @@ From your [InfluxDB configured CLI environment](https://v2.docs.influxdata.com/v
 ```
 influx apply --template-url https://raw.githubusercontent.com/influxdata/community-templates/master/endpoint-security-state/endpoint-security-state.yml
 ```
-Pull directly from my [template github repo](https://github.com/darinfisher/community-templates/tree/master/endpoint-security-state).
 
 ### Customize the Telegraf configuration
 Add the endpoints you would like to watch to specific input section(s).
