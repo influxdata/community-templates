@@ -27,7 +27,6 @@ The dashboard displays the general availability for each endpoint along with the
 
 ### Install the template package
 From your [InfluxDB configured CLI environment](https://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/):
-_*This URL will not work for this yet.*_  Verify after pull request is complete.
 ```
 influx apply --template-url https://raw.githubusercontent.com/influxdata/community-templates/master/endpoint-security-state/endpoint-security-state.yml
 ```
