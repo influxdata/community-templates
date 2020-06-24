@@ -49,5 +49,3 @@ Extend the telegraf configuration using SNMP OID codes to process more metrics.
 
 
 Author: Miroslav Malecha, https://www.bonitoo.io
-
-Github: @devmirek
