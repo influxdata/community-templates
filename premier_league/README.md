@@ -25,7 +25,7 @@ influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/m
 
 ## Setup Instructions
 1. Sign up and subscribe to a [free trial of SportsDataIO's API](https://sportsdata.io/cart/free-trial). Select "Soccer" as the sport.
-2. From the SportsDataIO developer portal retrieve your API key for for your soccer subscription. Save the key as an environment variable `SPORTSDATAIO_SOCCER_API_KEY` as it will be used for in the Telegraf configuration file.
+2. From the [SportsDataIO developer portal](https://sportsdata.io/developers/api-documentation/soccer) retrieve your API key for for your soccer subscription. Save the key as an environment variable `SPORTSDATAIO_SOCCER_API_KEY` as it will be used for in the Telegraf configuration file.
 3. Follow the rest of the general instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
 
 Describe any steps needed to finish setting up and running your template, including how to launch your Telegraf configurations and connect to any external services or data sources.
@@ -44,15 +44,11 @@ You **MUST** set these environment variables before running Telegraf using somet
 
 ## Customizations
 
-Show off the flexibility of your template by letting users know different ways they can use it other than the defaults you provide.
-
-**Example:**
-
-    You can easily update the Telegraf configurations to point to a specific InfluxDB 1.x location by setting the options in the [InfluxDB Input](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/influxdb) or the [InfluxDB 2.0 Output](https://github.com/influxdata/telegraf/tree/master/plugins/outputs/influxdb_v2). 
+This template displays data only from SportDataIO's Premier League standings data set. You can add more data and visualizations to your dashboards with other data sets (players, teams) including getting more data access with a with a paid subscription.  You would need to edit your Telegraf input plugin configuration if you add other metrics.  Follow the guidelines of the [HTTP input plugin](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/http) and [JSON parser](https://github.com/influxdata/telegraf/tree/master/plugins/parsers/json) to properly ingest your data. 
 
 ## Contact
 
-Author: Samaantha Wang
+Author: Samantha Wang
 
 Email: swang@influxdata.com
 
