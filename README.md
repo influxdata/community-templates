@@ -36,6 +36,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [MySQL / MariaDB](mysql_mariadb/) | View information of MySQL Instance. Uptime, Current Queries, Active Threads, Connections, Traffic and more. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Network Interface Monitor](network_interface_performance/) | Monitor network interfaces on one or more hosts. | [@russorat](https://github.com/russorat) |
 | [Postgres Monitor](postgresql/) | Monitor Postgres Server. CPU, Deadlocks, Data and more | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
+| [Premier League](premier_league/) | View latest English Premier League team stats. | [Samantha Wang](https://github.com/sjwang90) |
 | [Redis Monitor](redis/) | Monitor your Redis server. | [@russorat](https://github.com/russorat) |
 | [sFlow Traffic Monitor](sflow/) | Monitor your sFlow traffic. | [@russorat](https://github.com/russorat) |
 | [Telegraf Dashboard](telegraf/) | View throughput and internal stats about your Telegraf instances | Steven Soroka |
