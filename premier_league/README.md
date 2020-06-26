@@ -1,4 +1,4 @@
-# Premier League Template
+# English Premier League Template
 
 Provided by: Samantha Wang
 
