@@ -1,0 +1,36 @@
+#Telegraf Configuration to retrieve English Premier League metrics from SportsDataIO
+[[inputs.http]]
+#Collect stats every 24 hours
+  interval = "24h"
+  #HTTP/JSON data from sportdata.io
+  urls = [
+    "https://api.sportsdata.io/v3/soccer/scores/json/Standings/383?key=$SPORTSDATAIO_SOCCER_API_KEY"
+  ]
+  name_override = "premier_league"
+  tagexclude = ["url", "Scope", "host"]
+  method = "GET"
+  timeout = "5s"
+  data_format = "json"
+  tag_keys = [
+    "Name"
+  ]
+  json_string_fields = [""]
+  json_name_key = ""
+
+ [[outputs.influxdb_v2]]
+  ## The URLs of the InfluxDB cluster nodes.
+  ##
+  ## Multiple URLs can be specified for a single cluster, only ONE of the
+  ## urls will be written to each interval.
+  ## urls exp: http://127.0.0.1:9999
+  urls = ["$INFLUX_HOST"]
+
+  ## Token for authentication.
+  token = "$INFLUX_TOKEN"
+
+  ## Organization is the name of the organization you wish to write to; must exist.
+  organization = "$INFLUX_ORG"
+
+  ## Destination bucket to write into.
+  bucket = "telegraf"
+
