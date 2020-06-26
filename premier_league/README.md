@@ -5,7 +5,7 @@ Provided by: Samantha Wang
 This templates provides a view of the English Premier League team statistics from [SportsDataIO](https://sportsdata.io). The data for this template only has statistics from the free version of SportDataIO's [soccer API](https://sportsdata.io/developers/api-documentation/soccer#/free). 
 
 
-![EPL Dashboard Preview](/img/epl.png)
+![EPL Dashboard Preview](epl.png)
 
 ### Quick Install
 
@@ -17,30 +17,28 @@ influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/m
 
 ## Included Resources
 
-List what resources your template provides in this section. That will allow users to know at a glance what comes with it.
-
-**Example:**
-
-    - 1 Bucket: `Telegraf`, 7d retention
-    - 1 Labels: `EPL`
-    - 1 Telegraf Configuration
-    - 3 Checks: `Disk Usage Check`, `Host Deadman`, and `Memory Usage Check`
-    - 2 Dashboards: `InfluxDB 1.x` and `Telegraf`
-    - 3 Variables: `bucket`, `influxdb_host`, and `telegraf_host`
+- 1 Bucket: `telegraf`
+- 1 Labels: `EPL`
+- 1 Telegraf Configuration: `premier_league.conf`
+- 1 Dashboards: `Premier League`
+- 3 Variables: `footballclub1`, `footballclub2`, `footballclub3`
 
 ## Setup Instructions
-
-General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
+1. Sign up and subscribe to a [free trial of SportsDataIO's API](https://sportsdata.io/cart/free-trial). Select "Soccer" as the sport.
+2. From the SportsDataIO developer portal retrieve your API key for for your soccer subscription. Save the key as an environment variable `SPORTSDATAIO_SOCCER_API_KEY` as it will be used for in the Telegraf configuration file.
+3. Follow the rest of the general instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
 
 Describe any steps needed to finish setting up and running your template, including how to launch your Telegraf configurations and connect to any external services or data sources.
 
-**Example:**
-    
-    Telegraf Configuration requires the following environment variables
-    - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your master token to get started.
-    - `INFLUX_ORG` - The name of your Organization
 
-    You **MUST** set these environment variables before running Telegraf using something similar to the following commands
+    
+Telegraf Configuration requires the following environment variables
+- `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your master token to get started.
+- `INFLUX_ORG` - The name of your Organization
+- `INFLUX_HOST` - The URL of the InfluxDB cluster nodes (ex for AWS West: https://us-west-2-1.aws.cloud2.influxdata.com/)
+- `SPORTSDATAIO_SOCCER_API_KEY` - SportsDataIO Soccer API Key
+
+You **MUST** set these environment variables before running Telegraf using something similar to the following commands
     - This can be found on the `Load Data` > `Tokens` page in your browser: `export INFLUX_TOKEN=TOKEN`
     - Your Organization name can be found on the Settings page in your browser: `export INFLUX_ORG=my_org`
 
