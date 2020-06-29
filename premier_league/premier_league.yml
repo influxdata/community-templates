@@ -1,36 +1,583 @@
-#Telegraf Configuration to retrieve English Premier League metrics from SportsDataIO
-[[inputs.http]]
-#Collect stats every 24 hours
-  interval = "24h"
-  #HTTP/JSON data from sportdata.io
-  urls = [
-    "https://api.sportsdata.io/v3/soccer/scores/json/Standings/383?key=$SPORTSDATAIO_SOCCER_API_KEY"
-  ]
-  name_override = "premier_league"
-  tagexclude = ["url", "Scope", "host"]
-  method = "GET"
-  timeout = "5s"
-  data_format = "json"
-  tag_keys = [
-    "Name"
-  ]
-  json_string_fields = [""]
-  json_name_key = ""
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: epl
+spec:
+    color: '#5c10a0'
+    name: EPL
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: footballclub2
+spec:
+    associations:
+      - kind: Label
+        name: epl
+    language: flux
+    name: footballclub2
+    query: |-
+        import "influxdata/influxdb/v1"
 
- [[outputs.influxdb_v2]]
-  ## The URLs of the InfluxDB cluster nodes.
-  ##
-  ## Multiple URLs can be specified for a single cluster, only ONE of the
-  ## urls will be written to each interval.
-  ## urls exp: http://127.0.0.1:9999
-  urls = ["$INFLUX_HOST"]
+        v1.measurementTagValues(bucket: "googlecloud", measurement: "premier_league", tag: "Name")
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: footballclub3
+spec:
+    associations:
+      - kind: Label
+        name: epl
+    language: flux
+    name: footballclub3
+    query: |-
+        import "influxdata/influxdb/v1"
 
-  ## Token for authentication.
-  token = "$INFLUX_TOKEN"
+        v1.measurementTagValues(bucket: "googlecloud", measurement: "premier_league", tag: "Name")
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: footballclub1
+spec:
+    associations:
+      - kind: Label
+        name: epl
+    language: flux
+    name: footballclub1
+    query: |-
+        import "influxdata/influxdb/v1"
 
-  ## Organization is the name of the organization you wish to write to; must exist.
-  organization = "$INFLUX_ORG"
+        v1.measurementTagValues(bucket: "googlecloud", measurement: "premier_league", tag: "Name")
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: premier-league
+spec:
+    associations:
+      - kind: Label
+        name: epl
+    charts:
+      - colors:
+          - hex: '#7CE490'
+            name: honeydew
+            type: text
+          - hex: '#22ADF6'
+            name: pool
+            type: text
+            value: 5
+          - hex: '#F95F53'
+            name: curacao
+            type: text
+            value: 18
+          - hex: '#ffffff'
+            name: white
+            type: text
+            value: 21
+        fieldOptions:
+          - displayName: _start
+            fieldName: _start
+          - displayName: _stop
+            fieldName: _stop
+          - displayName: _time
+            fieldName: _time
+          - displayName: _value
+            fieldName: _value
+          - displayName: GlobalTeamID
+            fieldName: GlobalTeamID
+          - displayName: Standing
+            fieldName: Order
+            visible: true
+          - displayName: Name
+            fieldName: Name
+            visible: true
+          - displayName: _field
+            fieldName: _field
+          - displayName: _measurement
+            fieldName: _measurement
+          - displayName: host
+            fieldName: host
+          - displayName: Points
+            fieldName: Points
+            visible: true
+        height: 9
+        kind: Table
+        name: Standings
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: -24h, stop: now())
+                  |> filter(fn: (r) => r["_field"] == "Points" or r["_field"] == "Order")
+                  |> last()
+                  |> group(columns: ["Name"])
+                  |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+                  |> group()
+                  |> sort(columns: ["Order"], desc: false)
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - name: y
+            scale: linear
+        colors:
+          - hex: '#8F8AF4'
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#A51414'
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#F4CF31'
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+        geom: line
+        height: 6
+        kind: Xy
+        name: Points (by Team)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "googlecloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "Points")
+                  |> drop(columns: ["host", "_measurement", "GlobalTeamID"])
+        width: 12
+        xCol: _time
+        yCol: _value
+        yPos: 9
+      - axes:
+          - domain:
+              - 25
+              - 100
+            name: x
+        binCount: 75
+        colors:
+          - hex: '#FFD255'
+            name: Solid Yellow
+            type: scale
+          - hex: '#FFD255'
+            name: Solid Yellow
+            type: scale
+          - hex: '#FFD255'
+            name: Solid Yellow
+            type: scale
+        fillColumns:
+          - Name
+          - _field
+        height: 2
+        kind: Histogram
+        name: Goals Scored by Team
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: "googlecloud")
+                  |> range(start: -24h, stop: now())
+                  |> filter(fn: (r) => r._measurement == "premier_league")
+                  |> filter(fn: (r) => r._field == "GoalsScored")
+                  |> last()
+                  |> drop(columns: ["_start", "_stop", "GlobalTeamID", "_measurement", "host"])
+        width: 6
+        xCol: _value
+        yPos: 15
+      - colors:
+          - hex: '#DC4E58'
+            name: fire
+            type: background
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: W - v.footballclub1
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: -24h, stop: now())
+                  |> filter(fn: (r) => r._measurement == "premier_league")
+                  |> filter(fn: (r) => r._field == "Wins")
+                  |> filter(fn: (r) => r.Name == v.footballclub1)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 1
+        xPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#FD7A5D'
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            name: Delorean
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Goals - footballclub1
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "premier_league")
+                  |> filter(fn: (r) => r._field == "GoalsDifferential" or r._field == "GoalsAgainst" or r._field == "GoalsScored")
+                  |> filter(fn: (r) => r.Name == v.footballclub1)
+                  |> drop(columns: ["host", "GlobalTeamID", "_measurement"])
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 2
+      - axes:
+          - label: Offense - Goals Scored
+            name: x
+          - domain:
+              - 15
+              - 70
+            label: Defense - Goals Against
+            name: y
+        colors:
+          - hex: '#74D495'
+          - hex: '#3F3FBA'
+          - hex: '#FF4D9E'
+        height: 4
+        kind: Scatter
+        name: Goals Scored vs. Against
+        queries:
+          - query: |-
+                from(bucket: "googlecloud")
+                  |> range(start: -24h, stop: now())
+                  |> filter(fn: (r) => r._measurement == "premier_league")
+                  |> filter(fn: (r) => r._field == "GoalsScored" or r._field == "GoalsAgainst" or r._field == "Order")
+                  |> last()
+                //   |> group()
+                  |> drop(columns: ["_start", "_stop", "GlobalTeamID", "_measurement", "host"])
+                  |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+                  |> group()
+                  |> sort(columns: ["Order"], desc: false)
+                //
+        width: 9
+        xCol: GoalsScored
+        xPos: 3
+        yCol: GoalsAgainst
+        yPos: 5
+      - colors:
+          - hex: '#ffffff'
+            name: white
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: D - footballclub1
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: -24h, stop: now())
+                  |> filter(fn: (r) => r._measurement == "premier_league")
+                  |> filter(fn: (r) => r._field == "Draws")
+                  |> filter(fn: (r) => r.Name == v.footballclub1)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 1
+        xPos: 4
+      - colors:
+          - hex: '#ffffff'
+            name: white
+            type: background
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: L - footballclub1
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: -24h, stop: now())
+                  |> filter(fn: (r) => r._measurement == "premier_league")
+                  |> filter(fn: (r) => r._field == "Losses")
+                  |> filter(fn: (r) => r.Name == v.footballclub1)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 1
+        xPos: 5
+      - colors:
+          - hex: '#4591ED'
+            name: ocean
+            type: background
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: W - footballclub2
+        queries:
+          - query: |-
+                from(bucket: "googlecloud")
+                  |> range(start: -24h, stop: now())
+                  |> filter(fn: (r) => r._measurement == "premier_league")
+                  |> filter(fn: (r) => r._field == "Wins")
+                  |> filter(fn: (r) => r.Name == v.footballclub2)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 1
+        xPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#FD7A5D'
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            name: Delorean
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Goals - footballclub2
+        queries:
+          - query: |-
+                from(bucket: "googlecloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "premier_league")
+                  |> filter(fn: (r) => r._field == "GoalsDifferential" or r._field == "GoalsAgainst" or r._field == "GoalsScored")
+                  |> filter(fn: (r) => r.Name == "Chelsea FC")
+                  |> drop(columns: ["host", "GlobalTeamID", "_measurement"])
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 3
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 2
+      - axes:
+          - domain:
+              - 20
+              - 80
+            name: x
+        binCount: 60
+        colors:
+          - hex: '#DC4E58'
+            name: Solid Red
+            type: scale
+          - hex: '#DC4E58'
+            name: Solid Red
+            type: scale
+          - hex: '#DC4E58'
+            name: Solid Red
+            type: scale
+        fillColumns:
+          - Name
+        height: 2
+        kind: Histogram
+        name: Goals Against by Team
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: -24h, stop: now())
+                  |> filter(fn: (r) => r._measurement == "premier_league")
+                  |> filter(fn: (r) => r._field == "GoalsAgainst")
+                  |> last()
+        width: 6
+        xCol: _value
+        xPos: 6
+        yPos: 15
+      - colors:
+          - hex: '#ffffff'
+            name: white
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: L - footballclub2
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: -24h, stop: now())
+                  |> filter(fn: (r) => r._measurement == "premier_league")
+                  |> filter(fn: (r) => r._field == "Draws")
+                  |> filter(fn: (r) => r.Name == v.footballclub2)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 1
+        xPos: 7
+      - colors:
+          - hex: '#ffffff'
+            name: white
+            type: background
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: L - footballclub2
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: -24h, stop: now())
+                  |> filter(fn: (r) => r._measurement == "premier_league")
+                  |> filter(fn: (r) => r._field == "Losses")
+                  |> filter(fn: (r) => r.Name == v.footballclub2)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 1
+        xPos: 8
+      - colors:
+          - hex: '#FFD255'
+            name: thunder
+            type: background
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: W - footballclub3
+        queries:
+          - query: |-
+                from(bucket: "googlecloud")
+                  |> range(start: -24h, stop: now())
+                  |> filter(fn: (r) => r._measurement == "premier_league")
+                  |> filter(fn: (r) => r._field == "Wins")
+                  |> filter(fn: (r) => r.Name == v.footballclub3)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 1
+        xPos: 9
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#FD7A5D'
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            name: Delorean
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Goals - footballclub3
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "premier_league")
+                  |> filter(fn: (r) => r._field == "GoalsDifferential" or r._field == "GoalsAgainst" or r._field == "GoalsScored")
+                  |> filter(fn: (r) => r.Name == v.footballclub3)
+                  |> drop(columns: ["host", "GlobalTeamID", "_measurement"])
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 3
+        xCol: _time
+        xPos: 9
+        yCol: _value
+        yPos: 2
+      - colors:
+          - hex: '#ffffff'
+            name: white
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: D - footballclub3
+        queries:
+          - query: |-
+                from(bucket: "googlecloud")
+                  |> range(start: -24h, stop: now())
+                  |> filter(fn: (r) => r._measurement == "premier_league")
+                  |> filter(fn: (r) => r._field == "Draws")
+                  |> filter(fn: (r) => r.Name == v.footballclub3)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 1
+        xPos: 10
+      - colors:
+          - hex: '#ffffff'
+            name: white
+            type: background
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: L - footballclub3
+        queries:
+          - query: |-
+                from(bucket: "googlecloud")
+                  |> range(start: -24h, stop: now())
+                  |> filter(fn: (r) => r._measurement == "premier_league")
+                  |> filter(fn: (r) => r._field == "Losses")
+                  |> filter(fn: (r) => r.Name == v.footballclub3)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 1
+        xPos: 11
+    description: English Premier League Statistics
+    name: 'Premier League ⚽️ '
 
-  ## Destination bucket to write into.
-  bucket = "telegraf"
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: premier-league
+spec:
+    name: premier_league.conf
+    associations:
+      - kind: Label
+        name: EPL
+    config: |
+        [[inputs.http]]
+        #Collect stats every 24 hours
+          interval = "24h"
+          #HTTP/JSON data from sportdata.io
+          urls = [
+            "https://api.sportsdata.io/v3/soccer/scores/json/Standings/383?key=$SPORTSDATAIO_SOCCER_API_KEY"
+          ]
+          name_override = "premier_league"
+          tagexclude = ["url", "Scope", "host"]
+          method = "GET"
+          timeout = "5s"
+          data_format = "json"
+          tag_keys = [
+            "Name"
+          ]
+          json_string_fields = [""]
+          json_name_key = ""
 
+        [[outputs.influxdb_v2]]
+          ## The URLs of the InfluxDB cluster nodes.
+          ##
+          ## Multiple URLs can be specified for a single cluster, only ONE of the
+          ## urls will be written to each interval.
+          ## urls exp: http://127.0.0.1:9999
+          urls = ["$INFLUX_HOST"]
+
+          ## Token for authentication.
+          token = "$INFLUX_TOKEN"
+
+          ## Organization is the name of the organization you wish to write to; must exist.
+          organization = "$INFLUX_ORG"
+
+          ## Destination bucket to write into.
+          bucket = "telegraf"
