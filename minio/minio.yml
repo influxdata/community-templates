@@ -1,0 +1,469 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: happy-maxwell-651001
+spec:
+    color: '#F95F53'
+    name: minio
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: earnest-wilbur-251003
+spec:
+    associations:
+      - kind: Label
+        name: happy-maxwell-651001
+    name: minio
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: adventuring-austin-a51001
+spec:
+    associations:
+      - kind: Label
+        name: happy-maxwell-651001
+    charts:
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Uptime
+        queries:
+          - query: |-
+                from(bucket: "minio")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "process_start_time_seconds")
+                  |> map(fn: (r) => ({ r with _value: (int(v: now()) - int(v: int(v: r._value) * 1000000000)) / int(v: 1d) }))
+        suffix: ' Days'
+        width: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#FFD255'
+            name: Solid Yellow
+            type: scale
+          - hex: '#FFD255'
+            name: Solid Yellow
+            type: scale
+          - hex: '#FFD255'
+            name: Solid Yellow
+            type: scale
+        geom: monotoneX
+        height: 3
+        kind: Xy
+        name: CPU Process Time
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "minio")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "process_cpu_seconds_total")
+                  |> derivative(unit: v.windowPeriod, nonNegative: true)
+                  |> yield(name: "nonnegative derivative")
+        shade: true
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#FD7A5D'
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            name: Delorean
+            type: scale
+        geom: monotoneX
+        height: 3
+        kind: Xy
+        name: RX Bytes Total
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "minio")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "s3_rx_bytes_total")
+                  |> derivative(unit: v.windowPeriod, nonNegative: true)
+                  |> yield(name: "nonnegative derivative")
+        shade: true
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: s3 Request Totals
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "minio")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "s3_requests_total")
+        shade: true
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 7
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Time to First Byte (seconds)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "minio")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "s3_ttfb_seconds")
+                  |> filter(fn: (r) => r["_field"] == "count")
+                  |> derivative(unit: v.windowPeriod, nonNegative: true)
+                  |> yield(name: "nonnegative derivative")
+        shade: true
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 10
+      - colors:
+          - hex: '#7CE490'
+            name: honeydew
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Total Storage
+        queries:
+          - query: |-
+                from(bucket: "minio")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "disk_storage_total")
+                  |> map(fn: (r) => ({r with _value: r._value / 1073741824.00}))
+        suffix: ' GiB'
+        width: 2
+        xPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Storage Used
+        queries:
+          - query: |-
+                from(bucket: "minio")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "disk_storage_used")
+                  |> map(fn: (r) => ({r with _value: r._value / 1073741824.00}))
+        suffix: ' GiB'
+        width: 2
+        xPos: 4
+      - colors:
+          - hex: '#7CE490'
+            name: honeydew
+            type: text
+          - hex: '#BF3D5E'
+            name: ruby
+            type: text
+          - hex: '#32B08C'
+            name: viridian
+            type: text
+            value: 3
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Storage Available
+        queries:
+          - query: |-
+                from(bucket: "minio")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "disk_storage_available")
+                  |> map(fn: (r) => ({r with _value: r._value / 1073741824.00}))
+        suffix: ' GiB'
+        width: 2
+        xPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#FDC44F'
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            name: Cthulhu
+            type: scale
+        geom: monotoneX
+        height: 3
+        kind: Xy
+        name: Memory Allocated
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "minio")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "go_memstats_alloc_bytes")
+        shade: true
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: monotoneX
+        height: 3
+        kind: Xy
+        name: TX Bytes Total
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "minio")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "s3_tx_bytes_total")
+                  |> derivative(unit: v.windowPeriod, nonNegative: true)
+                  |> yield(name: "nonnegative derivative")
+        shade: true
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: monotoneX
+        height: 3
+        kind: Xy
+        name: s3 Current Request
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "minio")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "s3_requests_current")
+                  |> filter(fn: (r) => r["api"] == "getbucketlocation" or r["api"] == "getobject" or r["api"] == "getbucketobjectlockconfiguration" or r["api"] == "headbucket" or r["api"] == "headobject" or r["api"] == "listbuckets" or r["api"] == "listobjectsv1" or r["api"] == "newmultipartupload" or r["api"] == "putobjectpart")
+                  |> derivative(unit: v.windowPeriod, nonNegative: true)
+                  |> yield(name: "nonnegative derivative")
+        shade: true
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 7
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Error "Put Object Part"
+        queries:
+          - query: |-
+                from(bucket: "minio")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "s3_errors_total")
+                  |> filter(fn: (r) => r["_field"] == "counter")
+                  |> filter(fn: (r) => r["api"] == "putobjectpart")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 2
+        xPos: 6
+        yPos: 10
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Error "Get Bucket Location"
+        queries:
+          - query: |-
+                from(bucket: "minio")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "s3_errors_total")
+                  |> filter(fn: (r) => r["_field"] == "counter")
+                  |> filter(fn: (r) => r["api"] == "getbucketlocation")
+                  |> derivative(unit: v.windowPeriod, nonNegative: true)
+                  |> yield(name: "nonnegative derivative")
+        width: 2
+        xPos: 6
+        yPos: 11
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Error "Object List"
+        queries:
+          - query: |-
+                from(bucket: "minio")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "s3_errors_total")
+                  |> filter(fn: (r) => r["_field"] == "counter")
+                  |> filter(fn: (r) => r["api"] == "listobjectsv1")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 2
+        xPos: 6
+        yPos: 12
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Total Disks
+        queries:
+          - query: |-
+                from(bucket: "minio")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "minio_disks_total")
+        width: 2
+        xPos: 8
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat
+        name: Error "Object Lock"
+        queries:
+          - query: |-
+                from(bucket: "minio")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "s3_errors_total")
+                  |> filter(fn: (r) => r["_field"] == "counter")
+                  |> filter(fn: (r) => r["api"] == "getbucketobjectlockconfiguration")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 2
+        xPos: 8
+        yPos: 10
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Offline Disks
+        queries:
+          - query: |-
+                from(bucket: "minio")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "minio_disks_offline")
+        width: 2
+        xPos: 10
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat
+        name: Total Objects
+        queries:
+          - query: |-
+                from(bucket: "minio")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "bucket_objects_count")
+                  |> count()
+                  |> yield(name: "count")
+        width: 2
+        xPos: 10
+        yPos: 10
+    name: MinIO
