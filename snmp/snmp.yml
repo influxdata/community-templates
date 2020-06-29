@@ -1,0 +1,1354 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: distracted-visvesvaraya-1f7007
+spec:
+    color: '#545667'
+    name: SNMP
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: gifted-black-1f7003
+spec:
+    color: '#326BBA'
+    name: inputs.net
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: thirsty-newton-1f7005
+spec:
+    color: '#326BBA'
+    name: inputs.system
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: earning-nobel-1f7001
+spec:
+    language: flux
+    name: snmp_ifName
+    query: "import \"influxdata/influxdb/v1\"\r\nv1.tagValues(bucket: \"snmp\", tag:
+        \"ifName\")"
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: kind-poincare-df7001
+spec:
+    language: flux
+    name: snmp_host
+    query: "import \"influxdata/influxdb/v1\"\r\nv1.tagValues(bucket: \"snmp\", tag:
+        \"agent_host\")"
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: amusing-lewin-5f7001
+spec:
+    associations:
+      - kind: Label
+        name: gifted-black-1f7003
+      - kind: Label
+        name: distracted-visvesvaraya-1f7007
+    charts:
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: min
+          - hex: '#BF3D5E'
+            name: ruby
+            type: max
+            value: 90
+        decimalPlaces: 1
+        height: 4
+        kind: Gauge
+        name: Temperature
+        queries:
+          - query: |-
+                from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "Temperature" and r["agent_host"] == v.snmp_host)
+                  |> last()
+        suffix: ' °C'
+        width: 3
+      - axes:
+          - base: "2"
+            label: Clients
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 4
+        kind: Single_Stat_Plus_Line
+        name: Wlan Client Count
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "ApAuthClientCount" and r["agent_host"] == v.snmp_host)
+                  |> aggregateWindow(every: v.windowPeriod, fn: max)
+        shade: true
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Signal strength
+            name: y
+            scale: linear
+            suffix: dB
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Wlan Client Signal Strength
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "Strength" and r["agent_host"] == v.snmp_host)
+                  |> map(fn: (r) => ({ r with _value: -r._value }))
+        shade: true
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Interface Bytes
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Interface Driver UpDown
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => (r["_field"] == "InterfaceStatsDriverRxBytes" or r["_field"] == "InterfaceStatsDriverTxBytes") and r["agent_host"] == v.snmp_host and r["ifName"] == v.snmp_ifName)
+        shade: true
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 12
+      - colors:
+          - hex: '#BF3D5E'
+            name: ruby
+            type: min
+          - hex: '#32B08C'
+            name: viridian
+            type: threshold
+            value: 20
+          - hex: '#BF3D5E'
+            name: ruby
+            type: threshold
+            value: 30
+          - hex: '#BF3D5E'
+            name: ruby
+            type: max
+            value: 50
+        decimalPlaces: 1
+        height: 4
+        kind: Gauge
+        name: Voltage
+        queries:
+          - query: |-
+                from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "Voltage" and r["agent_host"] == v.snmp_host)
+                  |> last()
+        suffix: V
+        width: 3
+        xPos: 3
+      - colors:
+          - hex: '#BF3D5E'
+            name: ruby
+            type: min
+            value: 2400
+          - hex: '#32B08C'
+            name: viridian
+            type: threshold
+            value: 2412
+          - hex: '#BF3D5E'
+            name: ruby
+            type: threshold
+            value: 2484
+          - hex: '#BF3D5E'
+            name: ruby
+            type: max
+            value: 2500
+        decimalPlaces: 0
+        height: 4
+        kind: Gauge
+        name: Wlan Ap Frequency
+        queries:
+          - query: |-
+                from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "ApFreq" and r["agent_host"] == v.snmp_host)
+                  |> last()
+        suffix: ' MHz'
+        width: 3
+        xPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Rx Rate
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Wlan Client Rate
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "RxRate" and r["agent_host"] == v.snmp_host)
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Wlan Bytes
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Wlan Client UpDown
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => (r["_field"] == "RxBytes" or r["_field"] == "TxBytes") and r["agent_host"] == v.snmp_host)
+        shade: true
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Interface Bytes
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Interface UpDown
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => (r["_field"] == "InterfaceStatsRxBytes" or r["_field"] == "InterfaceStatsTxBytes") and r["agent_host"] == v.snmp_host and r["ifName"] == v.snmp_ifName)
+        shade: true
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 12
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 4
+        kind: Single_Stat
+        name: Firmware
+        prefix: v
+        queries:
+          - query: |-
+                from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "FirmwareVersion" and r["agent_host"] == v.snmp_host)
+                  |> last()
+        width: 3
+        xPos: 9
+    description: System and WiFi monitoring via SNMP
+    name: SNMP Mikrotik Monitoring
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: elegant-carson-df7001
+spec:
+    associations:
+      - kind: Label
+        name: gifted-black-1f7003
+      - kind: Label
+        name: thirsty-newton-1f7005
+      - kind: Label
+        name: distracted-visvesvaraya-1f7007
+    charts:
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 4
+        kind: Single_Stat
+        name: System Uptime
+        queries:
+          - query: |-
+                from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "uptime" and r["agent_host"] == v.snmp_host)
+                  |> map(fn: (r) => ({ r with _value: float(v: r._value) / 86400.0 / 100.0 }))
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        suffix: ' days'
+        width: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: CPU Load
+        position: overlaid
+        queries:
+          - query: "from(bucket: \"snmp\")\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_field\"] ==
+                \"laLoad1\" and r[\"agent_host\"] == v.snmp_host)\r\n  |> aggregateWindow(every:
+                v.windowPeriod, fn: max)\r\n  |> yield(name: \"max\")"
+        shade: true
+        width: 5
+        xCol: _time
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: System IO
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["agent_host"] == v.snmp_host and (r["_field"] == "ssIOSent" or r["_field"] == "ssIOReceive"))
+                  |> map(fn: (r) => ({ r with _value: +r._value}))
+                  |> aggregateWindow(every: v.windowPeriod, fn: max)
+                  |> yield(name: "max")
+        shade: true
+        width: 5
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: IOPS
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["agent_host"] == v.snmp_host and (r["_field"] == "diskIOReads" or r["_field"] == "diskIOWrites"))
+                  |> map(fn: (r) => ({ r with _value: +r._value}))
+                  |> derivative(unit: 1s, nonNegative: true, columns: ["_value"], timeColumn: "_time")
+                  |> aggregateWindow(every: v.windowPeriod, fn: max)
+                  |> yield(name: "max")
+        shade: true
+        width: 5
+        xCol: _time
+        yCol: _value
+        yPos: 12
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: IO Volume
+        position: overlaid
+        queries:
+          - query: "from(bucket: \"snmp\")\n  |> range(start: v.timeRangeStart, stop:
+                v.timeRangeStop)\n  |> filter(fn: (r) => r[\"agent_host\"] == v.snmp_host
+                and (r[\"_field\"] == \"diskIONRead\" or r[\"_field\"] == \"diskIONWritten\"))\n
+                \ |> map(fn: (r) => ({ r with _value: +r._value}))\n  |> derivative(unit:
+                1s, nonNegative: true, columns: [\"_value\"], timeColumn: \"_time\")
+                \ \n  |> aggregateWindow(every: v.windowPeriod, fn: max)\n  |> yield(name:
+                \"max\")"
+        shade: true
+        width: 5
+        yPos: 16
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: min
+          - hex: '#BF3D5E'
+            name: ruby
+            type: max
+            value: 100
+        decimalPlaces: 2
+        height: 4
+        kind: Gauge
+        name: 'CPU Utilization % '
+        queries:
+          - query: |-
+                from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "laLoad1" and r["agent_host"] == v.snmp_host)
+                  |> last()
+                  |> map(fn: (r) => ({ r with _value: float(v: r._value) * 100.0 }))
+                  |> yield(name: "last")
+        suffix: ' %'
+        width: 3
+        xPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: min
+          - hex: '#F48D38'
+            name: tiger
+            type: threshold
+            value: 70
+          - hex: '#BF3D5E'
+            name: ruby
+            type: threshold
+            value: 90
+          - hex: '#BF3D5E'
+            name: ruby
+            type: max
+            value: 100
+        decimalPlaces: 2
+        height: 4
+        kind: Gauge
+        name: Memory Allocation %
+        queries:
+          - query: |-
+                memAvailReal = from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "memAvailReal" and r["agent_host"] == v.snmp_host)
+                  |> drop(columns: ["_start", "_stop"])
+
+                memTotalReal = from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "memTotalReal" and r["agent_host"] == v.snmp_host)
+                  |> drop(columns: ["_start", "_stop"])
+
+                join(tables:{key1: memAvailReal, key2: memTotalReal}, on: ["_time"], method: "inner")
+                                  |> map(fn: (r) => ({
+                                    _time: r._time,
+                                    _value: 100.0 - ((float(v: r._value_key1) / float(v: r._value_key2)) * 100.0),
+                                    _field: "Memory Usage Percent"
+                                  }))
+                                  |> last()
+                                  |> yield(name:"percentage")
+
+
+
+                //100 - ( float( v: memAvailReal) / float( v: memTotalReal) * 100.0)
+        suffix: ' %'
+        tickSuffix: "false"
+        width: 2
+        xPos: 5
+      - axes:
+          - base: "10"
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#74D495'
+            name: Atlantis
+            type: scale
+          - hex: '#3F3FBA'
+            name: Atlantis
+            type: scale
+          - hex: '#FF4D9E'
+            name: Atlantis
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Free Memory
+        position: overlaid
+        queries:
+          - query: "from(bucket: \"snmp\")\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_field\"] ==
+                \"memAvailReal\" and r[\"agent_host\"] == v.snmp_host)\r\n  |> aggregateWindow(every:
+                v.windowPeriod, fn: min)\r\n  |> yield(name: \"min\")"
+        shade: true
+        width: 5
+        xCol: _time
+        xPos: 5
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: y
+            scale: linear
+          - base: "10"
+            name: x
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Used Memory
+        position: overlaid
+        queries:
+          - query: |-
+                memAvailReal = from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "memAvailReal" and r["agent_host"] == v.snmp_host)
+                  |> drop(columns: ["_start", "_stop"])
+
+                memTotalReal = from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "memTotalReal" and r["agent_host"] == v.snmp_host)
+                  |> drop(columns: ["_start", "_stop"])
+
+                join(tables:{key1: memAvailReal, key2: memTotalReal}, on: ["_time"], method: "inner")
+                                  |> map(fn: (r) => ({
+                                    _time: r._time,
+                                    _value: (float(v: r._value_key2) - float(v: r._value_key1)) / 1024.0 / 1024.0,
+                                    _field: "Memory Usage MB"
+                                  }))
+                                  |> aggregateWindow(every: v.windowPeriod, fn: max)
+                                  |> yield(name: "max")
+        shade: true
+        width: 5
+        xCol: _time
+        xPos: 5
+        yCol: _value
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: IO Load
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["agent_host"] == v.snmp_host and ( r["_field"] == "diskIOLA1" or r["_field"] == "diskIOLA5" or r["_field"] == "diskIOLA15"))
+                  |> aggregateWindow(every: v.windowPeriod, fn: max)
+                  |> yield(name: "max")
+        shade: true
+        width: 5
+        xCol: _time
+        xPos: 5
+        yCol: _value
+        yPos: 12
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: min
+          - hex: '#BF3D5E'
+            name: ruby
+            type: max
+            value: 4
+        decimalPlaces: 2
+        height: 4
+        kind: Gauge
+        name: Used Memory
+        queries:
+          - query: |-
+                memAvailReal = from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "memAvailReal" and r["agent_host"] == v.snmp_host)
+                  |> drop(columns: ["_start", "_stop"])
+
+                memTotalReal = from(bucket: "snmp")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "memTotalReal" and r["agent_host"] == v.snmp_host)
+                  |> drop(columns: ["_start", "_stop"])
+
+                join(tables:{key1: memAvailReal, key2: memTotalReal}, on: ["_time"], method: "inner")
+                                  |> map(fn: (r) => ({
+                                    _time: r._time,
+                                    _value: (float(v: r._value_key2) - float(v: r._value_key1)) / 1024.0 / 1024.0,
+                                    _field: "Memory Usage MB"
+                                  }))
+                                  |> last()
+                                  |> yield(name:"MB")
+        suffix: ' MB'
+        tickSuffix: "false"
+        width: 3
+        xPos: 7
+    description: Dashboards shows metrics provided via SNMP protocol. It provides  an
+        example of strandard SNMP stats.
+    name: SNMP System Monitoring
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: happy-bhaskara-9f7005
+spec:
+    associations:
+      - kind: Label
+        name: gifted-black-1f7003
+      - kind: Label
+        name: distracted-visvesvaraya-1f7007
+    charts: []
+    description: Network monitoring via SNMP
+    name: SNMP Network Monitoring
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: adoring-swirles-1f7001
+spec:
+    associations:
+      - kind: Label
+        name: gifted-black-1f7003
+      - kind: Label
+        name: distracted-visvesvaraya-1f7007
+    config: |
+        [[outputs.influxdb_v2]]
+          ## The URLs of the InfluxDB cluster nodes.
+          ##
+          ## Multiple URLs can be specified for a single cluster, only ONE of the
+          ## urls will be written to each interval.
+          ## urls exp: http://127.0.0.1:9999
+          urls = ["$INFLUX_HOST"]
+
+          ## Token for authentication.
+          token = "$INFLUX_TOKEN"
+
+          ## Organization is the name of the organization you wish to write to; must exist.
+          organization = "$INFLUX_ORG"
+
+          ## Destination bucket to write into.
+          bucket = "$INFLUX_BUCKET"
+
+
+        # # Retrieves SNMP values from remote agents
+        [[inputs.snmp]]
+        #   ## Agent addresses to retrieve values from.
+        #   ##   example: agents = ["udp://127.0.0.1:161"]
+        #   ##            agents = ["tcp://127.0.0.1:161"]
+        #   agents = ["udp://127.0.0.1:161"]
+        #
+        #   ## Timeout for each request.
+        #   # timeout = "5s"
+        #
+        #   ## SNMP version; can be 1, 2, or 3.
+        #   # version = 2
+        #
+        #   ## SNMP community string.
+        #   # community = "public"
+        #
+        #   ## Number of retries to attempt.
+        #   # retries = 3
+        #
+        #   ## The GETBULK max-repetitions parameter.
+        #   # max_repetitions = 10
+        #
+        #   ## SNMPv3 authentication and encryption options.
+        #   ##
+        #   ## Security Name.
+        #   # sec_name = "myuser"
+        #   ## Authentication protocol; one of "MD5", "SHA", or "".
+        #   # auth_protocol = "MD5"
+        #   ## Authentication password.
+        #   # auth_password = "pass"
+        #   ## Security Level; one of "noAuthNoPriv", "authNoPriv", or "authPriv".
+        #   # sec_level = "authNoPriv"
+        #   ## Context Name.
+        #   # context_name = ""
+        #   ## Privacy protocol used for encrypted messages; one of "DES", "AES" or "".
+        #   # priv_protocol = ""
+        #   ## Privacy password used for encrypted messages.
+        #   # priv_password = ""
+        #
+        #   ## Add fields and tables defining the variables you wish to collect.  This
+        #   ## example collects the system uptime and interface variables.  Reference the
+        #   ## full plugin documentation for configuration details.
+
+        [[inputs.snmp.field]]
+           name = "hostname"
+           oid = "RFC1213-MIB::sysName.0"
+           is_tag = true
+
+        [[inputs.snmp.field]]
+            name = "uptime"
+            oid = "DISMAN-EXPRESSION-MIB::sysUpTimeInstance"
+
+        [[inputs.snmp.field]]
+            name = "ciscoEnvMonFanState"
+            oid = ".1.3.6.1.4.1.9.9.13.1.4.1.3"
+
+        [[inputs.snmp.field]]
+            name = "ciscoEnvMonVoltageStatusValue"
+            oid = ".1.3.6.1.4.1.9.9.13.1.2.1.3"
+
+        [[inputs.snmp.field]]
+            name = "ciscoEnvMonTemperatureStatusValue"
+            oid = ".1.3.6.1.4.1.9.9.13.1.3.1.3"
+
+        [[inputs.snmp.field]]
+            name = "cpmCPUTotal5min"
+            oid = ".1.3.6.1.4.1.9.9.109.1.1.1.1.5"
+
+        [[inputs.snmp.field]]
+            name = "ciscoMemoryPoolFree"
+            oid = ".1.3.6.1.4.1.9.9.48.1.1.1.6"
+
+        [[inputs.snmp.field]]
+            name = "ciscoMemoryPoolUsed"
+            oid = ".1.3.6.1.4.1.9.9.48.1.1.1.5"
+
+        [[inputs.snmp.table]]
+           name = "snmp"
+           inherit_tags = [ "hostname" ]
+           oid = "IF-MIB::ifXTable"
+
+        [[inputs.snmp.table.field]]
+           name = "ifName"
+           oid = "IF-MIB::ifName"
+           is_tag = true
+
+        [[inputs.snmp.table]]
+            name = "snmp.cisco"
+            inherit_tags = [ "hostname" ]
+            oid = "ENTITY-SENSOR-MIB::entPhySensorTable"
+
+        [[inputs.snmp.table.field]]
+            name = "entPhySensorUnitsDisplay"
+            oid = "ENTITY-SENSOR-MIB::entPhySensorUnitsDisplay"
+            is_tag = true
+    description: SNMP configuration for Cisco device
+    name: Cisco SNMP
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: cranky-dewdney-9f7001
+spec:
+    associations:
+      - kind: Label
+        name: gifted-black-1f7003
+      - kind: Label
+        name: distracted-visvesvaraya-1f7007
+    config: |
+        [[outputs.influxdb_v2]]
+          ## The URLs of the InfluxDB cluster nodes.
+          ##
+          ## Multiple URLs can be specified for a single cluster, only ONE of the
+          ## urls will be written to each interval.
+          ## urls exp: http://127.0.0.1:9999
+          urls = ["$INFLUX_HOST"]
+
+          ## Token for authentication.
+          token = "$INFLUX_TOKEN"
+
+          ## Organization is the name of the organization you wish to write to; must exist.
+          organization = "$INFLUX_ORG"
+
+          ## Destination bucket to write into.
+          bucket = "$INFLUX_BUCKET"
+
+
+        # # Retrieves SNMP values from remote agents
+        [[inputs.snmp]]
+        #   ## Agent addresses to retrieve values from.
+        #   ##   example: agents = ["udp://127.0.0.1:161"]
+        #   ##            agents = ["tcp://127.0.0.1:161"]
+        #   agents = ["udp://127.0.0.1:161"]
+        #
+        #   ## Timeout for each request.
+        #   # timeout = "5s"
+        #
+        #   ## SNMP version; can be 1, 2, or 3.
+        #   # version = 2
+        #
+        #   ## SNMP community string.
+        #   # community = "public"
+        #
+        #   ## Number of retries to attempt.
+        #   # retries = 3
+        #
+        #   ## The GETBULK max-repetitions parameter.
+        #   # max_repetitions = 10
+        #
+        #   ## SNMPv3 authentication and encryption options.
+        #   ##
+        #   ## Security Name.
+        #   # sec_name = "myuser"
+        #   ## Authentication protocol; one of "MD5", "SHA", or "".
+        #   # auth_protocol = "MD5"
+        #   ## Authentication password.
+        #   # auth_password = "pass"
+        #   ## Security Level; one of "noAuthNoPriv", "authNoPriv", or "authPriv".
+        #   # sec_level = "authNoPriv"
+        #   ## Context Name.
+        #   # context_name = ""
+        #   ## Privacy protocol used for encrypted messages; one of "DES", "AES" or "".
+        #   # priv_protocol = ""
+        #   ## Privacy password used for encrypted messages.
+        #   # priv_password = ""
+        #
+        #   ## Add fields and tables defining the variables you wish to collect.  This
+        #   ## example collects the system uptime and interface variables.  Reference the
+        #   ## full plugin documentation for configuration details.
+            name = "snmp"
+
+        [inputs.snmp.tags]
+            agent_type = "Mikrotik"
+
+        [[inputs.snmp.field]]
+           name = "hostname"
+           oid = "RFC1213-MIB::sysName.0"
+           is_tag = true
+
+        [[inputs.snmp.field]]
+            name = "uptime"
+            oid = "DISMAN-EXPRESSION-MIB::sysUpTimeInstance"
+
+        [[inputs.snmp.table]]
+           name = "snmp"
+           inherit_tags = [ "hostname" ]
+           oid = "IF-MIB::ifXTable"
+
+        [[inputs.snmp.table.field]]
+           name = "ifName"
+           oid = "IF-MIB::ifName"
+           is_tag = true
+
+        [[inputs.snmp.field]]
+            name = "Temperature"
+            oid = "MIKROTIK-MIB::mtxrHlTemperature.0"
+            conversion = "float(1)"
+
+        [[inputs.snmp.field]]
+            name = "Voltage"
+            oid = "MIKROTIK-MIB::mtxrHlVoltage.0"
+            conversion = "float(1)"
+
+
+        [[inputs.snmp.table]]
+            name = "snmp.mikrotik.extendedInterfaceStats"
+            index_as_tag = true
+            [[inputs.snmp.table.field]]
+                name = "ifName"
+                oid = "MIKROTIK-MIB::mtxrInterfaceStatsName"
+                is_tag = true
+            [[inputs.snmp.table.field]]
+                name = "InterfaceStatsDriverRxBytes"
+                oid = "MIKROTIK-MIB::mtxrInterfaceStatsDriverRxBytes"
+            [[inputs.snmp.table.field]]
+                name = "InterfaceStatsDriverTxBytes"
+                oid = "MIKROTIK-MIB::mtxrInterfaceStatsDriverTxBytes"
+            [[inputs.snmp.table.field]]
+                name = "InterfaceStatsTxBytes"
+                oid = "MIKROTIK-MIB::mtxrInterfaceStatsTxBytes"
+            [[inputs.snmp.table.field]]
+                name = "InterfaceStatsRxBytes"
+                oid = "MIKROTIK-MIB::mtxrInterfaceStatsRxBytes"
+
+        [[inputs.snmp.table]]
+            name = "snmp.mikrotik.mtxrSystem"
+            [[inputs.snmp.field]]
+              name = "FirmwareVersion"
+              oid = "MIKROTIK-MIB::mtxrFirmwareVersion.0"
+            [[inputs.snmp.field]]
+              name = "FirmwareUpgradeVersion"
+              oid = "MIKROTIK-MIB::mtxrFirmwareUpgradeVersion.0"
+
+        [[inputs.snmp.table]]
+            name = "snmp.mikrotik.ap"
+            index_as_tag = true
+            [[inputs.snmp.table.field]]
+                name = "Addr"
+                oid = "MIKROTIK-MIB::mtxrWlRtabAddr"
+                is_tag = true
+                conversion = "hwaddr"
+            [[inputs.snmp.table.field]]
+                name = "ApAuthClientCount"
+                oid = "MIKROTIK-MIB::mtxrWlApAuthClientCount"
+            [[inputs.snmp.table.field]]
+                name = "ApClientCount"
+                oid = "MIKROTIK-MIB::mtxrWlApClientCount"
+            [[inputs.snmp.table.field]]
+                name = "ApFreq"
+                oid = "MIKROTIK-MIB::mtxrWlApFreq"
+
+        [[inputs.snmp.table]]
+            name = "snmp.mikrotik.wifi"
+            index_as_tag = true
+            [[inputs.snmp.table.field]]
+                name = "Addr"
+                oid = "MIKROTIK-MIB::mtxrWlRtabAddr"
+                is_tag = true
+                conversion = "hwaddr"
+            [[inputs.snmp.table.field]]
+                name = "Strength"
+                oid = "MIKROTIK-MIB::mtxrWlRtabStrength"
+            [[inputs.snmp.table.field]]
+                name = "Strength"
+                oid = "MIKROTIK-MIB::mtxrWlRtabSignalToNoise"
+            [[inputs.snmp.table.field]]
+                name = "TxBytes"
+                oid = "MIKROTIK-MIB::mtxrWlRtabTxBytes"
+            [[inputs.snmp.table.field]]
+                name = "RxBytes"
+                oid = "MIKROTIK-MIB::mtxrWlRtabRxBytes"
+            [[inputs.snmp.table.field]]
+                name = "TxRate"
+                oid = "MIKROTIK-MIB::mtxrWlRtabTxRate"
+            [[inputs.snmp.table.field]]
+                name = "RxRate"
+                oid = "MIKROTIK-MIB::mtxrWlRtabRxRate"
+    description: SNMP configuration for Mikrotik devices
+    name: Mikrotik SNMP
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: interesting-chaplygin-df7001
+spec:
+    associations:
+      - kind: Label
+        name: gifted-black-1f7003
+      - kind: Label
+        name: distracted-visvesvaraya-1f7007
+    config: |
+        [[outputs.influxdb_v2]]
+          ## The URLs of the InfluxDB cluster nodes.
+          ##
+          ## Multiple URLs can be specified for a single cluster, only ONE of the
+          ## urls will be written to each interval.
+          ## urls exp: http://127.0.0.1:9999
+          urls = ["$INFLUX_HOST"]
+
+          ## Token for authentication.
+          token = "$INFLUX_TOKEN"
+
+          ## Organization is the name of the organization you wish to write to; must exist.
+          organization = "$INFLUX_ORG"
+
+          ## Destination bucket to write into.
+          bucket = "$INFLUX_BUCKET"
+
+
+            # # Retrieves SNMP values from remote agents
+            [[inputs.snmp]]
+            #   ## Agent addresses to retrieve values from.
+            #   ##   example: agents = ["udp://127.0.0.1:161"]
+            #   ##            agents = ["tcp://127.0.0.1:161"]
+            #   agents = ["udp://127.0.0.1:161"]
+            #
+            #   ## Timeout for each request.
+            #   # timeout = "5s"
+            #
+            #   ## SNMP version; can be 1, 2, or 3.
+            #   # version = 2
+            #
+            #   ## SNMP community string.
+            #   # community = "public"
+            #
+            #   ## Number of retries to attempt.
+            #   # retries = 3
+            #
+            #   ## The GETBULK max-repetitions parameter.
+            #   # max_repetitions = 10
+            #
+            #   ## SNMPv3 authentication and encryption options.
+            #   ##
+            #   ## Security Name.
+            #   # sec_name = "myuser"
+            #   ## Authentication protocol; one of "MD5", "SHA", or "".
+            #   # auth_protocol = "MD5"
+            #   ## Authentication password.
+            #   # auth_password = "pass"
+            #   ## Security Level; one of "noAuthNoPriv", "authNoPriv", or "authPriv".
+            #   # sec_level = "authNoPriv"
+            #   ## Context Name.
+            #   # context_name = ""
+            #   ## Privacy protocol used for encrypted messages; one of "DES", "AES" or "".
+            #   # priv_protocol = ""
+            #   ## Privacy password used for encrypted messages.
+            #   # priv_password = ""
+            #
+            #   ## Add fields and tables defining the variables you wish to collect.  This
+            #   ## example collects the system uptime and interface variables.  Reference the
+            #   ## full plugin documentation for configuration details.
+          name = "snmp"
+          [[inputs.snmp.field]]
+            name = "uptime"
+            oid = "DISMAN-EXPRESSION-MIB::sysUpTimeInstance"
+
+          # IF-MIB::ifTable contains counters on input and output traffic as well as errors and discards.
+          [[inputs.snmp.table]]
+            name = "interface"
+            inherit_tags = [ "hostname" ]
+            oid = "IF-MIB::ifTable"
+
+          # Interface tag - used to identify interface in metrics database
+          [[inputs.snmp.table.field]]
+            name = "ifDescr"
+            oid = "IF-MIB::ifDescr"
+            is_tag = true
+
+          # IF-MIB::ifXTable contains newer High Capacity (HC) counters that do not overflow as fast for a few of the ifTable counters
+          [[inputs.snmp.table]]
+            name = "interface"
+            inherit_tags = [ "hostname" ]
+            oid = "IF-MIB::ifXTable"
+
+          # Interface tag - used to identify interface in metrics database
+          [[inputs.snmp.table.field]]
+            name = "ifDescr"
+            oid = "IF-MIB::ifDescr"
+            is_tag = true
+
+          # EtherLike-MIB::dot3StatsTable contains detailed ethernet-level information about what kind of errors have been logged on an interface (such as FCS error, frame too long, etc)
+          [[inputs.snmp.table]]
+            name = "interface"
+            inherit_tags = [ "hostname" ]
+            oid = "EtherLike-MIB::dot3StatsTable"
+
+          # Interface tag - used to identify interface in metrics database
+          [[inputs.snmp.table.field]]
+            name = "ifDescr"
+            oid = "IF-MIB::ifDescr"
+            is_tag = true
+
+
+        #################################################################
+
+         [[inputs.snmp.table]]
+            name = "snmp.diskIO"
+            index_as_tag = true
+
+          # UCD-DISKIO-MIB::diskIOEntry
+            #[[inputs.snmp.table.field]]
+            #  name = "diskIOIndex"
+            #  oid = ".1.3.6.1.4.1.2021.13.15.1.1.1"
+            [[inputs.snmp.table.field]]
+              name = "diskIODevice"
+              oid = ".1.3.6.1.4.1.2021.13.15.1.1.2"
+              is_tag = true
+            [[inputs.snmp.table.field]]
+              name = "diskIONRead"
+              oid = ".1.3.6.1.4.1.2021.13.15.1.1.3"
+            [[inputs.snmp.table.field]]
+              name = "diskIONWritten"
+              oid = ".1.3.6.1.4.1.2021.13.15.1.1.4"
+            [[inputs.snmp.table.field]]
+              name = "diskIOReads"
+              oid = ".1.3.6.1.4.1.2021.13.15.1.1.5"
+            [[inputs.snmp.table.field]]
+              name = "diskIOWrites"
+              oid = ".1.3.6.1.4.1.2021.13.15.1.1.6"
+            [[inputs.snmp.table.field]]
+              name = "diskIOLA1"
+              oid = ".1.3.6.1.4.1.2021.13.15.1.1.9"
+            [[inputs.snmp.table.field]]
+              name = "diskIOLA5"
+              oid = ".1.3.6.1.4.1.2021.13.15.1.1.10"
+            [[inputs.snmp.table.field]]
+              name = "diskIOLA15"
+              oid = ".1.3.6.1.4.1.2021.13.15.1.1.11"
+            #[[inputs.snmp.table.field]]
+            #  name = "diskIONReadX"
+            #  oid = ".1.3.6.1.4.1.2021.13.15.1.1.12"
+            #[[inputs.snmp.table.field]]
+            #  name = "diskIONWrittenX"
+            #  oid = ".1.3.6.1.4.1.2021.13.15.1.1.13"
+
+          [inputs.snmp.tagdrop]
+            diskIODevice = [ "loop*", "ram*" ]
+
+
+        ####################################################################
+          [[inputs.snmp.field]]
+            name = "memTotalSwap"
+            oid = ".1.3.6.1.4.1.2021.4.3.0"
+          [[inputs.snmp.field]]
+            name = "memAvailSwap"
+            oid = ".1.3.6.1.4.1.2021.4.4.0"
+          [[inputs.snmp.field]]
+            name = "memTotalReal"
+            oid = ".1.3.6.1.4.1.2021.4.5.0"
+          [[inputs.snmp.field]]
+            name = "memAvailReal"
+            oid = ".1.3.6.1.4.1.2021.4.6.0"
+          #[[inputs.snmp.field]]
+          #  name = "memTotalFree"
+          #  oid = ".1.3.6.1.4.1.2021.4.11.0"
+          [[inputs.snmp.field]]
+            name = "memShared"
+            oid = ".1.3.6.1.4.1.2021.4.13.0"
+          [[inputs.snmp.field]]
+            name = "memBuffer"
+            oid = ".1.3.6.1.4.1.2021.4.14.0"
+          [[inputs.snmp.field]]
+            name = "memCached"
+            oid = ".1.3.6.1.4.1.2021.4.15.0"
+          [[inputs.snmp.field]]
+            name = "memTotalSwapX"
+            oid = ".1.3.6.1.4.1.2021.4.18.0"
+          [[inputs.snmp.field]]
+            name = "memAvailSwapX"
+            oid = ".1.3.6.1.4.1.2021.4.19.0"
+          [[inputs.snmp.field]]
+            name = "memTotalRealX"
+            oid = ".1.3.6.1.4.1.2021.4.20.0"
+          [[inputs.snmp.field]]
+            name = "memAvailRealX"
+            oid = ".1.3.6.1.4.1.2021.4.21.0"
+          #[[inputs.snmp.field]]
+          #  name = "memTotalFreeX"
+          #  oid = ".1.3.6.1.4.1.2021.4.22.0"
+          [[inputs.snmp.field]]
+            name = "memSharedX"
+            oid = ".1.3.6.1.4.1.2021.4.24.0"
+          [[inputs.snmp.field]]
+            name = "memBufferX"
+            oid = ".1.3.6.1.4.1.2021.4.25.0"
+          [[inputs.snmp.field]]
+            name = "memCachedX"
+            oid = ".1.3.6.1.4.1.2021.4.26.0"
+        ####################################################################
+         [[inputs.snmp.field]]
+            name = "ssSwapIn"
+            oid = ".1.3.6.1.4.1.2021.11.3.0"
+          [[inputs.snmp.field]]
+            name = "ssSwapOut"
+            oid = ".1.3.6.1.4.1.2021.11.4.0"
+          [[inputs.snmp.field]]
+            name = "ssIOSent"
+            oid = ".1.3.6.1.4.1.2021.11.5.0"
+          [[inputs.snmp.field]]
+            name = "ssIOReceive"
+            oid = ".1.3.6.1.4.1.2021.11.6.0"
+          [[inputs.snmp.field]]
+            name = "ssSysInterrupts"
+            oid = ".1.3.6.1.4.1.2021.11.7.0"
+          [[inputs.snmp.field]]
+            name = "ssSysContext"
+            oid = ".1.3.6.1.4.1.2021.11.8.0"
+          [[inputs.snmp.field]]
+            name = "ssCpuUser"
+            oid = ".1.3.6.1.4.1.2021.11.9.0"
+          [[inputs.snmp.field]]
+            name = "ssCpuSystem"
+            oid = ".1.3.6.1.4.1.2021.11.10.0"
+          [[inputs.snmp.field]]
+            name = "ssCpuIdle"
+            oid = ".1.3.6.1.4.1.2021.11.11.0"
+          [[inputs.snmp.field]]
+            name = "ssCpuRawUser"
+            oid = ".1.3.6.1.4.1.2021.11.50.0"
+          [[inputs.snmp.field]]
+            name = "ssCpuRawNice"
+            oid = ".1.3.6.1.4.1.2021.11.51.0"
+          [[inputs.snmp.field]]
+            name = "ssCpuRawSystem"
+            oid = ".1.3.6.1.4.1.2021.11.52.0"
+          [[inputs.snmp.field]]
+            name = "ssCpuRawIdle"
+            oid = ".1.3.6.1.4.1.2021.11.53.0"
+          [[inputs.snmp.field]]
+            name = "ssCpuRawWait"
+            oid = ".1.3.6.1.4.1.2021.11.54.0"
+          [[inputs.snmp.field]]
+            name = "ssCpuRawKernel"
+            oid = ".1.3.6.1.4.1.2021.11.55.0"
+          [[inputs.snmp.field]]
+            name = "ssCpuRawInterrupt"
+            oid = ".1.3.6.1.4.1.2021.11.56.0"
+          [[inputs.snmp.field]]
+            name = "ssIORawSent"
+            oid = ".1.3.6.1.4.1.2021.11.57.0"
+          [[inputs.snmp.field]]
+            name = "ssIORawReceived"
+            oid = ".1.3.6.1.4.1.2021.11.58.0"
+          [[inputs.snmp.field]]
+            name = "ssRawInterrupts"
+            oid = ".1.3.6.1.4.1.2021.11.59.0"
+          [[inputs.snmp.field]]
+            name = "ssRawContexts"
+            oid = ".1.3.6.1.4.1.2021.11.60.0"
+
+        ####################################################################
+
+         [[inputs.snmp.field]]
+            name = "laLoad1"
+            oid = ".1.3.6.1.4.1.2021.10.1.5.1"
+            conversion = "float(2)"
+          [[inputs.snmp.field]]
+            name = "laLoad5"
+            oid = ".1.3.6.1.4.1.2021.10.1.5.2"
+            conversion = "float(2)"
+          [[inputs.snmp.field]]
+            name = "laLoad15"
+            oid = ".1.3.6.1.4.1.2021.10.1.5.3"
+            conversion = "float(2)"
+    description: SNMP configuration for Linux servers
+    name: Linux SNMP
