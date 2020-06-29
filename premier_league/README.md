@@ -46,6 +46,8 @@ You **MUST** set these environment variables before running Telegraf using somet
 
 This template displays data only from SportDataIO's Premier League standings data set. You can add more data and visualizations to your dashboards with other data sets (players, teams) including getting more data access with a with a paid subscription.  You would need to edit your Telegraf input plugin configuration if you add other metrics.  Follow the guidelines of the [HTTP input plugin](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/http) and [JSON parser](https://github.com/influxdata/telegraf/tree/master/plugins/parsers/json) to properly ingest your data. 
 
+There are 3 variables included in this template that allows you to view wins, losses, draws and a time series graph on goals for three football clubs.  Other club statistics can be added to the dashboard using the variable name.  You can also add another variable (ex: `v.footballclub4`) to add another club view to your dashboard. 
+
 ## Contact
 
 Author: Samantha Wang
