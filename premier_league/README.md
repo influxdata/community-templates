@@ -56,4 +56,4 @@ Email: swang@influxdata.com
 
 Github: @sjwang90
 
-Influx Slack: @Samantha
+Influx Slack: @Samantha Wang
