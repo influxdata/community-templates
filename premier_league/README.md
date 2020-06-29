@@ -28,9 +28,6 @@ influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/m
 2. From the [SportsDataIO developer portal](https://sportsdata.io/developers/api-documentation/soccer) retrieve your API key for for your soccer subscription. Save the key as an environment variable `SPORTSDATAIO_SOCCER_API_KEY` as it will be used for in the Telegraf configuration file.
 3. Follow the rest of the general instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
 
-Describe any steps needed to finish setting up and running your template, including how to launch your Telegraf configurations and connect to any external services or data sources.
-
-
     
 Telegraf Configuration requires the following environment variables
 - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your master token to get started.
