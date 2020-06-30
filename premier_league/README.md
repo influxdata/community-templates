@@ -17,11 +17,10 @@ influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/m
 
 ## Included Resources
 
-- 1 Bucket: `telegraf`
 - 1 Labels: `EPL`
 - 1 Telegraf Configuration: `premier_league.conf`
 - 1 Dashboards: `Premier League`
-- 3 Variables: `footballclub1`, `footballclub2`, `footballclub3`
+- 3 Variables: `bucket`, `footballclub1`, `footballclub2`, `footballclub3`
 
 ## Setup Instructions
 1. Sign up and subscribe to a [free trial of SportsDataIO's API](https://sportsdata.io/cart/free-trial). Select "Soccer" as the sport.
@@ -31,13 +30,15 @@ influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/m
     
 Telegraf Configuration requires the following environment variables
 - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your master token to get started.
-- `INFLUX_ORG` - The name of your Organization
+- `INFLUX_ORG` - The name of your organization
 - `INFLUX_HOST` - The URL of the InfluxDB cluster nodes (ex for AWS West: https://us-west-2-1.aws.cloud2.influxdata.com/)
+- `INFLUX_BUCKET` - The name of the bucket you want to send your Premier League data
 - `SPORTSDATAIO_SOCCER_API_KEY` - SportsDataIO Soccer API Key
 
 You **MUST** set these environment variables before running Telegraf using something similar to the following commands
     - This can be found on the `Load Data` > `Tokens` page in your browser: `export INFLUX_TOKEN=TOKEN`
     - Your Organization name can be found on the Settings page in your browser: `export INFLUX_ORG=my_org`
+    - A list of your buckets can be viewed under `Load Data` > `Buckets` where you can also create a new bucket: `export INFLUX_BUCKET=bucketname`
 
 ## Customizations
 
