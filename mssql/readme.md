@@ -47,6 +47,7 @@ Proceed with the general instructions above. Download the Telegraf config and se
 
 Use the `mssqlType` variable to see data inside the `Wait Time` and `Wait Tasks` dashboard cells.
 
+Note: Windows CPU metrics will not work if you point dashboard at SQL Database Service in Azure.
 
 ## Contact
 
