@@ -11,7 +11,7 @@ This InfluxDB Template can be used to monitor your already running InfluxDB 1.x 
 If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
-influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/monitoring_influxdb_1.x/influxdb1.x.yml
+influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/monitoring_influxdb_1.x/influxdb1.x.yml
 ```
 
 ## Included Resources

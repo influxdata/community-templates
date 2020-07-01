@@ -11,7 +11,7 @@ This Dashboard offers you information about your Postgres instance. CPU Usage, R
 If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
-influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/postgresql/postgres.yml
+influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/postgresql/postgres.yml
 ```
 
 ## Included Resources

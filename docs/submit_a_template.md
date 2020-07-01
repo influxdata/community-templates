@@ -20,7 +20,7 @@ To contribute a new template or enhance an existing template, submit a pull requ
         Use the following command to export the template and generate a manifest file ([Influx pkg requires InfluxDB 2.0.0 beta or greater](https://portal.influxdata.com/downloads/)):
 
         ```
-        influx pkg export --file ~/path/to/template/manifest.yml
+        influx export --file ~/path/to/template/manifest.yml
         ```
 
         > Exported manifest files will be YAML or JSON. The filename extension you provide will determine the format used.

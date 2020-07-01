@@ -11,7 +11,7 @@ This template allows you to monitor your MinIO instance. The data you can watch 
 If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
-influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/minio/minio.yml
+influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/minio/minio.yml
 ```
 
 ## Included Resources

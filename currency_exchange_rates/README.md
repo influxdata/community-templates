@@ -25,7 +25,7 @@ It also shows how to use functions such as [timedMovingAverage()](https://v2.doc
 If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
-influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/currency_exchange_rates/currency_exchange_rates.yml
+influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/currency_exchange_rates/currency_exchange_rates.yml
 ```
 
 ## Included Resources

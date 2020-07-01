@@ -11,7 +11,7 @@ This Dashboard graph information about COVID-19 focused in Argentina, Bolivia, B
 If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
-influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/InfluxDBv2_Covid19_SouthAmerica/covid.yml
+influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/InfluxDBv2_Covid19_SouthAmerica/covid.yml
 ```
 
 ## Included Resources

@@ -18,7 +18,7 @@ supports Google Cloud Platform, AWS and on-premise K8S environments.**
 If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
-influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/k8s/k8s.yml
+influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/k8s/k8s.yml
 ```
 
 ## Included Resources
