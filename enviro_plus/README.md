@@ -11,7 +11,7 @@ View the air quality readings from a [Pimoroni Enviro+](https://shop.pimoroni.co
 If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
-influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/enviro_plus/enviro_plus.json
+influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/enviro_plus/enviro_plus.json
 ```
 
 ## Included Resources

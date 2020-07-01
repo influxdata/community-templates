@@ -91,7 +91,7 @@ This will give the user a drop-down menu with all of the unique values of the ta
 [Labels](https://v2.docs.influxdata.com/v2.0/visualize-data/labels/) let you tag your resources for easier identification in the UI and make it easier to export resources into a Template. If you have a mix of resources in your InfluxDB instance you will have to individually specify which ones to export so that you don't export them all. However, if you use unique Labels to identify resources, you can filter resources by Label when exporting your Template:
 
 ```
-influx pkg export all --filter=labelName=your_label_name
+influx export all --filter=labelName=your_label_name
 ```
 
 ## Telegraf Configurations

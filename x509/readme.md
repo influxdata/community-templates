@@ -11,7 +11,7 @@ This Dashboard is very simple but can help you with information about your x509 
 If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
-influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/x509/x509.yml
+influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/x509/x509.yml
 ```
 
 ## Included Resources

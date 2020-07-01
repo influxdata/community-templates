@@ -9,7 +9,7 @@ This InfluxDB Template can be used to montior a Jenkins instance
 If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
-influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/jenkins/jenkins.yml
+influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/jenkins/jenkins.yml
 ```
 
 ### Included Resources

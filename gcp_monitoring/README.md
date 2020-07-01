@@ -22,7 +22,7 @@ Cloud Monitoring API v3. There are three dashboards in this template.**
 If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
-influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/gcp_monitoring/gcp_monitoring.yml
+influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/gcp_monitoring/gcp_monitoring.yml
 ```
 
 ## Included Resources
@@ -42,7 +42,7 @@ environment.
 
 An example command:
 ```bash
- $ ${INFLUX_PATH}/influx pkg --org qa --file ${myTemplateFile} -t ${INFLUX_TOKEN}
+ $ ${INFLUX_PATH}/influx apply --org qa --file ${myTemplateFile} -t ${INFLUX_TOKEN}
 ```
 
 Include the [Telegraf Stackdriver plugin](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/stackdriver) in your Telegraf configuration and start Telegraf.

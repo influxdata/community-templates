@@ -11,7 +11,7 @@ This InfluxDB Template can be used to monitor your network traffic across multip
 If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
-influx pkg -u https://raw.githubusercontent.com/influxdata/community-templates/master/network_interface_performance/network_interface_performance.yml
+influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/network_interface_performance/network_interface_performance.yml
 ```
 
 ## Included Resources
