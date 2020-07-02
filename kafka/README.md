@@ -1,8 +1,8 @@
 # Kafka Monitoring Template with Telegraf and Jolokia
 
-## Visualized insights
+## Dashboards
 
-   <img src="https://github.com/influxdata/community-templates/blob/kafka_template/kafka/kafka-dash.png" width="425"/> <img src="https://github.com/influxdata/community-templates/blob/kafka_template/kafka/kafka-dash-light.png" width="425"/>
+   <img src="https://github.com/influxdata/community-templates/blob/kafka_template/images/kafka/kafka-dash.png" width="425"/> <img src="https://github.com/influxdata/community-templates/blob/kafka_template/kafka/images/kafka-dash-light.png" width="425"/>
 
 
 ## Requirements
@@ -15,15 +15,37 @@
 
 *Note: Kafka and Zookeper can be easily obtained and managed through the open source [Confluent Platform](https://www.confluent.io/download).*
 
-## Quick Install
+## Get started
 If you have your InfluxDB credentials configured in the CLI, you can install this template with:
 
 `influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/kafka/{your_template_file}`
 
-## Included Resources
+Once installed, you'll need to start up Telegraf to pull metrics from your Jolokia-attached Kafka broker/s.  Checkout [Telegraf docs](https://docs.influxdata.com/telegraf/v1.14/) for installing and starting Telegraf.
+
+To start Telegraf with the template-provided configuration, you can do one of two things:
+
+* **Call the configuration at its new address:**
+  * Locate your configuration and open its setup instructions:
+
+  <img src="https://github.com/influxdata/community-templates/blob/kafka_template/kafka/images/open_config_setup_instructions.png" width="200"/>
+
+  * Copy Telegraf startup command provided for you (with your configuration's unique address):
+
+   <img src="https://github.com/influxdata/community-templates/blob/kafka_template/kafka/images/get_remote_command.png" width="200"/>
+
+  * Run that command and you're writing your Kafka data to your InfluxDB instance.
+
+* **Run with local copy of configuration**
+  * Locate the configuration the same as above
+  * Click the name of the configuration to open it up
+  * Click the Download button at the bottom
+  * Deploy and run Telegraf as you would any other way, now with that file
+
+
+## Included resources
 
 - 1 label: `kafka`
-- 1 Telegraf Configuration
+- 1 Telegraf Configuration: `kafka-zk-jolokia`
 - 1 Dashboards: `Kafka-metrics`
 - 3 Variables: `bucket`, `broker_host`, and `kafka_topic`
 
