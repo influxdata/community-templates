@@ -27,11 +27,11 @@ To start Telegraf with the template-provided configuration, you can do one of tw
 * **Call the configuration at its new address:**
   * Locate your configuration and open its setup instructions:
 
-  <img src="https://github.com/influxdata/community-templates/blob/master/kafka/images/open_config_setup_instructions.png" width="300"/>
+  <img src="https://github.com/influxdata/community-templates/blob/master/kafka/images/open_config_setup_instructions.png" width="500"/>
 
   * Copy Telegraf startup command provided for you (with your configuration's unique address):
 
-   <img src="https://github.com/influxdata/community-templates/blob/master/kafka/images/get_remote_command.png" width="300"/>
+   <img src="https://github.com/influxdata/community-templates/blob/master/kafka/images/get_remote_command.png" width="500"/>
 
   * Run that command and you're writing your Kafka data to your InfluxDB instance.
 
