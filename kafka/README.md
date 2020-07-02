@@ -29,13 +29,13 @@
 
 
 * Telegraf metrics ([lines of Line Protocol](https://v2.docs.influxdata.com/v2.0/reference/syntax/line-protocol/)): 143
-* Mean tags per line': 3.50
-* Mean fields per line': 9.90
-* Tags mode': 3
-* Fields mode': 4
-* Tags median': 3
-* Fields median': 4
-* Measurements: 8
+* Tags per line (mean)': 3.50
+* Fields per line (mean)': 9.90
+* Tags per line (mode)': 3
+* Fields per line (mode)': 4
+* Tags per line (median)': 3
+* Fields per line (median)': 4
+* Total Measurements: 8
 
 
 
@@ -59,3 +59,8 @@
 * zk_client (Kafka perspective)
 
 **add ZK metrics**: https://github.com/influxdata/telegraf/tree/master/plugins/inputs/zookeeper#metrics
+
+Author: Sam Dillard
+Email: sam@influxdata.com
+Github: samhld
+Influx Slack: @sam
