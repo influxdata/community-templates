@@ -211,6 +211,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * znode_count
 </details>
 
+## Contact
 Author: Sam Dillard
 
 Email: sam@influxdata.com
