@@ -184,9 +184,10 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * ProduceMessageConversionsPerSec
   * TotalFetchRequestsPerSec
   * TotalProduceRequestsPerSec
+</details>
 
 <details open>
-<summar>zookeeper</summary>
+<summary>zookeeper</summary>
 
 * Tags
   * host
@@ -208,6 +209,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * version
   * watch_count
   * znode_count
+</details>
 
 Author: Sam Dillard
 
