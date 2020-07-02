@@ -49,22 +49,165 @@ If you have your InfluxDB credentials configured in the CLI, you can install thi
 * Fields per line (median)': 4
 * Total Measurements: 8
 
+Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/inputs/zookeeper#metrics
 
-### Measurements
-* kafka_broker (**still have to add Type=DelayedOperationPurgatory**)
+
+## Measurements
+<details open>
+<summary>kafka_broker</summary>
+
   * Tags
     * host
     * jolokia_agent_url
     * topic
   * Fields
-    * BytesInPerSec_FifteenMinuteRate
-    **(come back)**
-* kafka_controller
-* kafka_replica_controller
-* kafka_network
-* zk_client (Kafka perspective)
+    * AlterAcls
+    * DeleteRecords
+    * ElectLeader
+    * Fetch
+    * Heartbeat
+    * Produce
+    * ProduceQueueSize
+    * Rebalance
+    * kafka_metrics_count
+    * txn-marker-purgatory
+  
+</details>
 
-**add ZK metrics**: https://github.com/influxdata/telegraf/tree/master/plugins/inputs/zookeeper#metrics
+<details open>
+<summary>kafka_controller</summary>
+
+* Tags
+  * host
+  * jolokia_agent_url
+* Fields
+  * ActiveControllerCount
+  * ControllerState
+  * GlobalPartitionCount
+  * GlobalTopicCount
+  * OfflinePartitionsCount
+  * PreferredReplicaImbalanceCount
+  * ReplicasIneligibleToDeleteCount
+  * ReplicasToDeleteCount
+  * TopicsIneligibleToDeleteCount
+  * TopicsToDeleteCount
+</details>
+
+<details open>
+<summary>kafka_network</summary>
+
+* Tags
+  * host
+  * jolokia_agent_url
+  * request
+* Fields
+  * FENCED_LEADER_EPOCH
+  * LEADER_NOT_AVAILABLE
+  * NONE
+</details>
+
+<details open>
+<summary>kafka_partition</summary>
+
+* Tags
+  * host
+  * jolokia_agent_url
+  * partition
+  * topic
+* Fields
+  * LogEndOffset
+  * LogStartOffset
+  * NumLogSegments
+  * Size
+  * UnderReplicatedPartitions
+
+</details>
+
+<details open>
+<summary>kafka_replica_manager</summary>
+
+* Tags
+  * host
+  * jolokia_agent_url
+* Fields
+  * FailedIsrUpdatesPerSec
+  * IsrExpandsPerSec
+  * IsrShrinksPerSec
+  * LeaderCount
+  * PartitionCount
+  * UnderReplicatedPartitions
+</details>
+
+<details open>
+<summary>kafka_requests</summary>
+
+* Tags
+  * host
+  * jolokia_agent_url
+  * request
+* Fields
+  * Bytes50thPercentile
+  * Bytes75thPercentile
+  * Bytes95thPercentile
+  * Bytes98thPercentile
+  * Bytes99thPercentile
+  * Bytes999thPercentile
+  * BytesCount
+  * BytesMax
+  * BytesMean
+  * BytesMin
+  * BytesStdDev
+  * Count
+  * QueueTime50thPercentile
+  * QueueTime75thPercentile
+  * QueueTime95thPercentile
+  * QueueTime98thPercentile
+  * QueueTime99thPercentile
+  * Queuetime999thPercentile
+  * QueueTimeCount
+  * QueueTimeMax
+  * QueueTimeMean
+  * QueueTimeMin
+  * QueueTimeStdDev
+</details>
+
+<details open>
+<summary>kafka_topics</summary>
+
+* Tags
+  * host
+  * jolokia_agent_url
+  * topic
+* Fields
+  * BytesInPerSec
+  * MessagesInPerSec
+  * ProduceMessageConversionsPerSec
+  * TotalFetchRequestsPerSec
+  * TotalProduceRequestsPerSec
+
+<details open>
+<summar>zookeeper</summary>
+
+* Tags
+  * host
+  * port
+  * server
+  * state
+* Fields
+  * approximate_data_size
+  * avg_latency
+  * aphemerals_count
+  * max_file_descriptor_count
+  * max_latency
+  * min_latency
+  * num_alive_connections
+  * open_file_descriptor_count
+  * outstanding_requests
+  * packets_received
+  * packets_sent
+  * version
+  * watch_count
+  * znode_count
 
 Author: Sam Dillard
 
