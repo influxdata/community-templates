@@ -15,6 +15,18 @@
 
 *Note: Kafka and Zookeper can be easily obtained and managed through the open source [Confluent Platform](https://www.confluent.io/download).*
 
+## Quick Install
+If you have your InfluxDB credentials configured in the CLI, you can install this template with:
+
+`influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/kafka/{your_template_file}`
+
+## Included Resources
+
+- 1 label: `kafka`
+- 1 Telegraf Configuration
+- 1 Dashboards: `Kafka-metrics`
+- 3 Variables: `bucket`, `broker_host`, and `kafka_topic`
+
 ## Pre-work
 
 * This template does not require -- and therefore support -- TLS configurations.  If you have TLS enabled for Jolokia/Zookeeper, you will want to provide that information to the Telegraf configuration.  Simply follow [this](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/jolokia2#jolokia-agent-configuration) for Jolokia and [this](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/zookeeper#configuration) for Zookeeper.  Comprehensive TLS docs as it pertains to Telegraf can be found [here](https://github.com/influxdata/telegraf/blob/master/docs/TLS.md).
@@ -24,7 +36,7 @@
 * [Zookeeper](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/zookeeper)
 
 
-## Schema
+## Schema (per broker)
 *Note: Fields are verbose so the byte size of this dataset is larger than average.*
 
 
@@ -37,12 +49,6 @@
 * Fields per line (median)': 4
 * Total Measurements: 8
 
-
-
-<!-- ### Cardinality per broker
-* Floor: **count this when fully instrumented**
-* Ceiling: dependent on number of topics, partitions, error *types* incurred
-* **provide information on how to predict cardinality with scale** -->
 
 ### Measurements
 * kafka_broker (**still have to add Type=DelayedOperationPurgatory**)
@@ -61,6 +67,9 @@
 **add ZK metrics**: https://github.com/influxdata/telegraf/tree/master/plugins/inputs/zookeeper#metrics
 
 Author: Sam Dillard
+
 Email: sam@influxdata.com
+
 Github: samhld
+
 Influx Slack: @sam
