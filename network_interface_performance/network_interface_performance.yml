@@ -61,17 +61,14 @@ spec:
           - query: |-
                 import "system"
                 import "influxdata/influxdb/v1"
-
                 data = from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "net")
                   |> filter(fn: (r) => r._field =~ /^bytes_/)
                   |> filter(fn: (r) => r.host == v.network_host)
                   |> filter(fn: (r) => r.interface == v.network_interface)
-
                 last = data |> last() |> v1.fieldsAsCols()
                 first = data |> first() |> v1.fieldsAsCols()
-
                 join(tables: {l: last, f: first}, on: ["host","interface","_measurement"], method: "inner")
                   |> drop(columns: ["_time_f", "_time_l","_stop_f","_stop_l","_start_f","_start_l"])
                   |> map(fn: (r) => ({ r with _value: ((r.bytes_recv_l - r.bytes_recv_f) + (r.bytes_sent_l - r.bytes_sent_f)) }))
@@ -250,7 +247,6 @@ spec:
           - query: |-
                 import "system"
                 import "influxdata/influxdb/v1"
-
                 data =from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop:v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "net")
@@ -260,7 +256,6 @@ spec:
                   
                 last = data |> last() |> v1.fieldsAsCols()
                 first= data |> first() |> v1.fieldsAsCols()
-
                 join(tables: {l: last, f:first}, on: ["host","interface","_measurement"], method: "inner")
                   |> drop(columns: ["_time_f", "_time_l","_stop_f","_stop_l","_start_f","_start_l"])
                   |> map(fn: (r) => ({ r with _value: ((r.packets_recv_l - r.packets_recv_f)+ (r.packets_sent_l - r.packets_sent_f)) }))
@@ -280,17 +275,14 @@ spec:
           - query: |-
                 import "system"
                 import "influxdata/influxdb/v1"
-
                 data = from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "net")
                   |> filter(fn: (r) => r._field =~ /^drop_/)
                   |> filter(fn: (r) => r.host == v.network_host)
                   |> filter(fn: (r) => r.interface == v.network_interface)
-
                 last = data |> last() |> v1.fieldsAsCols()
                 first = data |> first() |> v1.fieldsAsCols()
-
                 join(tables: {l: last, f: first}, on: ["host","interface","_measurement"], method: "inner")
                   |> drop(columns: ["_time_f", "_time_l","_stop_f","_stop_l","_start_f","_start_l"])
                   |> map(fn: (r) => ({ r with _value: ((r.drop_in_l - r.drop_in_f) + (r.drop_out_l - r.drop_out_f)) }))
@@ -310,17 +302,14 @@ spec:
           - query: |-
                 import "system"
                 import "influxdata/influxdb/v1"
-
                 data = from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "net")
                   |> filter(fn: (r) => r._field =~ /^err_/)
                   |> filter(fn: (r) => r.host == v.network_host)
                   |> filter(fn: (r) => r.interface == v.network_interface)
-
                 last = data |> last() |> v1.fieldsAsCols()
                 first = data |> first() |> v1.fieldsAsCols()
-
                 join(tables: {l: last, f: first}, on: ["host","interface","_measurement"], method: "inner")
                   |> drop(columns: ["_time_f", "_time_l","_stop_f","_stop_l","_start_f","_start_l"])
                   |> map(fn: (r) => ({ r with _value: ((r.err_in_l - r.err_in_f) + (r.err_out_l - r.err_out_f)) }))
@@ -408,16 +397,12 @@ spec:
         # Environment variables can be used anywhere in this config file, simply surround
         # them with ${}. For strings the variable must be within quotes (ie, "${STR_VAR}"),
         # for numbers and booleans they should be plain (ie, ${INT_VAR}, ${BOOL_VAR})
-
-
         # Global tags can be specified here in key="value" format.
         [global_tags]
           # dc = "us-east-1" # will tag all metrics with dc=us-east-1
           # rack = "1a"
           ## Environment variables can be used as tags, and throughout the config file
           # user = "$USER"
-
-
         # Configuration for telegraf agent
         [agent]
           ## Default data collection interval for all inputs
@@ -425,23 +410,19 @@ spec:
           ## Rounds collection interval to 'interval'
           ## ie, if interval="10s" then always collect on :00, :10, :20, etc.
           round_interval = true
-
           ## Telegraf will send metrics to outputs in batches of at most
           ## metric_batch_size metrics.
           ## This controls the size of writes that Telegraf sends to output plugins.
           metric_batch_size = 1000
-
           ## Maximum number of unwritten metrics per output.  Increasing this value
           ## allows for longer periods of output downtime without dropping metrics at the
           ## cost of higher maximum memory usage.
           metric_buffer_limit = 10000
-
           ## Collection jitter is used to jitter the collection by a random amount.
           ## Each plugin will sleep for a random time within jitter before collecting.
           ## This can be used to avoid many plugins querying things like sysfs at the
           ## same time, which can have a measurable effect on the system.
           collection_jitter = "0s"
-
           ## Default flushing interval for all outputs. Maximum flush_interval will be
           ## flush_interval + flush_jitter
           flush_interval = "10s"
@@ -449,7 +430,6 @@ spec:
           ## large write spikes for users running a large number of telegraf instances.
           ## ie, a jitter of 5s and interval 10s means flushes will happen every 10-15s
           flush_jitter = "0s"
-
           ## By default or when set to "0s", precision will be set to the same
           ## timestamp order as the collection interval, with the maximum being 1s.
           ##   ie, when interval = "10s", precision will be "1s"
@@ -458,44 +438,34 @@ spec:
           ## service input to set the timestamp at the appropriate precision.
           ## Valid time units are "ns", "us" (or "µs"), "ms", "s".
           precision = ""
-
           ## Log at debug level.
           # debug = false
           ## Log only error level messages.
           # quiet = false
-
           ## Log target controls the destination for logs and can be one of "file",
           ## "stderr" or, on Windows, "eventlog".  When set to "file", the output file
           ## is determined by the "logfile" setting.
           # logtarget = "file"
-
           ## Name of the file to be logged to when using the "file" logtarget.  If set to
           ## the empty string then logs are written to stderr.
           # logfile = ""
-
           ## The logfile will be rotated after the time interval specified.  When set
           ## to 0 no time based rotation is performed.  Logs are rotated only when
           ## written to, if there is no log activity rotation may be delayed.
           # logfile_rotation_interval = "0d"
-
           ## The logfile will be rotated when it becomes larger than the specified
           ## size.  When set to 0 no size based rotation is performed.
           # logfile_rotation_max_size = "0MB"
-
           ## Maximum number of rotated archives to keep, any older logs are deleted.
           ## If set to -1, no archives are removed.
           # logfile_rotation_max_archives = 5
-
           ## Override default hostname, if empty use os.Hostname()
           hostname = ""
           ## If set to true, do no set the "host" tag in the telegraf agent.
           omit_hostname = false
-
-
         ###############################################################################
         #                            OUTPUT PLUGINS                                   #
         ###############################################################################
-
         # Configuration for sending metrics to InfluxDB
         [[outputs.influxdb_v2]]
           ## The URLs of the InfluxDB cluster nodes.
@@ -534,12 +504,9 @@ spec:
           # tls_key = "/etc/telegraf/key.pem"
           ## Use TLS but skip chain & host verification
           # insecure_skip_verify = false
-
         ###############################################################################
         #                            INPUT PLUGINS                                    #
         ###############################################################################
-
-
         # Gather metrics about network interfaces
         [[inputs.net]]
           ## By default, telegraf gathers stats from any up interface (excluding loopback)
@@ -566,3 +533,31 @@ spec:
     retentionRules:
       - everySeconds: 604800
         type: expire
+########################################################################################
+#                               Network Error Check                                    #
+########################################################################################
+apiVersion: influxdata.com/v2alpha1
+kind: CheckThreshold
+metadata:
+    name: relaxed-lewin-e50001
+spec:
+    every: 10m0s
+    name: Network errors
+    query: |-
+        from(bucket: "network_data")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r["_measurement"] == "net")
+          |> filter(fn: (r) => r["_field"] == "err_in")
+          |> filter(fn: (r) => r["host"] == "Richards-MacBook-Pro.local")
+          |> aggregateWindow(every: 1m, fn: mean)
+          |> yield(name: "mean")
+    status: active
+    statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }'
+    thresholds:
+      - level: CRIT
+        type: greater
+        value: 20
+      - level: WARN
+        type: greater
+        value: 10
+
