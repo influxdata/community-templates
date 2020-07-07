@@ -7,21 +7,7 @@ spec:
     name: network_host
     query: |-
         import "influxdata/influxdb/v1"
-        v1.measurementTagValues(bucket: v.bucket, measurement: "net", tag: "host")
-    type: query
----
-apiVersion: influxdata.com/v2alpha1
-kind: Variable
-metadata:
-    name: relaxed-dijkstra-c26003
-spec:
-    language: flux
-    name: bucket
-    query: |-
-        buckets()
-          |> filter(fn: (r) => r.name !~ /^_/)
-          |> rename(columns: {name: "_value"})
-          |> keep(columns: ["_value"])
+        v1.measurementTagValues(bucket: "network_data", measurement: "net", tag: "host")
     type: query
 ---
 apiVersion: influxdata.com/v2alpha1
@@ -32,7 +18,7 @@ spec:
     language: flux
     name: network_interface
     query: |-
-        from(bucket: v.bucket)
+        from(bucket: "network_data")
           |> range(start: -24h)
           |> filter(fn: (r) => r._measurement == "net")
           |> filter(fn: (r) => r.host == v.network_host)
@@ -61,7 +47,7 @@ spec:
           - query: |-
                 import "system"
                 import "influxdata/influxdb/v1"
-                data = from(bucket: v.bucket)
+                data = from(bucket: "network_data")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "net")
                   |> filter(fn: (r) => r._field =~ /^bytes_/)
@@ -101,7 +87,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                from(bucket: "network_data")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "net")
                   |> filter(fn: (r) => r._field == "drop_in" or r._field == "err_in")
@@ -113,7 +99,7 @@ spec:
                   |> map(fn: (r) => ({ r with _field: if r._field == "drop_in" then "Ingress Discards" else "Ingress Errors" }))
                   |> drop(columns: ["_start", "_stop"])
           - query: |-
-                from(bucket: v.bucket)
+                from(bucket: "network_data")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "net")
                   |> filter(fn: (r) => r._field == "drop_out" or r._field == "err_out")
@@ -154,7 +140,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                from(bucket: "network_data")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "net")
                   |> filter(fn: (r) => r._field == "packets_sent")
@@ -167,7 +153,7 @@ spec:
                   |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))
                   |> drop(columns: ["_start", "_stop"])
           - query: |-
-                from(bucket: v.bucket)
+                from(bucket: "network_data")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "net")
                   |> filter(fn: (r) => r._field == "packets_recv")
@@ -207,7 +193,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                from(bucket: "network_data")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "net")
                   |> filter(fn: (r) => r._field == "bytes_sent")
@@ -220,7 +206,7 @@ spec:
                   |> map(fn: (r) => ({ r with _value: r._value * -8.0 }))
                   |> drop(columns: ["_start", "_stop"])
           - query: |-
-                from(bucket: v.bucket)
+                from(bucket: "network_data")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "net")
                   |> filter(fn: (r) => r._field == "bytes_recv")
@@ -247,7 +233,8 @@ spec:
           - query: |-
                 import "system"
                 import "influxdata/influxdb/v1"
-                data =from(bucket: v.bucket)
+                
+                data =from(bucket: "network_data")
                   |> range(start: v.timeRangeStart, stop:v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "net")
                   |> filter(fn: (r) => r._field =~ /^packets_/)
@@ -275,7 +262,7 @@ spec:
           - query: |-
                 import "system"
                 import "influxdata/influxdb/v1"
-                data = from(bucket: v.bucket)
+                data = from(bucket: "network_data")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "net")
                   |> filter(fn: (r) => r._field =~ /^drop_/)
@@ -302,7 +289,7 @@ spec:
           - query: |-
                 import "system"
                 import "influxdata/influxdb/v1"
-                data = from(bucket: v.bucket)
+                data = from(bucket: "network_data")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "net")
                   |> filter(fn: (r) => r._field =~ /^err_/)
@@ -333,7 +320,7 @@ spec:
         name: Active Interfaces
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                from(bucket: "network_data")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "net")
                   |> filter(fn: (r) => r._field == "bytes_sent" or r._field == "bytes_recv")
@@ -533,9 +520,7 @@ spec:
     retentionRules:
       - everySeconds: 604800
         type: expire
-########################################################################################
-#                               Network Error Check                                    #
-########################################################################################
+---
 apiVersion: influxdata.com/v2alpha1
 kind: CheckThreshold
 metadata:
@@ -548,7 +533,6 @@ spec:
           |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
           |> filter(fn: (r) => r["_measurement"] == "net")
           |> filter(fn: (r) => r["_field"] == "err_in")
-          |> filter(fn: (r) => r["host"] == "Richards-MacBook-Pro.local")
           |> aggregateWindow(every: 1m, fn: mean)
           |> yield(name: "mean")
     status: active
