@@ -27,7 +27,7 @@ General instructions on using InfluxDB Templates can be found in the [use a temp
     
     Telegraf Configuration requires the following environment variables
     - `INFLUX_HOST` - Your InfluxDB host (ex:http://localhost:9999)
-    - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your master token to get started.
+    - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your operator token to get started.
     - `INFLUX_ORG` - The name of your Organization.
     - `INFLUX_BUCKET` - The name of the bucket you will store the data.
 

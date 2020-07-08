@@ -43,7 +43,7 @@ No configuration is necessary to gather Jenkins data other than having valid cre
 ### Telegraf
   The data for the dashboard is populated by the included Telegraf Jenkins configuration. The Configuration requires the following environment variables
 
-  - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your master token to get started.
+  - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your operator token to get started.
   - `INFLUX_ORG` - The name of your Organization (this will be your email address on the InfluxDB Cloud free tier)
   - `INFLUX_HOST` - The URL of your InfluxDB host (this can your localhost, a remote instance, or InfluxDB Cloud)
   - `JENKINS_HOST` - The URL where your Jenkins is located
