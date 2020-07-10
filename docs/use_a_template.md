@@ -2,10 +2,10 @@
 
 These instructions assume that you have configured your Influx CLI to use configuration profiles. For more information, please see `influx config -h` or the [InfluxDB documentation](https://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/).
 
-# Use a Template
+# Apply a template
 
 Each template provides a manifest file and instructions for using the template.
-To import a template, use the following command:
+To apply a template, use the following command:
 
 ```
  influx apply --file ~/path/to/template/manifest.yml
@@ -15,9 +15,9 @@ This imports the specified `manifest.yml` into an instance of InfluxDB running o
 
 > Manifest files can be YAML, JSON or Jsonnet.
 
-If you don't want to download the manifest file locally, you can point to its remote location using the `--url` flag, for example:
+You can also point to a remote location, for example:
 ```
- influx apply --url https://raw.githubusercontent.com/influxdata/community-templates/master/template/manifest.yml
+ influx apply --file https://raw.githubusercontent.com/influxdata/community-templates/master/template/manifest.yml
  ```
 
 NOTE: Ensure that when pulling a file from Github, you will need to use the `raw` content link from the `Raw` button, not the URL of the file.
