@@ -25,7 +25,7 @@ influx apply -f https://raw.githubusercontent.com/influxdata/community-templates
 
 This template includes the following:
 
-- 2 Labels: `inputs.kubernetes`, `inputs.kube_inventory`, `K8S`
+- 3 Labels: `inputs.kubernetes`, `inputs.kube_inventory`, `K8S`
 - 2 Dashboards: `Kubernetes Node Metrics`, `Kubernetes Inventory`
 - 1 Variables: `bucket`
 - 1 Telegraf Config: `K8S Configuration`
