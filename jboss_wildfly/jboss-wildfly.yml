@@ -649,16 +649,16 @@ spec:
          ## Multiple URLs can be specified for a single cluster, only ONE of the
          ## urls will be written to each interval.
          ## urls exp: http://127.0.0.1:9999
-         urls = ["http://localhost:9999"]
+         urls = ["$INFLUX_HOST"]
         
          ## Token for authentication.
          token = "$INFLUX_TOKEN"
         
           ## Organization is the name of the organization you wish to write to; must exist.
-         organization = "data"
+         organization = "$INFLUX_ORG"
         
           ## Destination bucket to write into.
-         bucket = "jboss-wildfly"
+         bucket = "$INFLUX_BUCKET"
         
          [agent]
          interval = "1m"
