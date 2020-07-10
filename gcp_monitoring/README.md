@@ -5,11 +5,11 @@ Provided by: [bonitoo.io](.)
 **Display data from Google Cloud Monitoring -- formerly Stackdriver -- using the
 Cloud Monitoring API v3. There are three dashboards in this template.**
 
-1. The CloudSQL dashboard -- displays metrics of MySQL database hosted in Google
+- The CloudSQL dashboard -- displays metrics of MySQL database hosted in Google
    Cloud SQL.
-2. The Compute dashboard -- it provides deeper insight into the GCP compute
+- The Compute dashboard -- it provides deeper insight into the GCP compute
    services provided by GCP Stackdriver.
-3. The HTTPS LoadBalancing dashboard monitors network load balancing in the cluster.
+- The HTTPS LoadBalancing dashboard monitors network load balancing in the cluster.
 
 ##### Dashboard examples
 
