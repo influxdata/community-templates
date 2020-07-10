@@ -22,7 +22,7 @@ You can also point to a remote location, for example:
 
 NOTE: Ensure that when pulling a file from Github, you will need to use the `raw` content link from the `Raw` button, not the URL of the file.
 
- ## Use Templates in InfluxDB Cloud
+ ## Use templates in InfluxDB Cloud
 
 If you are using InfluxDB Cloud, ensure that your Influx CLI is configured with your cloud account credentials and that configuration is active. See `influx config -h` or the [InfluxDB documentation](https://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/) for more details.
 
@@ -37,7 +37,7 @@ To apply templates and download Telegraf configurations from InfluxDB Cloud, cre
 ![Tokens page](img/nav_token.png)
 ![Token Creation](img/token_creation.png)
 
- ## Use Templates in a remote instance
+ ## Use templates in a remote instance
 
 If running InfluxDB on a remote server, provide the URL of your InfluxDB instance using the `--host` flag and provide your InfluxDB authentication token using the ``--token`` flag:
 
