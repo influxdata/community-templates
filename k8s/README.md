@@ -3,7 +3,7 @@
 Provided by: [bonitoo.io](.)
 
 **This template provides 2 basic Kubernetes dashboards:
-`Kubernetes Node Metrics` and `Kubernetes Inventory`. The K8S infrastrucure
+`Kubernetes Node Metrics` and `Kubernetes Inventory`. The K8S infrastructure
 supports Google Cloud Platform, AWS and on-premise K8S environments.**
 
 
