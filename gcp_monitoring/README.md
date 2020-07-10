@@ -1,4 +1,4 @@
-# Google Cloud Platform Monitoring Template
+# Google Cloud Platform Monitoring template
 
 Provided by: [bonitoo.io](.)
 
@@ -17,15 +17,15 @@ Cloud Monitoring API v3. There are three dashboards in this template.**
 ![GCP Monitoring Compute](img/gcp-monitoring-compute.png)
 ![GCP Monitoring LoadBalancing](img/gcp-monitoring-loadbalancing.png)
 
-### Quick Install
+### Quick install
 
 If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
-influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/gcp_monitoring/gcp_monitoring.yml
+influx apply -f https://raw.githubusercontent.com/influxdata/community-templates/master/gcp_monitoring/gcp_monitoring.yml
 ```
 
-## Included Resources
+## Included resources
 
 This template includes the following:
 
@@ -34,7 +34,7 @@ This template includes the following:
 - 1 Variable: `bucket`
 - 1 Telegraf Config: `GCP Stackdriver`
 
-## Setup Instructions
+## Setup instructions
 
 
 Load the dashboards and use the Telegraf Stackdriver plugin into your
