@@ -1,8 +1,8 @@
-# AWS Cloudwatch Monitoring Template
+# AWS Cloudwatch Monitoring template
 
 Provided by: [bonitoo.io](.)
 
-**Display data from AWS EC2 andn ELB using the AWS CloudWatch Service.**
+**Display data from AWS EC2 and ELB using the AWS CloudWatch Service.**
 
 1. The AWS CloudWatch Network Load Balancers monitoring dashboard displays data from the `cloudwatch_aws_network_elb` measurement.
 2. The AWS CloudWatch Instance Monitoring dashboard displays data from the `cloudwatch_aws_ec2` measurement.
@@ -13,15 +13,15 @@ Provided by: [bonitoo.io](.)
 
 ![AWS CloudWatch NLB Monitoring](img/aws-cloudwatch-nlb-monitoring.png)
 
-### Quick Install
+### Quick install
 
 If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
-influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/aws_cloudwatch/aws_cloudwatch.yml
+influx apply -f https://raw.githubusercontent.com/influxdata/community-templates/master/aws_cloudwatch/aws_cloudwatch.yml
 ```
 
-## Included Resources
+## Included resources
 
 This template includes the following:
 
@@ -30,7 +30,7 @@ This template includes the following:
 - 1 Variable: `bucket`
 - 1 Telegraf Configuration: `AWS CloudWatch`
 
-## Setup Instructions
+## Setup instructions
 
 Load the dashboards and use the [Telegraf CloudWatch plugin](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/cloudwatch) into your
 environment.

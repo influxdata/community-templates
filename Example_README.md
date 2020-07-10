@@ -39,7 +39,7 @@ Describe any steps needed to finish setting up and running your template, includ
 **Example:**
     
     Telegraf Configuration requires the following environment variables
-    - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your master token to get started.
+    - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your operator token to get started.
     - `INFLUX_ORG` - The name of your Organization
 
     You **MUST** set these environment variables before running Telegraf using something similar to the following commands
