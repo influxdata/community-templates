@@ -664,7 +664,7 @@ spec:
          interval = "1m"
         
          [[inputs.jolokia2_agent]]
-          urls = ["http://localhost:8080/jolokia"]
+          urls = ["$JBOSS_CONNECTION_STRING"]
           name_prefix = "jboss."
         
           ### JVM Generic
