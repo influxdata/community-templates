@@ -1,0 +1,747 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: inspiring-dirac-5a3001
+spec:
+    color: '#dd84f1'
+    name: jboss-wildfly
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: terrifying-wilson-5a3003
+spec:
+    associations:
+      - kind: Label
+        name: inspiring-dirac-5a3001
+    name: jboss-wildfly
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: xenodochial-euclid-5a3001
+spec:
+    associations:
+      - kind: Label
+        name: inspiring-dirac-5a3001
+    charts:
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Uptime System
+        queries:
+          - query: |-
+                from(bucket: "jboss-wildfly")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "system")
+                  |> filter(fn: (r) => r["_field"] == "uptime_format")
+        width: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Uptime Wildfly
+        queries:
+          - query: |-
+                from(bucket: "jboss-wildfly")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jboss.jvm_runtime")
+                  |> filter(fn: (r) => r["_field"] == "Uptime")
+                  |> last()
+                  |> map(fn: (r) => ({r with _value: r._value / 86400000.00}))
+        suffix: ' Days'
+        width: 2
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: IOWait
+        queries:
+          - query: |-
+                from(bucket: "jboss-wildfly")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cpu")
+                  |> filter(fn: (r) => r["_field"] == "usage_iowait")
+                  |> filter(fn: (r) => r["cpu"] == "cpu-total")
+        width: 2
+        yPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Process Running
+        queries:
+          - query: |-
+                from(bucket: "jboss-wildfly")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "processes")
+                  |> filter(fn: (r) => r["_field"] == "running")
+        width: 1
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Garbage Collector (Count)
+        queries:
+          - query: |-
+                from(bucket: "jboss-wildfly")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jboss.jvm_garbage_collector")
+                  |> filter(fn: (r) => r["name"] == "G1 Young Generation")
+        width: 2
+        yPos: 4
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Datasource Pool
+        queries:
+          - query: |-
+                from(bucket: "jboss-wildfly")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jboss.datasource.pool")
+                  |> filter(fn: (r) => r["_field"] == "ActiveCount")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 2
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Memory Pool Collection (Usage and Commited)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "jboss-wildfly")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jboss.jvm_memory_pool")
+                  |> filter(fn: (r) => r["_field"] == "CollectionUsage.used" or r["_field"] == "CollectionUsage.committed")
+        shade: true
+        width: 3
+        xCol: _time
+        yCol: _value
+        yPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Network Received (bytes)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "jboss-wildfly")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "net")
+                  |> filter(fn: (r) => r["_field"] == "bytes_recv")
+                  |> derivative(unit: v.windowPeriod, nonNegative: true)
+                  |> yield(name: "nonnegative derivative")
+        shade: true
+        width: 5
+        xCol: _time
+        yCol: _value
+        yPos: 9
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00A3FF'
+            name: Solid Blue
+            type: scale
+          - hex: '#00A3FF'
+            name: Solid Blue
+            type: scale
+          - hex: '#00A3FF'
+            name: Solid Blue
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Disk IO Time
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "jboss-wildfly")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "diskio")
+                  |> filter(fn: (r) => r["_field"] == "io_time")
+                  |> derivative(unit: v.windowPeriod, nonNegative: true)
+                  |> yield(name: "nonnegative derivative")
+        shade: true
+        width: 2
+        xCol: _time
+        yCol: _value
+        yPos: 12
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Zombies
+        queries:
+          - query: |-
+                from(bucket: "jboss-wildfly")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "processes")
+                  |> filter(fn: (r) => r["_field"] == "zombies")
+        width: 1
+        xPos: 1
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: CPU Usage (User and System)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "jboss-wildfly")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cpu")
+                  |> filter(fn: (r) => r["_field"] == "usage_system" or r["_field"] == "usage_user")
+                  |> filter(fn: (r) => r["cpu"] == "cpu-total")
+        shade: true
+        width: 3
+        xCol: _time
+        xPos: 2
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#8F8AF4'
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#A51414'
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#F4CF31'
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: y
+        kind: Xy
+        name: Heap Memory Usage (used and commited)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "jboss-wildfly")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jboss.jvm_memory")
+                  |> filter(fn: (r) => r["_field"] == "HeapMemoryUsage.used" or r["_field"] == "HeapMemoryUsage.committed")
+        shade: true
+        width: 5
+        xCol: _time
+        xPos: 2
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Disk IO (reads)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "jboss-wildfly")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "diskio")
+                  |> filter(fn: (r) => r["_field"] == "reads")
+                  |> derivative(unit: v.windowPeriod, nonNegative: true)
+                  |> yield(name: "nonnegative derivative")
+        shade: true
+        width: 5
+        xCol: _time
+        xPos: 2
+        yCol: _value
+        yPos: 12
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Memory Pool Peak (Used and Commited)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "jboss-wildfly")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jboss.jvm_memory_pool")
+                  |> filter(fn: (r) => r["_field"] == "PeakUsage.committed" or r["_field"] == "PeakUsage.used")
+                  |> derivative(unit: v.windowPeriod, nonNegative: true)
+                  |> yield(name: "nonnegative derivative")
+        shade: true
+        width: 4
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#F6F6F8'
+            name: T-Max 400 Film
+            type: scale
+          - hex: '#A4A8B6'
+            name: T-Max 400 Film
+            type: scale
+          - hex: '#545667'
+            name: T-Max 400 Film
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: System Load Average
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "jboss-wildfly")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jboss.OperatingSystem")
+                  |> filter(fn: (r) => r["_field"] == "SystemLoadAverage")
+        shade: true
+        width: 3
+        xCol: _time
+        xPos: 5
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Network Sent (Bytes)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "jboss-wildfly")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "net")
+                  |> filter(fn: (r) => r["_field"] == "bytes_sent")
+                  |> derivative(unit: v.windowPeriod, nonNegative: true)
+                  |> yield(name: "nonnegative derivative")
+        shade: true
+        width: 5
+        xCol: _time
+        xPos: 5
+        yCol: _value
+        yPos: 9
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Non Heap Memory Usage (used and commited)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "jboss-wildfly")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jboss.jvm_memory")
+                  |> filter(fn: (r) => r["_field"] == "NonHeapMemoryUsage.used" or r["_field"] == "NonHeapMemoryUsage.committed")
+                  |> derivative(unit: v.windowPeriod, nonNegative: true)
+                  |> yield(name: "nonnegative derivative")
+        shade: true
+        width: 5
+        xCol: _time
+        xPos: 7
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Memory Pool Usage (Used and Commited)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "jboss-wildfly")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jboss.jvm_memory_pool")
+                  |> filter(fn: (r) => r["_field"] == "Usage.committed" or r["_field"] == "Usage.used")
+        shade: true
+        width: 5
+        xCol: _time
+        xPos: 7
+        yCol: _value
+        yPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#8F8AF4'
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#A51414'
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#F4CF31'
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Disk IO (writes)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "jboss-wildfly")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "diskio")
+                  |> filter(fn: (r) => r["_field"] == "writes")
+                  |> derivative(unit: v.windowPeriod, nonNegative: true)
+                  |> yield(name: "nonnegative derivative")
+        shade: true
+        width: 5
+        xCol: _time
+        xPos: 7
+        yCol: _value
+        yPos: 12
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        name: System RAM Usage
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "jboss-wildfly")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "mem")
+                  |> filter(fn: (r) => r["_field"] == "used")
+                  |> derivative(unit: v.windowPeriod, nonNegative: true)
+                  |> yield(name: "nonnegative derivative")
+        shade: true
+        width: 4
+        xCol: _time
+        xPos: 8
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Net Err (In & Out)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "jboss-wildfly")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "net")
+                  |> filter(fn: (r) => r["_field"] == "err_in" or r["_field"] == "err_out")
+                  |> derivative(unit: v.windowPeriod, nonNegative: true)
+                  |> yield(name: "nonnegative derivative")
+        width: 2
+        xCol: _time
+        xPos: 10
+        yCol: _value
+        yPos: 9
+    name: jboss-wildfly
+
+---
+
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: jboss-wildfly-config
+spec:
+    config: |
+         [[outputs.influxdb_v2]]
+         ## The URLs of the InfluxDB cluster nodes.
+         ##
+         ## Multiple URLs can be specified for a single cluster, only ONE of the
+         ## urls will be written to each interval.
+         ## urls exp: http://127.0.0.1:9999
+         urls = ["$INFLUX_HOST"]
+        
+         ## Token for authentication.
+         token = "$INFLUX_TOKEN"
+        
+          ## Organization is the name of the organization you wish to write to; must exist.
+         organization = "$INFLUX_ORG"
+        
+          ## Destination bucket to write into.
+         bucket = "$INFLUX_BUCKET"
+        
+         [agent]
+         interval = "1m"
+        
+         [[inputs.jolokia2_agent]]
+          urls = ["$JBOSS_CONNECTION_STRING"]
+          name_prefix = "jboss."
+        
+          ### JVM Generic
+        
+         [[inputs.jolokia2_agent.metric]]
+            name  = "OperatingSystem"
+            mbean = "java.lang:type=OperatingSystem"
+            paths = ["ProcessCpuLoad","SystemLoadAverage","SystemCpuLoad"]
+        
+         [[inputs.jolokia2_agent.metric]]
+            name  = "jvm_runtime"
+            mbean = "java.lang:type=Runtime"
+            paths = ["Uptime"]
+        
+         [[inputs.jolokia2_agent.metric]]
+            name  = "jvm_memory"
+            mbean = "java.lang:type=Memory"
+            paths = ["HeapMemoryUsage", "NonHeapMemoryUsage", "ObjectPendingFinalizationCount"]
+        
+         [[inputs.jolokia2_agent.metric]]
+            name     = "jvm_garbage_collector"
+            mbean    = "java.lang:name=*,type=GarbageCollector"
+            paths    = ["CollectionTime", "CollectionCount"]
+            tag_keys = ["name"]
+        
+         [[inputs.jolokia2_agent.metric]]
+            name       = "jvm_memory_pool"
+            mbean      = "java.lang:name=*,type=MemoryPool"
+            paths      = ["Usage", "PeakUsage", "CollectionUsage"]
+            tag_keys   = ["name"]
+            tag_prefix = "pool_"
+        
+          ### JBOSS
+        
+         [[inputs.jolokia2_agent.metric]]
+            name     = "connectors.http"
+            mbean    = "jboss.as:https-listener=*,server=*,subsystem=undertow"
+            paths    = ["bytesReceived","bytesSent","errorCount","requestCount"]
+            tag_keys = ["server","https-listener"]
+        
+         [[inputs.jolokia2_agent.metric]]
+            name     = "connectors.http"
+            mbean    = "jboss.as:http-listener=*,server=*,subsystem=undertow"
+            paths    = ["bytesReceived","bytesSent","errorCount","requestCount"]
+            tag_keys = ["server","http-listener"]
+        
+         [[inputs.jolokia2_agent.metric]]
+            name     = "datasource.jdbc"
+            mbean    = "jboss.as:data-source=*,statistics=jdbc,subsystem=datasources"
+            paths    = ["PreparedStatementCacheAccessCount","PreparedStatementCacheHitCount","PreparedStatementCacheMissCount"]
+            tag_keys = ["data-source"]
+        
+         [[inputs.jolokia2_agent.metric]]
+            name     = "datasource.pool"
+            mbean    = "jboss.as:data-source=*,statistics=pool,subsystem=datasources"
+            paths    = ["AvailableCount","ActiveCount","MaxUsedCount"]
+            tag_keys = ["data-source"]
+        
+         [[inputs.cpu]]
+            ## Whether to report per-cpu stats or not
+            percpu = true
+            ## Whether to report total system cpu stats or not
+            totalcpu = true
+            ## If true, collect raw CPU time metrics.
+            collect_cpu_time = false
+            ## If true, compute and report the sum of all non-idle CPU states.
+            report_active = false
+         [[inputs.disk]]
+            ## By default stats will be gathered for all mount points.
+            ## Set mount_points will restrict the stats to only the specified mount points.
+            # mount_points = ["/"]
+            ## Ignore mount points by filesystem type.
+            ignore_fs = ["tmpfs", "devtmpfs", "devfs", "overlay", "aufs", "squashfs"]
+         [[inputs.diskio]]
+         [[inputs.mem]]
+         [[inputs.net]]
+         [[inputs.processes]]
+         [[inputs.swap]]
+         [[inputs.system]]
+    
