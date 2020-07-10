@@ -1,18 +1,18 @@
-## Docker Monitoring Template
+## Docker Monitoring template
 
-This InfluxDB Template can be used to monitor Docker.
+Use this InfluxDB template to monitor Docker.
 
 ![Docker Dashboard Screenshot](img/docker_dashboard.png)
 
-### Quick Install
+### Quick install
 
 If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
-influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/docker/docker.yml
+influx apply -f https://raw.githubusercontent.com/influxdata/community-templates/master/docker/docker.yml
 ```
 
-### Included Resources
+### Included resources
 
 - 1 Bucket: `docker`, 7d retention
 - Labels: Telegraf Plugin Labels
@@ -23,7 +23,7 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
 - 1 Notification Endpoint: Http Post
 - 1 Notification Rules: Crit Alert
 
-## Setup Instructions
+## Setup instructions
 
   General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
     
