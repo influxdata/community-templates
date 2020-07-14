@@ -1,0 +1,271 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: downsampling-status-dashboard
+spec:
+    charts:
+      - colors:
+          - hex: '#4ED8A0'
+            name: rainforest
+            type: background
+          - hex: '#DC4E58'
+            name: fire
+            type: background
+            value: 1
+        fieldOptions:
+          - displayName: _start
+            fieldName: _start
+            visible: true
+          - displayName: _stop
+            fieldName: _stop
+            visible: true
+          - displayName: _time
+            fieldName: _time
+            visible: true
+          - displayName: _value
+            fieldName: _value
+            visible: true
+          - displayName: _check_id
+            fieldName: _check_id
+            visible: true
+          - displayName: _check_name
+            fieldName: _check_name
+            visible: true
+          - displayName: _field
+            fieldName: _field
+            visible: true
+          - displayName: _level
+            fieldName: _level
+            visible: true
+          - displayName: _measurement
+            fieldName: _measurement
+            visible: true
+          - displayName: _source_measurement
+            fieldName: _source_measurement
+            visible: true
+          - displayName: _type
+            fieldName: _type
+            visible: true
+          - displayName: name
+            fieldName: name
+            visible: true
+          - displayName: status
+            fieldName: status
+            visible: true
+          - displayName: taskID
+            fieldName: taskID
+            visible: true
+          - displayName: _message
+            fieldName: _message
+            visible: true
+          - displayName: _source_timestamp
+            fieldName: _source_timestamp
+            visible: true
+          - displayName: logs
+            fieldName: logs
+            visible: true
+        height: 3
+        kind: Table
+        name: Downsampling Jobs
+        queries:
+          - query: |-
+                import "influxdata/influxdb/v1"
+                from(bucket: "_monitoring")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "statuses")
+                  |> filter(fn: (r) => r["_check_id"] == "00000000deadbeef")
+                  |> v1.fieldsAsCols()
+                  |> group(columns: ["_check_id","name"])
+                  |> drop(columns: ["_start","_stop","_check_id","_measurement","_type","taskID","_source_timestamp","_source_measurement","_check_name","_message"])
+                  |> sort(columns: ["_time"], desc: false)
+                  |> last(column: "name")
+                  |> group()
+        tableOptions:
+            sortBy: name
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 11
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: telegraf Series Count
+        queries:
+          - query: |-
+                from(bucket: "telegraf")
+                  |> range(start: 2000-01-01)
+                  |> last()
+                  |> count()
+                  |> group()
+                  |> sum()
+        width: 3
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: telegraf Value Count
+        queries:
+          - query: |-
+                from(bucket: "telegraf")
+                  |> range(start: 2000-01-01)
+                  |> count()
+                  |> group()
+                  |> sum()
+        width: 3
+        yPos: 5
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: telegraf_1m Series Count
+        queries:
+          - query: |-
+                from(bucket: "telegraf_1m")
+                  |> range(start: 2000-01-01)
+                  |> last()
+                  |> count()
+                  |> group()
+                  |> sum()
+        width: 2
+        xPos: 3
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: telegraf_1m Value Count
+        queries:
+          - query: |-
+                from(bucket: "telegraf_1m")
+                  |> range(start: 2000-01-01)
+                  |> count()
+                  |> group()
+                  |> sum()
+        width: 2
+        xPos: 3
+        yPos: 5
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: telegraf_10m Series Count
+        queries:
+          - query: |-
+                from(bucket: "telegraf_10m")
+                  |> range(start: 2000-01-01)
+                  |> last()
+                  |> count()
+                  |> group()
+                  |> sum()
+        width: 2
+        xPos: 5
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: telegraf_10m Value Count
+        queries:
+          - query: |-
+                from(bucket: "telegraf_10m")
+                  |> range(start: 2000-01-01)
+                  |> count()
+                  |> group()
+                  |> sum()
+        width: 2
+        xPos: 5
+        yPos: 5
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: telegraf_1h Series Count
+        queries:
+          - query: |-
+                from(bucket: "telegraf_1h")
+                  |> range(start: 2000-01-01)
+                  |> last()
+                  |> count()
+                  |> group()
+                  |> sum()
+        width: 2
+        xPos: 7
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: telegraf_1h Value Count
+        queries:
+          - query: |-
+                from(bucket: "telegraf_1h")
+                  |> range(start: 2000-01-01)
+                  |> count()
+                  |> group()
+                  |> sum()
+        width: 2
+        xPos: 7
+        yPos: 5
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: telegraf_1d Series Count
+        queries:
+          - query: |-
+                from(bucket: "telegraf_1d")
+                  |> range(start: 2000-01-01)
+                  |> last()
+                  |> count()
+                  |> group()
+                  |> sum()
+        width: 2
+        xPos: 9
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: telegraf_1d Value Count
+        queries:
+          - query: |-
+                from(bucket: "telegraf_1d")
+                  |> range(start: 2000-01-01)
+                  |> count()
+                  |> group()
+                  |> sum()
+        width: 2
+        xPos: 9
+        yPos: 5
+    name: Downsampling Status
