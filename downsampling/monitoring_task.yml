@@ -15,7 +15,7 @@ spec:
             |> range(start: -1m, stop: now())
             |> filter(fn: (r) => r["_measurement"] == "runs")
             |> filter(fn: (r) => r["_field"] == "logs")
-            |> map(fn: (r) => ({ r with name: regexp.findString(r: /[0-9]+\. downsample_[a-z]+_[0-9]+[mhd]/, v: r._value) }))
+            |> map(fn: (r) => ({ r with name: regexp.findString(r: /[0-9]+\. downsample_[a-z_]+_[0-9]+[mhd]/, v: r._value) }))
             |> map(fn: (r) => ({ r with every: regexp.findString(r: /every: ([0-9]+[smhd])+/, v: r._value) }))
             |> map(fn: (r) => ({ r with every: if r.every != "" then strings.split(v: r.every , t: " ")[1] else "" }))
             |> filter(fn: (r) => r.name != "")
