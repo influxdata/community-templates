@@ -25,15 +25,23 @@ This isn't a Template that you install with a single command. Each subfolder con
     - 1 Dashboard: `Downsampling Status`
     - 1 Task: `00. Downsample Monitoring Task`
 
+There are two paths you can take with this template: If you have a specific Telegraf plugin you would like to downsample your data for, you can leverage the specific downsampling tasks for that plugin located in the folders (see the list below). You might also choose this path if the task for downsampling everything is timing out. If you don't really care and would like to downsample all data from all plugins, you can use the tasks in the [all_inputs](./all_inputs) directory. It will grab all the measurements this template can downsample data for and process them.
+
+Note: You should not install the all inputs tasks as well as the individual plugin downsampling tasks. Just choose one or the other.
+
 | Telegraf Plugin | Subdirectory |
 |-----------------|--------------|
+| all | [all_inputs](./all_inputs) |
 | cpu | [default_inputs](./default_inputs) |
 | disk | [default_inputs](./default_inputs) |
 | diskio | [default_inputs](./default_inputs) |
 | internal | [internal_input](./internal_input) |
 | kernel | [default_inputs](./default_inputs) |
 | mem | [default_inputs](./default_inputs) |
+| net | [net_inputs](./net_inputs) |
+| netstat | [net_inputs](./net_inputs) |
 | processes | [default_inputs](./default_inputs) |
+| procstat | [procstat_input](./procstat_input) |
 | swap | [default_inputs](./default_inputs) |
 | system | [default_inputs](./default_inputs) |
 
@@ -45,13 +53,13 @@ The first thing you need to do to use the templates that are included for each o
 
 `./influx apply -f buckets.yml -f dashboard.yml -f monitoring_task.yml`
 
-This will lay the foundation for the other parts of this template. Next, choose a directory for the specific Telegraf input plugin metrics you are interested in downsampling. If you don't see the plugin listed, why not add your own?
+This will lay the foundation for the other parts of this template. Next, choose either the all plugins approach or a directory for the specific Telegraf input plugin metrics you are interested in downsampling. If you don't see the plugin listed, open a PR and add it.
 
 You can then add the downsampling tasks using the following command:
 
 `./influx apply -f default_inputs/downsampling_tasks.yml`
 
-You can also host the telegraf config if you like but it will probably be more useful to compare that to your telegraf input already configured and make any adjustments. If you do want to use the Telegraf Configs provided, you will need to set `$INFLUX_TOKEN` and `$INFLUX_ORG` env variables.
+You can also host the telegraf config in InfluxDB if you like but it will probably be more useful to compare that to your telegraf inputs already configured and make any adjustments. If you do want to use the Telegraf Configs provided, you will need to set `$INFLUX_TOKEN` and `$INFLUX_ORG` env variables.
 
 - This can be found on the `Load Data` > `Tokens` page in your browser: `export INFLUX_TOKEN=TOKEN`
 - Your Organization name can be found on the Settings page in your browser: `export INFLUX_ORG=my_org`
