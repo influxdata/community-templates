@@ -39,7 +39,7 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
 
 ## Customizations
 
-You can run the provided Telegraf configuration on multiple Linux machines, and switch between them using the `windows_host` filter at the top of the dashboard.
+You can run the provided Telegraf configuration on multiple Windows machines, and switch between them using the `windows_host` filter at the top of the dashboard.
 
 ## Contact
 
