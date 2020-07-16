@@ -96,11 +96,11 @@ spec:
         queries:
           - query: |-
                 from(bucket: "telegraf")
-                  |> range(start: 1970-01-01)
-                  |> last()
+                  |> range(start: 0)
+                  |> first()
                   |> count()
                   |> group()
-                  |> sum()
+                  |> count()
         width: 3
         yPos: 3
       - colors:
@@ -114,7 +114,7 @@ spec:
         queries:
           - query: |-
                 from(bucket: "telegraf")
-                  |> range(start: 1970-01-01)
+                  |> range(start: 0)
                   |> count()
                   |> group()
                   |> sum()
@@ -131,11 +131,11 @@ spec:
         queries:
           - query: |-
                 from(bucket: "telegraf_1m")
-                  |> range(start: 1970-01-01)
-                  |> last()
+                  |> range(start: 0)
+                  |> first()
                   |> count()
                   |> group()
-                  |> sum()
+                  |> count()
         width: 2
         xPos: 3
         yPos: 3
@@ -150,7 +150,7 @@ spec:
         queries:
           - query: |-
                 from(bucket: "telegraf_1m")
-                  |> range(start: 1970-01-01)
+                  |> range(start: 0)
                   |> count()
                   |> group()
                   |> sum()
@@ -168,11 +168,11 @@ spec:
         queries:
           - query: |-
                 from(bucket: "telegraf_10m")
-                  |> range(start: 1970-01-01)
-                  |> last()
+                  |> range(start: 0)
+                  |> first()
                   |> count()
                   |> group()
-                  |> sum()
+                  |> count()
         width: 2
         xPos: 5
         yPos: 3
@@ -187,7 +187,7 @@ spec:
         queries:
           - query: |-
                 from(bucket: "telegraf_10m")
-                  |> range(start: 1970-01-01)
+                  |> range(start: 0)
                   |> count()
                   |> group()
                   |> sum()
@@ -205,11 +205,11 @@ spec:
         queries:
           - query: |-
                 from(bucket: "telegraf_1h")
-                  |> range(start: 1970-01-01)
-                  |> last()
+                  |> range(start: 0)
+                  |> first()
                   |> count()
                   |> group()
-                  |> sum()
+                  |> count()
         width: 2
         xPos: 7
         yPos: 3
@@ -224,7 +224,7 @@ spec:
         queries:
           - query: |-
                 from(bucket: "telegraf_1h")
-                  |> range(start: 1970-01-01)
+                  |> range(start: 0)
                   |> count()
                   |> group()
                   |> sum()
@@ -242,11 +242,11 @@ spec:
         queries:
           - query: |-
                 from(bucket: "telegraf_1d")
-                  |> range(start: 1970-01-01)
-                  |> last()
+                  |> range(start: 0)
+                  |> first()
                   |> count()
                   |> group()
-                  |> sum()
+                  |> count()
         width: 2
         xPos: 9
         yPos: 3
@@ -261,7 +261,7 @@ spec:
         queries:
           - query: |-
                 from(bucket: "telegraf_1d")
-                  |> range(start: 1970-01-01)
+                  |> range(start: 0)
                   |> count()
                   |> group()
                   |> sum()

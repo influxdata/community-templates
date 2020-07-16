@@ -1,10 +1,10 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Task
 metadata:
-    name: downsample-all-1d
+    name: downsample-smart-1d
 spec:
     every: 24h
-    name: 04. downsample_all_1d
+    name: 04. downsample_smart_1d
     query: |-
         import "experimental"
         
@@ -14,10 +14,10 @@ spec:
         all_data = from(bucket: fromBucket)
             |> range(start: -task.every)
             |> filter(fn: (r) =>
-                (r._measurement =~ /^cpu|disk|diskio|mem|processes|swap|system|internal_.+|net|netstat|procstat|procstat_lookup|smart_.+$/))
+                (r._measurement =~ /^smart_.+$/))
         numeric_data = all_data
             |> filter(fn: (r) =>
-                (r._field !~ /^uptime_format|health_ok$/))
+                (r._field !~ /^health_ok$/))
         bool_data = all_data
             |> filter(fn: (r) =>
                 (r._field =~ /^health_ok$/))
@@ -103,7 +103,7 @@ spec:
             |> set(key: "aggregate", value: "ratio")
             |> set(key: "rollup_interval", value: string(v: task.every))
             |> to(bucket: toBucket)
-
+        
         all_data
             |> aggregateWindow(every: task.every, fn: count)
             |> map(fn: (r) =>
@@ -120,10 +120,10 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Task
 metadata:
-    name: downsample-all-1h
+    name: downsample-smart-1h
 spec:
     every: 1h
-    name: 03. downsample_all_1h
+    name: 03. downsample_smart_1h
     query: |-
         import "experimental"
         
@@ -133,10 +133,10 @@ spec:
         all_data = from(bucket: fromBucket)
             |> range(start: -task.every)
             |> filter(fn: (r) =>
-                (r._measurement =~ /^cpu|disk|diskio|mem|processes|swap|system|internal_.+|net|netstat|procstat|procstat_lookup|smart_.+$/))
+                (r._measurement =~ /^smart_.+$/))
         numeric_data = all_data
             |> filter(fn: (r) =>
-                (r._field !~ /^uptime_format|health_ok$/))
+                (r._field !~ /^health_ok$/))
         bool_data = all_data
             |> filter(fn: (r) =>
                 (r._field =~ /^health_ok$/))
@@ -239,10 +239,10 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Task
 metadata:
-    name: downsample-all-10m
+    name: downsample-smart-10m
 spec:
     every: 10m
-    name: 02. downsample_all_10m
+    name: 02. downsample_smart_10m
     query: |-
         import "experimental"
         
@@ -252,10 +252,10 @@ spec:
         all_data = from(bucket: fromBucket)
             |> range(start: -task.every)
             |> filter(fn: (r) =>
-                (r._measurement =~ /^cpu|disk|diskio|mem|processes|swap|system|internal_.+|net|netstat|procstat|procstat_lookup|smart_.+$/))
+                (r._measurement =~ /^smart_.+$/))
         numeric_data = all_data
             |> filter(fn: (r) =>
-                (r._field !~ /^uptime_format|health_ok$/))
+                (r._field !~ /^health_ok$/))
         bool_data = all_data
             |> filter(fn: (r) =>
                 (r._field =~ /^health_ok$/))
@@ -341,7 +341,7 @@ spec:
             |> set(key: "aggregate", value: "ratio")
             |> set(key: "rollup_interval", value: string(v: task.every))
             |> to(bucket: toBucket)
-
+        
         all_data
             |> aggregateWindow(every: task.every, fn: count)
             |> map(fn: (r) =>
@@ -358,10 +358,10 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Task
 metadata:
-    name: downsample-all-1m
+    name: downsample-smart-1m
 spec:
     every: 1m
-    name: 01. downsample_all_1m
+    name: 01. downsample_smart_1m
     query: |-
         import "experimental"
         
@@ -371,10 +371,10 @@ spec:
         all_data = from(bucket: fromBucket)
             |> range(start: -task.every)
             |> filter(fn: (r) =>
-                (r._measurement =~ /^cpu|disk|diskio|mem|processes|swap|system|internal_.+|net|netstat|procstat|procstat_lookup|smart_.+$/))
+                (r._measurement =~ /^smart_.+$/))
         numeric_data = all_data
             |> filter(fn: (r) =>
-                (r._field !~ /^uptime_format|health_ok$/))
+                (r._field !~ /^health_ok$/))
         bool_data = all_data
             |> filter(fn: (r) =>
                 (r._field =~ /^health_ok$/))
@@ -460,7 +460,7 @@ spec:
             |> set(key: "aggregate", value: "ratio")
             |> set(key: "rollup_interval", value: string(v: task.every))
             |> to(bucket: toBucket)
-
+        
         all_data
             |> aggregateWindow(every: task.every, fn: count)
             |> map(fn: (r) =>

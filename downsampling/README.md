@@ -15,6 +15,7 @@ This isn't a Template that you install with a single command. Each subfolder con
  - The metrics being calculated for each field are as follows:
    - String Fields: `last`, `count`
    - Numeric Fields: `last`, `count`, `mean`, `min`, `max`, `sum`, `p99.9`, `p99`, `p95`, `p90`
+   - Bool Fields: `last`, `count`, `ratio` (count(true)/count())
  - All data is downsampled from the raw data bucket (`telegraf`) which is kept forever but can (and should) be changed. The minimum required time to keep the bucket in order to get the rollups is 24h + 5m in order to get the downsampled values.
  - The tasks are named `<num>. downsample_<plugin>_<every>`
 
@@ -42,6 +43,7 @@ Note: You should not install the all inputs tasks as well as the individual plug
 | netstat | [net_inputs](./net_inputs) |
 | processes | [default_inputs](./default_inputs) |
 | procstat | [procstat_input](./procstat_input) |
+| smart | [smart_input](./smart_input) |
 | swap | [default_inputs](./default_inputs) |
 | system | [default_inputs](./default_inputs) |
 
