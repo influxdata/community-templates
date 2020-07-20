@@ -1,10 +1,10 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Telegraf
 metadata:
-    name: telegraf-default-inputs-config
+    name: telegraf-smart-input-config
 spec:
-    description: A Telegraf config with default plugins enabled
-    name: Telegraf Default Plugins Configuration
+    description: A Telegraf config with the S.M.A.R.T. plugin enabled
+    name: Telegraf S.M.A.R.T. Plugin Configuration
     config: |
         # Telegraf Configuration
         #
@@ -165,138 +165,6 @@ spec:
         ###############################################################################
         
         
-        # Read metrics about cpu usage
-        [[inputs.cpu]]
-        ## Whether to report per-cpu stats or not
-        percpu = true
-        ## Whether to report total system cpu stats or not
-        totalcpu = true
-        ## If true, collect raw CPU time metrics.
-        collect_cpu_time = false
-        ## If true, compute and report the sum of all non-idle CPU states.
-        report_active = false
-        
-        
-        # Read metrics about disk usage by mount point
-        [[inputs.disk]]
-        ## By default stats will be gathered for all mount points.
-        ## Set mount_points will restrict the stats to only the specified mount points.
-        # mount_points = ["/"]
-        
-        ## Ignore mount points by filesystem type.
-        ignore_fs = ["tmpfs", "devtmpfs", "devfs", "iso9660", "overlay", "aufs", "squashfs"]
-        
-        
-        # Read metrics about disk IO by device
-        [[inputs.diskio]]
-        ## By default, telegraf will gather stats for all devices including
-        ## disk partitions.
-        ## Setting devices will restrict the stats to the specified devices.
-        # devices = ["sda", "sdb", "vd*"]
-        ## Uncomment the following line if you need disk serial numbers.
-        # skip_serial_number = false
-        #
-        ## On systems which support it, device metadata can be added in the form of
-        ## tags.
-        ## Currently only Linux is supported via udev properties. You can view
-        ## available properties for a device by running:
-        ## 'udevadm info -q property -n /dev/sda'
-        ## Note: Most, but not all, udev properties can be accessed this way. Properties
-        ## that are currently inaccessible include DEVTYPE, DEVNAME, and DEVPATH.
-        # device_tags = ["ID_FS_TYPE", "ID_FS_USAGE"]
-        #
-        ## Using the same metadata source as device_tags, you can also customize the
-        ## name of the device via templates.
-        ## The 'name_templates' parameter is a list of templates to try and apply to
-        ## the device. The template may contain variables in the form of '$PROPERTY' or
-        ## '${PROPERTY}'. The first template which does not contain any variables not
-        ## present for the device is used as the device name tag.
-        ## The typical use case is for LVM volumes, to get the VG/LV name instead of
-        ## the near-meaningless DM-0 name.
-        # name_templates = ["$ID_FS_LABEL","$DM_VG_NAME/$DM_LV_NAME"]
-        
-
-        # # Collect statistics about itself
-        [[inputs.internal]]
-          ## If true, collect telegraf memory stats.
-          collect_memstats = true
-        
-        
-        # Get kernel statistics from /proc/stat
-        [[inputs.kernel]]
-        # no configuration
-        
-
-        # Read metrics about memory usage
-        [[inputs.mem]]
-        # no configuration
-        
-
-        # Gather metrics about network interfaces
-        [[inputs.net]]
-        ## By default, telegraf gathers stats from any up interface (excluding loopback)
-        ## Setting interfaces will tell it to gather these explicit interfaces,
-        ## regardless of status. When specifying an interface, glob-style
-        ## patterns are also supported.
-        ##
-        # interfaces = ["eth*", "enp0s[0-1]", "lo"]
-        ##
-        ## On linux systems telegraf also collects protocol stats.
-        ## Setting ignore_protocol_stats to true will skip reporting of protocol metrics.
-        ##
-        # ignore_protocol_stats = false
-        ##
-        # Collect TCP connections state and UDP socket counts
-        [[inputs.netstat]]
-        # no configuration
-
-
-        # Get the number of processes and group them by status
-        [[inputs.processes]]
-        # no configuration
-        
-        # Monitor process cpu and memory usage
-        [[inputs.procstat]]
-        ## PID file to monitor process
-        pid_file = "/var/run/nginx.pid"
-        ## executable name (ie, pgrep <exe>)
-        # exe = "nginx"
-        ## pattern as argument for pgrep (ie, pgrep -f <pattern>)
-        # pattern = "nginx"
-        ## user as argument for pgrep (ie, pgrep -u <user>)
-        # user = "nginx"
-        ## Systemd unit name
-        # systemd_unit = "nginx.service"
-        ## CGroup name or path
-        # cgroup = "systemd/system.slice/nginx.service"
-
-        ## Windows service name
-        # win_service = ""
-
-        ## override for process_name
-        ## This is optional; default is sourced from /proc/<pid>/status
-        # process_name = "bar"
-
-        ## Field name prefix
-        # prefix = ""
-
-        ## When true add the full cmdline as a tag.
-        # cmdline_tag = false
-
-        ## Add the PID as a tag instead of as a field.  When collecting multiple
-        ## processes with otherwise matching tags this setting should be enabled to
-        ## ensure each process has a unique identity.
-        ##
-        ## Enabling this option may result in a large number of series, especially
-        ## when processes have a short lifetime.
-        # pid_tag = false
-
-        ## Method to use when finding process IDs.  Can be one of 'pgrep', or
-        ## 'native'.  The pgrep finder calls the pgrep executable in the PATH while
-        ## the native finder performs the search directly in a manor dependent on the
-        ## platform.  Default is 'pgrep'
-        # pid_finder = "pgrep"
-        
         # Read metrics from storage devices supporting S.M.A.R.T.
         [[inputs.smart]]
         ## Optionally specify the path to the smartctl executable
@@ -331,13 +199,3 @@ spec:
 
         ## Timeout for the smartctl command to complete.
         # timeout = "30s"
-        
-        # Read metrics about swap memory usage
-        [[inputs.swap]]
-        # no configuration
-        
-        
-        # Read metrics about system load & uptime
-        [[inputs.system]]
-        ## Uncomment to remove deprecated metrics.
-        # fielddrop = ["uptime_format"]
