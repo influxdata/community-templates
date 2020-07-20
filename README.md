@@ -22,6 +22,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [Downsampling](downsampling/) | Downsample common Telegraf metrics. | [@russorat](https://github.com/russorat) |
 | [Endpoint Security State](endpoint-security-state/) | Watch endpoint authentication availability and certificate status | [Darin Fisher](https://github.com/darinfisher) |
 | [Enviro+](enviro_plus/) | View the air quality readings from a Pimoroni Enviro+ particulate matter sensor. | Simon Loffler |
+| [Fortnite](fortnite/) | Track and analyze Fortnite player performance. | [@abalone23](https://github.com/abalone23) |
 | [GCP Monitoring](gcp_monitoring/) | Monitor Google Cloud Platform.  | [bonitoo.io](.) |
 | [Github](github/) | View information about your Github Repos. Forks, Issues, Stars and more. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [HAProxy](haproxy/) | Get metrics of your HAProxy instance. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |

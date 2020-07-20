@@ -1,0 +1,1978 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: righteous-matsumoto-06c001
+spec:
+    color: '#00a3ff'
+    name: fortnite
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: quizzical-nash-06c005
+spec:
+    associations:
+      - kind: Label
+        name: righteous-matsumoto-06c001
+    name:
+        envRef:
+            key: fn_bucket
+    retentionRules:
+      - everySeconds: 2.592e+06
+        type: expire
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Task
+metadata:
+    name: frosty-stonebraker-46c003
+spec:
+    associations:
+      - kind: Label
+        name: righteous-matsumoto-06c001
+    every: 1h0m0s
+    name: wins
+    offset: 5m0s
+    query: |-
+        import "slack"
+        import "strings"
+        import "influxdata/influxdb/secrets"
+
+
+
+        webhook = secrets.get(key: "SLACK_WEBHOOK")
+        sendSlackMessage = (text) =>
+        	(slack.message(
+        		url: webhook,
+        		token: "",
+        		channel: "",
+        		text: text,
+        		color: "good",
+        	))
+
+        from(bucket: "fortnite")
+        	|> range(start: -2h, stop: -30m)
+        	|> filter(fn: (r) =>
+        		(r["_measurement"] == "exec_fortnite"))
+        	|> filter(fn: (r) =>
+        		(r["_field"] == "squad_placetop1" or r["_field"] == "solo_placetop1" or r["_field"] == "duo_placetop1"))
+        	|> filter(fn: (r) =>
+        		(r["pro"] == "no" or r["pro"] == "yes"))
+        	|> group(columns: ["name", "_field"])
+        	|> drop(columns: ["_start", "_stop", "pro"])
+        	|> difference()
+        	|> group(columns: ["_time", "name"])
+        	|> filter(fn: (r) =>
+        		(r["_value"] == 1))
+        	|> map(fn: (r) =>
+        		({r with newColumn: if r["_value"] == 1 then sendSlackMessage(text: "Congratulations to *${string(v: r.name)}* for winning a Fortnite *${strings.trimSuffix(v: r._field, suffix: "_placetop1")}* match! :boom: :boom: :boom:") else 100}))
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: admiring-kirch-86c003
+spec:
+    associations:
+      - kind: Label
+        name: righteous-matsumoto-06c001
+    language: flux
+    name: player2
+    query: |-
+        from(bucket: "fortnite")
+          |> range(start: 2020-06-01T00:00:00Z)
+          |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+          |> filter(fn: (r) => r["_field"] == "account_level")
+          |> group(columns: ["acct_id"])
+          |> last()
+          |> keep(columns: ["name"])
+          |> rename(columns: {name: "_value"})
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: earnest-keldysh-46c007
+spec:
+    associations:
+      - kind: Label
+        name: righteous-matsumoto-06c001
+    language: flux
+    name: season
+    query: |-
+        import "influxdata/influxdb/v1"
+
+        v1.tagValues(
+          bucket: "fortnite",
+          tag: "season",
+          predicate: (r) => true,
+          start: -300d
+        )
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: happy-torvalds-c6c003
+spec:
+    associations:
+      - kind: Label
+        name: righteous-matsumoto-06c001
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> filter(fn: (r) => r.name !~ /^_/)
+          |> rename(columns: {name: "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: hungry-saha-86c007
+spec:
+    associations:
+      - kind: Label
+        name: righteous-matsumoto-06c001
+    language: flux
+    name: player
+    query: |-
+        from(bucket: "fortnite")
+          |> range(start: 2020-06-01T00:00:00Z)
+          |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+          |> filter(fn: (r) => r["_field"] == "account_level")
+          |> group(columns: ["acct_id"])
+          |> last()
+          |> keep(columns: ["name"])
+          |> rename(columns: {name: "_value"})
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: agitated-almeida-86c001
+spec:
+    associations:
+      - kind: Label
+        name: righteous-matsumoto-06c001
+    charts:
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Player 1
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                |> range(start: 2020-06-01T00:00:00Z)
+                |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                |> filter(fn: (r) => r["_field"] == "account_level")
+                |> filter(fn: (r) => r["name"] == v.player)
+                |> filter(fn: (r) => r["season"] == v.season)
+                |> last()
+                |> keep(columns: ["name"])
+        width: 4
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Wins
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "duo_placetop1" or r["_field"] == "solo_placetop1" or r["_field"] == "squad_placetop1")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> drop(columns: ["season", "_measurement", "pro", "name"])
+                  |> last()
+                  |> group()
+                  |> sum()
+        width: 1
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Kills
+        position: overlaid
+        queries:
+          - query: |-
+                import "math"
+
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                rr2 = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player2)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                named_accts = from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> group(columns: ["acct_id"])
+                  |> last()
+                  |> keep(columns: ["name", "acct_id"])
+
+                kills = from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "squad_kills" or r["_field"] == "solo_kills" or r["_field"] == "duo_kills")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"] or r["acct_id"] == rr2["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+
+                stats_total = kills
+                  |> truncateTimeColumn(unit: 1d)
+                  |> group(columns: ["acct_id", "_field"])
+                  |> aggregateWindow(every: 1d, fn: max)
+                  |> group(columns: ["_time", "acct_id"])
+                  |> sum()
+                  |> group(columns: ["acct_id"])
+
+                join(tables: {st:stats_total, na:named_accts}, on: ["acct_id"])
+                  |> group(columns: ["acct_id", "name"])
+                  |> drop(columns: ["acct_id"])
+        width: 8
+        xCol: _time
+        yCol: _value
+        yPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat
+        name: Player 1 Final Decision
+        queries:
+          - query: |-
+                winrate = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "duo_winrate" or r["_field"] == "solo_winrate" or r["_field"] == "squad_winrate")
+                  |> filter(fn: (r) => r["name"] == v.player or r["name"] == v.player2)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> last()
+                  |> group(columns: ["name"])
+                  |> sum()
+                  |> rename(columns: {"_value": "winrate"})
+
+                wins = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "duo_placetop1" or r["_field"] == "solo_placetop1" or r["_field"] == "squad_placetop1")
+                  |> filter(fn: (r) => r["name"] == v.player or r["name"] == v.player2)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> last()
+                  |> group(columns: ["name"])
+                  |> sum()
+                  |> rename(columns: {"_value": "wins"})
+
+                kdratio = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "solo_kd" or r["_field"] == "duo_kd" or r["_field"] == "squad_kd")
+                  |> filter(fn: (r) => r["name"] == v.player or r["name"] == v.player2)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> last()
+                  |> group(columns: ["name"])
+                  |> mean()
+                  |> rename(columns: {"_value": "kdratio"})
+
+                jointable = join(tables: {w: wins, kd: kdratio}, on: ["name"])
+                  |> map(fn: (r) => ({ r with "score": r.kdratio * r.wins }))
+                  |> map(fn: (r) => ({ r with "_field": "score" }))
+
+                join(tables: { wr: winrate, jt: jointable }, on: ["name"])
+                  |> map(fn: (r) => ({ r with "score": r.kdratio * (r.wins * r.winrate) }))
+                  |> map(fn: (r) => ({ r with "_field": "score" }))
+                  |> map(fn: (r) => ({ r with "name": if r.name == v.player then "player1" else "player2" }))
+                  |> pivot(rowKey:["_field"], columnKey: ["name"], valueColumn: "score")
+                  |> map(fn: (r) => ({ r with emoji: if r.player1 > r.player2 then "🥳" else if r.player1 == r.player2 then "🙂" else "😞" }))
+                  |> keep(columns: ["emoji"])
+        width: 4
+        yPos: 6
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: background
+          - hex: '#32B08C'
+            name: viridian
+            type: background
+            value: 100
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Level
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> group(columns: ["acct_id"])
+                  |> last()
+                  |> keep(columns: ["_value"])
+        width: 1
+        xPos: 1
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#32B08C'
+            name: viridian
+            type: text
+            value: 1
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: K/D Ratio
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "solo_kd" or r["_field"] == "duo_kd" or r["_field"] == "squad_kd")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> last()
+                  |> group(columns: ["acct_id"])
+                  |> mean()
+        width: 1
+        xPos: 2
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: background
+        decimalPlaces: 1
+        height: 1
+        kind: Single_Stat
+        name: Win Rate
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "solo_winrate" or r["_field"] == "duo_winrate" or r["_field"] == "squad_winrate")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> last()
+                  |> group(columns: ["acct_id"])
+                  |> mean()
+                  |> map(fn: (r) => ({ _value: r._value * 100.0 }))
+        suffix: '%'
+        width: 1
+        xPos: 3
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Player 2
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> filter(fn: (r) => r["name"] == v.player2)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> last()
+                  |> keep(columns: ["name"])
+        width: 4
+        xPos: 4
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Wins
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player2)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "duo_placetop1" or r["_field"] == "solo_placetop1" or r["_field"] == "squad_placetop1")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> drop(columns: ["season", "_measurement", "pro", "name"])
+                  |> last()
+                  |> group()
+                  |> sum()
+        width: 1
+        xPos: 4
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat
+        name: Player 2 Final Decision
+        queries:
+          - query: |-
+                winrate = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "duo_winrate" or r["_field"] == "solo_winrate" or r["_field"] == "squad_winrate")
+                  |> filter(fn: (r) => r["name"] == v.player or r["name"] == v.player2)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> last()
+                  |> group(columns: ["name"])
+                  |> sum()
+                  |> rename(columns: {"_value": "winrate"})
+
+                wins = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "duo_placetop1" or r["_field"] == "solo_placetop1" or r["_field"] == "squad_placetop1")
+                  |> filter(fn: (r) => r["name"] == v.player or r["name"] == v.player2)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> last()
+                  |> group(columns: ["name"])
+                  |> sum()
+                  |> rename(columns: {"_value": "wins"})
+
+                kdratio = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "solo_kd" or r["_field"] == "duo_kd" or r["_field"] == "squad_kd")
+                  |> filter(fn: (r) => r["name"] == v.player or r["name"] == v.player2)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> last()
+                  |> group(columns: ["name"])
+                  |> mean()
+                  |> rename(columns: {"_value": "kdratio"})
+
+                jointable = join(tables: {w: wins, kd: kdratio}, on: ["name"])
+                  |> map(fn: (r) => ({ r with "score": r.kdratio * r.wins }))
+                  |> map(fn: (r) => ({ r with "_field": "score" }))
+
+                join(tables: {wr: winrate, jt: jointable}, on: ["name"])
+                  |> map(fn: (r) => ({ r with "score": r.kdratio * (r.wins * r.winrate) }))
+                  |> map(fn: (r) => ({ r with "_field": "score" }))
+                  |> map(fn: (r) => ({ r with "name": if r.name == v.player then "player1" else "player2" }))
+                  |> pivot(rowKey:["_field"], columnKey: ["name"], valueColumn: "score")
+                  |> map(fn: (r) => ({ r with emoji: if r.player2 > r.player1 then "🥳" else if r.player1 == r.player2 then "🙂" else "😞" }))
+                  |> keep(columns: ["emoji"])
+        width: 4
+        xPos: 4
+        yPos: 6
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: background
+          - hex: '#32B08C'
+            name: viridian
+            type: background
+            value: 100
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Level
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player2)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> group(columns: ["acct_id"])
+                  |> last()
+                  |> keep(columns: ["_value"])
+        width: 1
+        xPos: 5
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#32B08C'
+            name: viridian
+            type: text
+            value: 1
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: K/D Ratio
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player2)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "solo_kd" or r["_field"] == "duo_kd" or r["_field"] == "squad_kd")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> last()
+                  |> group(columns: ["acct_id"])
+                  |> mean()
+        width: 1
+        xPos: 6
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: background
+        decimalPlaces: 1
+        height: 1
+        kind: Single_Stat
+        name: Win Rate
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player2)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "solo_winrate" or r["_field"] == "duo_winrate" or r["_field"] == "squad_winrate")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> last()
+                  |> group(columns: ["acct_id"])
+                  |> mean()
+                  |> map(fn: (r) => ({ _value: r._value * 100.0 }))
+        suffix: '%'
+        width: 1
+        xPos: 7
+        yPos: 1
+    description: Compare two players to see who is better
+    name: Fortnite - Player Comparison
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: alerting-grothendieck-c6c001
+spec:
+    associations:
+      - kind: Label
+        name: righteous-matsumoto-06c001
+    charts:
+      - colors:
+          - hex: '#F48D38'
+            name: tiger
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Name
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> last()
+                  |> keep(columns: ["name"])
+        width: 4
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Season
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> last()
+                  |> keep(columns: ["season"])
+        width: 3
+        yPos: 1
+      - height: 3
+        kind: Markdown
+        name: Name this Cell
+        note: '## Total'
+        width: 1
+        yPos: 3
+      - height: 3
+        kind: Markdown
+        name: Name this Cell
+        note: '## Squads'
+        width: 1
+        yPos: 6
+      - height: 3
+        kind: Markdown
+        name: Name this Cell
+        note: '## Duos'
+        width: 1
+        yPos: 9
+      - height: 3
+        kind: Markdown
+        name: Name this Cell
+        note: '## Solo'
+        width: 1
+        yPos: 12
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 3
+        kind: Single_Stat
+        name: Matches Played
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> sort(columns:["_time"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "solo_matchesplayed" or r["_field"] == "duo_matchesplayed" or r["_field"] == "squad_matchesplayed")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> last()
+                  |> group()
+                  |> sum()
+        width: 1
+        xPos: 1
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 3
+        kind: Single_Stat
+        name: Matches Played
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "squad_matchesplayed")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+        width: 1
+        xPos: 1
+        yPos: 6
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 3
+        kind: Single_Stat
+        name: Matches Played
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "duo_matchesplayed")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+        width: 1
+        xPos: 1
+        yPos: 9
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 3
+        kind: Single_Stat
+        name: Matches Played
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "solo_matchesplayed")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+        width: 1
+        xPos: 1
+        yPos: 12
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 3
+        kind: Single_Stat
+        name: Total Wins
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "duo_placetop1" or r["_field"] == "solo_placetop1" or r["_field"] == "squad_placetop1")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> drop(columns: ["season", "_measurement", "pro", "name"])
+                  |> last()
+                  |> group()
+                  |> sum()
+        width: 1
+        xPos: 2
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 3
+        kind: Single_Stat
+        name: Wins
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "squad_placetop1")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+        width: 1
+        xPos: 2
+        yPos: 6
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 3
+        kind: Single_Stat
+        name: Wins
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "duo_placetop1")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+        width: 1
+        xPos: 2
+        yPos: 9
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 3
+        kind: Single_Stat
+        name: Wins
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "solo_placetop1")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+        width: 1
+        xPos: 2
+        yPos: 12
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Score
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "duo_score" or r["_field"] == "solo_score" or r["_field"] == "squad_score")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> drop(columns: ["season", "_measurement", "pro", "name"])
+                  |> last()
+                  |> group()
+                  |> mean()
+        width: 1
+        xPos: 3
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#DC4E58'
+            name: Solid Red
+            type: scale
+          - hex: '#DC4E58'
+            name: Solid Red
+            type: scale
+          - hex: '#DC4E58'
+            name: Solid Red
+            type: scale
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 3
+        kind: Single_Stat_Plus_Line
+        name: Total Kills
+        position: overlaid
+        queries:
+          - query: |-
+                import "math"
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+                kills = from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "squad_kills" or r["_field"] == "solo_kills" or r["_field"] == "duo_kills")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+                kills
+                  |> truncateTimeColumn(unit: 1d)
+                  |> group(columns: ["acct_id", "_field"])
+                  |> aggregateWindow(every: 1d, fn: max)
+                  |> group(columns: ["_time", "acct_id"])
+                  |> sum()
+                  |> group()
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#DC4E58'
+            name: Solid Red
+            type: scale
+          - hex: '#DC4E58'
+            name: Solid Red
+            type: scale
+          - hex: '#DC4E58'
+            name: Solid Red
+            type: scale
+          - hex: '#22ADF6'
+            name: pool
+            type: text
+        decimalPlaces: 0
+        height: 3
+        kind: Single_Stat_Plus_Line
+        name: Kills
+        position: overlaid
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "squad_kills")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> keep(columns: ["_value", "_time"])
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#DC4E58'
+            name: Solid Red
+            type: scale
+          - hex: '#DC4E58'
+            name: Solid Red
+            type: scale
+          - hex: '#DC4E58'
+            name: Solid Red
+            type: scale
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 3
+        kind: Single_Stat_Plus_Line
+        name: Kills
+        position: overlaid
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "duo_kills")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> keep(columns: ["_value", "_time"])
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 9
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#DC4E58'
+            name: Solid Red
+            type: scale
+          - hex: '#DC4E58'
+            name: Solid Red
+            type: scale
+          - hex: '#DC4E58'
+            name: Solid Red
+            type: scale
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 3
+        kind: Single_Stat_Plus_Line
+        name: Kills
+        position: overlaid
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "solo_kills")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> keep(columns: ["_value", "_time"])
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 12
+      - colors:
+          - hex: '#4591ED'
+            name: ocean
+            type: background
+          - hex: '#32B08C'
+            name: viridian
+            type: background
+            value: 100
+        decimalPlaces: 0
+        height: 3
+        kind: Single_Stat
+        name: Level
+        prefix: 'Level '
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> sort(columns:["_time"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> group(columns: ["acct_id"])
+                  |> last()
+                  |> keep(columns: ["_value"])
+        width: 2
+        xPos: 4
+      - colors:
+          - hex: '#F48D38'
+            name: tiger
+            type: min
+          - hex: '#4591ED'
+            name: ocean
+            type: max
+            value: 100
+        decimalPlaces: 0
+        height: 3
+        kind: Gauge
+        name: Progress
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> sort(columns:["_time"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "account_progress_pct")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> group(columns: ["acct_id"])
+                  |> last()
+        suffix: '%'
+        tickSuffix: "false"
+        width: 4
+        xPos: 6
+      - colors:
+          - hex: '#BF3D5E'
+            name: ruby
+            type: text
+          - hex: '#FFD255'
+            name: thunder
+            type: text
+            value: 0.5
+          - hex: '#32B08C'
+            name: viridian
+            type: text
+            value: 1
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat
+        name: Total K/D Ratio
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "solo_kd" or r["_field"] == "duo_kd" or r["_field"] == "squad_kd")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> last()
+                  |> group(columns: ["acct_id"])
+                  |> mean()
+        width: 3
+        xPos: 6
+        yPos: 3
+      - colors:
+          - hex: '#BF3D5E'
+            name: ruby
+            type: text
+          - hex: '#FFD255'
+            name: thunder
+            type: text
+            value: 0.5
+          - hex: '#32B08C'
+            name: viridian
+            type: text
+            value: 1
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat
+        name: K/D Ratio
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "squad_kd")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+        width: 3
+        xPos: 6
+        yPos: 6
+      - colors:
+          - hex: '#BF3D5E'
+            name: ruby
+            type: text
+          - hex: '#FFD255'
+            name: thunder
+            type: text
+            value: 0.5
+          - hex: '#32B08C'
+            name: viridian
+            type: text
+            value: 1
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat
+        name: K/D Ratio
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "duo_kd")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+        width: 3
+        xPos: 6
+        yPos: 9
+      - colors:
+          - hex: '#BF3D5E'
+            name: ruby
+            type: text
+          - hex: '#FFD255'
+            name: thunder
+            type: text
+            value: 0.5
+          - hex: '#32B08C'
+            name: viridian
+            type: text
+            value: 1
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat
+        name: K/D Ratio
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "solo_kd")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+        width: 3
+        xPos: 6
+        yPos: 12
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 1
+        height: 3
+        kind: Single_Stat
+        name: Total Win Rate
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "solo_winrate" or r["_field"] == "duo_winrate" or r["_field"] == "squad_winrate")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> last()
+                  |> group(columns: ["acct_id"])
+                  |> mean()
+                  |> map(fn: (r) => ({ _value: r._value * 100.0 }))
+        suffix: '%'
+        width: 1
+        xPos: 9
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 1
+        height: 3
+        kind: Single_Stat
+        name: Win Rate
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "squad_winrate")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> map(fn: (r) => ({ _value: r._value * 100.0 }))
+                  |> last()
+        suffix: '%'
+        width: 1
+        xPos: 9
+        yPos: 6
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 1
+        height: 3
+        kind: Single_Stat
+        name: Win Rate
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "duo_winrate")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> map(fn: (r) => ({ _value: r._value * 100.0 }))
+                  |> last()
+        suffix: '%'
+        width: 1
+        xPos: 9
+        yPos: 9
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 1
+        height: 3
+        kind: Single_Stat
+        name: Win Rate
+        queries:
+          - query: |-
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["name"] == v.player)
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "solo_winrate")
+                  |> filter(fn: (r) => r["acct_id"] == rr["acct_id"])
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> map(fn: (r) => ({ _value: r._value * 100.0 }))
+                  |> last()
+        suffix: '%'
+        width: 1
+        xPos: 9
+        yPos: 12
+    description: Checks stats for one player
+    name: Fortnite - Individual Stats
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: amazing-hoover-86c001
+spec:
+    associations:
+      - kind: Label
+        name: righteous-matsumoto-06c001
+    charts:
+      - colors:
+          - hex: '#ffffff'
+            name: white
+            type: text
+          - hex: '#32B08C'
+            name: viridian
+            type: text
+            value: 100
+        decimalPlaces: 0
+        fieldOptions:
+          - displayName: _start
+            fieldName: _start
+          - displayName: _stop
+            fieldName: _stop
+          - displayName: _time
+            fieldName: _time
+          - displayName: name
+            fieldName: name
+            visible: true
+          - displayName: level
+            fieldName: level
+            visible: true
+          - displayName: _value
+            fieldName: _value
+          - displayName: _field
+            fieldName: _field
+          - displayName: _measurement
+            fieldName: _measurement
+          - displayName: acct_num
+            fieldName: acct_num
+          - displayName: famous
+            fieldName: famous
+          - displayName: url
+            fieldName: url
+            visible: true
+          - displayName: url2
+            fieldName: url2
+            visible: true
+          - displayName: stats
+            fieldName: stats
+            visible: true
+        height: 3
+        kind: Table
+        name: Friends & Family
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> filter(fn: (r) => r["pro"] == "no")
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> last()
+                  |> duplicate(column: "_value", as: "level")
+                  |> keep(columns: ["name", "level"])
+                  |> map(fn: (r) => ({r with stats: "<INFLUX_HOST>/orgs/<INFLUX_ORG_ID>/dashboards/<FORTNITE_INDIVIDUAL_STATS_DASHBOARD_ID>?vars%5Bplayer%5D=" + r.name}))
+                  |> group()
+        tableOptions:
+            sortBy: name
+            verticalTimeAxis: true
+        timeFormat: HH:mm
+        width: 2
+      - colors:
+          - hex: '#ffffff'
+            name: white
+            type: text
+          - hex: '#32B08C'
+            name: viridian
+            type: text
+            value: 100
+        decimalPlaces: 0
+        fieldOptions:
+          - displayName: _start
+            fieldName: _start
+          - displayName: _stop
+            fieldName: _stop
+          - displayName: _time
+            fieldName: _time
+          - displayName: name
+            fieldName: name
+            visible: true
+          - displayName: level
+            fieldName: level
+            visible: true
+          - displayName: _value
+            fieldName: _value
+          - displayName: _field
+            fieldName: _field
+          - displayName: _measurement
+            fieldName: _measurement
+          - displayName: acct_num
+            fieldName: acct_num
+          - displayName: famous
+            fieldName: famous
+          - displayName: url
+            fieldName: url
+            visible: true
+          - displayName: stats
+            fieldName: stats
+            visible: true
+        height: 3
+        kind: Table
+        name: Pros
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> filter(fn: (r) => r["pro"] == "yes")
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> last()
+                  |> duplicate(column: "_value", as: "level")
+                  |> keep(columns: ["name", "level"])
+                  |> map(fn: (r) => ({r with stats: "<INFLUX_HOST>/orgs/<INFLUX_ORG_ID>/dashboards/<FORTNITE_INDIVIDUAL_STATS_DASHBOARD_ID>?vars%5Bplayer%5D=" + r.name}))
+                  |> group()
+        tableOptions:
+            sortBy: name
+            verticalTimeAxis: true
+        timeFormat: HH:mm
+        width: 2
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            label: Wins
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: monotoneX
+        height: 3
+        kind: Xy
+        name: Wins
+        position: overlaid
+        queries:
+          - query: |-
+                import "math"
+
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                named_accts = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> group(columns: ["acct_id"])
+                  |> last()
+                  |> keep(columns: ["name", "acct_id"])
+
+                wins = from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "squad_placetop1" or r["_field"] == "solo_placetop1" or r["_field"] == "duo_placetop1")
+                  |> filter(fn: (r) => r["pro"] == "no")
+                  |> filter(fn: (r) => r["season"] == v.season)
+
+                stats_total = wins
+                  |> truncateTimeColumn(unit: 1d)
+                  |> group(columns: ["acct_id", "_field"])
+                  |> aggregateWindow(every: 1d, fn: max)
+                  |> group(columns: ["_time", "acct_id"])
+                  |> sum()
+                  |> group(columns: ["acct_id"])
+
+                join(
+                  tables: {st:stats_total, na:named_accts},
+                  on: ["acct_id"]
+                )
+                  |> group(columns: ["acct_id", "name"])
+                  |> drop(columns: ["acct_id"])
+        width: 5
+        xCol: _time
+        xPos: 2
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            label: Wins
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: monotoneX
+        height: 3
+        kind: Xy
+        name: Wins
+        position: overlaid
+        queries:
+          - query: |-
+                import "math"
+
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                named_accts = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> group(columns: ["acct_id"])
+                  |> last()
+                  |> keep(columns: ["name", "acct_id"])
+
+                wins = from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "squad_placetop1" or r["_field"] == "solo_placetop1" or r["_field"] == "duo_placetop1")
+                  |> filter(fn: (r) => r["pro"] == "yes")
+                  |> filter(fn: (r) => r["season"] == v.season)
+
+                stats_total = wins
+                  |> truncateTimeColumn(unit: 1d)
+                  |> group(columns: ["acct_id", "_field"])
+                  |> aggregateWindow(every: 1d, fn: max)
+                  |> group(columns: ["_time", "acct_id"])
+                  |> sum()
+                  |> group(columns: ["acct_id"])
+
+                join(
+                  tables: {st:stats_total, na:named_accts},
+                  on: ["acct_id"]
+                )
+                  |> group(columns: ["acct_id", "name"])
+                  |> drop(columns: ["acct_id"])
+        width: 5
+        xCol: _time
+        xPos: 2
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            label: Wins
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: monotoneX
+        height: 3
+        kind: Xy
+        name: Kills
+        position: overlaid
+        queries:
+          - query: |-
+                import "math"
+
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                named_accts = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> group(columns: ["acct_id"])
+                  |> last()
+                  |> keep(columns: ["name", "acct_id"])
+
+                kills = from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "squad_kills" or r["_field"] == "solo_kills" or r["_field"] == "duo_kills")
+                  |> filter(fn: (r) => r["pro"] == "no")
+                  |> filter(fn: (r) => r["season"] == v.season)
+
+                stats_total = kills
+                  |> truncateTimeColumn(unit: 1d)
+                  |> group(columns: ["acct_id", "_field"])
+                  |> aggregateWindow(every: 1d, fn: max)
+                  |> group(columns: ["_time", "acct_id"])
+                  |> sum()
+                  |> group(columns: ["acct_id"])
+
+                join(
+                  tables: {st:stats_total, na:named_accts},
+                  on: ["acct_id"]
+                )
+                  |> group(columns: ["acct_id", "name"])
+                  |> drop(columns: ["acct_id"])
+        width: 5
+        xCol: _time
+        xPos: 7
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            label: Wins
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: monotoneX
+        height: 3
+        kind: Xy
+        name: Kills
+        position: overlaid
+        queries:
+          - query: |-
+                import "math"
+
+                rr = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["season"] == v.season)
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> sort(columns: ["_value"])
+                  |> limit(n:1)
+                  |> findRecord( fn: (key) => true, idx: 0 )
+
+                named_accts = from(bucket: v.bucket)
+                  |> range(start: 2020-06-01T00:00:00Z)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "account_level")
+                  |> group(columns: ["acct_id"])
+                  |> last()
+                  |> keep(columns: ["name", "acct_id"])
+
+                kills = from(bucket: v.bucket)
+                  |> range(start: rr["_time"])
+                  |> filter(fn: (r) => r["_measurement"] == "exec_fortnite")
+                  |> filter(fn: (r) => r["_field"] == "squad_kills" or r["_field"] == "solo_kills" or r["_field"] == "duo_kills")
+                  |> filter(fn: (r) => r["pro"] == "yes")
+                  |> filter(fn: (r) => r["season"] == v.season)
+
+                stats_total = kills
+                  |> truncateTimeColumn(unit: 1d)
+                  |> group(columns: ["acct_id", "_field"])
+                  |> aggregateWindow(every: 1d, fn: max)
+                  |> group(columns: ["_time", "acct_id"])
+                  |> sum()
+                  |> group(columns: ["acct_id"])
+
+                join(
+                  tables: {st:stats_total, na:named_accts},
+                  on: ["acct_id"]
+                )
+                  |> group(columns: ["acct_id", "name"])
+                  |> drop(columns: ["acct_id"])
+        width: 5
+        xCol: _time
+        xPos: 7
+        yCol: _value
+        yPos: 3
+    description: Overview for all players (friends & pros)
+    name: Fortnite - All Players
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: fortnite-telegraf-config
+spec:
+    name: Fortnite Telegraf config
+    config: |
+        [[outputs.influxdb_v2]]
+          urls = ["$INFLUX_HOST"]
+          token = "$INFLUX_TOKEN"
+          organization = "$INFLUX_ORG"
+          bucket = "$INFLUX_BUCKET"
+          namepass = ["exec_fortnite"]
+          timeout = "5s"
+        [[inputs.exec]]
+          commands = [ "/etc/telegraf/get_fn_stats.py" ]
+          timeout = "2m"
+          name_suffix = "_fortnite"
+          data_format = "json"
+          interval = "1h"
+          tag_keys = [ "name", "acct_id", "pro", "season" ]
+          tagexclude = [ "host" ] 
