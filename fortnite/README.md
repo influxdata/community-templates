@@ -10,7 +10,7 @@ Provides performance insights and metrics tracking for both professional and ama
 
 **Fortnite - Individual Stats** Dashboard
 - Track `squads`, `duos` and `solo` matches including total aggregated results.
-- `K/D Ratio` dynamically changes `red`, `yellow` and `green` based on performance
+- `K/D Ratio` dynamically changes `red`, `yellow` and `green` based on performance.
 
 ![Fortnite - Individual Stats Screenshot](fortnite-individual-stats-screenshot.png)
 
@@ -24,6 +24,14 @@ Provides performance insights and metrics tracking for both professional and ama
 - Get alerted on Slack when your favorite Fortnite player wins!
 
 ![Slack Task Screenshot](fortnite-task-slack-screenshot.png)
+
+### Quick Install
+
+If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
+
+```
+influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/fortnite/fn-template.yml
+```
 
 ## Included Resources
 - 1 Bucket: `fortnite`
