@@ -7,7 +7,9 @@ Provided by: [bonitoo.io](.)
 
 > The Apache JMeter™ application is open source software, a 100% pure Java application designed to load test functional behavior and measure performance. It was originally designed for testing Web Applications but has since expanded to other test functions.
 
-Apache JMeter test can be set up to send data to InfluxDB. The InfluxDB dashboard provides beautiful visualizations of the collected test results in time.
+The Apache JMeter test can be set up to send data to InfluxDB. The InfluxDB
+dashboard provides beautiful visualizations of the collected test results in
+time.
 
 ![Example Dashboard Screenshot](./img/apache-jmeter-dashboard.png)
 
@@ -30,12 +32,12 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
 
 ## Included Resources
 
-List what resources your template provides in this section. That will allow users to know at a glance what comes with it.
+The template consists of the following:
 
     - 1 Dashboard: `JMeter`
     - 1 Variable: `bucket`
 
-The sample **Test Plan** boilerplate project in the `samples` directory. The project shows 
+The sample **Test Plan** boilerplate project in the `samples` directory.
 
 
 ## Setup Instructions
@@ -67,9 +69,9 @@ General instructions on using InfluxDB Templates can be found in the [use a temp
     ![Example Apache JMeter configuration screenshot](./img/apache-jmeter-influxdblistener.png)
 1. Run the Test
 
-In the dashboard results, you will find there is a *write* transaction that was
-causing errors that provide data in the *KO request count* cell. You can fix it
-in the Apache JMeter project by configuring the bucket for data.
+Results in the Dashboard should present there was a *write* transaction that was
+causing errors. See the *KO request count* cell. You can fix this in the Apache
+JMeter project by configuring the bucket for data.
 
 Now, you are ready to create your advanced test project integrated with the InfluxDB.
 
