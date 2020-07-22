@@ -59,21 +59,21 @@ General instructions on using InfluxDB Templates can be found in the [use a temp
 1. Install Apache JMeter - http://jmeter.apache.org/download_jmeter.cgi, 
 1. Install InfluxDB 2.x on your localhost
 1. Start Apache JMeter and open the `Test Plan.jmx` Apache JMeter project located in the `./samples` directory.
-1. Inside of the JMeter application, set up the `my-org`, `my-bucket` and `my-token` variables in the project, specifically use the project tree on the left, to open Test Plan > Thread Group 
-   - Loop Controller > Auth Header Setup, modify the header `Authorization` value to `Token my-token`
-   - update the parameters on the InfluxDB Backend Listener screen,
+1. Inside of the JMeter application, set up the `my-org`, `my-bucket` and `my-token` variables in the project. Open **Test Plan** > **Thread Group** in the project tree
+   - **Loop Controller** > **Auth Header Setup**, modify the header `Authorization` value to `Token my-token`
+   - update the following parameters on the **InfluxDB Backend Listener**, see the screenshot 2 below,
       - `influxdbUrl` the params `org` and `bucket` 
       - `influxdbToken` the value `my-token`
 
-    Apache JMeter configuration, the relevant Parameters are hilited:
+    Screenshot 2: Apache JMeter configuration, the relevant Parameters are hilited:
     ![Example Apache JMeter configuration screenshot](./img/apache-jmeter-influxdblistener.png)
 1. Run the Test
 
-Results in the Dashboard should present there was a *write* transaction that was
-causing errors. See the *KO request count* cell. You can fix this in the Apache
-JMeter project by configuring the bucket for data.
+The dashboard should start presenting the results. You can also see the *write*
+transaction is being shown in the *KO request count* cell. This is intentional.
+You can fix this in the Apache JMeter project by configuring the bucket that is used to store random weather data.
 
-Now, you are ready to create your advanced test project integrated with the InfluxDB.
+As a result, you are ready to create your advanced test project integrated with the InfluxDB.
 
 ## Customizations
 
