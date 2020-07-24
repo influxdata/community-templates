@@ -52,6 +52,7 @@ To contribute a new template or enhance an existing template, submit a pull requ
        * Use your template's directory name as the top-level key for your section
        * Use the same name and description of your template as you have in your `README.md`
        * Use the full Github URL to your Template as the website
+       * Use the full ***raw*** Github URL to your manifest file. It should start with `https://raw.githubusercontent.com/`
        * Use the full Github URLs to your screenshots, only include images that highlight your template
 
        Your section should look like this:
