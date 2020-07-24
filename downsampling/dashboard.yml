@@ -75,7 +75,7 @@ spec:
                   |> filter(fn: (r) => r["_measurement"] == "statuses")
                   |> filter(fn: (r) => r["_check_id"] == "00000000deadbeef")
                   |> v1.fieldsAsCols()
-                  |> group(columns: ["_check_id","name"])
+                  |> group(columns: ["_check_id","name","status"])
                   |> drop(columns: ["_start","_stop","_check_id","_measurement","_type","taskID","_source_timestamp","_source_measurement","_check_name","_message"])
                   |> sort(columns: ["_time"], desc: false)
                   |> last(column: "name")
