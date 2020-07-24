@@ -1,0 +1,380 @@
+# https://github.com/influxdata/community-templates/tree/master/InfluxDBv2_Covid19_SouthAmerica
+InfluxDBv2_Covid19_SouthAmerica:
+    name: COVID-19 Dashboard focused in South America Data.
+    description: This Dashboard graph information about COVID-19 focused in Argentina, Bolivia, Brasil, Chile, Paraguay and Uruguay. Current data, new cases, graph about totals of cases and deaths. Also overall worldwide information about cases and deaths.
+    author: Ignacio Van Droogenbroeck <ignacio[at]vandroogenbroeck[dot]net>
+    website: https://github.com/influxdata/community-templates/tree/master/InfluxDBv2_Covid19_SouthAmerica
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/InfluxDBv2_Covid19_SouthAmerica/covid.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/InfluxDBv2_Covid19_SouthAmerica/screenshot.png
+
+# https://github.com/influxdata/community-templates/tree/master/apache_jmeter
+apache_jmeter:
+    name: Apache JMeter Template
+    description: This template provides Apache JMeter dashboard
+    author: Ivan Kudibal, https://www.bonitoo.io
+    website: https://github.com/influxdata/community-templates/tree/master/apache_jmeter
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/apache_jmeter/apache_jmeter.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/apache_jmeter/img/apache-jmeter-dashboard.png
+        - https://github.com/influxdata/community-templates/raw/master/apache_jmeter/img/apache-jmeter-influxdblistener.png
+
+# https://github.com/influxdata/community-templates/tree/master/apache_postgresql
+apache_postgresql:
+    name: Apache and Postgresql Monitoring Template
+    description: This InfluxDB Template can be used to monitor a website running on Apache HTTPd and Postgresql
+    author: Michael Hall <mhall@influxdata.com>
+    website: https://github.com/influxdata/community-templates/tree/master/apache_postgresql
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/apache_postgresql/website_template.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/apache_postgresql/img/data_fields.png
+        - https://github.com/influxdata/community-templates/raw/master/apache_postgresql/img/Dashboard.png
+
+# https://github.com/influxdata/community-templates/tree/master/aws_cloudwatch
+aws_cloudwatch:
+    name: AWS Cloudwatch Monitoring template
+    description: Display data from AWS EC2 and ELB using the AWS CloudWatch Service.
+    author: Ivan Kudibal, Tomas Klapka, https://www.bonitoo.io
+    website: https://github.com/influxdata/community-templates/tree/master/aws_cloudwatch
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/aws_cloudwatch/aws_cloudwatch.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/aws_cloudwatch/img/aws-cloudwatch-instance-monitoring.png
+        - https://github.com/influxdata/community-templates/raw/master/aws_cloudwatch/img/aws-cloudwatch-nlb-monitoring.png
+
+# https://github.com/influxdata/community-templates/tree/master/csgo
+csgo:
+    name: Counter Strike Global Offensive (CSGO) Template for InfluxDB v2
+    description: This Dashboard offers you information about your game in CSGO. Information about Last Match and general data, like, Kills, Death, MVP's, Total Damage Stats by weapon and more.
+    author: Ignacio Van Droogenbroeck <ignacio[at]vandroogenbroeck[dot]net>
+    website: https://github.com/influxdata/community-templates/tree/master/csgo
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/csgo/csgo.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/csgo/screenshot.png
+
+# https://github.com/influxdata/community-templates/tree/master/currency_exchange_rates
+currency_exchange_rates:
+    name: Currency Exchange Rates Sample Template
+    description: Uses [www.quandl.com](https://www.quandl.com/) for retrieving of data. It requires a free API key to use.
+    author: Wojciech Kocjan <wkocjan@influxdata.com>
+    website: https://github.com/influxdata/community-templates/tree/master/currency_exchange_rates
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/currency_exchange_rates/currency_exchange_rates.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/currency_exchange_rates/img/exchange-rates-dashboard.png
+
+# https://github.com/influxdata/community-templates/tree/master/docker
+docker:
+    name: Docker Monitoring template
+    description: Use this InfluxDB template to monitor Docker.
+    author: Russ Savage <russ@influxdata.com>
+    website: https://github.com/influxdata/community-templates/tree/master/docker
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/docker/docker.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/docker/img/docker_dashboard.png
+
+# https://github.com/influxdata/community-templates/tree/master/downsampling
+downsampling:
+    name: Downsampling Template
+    description: This InfluxDB Template provides a set of Tasks that allow you to downsample your data for common Telegraf Input Plugins. It also includes a dashboard and a custom monitoring task to ensure everything is running smoothly.
+    author: Russ Savage <russ@influxdata.com>
+    website: https://github.com/influxdata/community-templates/tree/master/downsampling
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/downsampling/smart_input/downsampling_tasks.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/downsampling/img/dashboard.png
+
+# https://github.com/influxdata/community-templates/tree/master/endpoint-security-state
+endpoint-security-state:
+    name: Endpoint Security State Template
+    description: This InfluxDB template works by connecting to secure endpoints and attempting to log in. Using the `http_response` and `x509_cert` Telegraf plugins, availability, authentication, and certificate information is collected.
+    author: Darin Fisher <dfisher@influxdata.com>
+    website: https://github.com/influxdata/community-templates/tree/master/endpoint-security-state
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/endpoint-security-state/endpoint-security-state.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/endpoint-security-state/endpoint-security-state.png
+
+# https://github.com/influxdata/community-templates/tree/master/fortnite
+fortnite:
+    name: Fortnite
+    description: Provides performance insights and metrics tracking for both professional and amateur Fortnite players such as friends and family using the unofficial [Fortnite API](https://fortniteapi.io/) service.
+    author: Adam Silverman <asilverman@influxdata.com>
+    website: https://github.com/influxdata/community-templates/tree/master/fortnite
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/fortnite/fn-template.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/fortnite/fortnite-all-players-screenshot.png
+        - https://github.com/influxdata/community-templates/raw/master/fortnite/fortnite-individual-stats-screenshot.png
+        - https://github.com/influxdata/community-templates/raw/master/fortnite/fortnite-player-comparison-screenshot.png
+
+# https://github.com/influxdata/community-templates/tree/master/gcp_monitoring
+gcp_monitoring:
+    name: Google Cloud Platform Monitoring template
+    description: Display data from Google Cloud Monitoring
+    author: Ivan Kudibal, Tomas Klapka, https://www.bonitoo.io
+    website: https://github.com/influxdata/community-templates/tree/master/gcp_monitoring
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/gcp_monitoring/gcp_monitoring.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/gcp_monitoring/img/gcp-monitoring-loadbalancing.png
+        - https://github.com/influxdata/community-templates/raw/master/gcp_monitoring/img/gcp-monitoring-compute.png
+        - https://github.com/influxdata/community-templates/raw/master/gcp_monitoring/img/gcp-monitoring-cloudsql.png
+
+# https://github.com/influxdata/community-templates/tree/master/github
+github:
+    name: Github Dashboard for InfluxDB v2
+    description: This dashboard help you get metrics of your Github repository.
+    author: Ignacio Van Droogenbroeck <ignacio[at]vandroogenbroeck[dot]net>
+    website: https://github.com/influxdata/community-templates/tree/master/github
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/github/github.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/github/screenshot.png
+
+# https://github.com/influxdata/community-templates/tree/master/haproxy
+haproxy:
+    name: HAProxy for InfluxDB v2
+    description: This dashboard help you get metrics of your HAProxy instance.
+    author: Ignacio Van Droogenbroeck <ignacio[at]vandroogenbroeck[dot]net>
+    website: https://github.com/influxdata/community-templates/tree/master/haproxy
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/haproxy/haproxy.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/haproxy/screenshot.png
+
+# https://github.com/influxdata/community-templates/tree/master/influxdb2_oss_metrics
+influxdb2_oss_metrics:
+    name: InfluxDB 2 Open Source Metrics Template
+    description: This InfluxDB Template can be used to monitor your already running InfluxDB 2 instance being collected by the built in prometheus scraper. This template is only compatible with the open source version of InfluxDB 2.
+    author: Russ Savage <russ@influxdata.com>
+    website: https://github.com/influxdata/community-templates/tree/master/influxdb2_oss_metrics
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/influxdb2_oss_metrics/influxdb2_oss_metrics.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/influxdb2_oss_metrics/img/influxdb2-dashboard.png
+
+# https://github.com/influxdata/community-templates/tree/master/jboss_wildfly
+jboss_wildfly:
+    name: jBoss-Wildfly template for InfluxDB v2
+    description: This Dashboard offers you information about your jBoss-Wildfly instance. Uptime, CPU Usage, Heap Memory, Non Heap Memory, Memory Pool Collections, Networking and Disk IO.
+    author: Ignacio Van Droogenbroeck <ignacio[at]vandroogenbroeck[dot]net>
+    website: https://github.com/influxdata/community-templates/tree/master/jboss_wildfly
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/jboss_wildfly/jboss_wildfly.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/jboss_wildfly/screenshot.png
+
+# https://github.com/influxdata/community-templates/tree/master/jenkins
+jenkins:
+    name: jenkins Monitoring Template
+    description: This InfluxDB Template can be used to montior a Jenkins instance
+    author: Ray Farias <ray@sudokrew.com>
+    website: https://github.com/influxdata/community-templates/tree/master/jenkins
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/jenkins/jenkins.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/jenkins/img/Dashboard.png
+
+# https://github.com/influxdata/community-templates/tree/master/k8s
+k8s:
+    name: Kubernetes Monitoring template
+    description: This template provides 2 basic Kubernetes dashboards
+    website: https://github.com/influxdata/community-templates/tree/master/k8s
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/k8s/k8s.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/k8s/img/k8s-inventory-dashboard.png
+        - https://github.com/influxdata/community-templates/raw/master/k8s/img/k8s-nodemetrics-dashboard.png
+
+# https://github.com/influxdata/community-templates/tree/master/kafka
+kafka:
+    name: Kafka Monitoring Template
+    description: Kafka Monitoring Template with Telegraf and Jolokia
+    author: Sam Dillard <sam@influxdata.com>
+    website: https://github.com/influxdata/community-templates/tree/master/kafka
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/kafka/kafka-template.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/kafka/images/kafka-dash.png
+        - https://github.com/influxdata/community-templates/raw/master/kafka/images/kafka-dash-light.png
+
+# https://github.com/influxdata/community-templates/tree/master/linux_system
+linux_system:
+    name: Linux System Monitoring Template
+    description: This InfluxDB Template can be used to monitor your Linux System.
+    author: Russ Savage <russ@influxdata.com>
+    website: https://github.com/influxdata/community-templates/tree/master/linux_system
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/linux_system/linux_system.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/linux_system/img/linux_system_dashboard.png
+
+# https://github.com/influxdata/community-templates/tree/master/minio
+minio:
+    name: MinIO monitoring for InfluxDB v2
+    description: |
+        This template allows you to monitor your MinIO instance. The data you can watch is: Uptime, total storage, storage used, CPU process time, memory allocated, network rx and tx, s3 total and current request, among other data.
+    author: Ignacio Van Droogenbroeck <ignacio[at]vandroogenbroeck[dot]net>
+    website: https://github.com/influxdata/community-templates/tree/master/minio
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/minio/minio.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/minio/screenshot.png
+
+# https://github.com/influxdata/community-templates/tree/master/modbus
+modbus:
+    name: Island Pulse Monitoring Template
+    description: This InfluxDB Template can be used to gather data from a Modbus slave
+    author: Ray Farias <ray@sudokrew.com>
+    website: https://github.com/influxdata/community-templates/tree/master/modbus
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/modbus/modbus.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/modbus/img/Dashboard.png
+
+# https://github.com/influxdata/community-templates/tree/master/mongodb
+mongodb:
+    name: MongoDB Dashboard for InfluxDB v2
+    description: This Dashboard offers you information about your MongoDB instance. Uptime, Connections, Open Connections, Query Operations, Document Operations, Flushes, Network I/O and Commands per Seconds.
+    author: Ignacio Van Droogenbroeck <ignacio[at]vandroogenbroeck[dot]net>
+    website: https://github.com/influxdata/community-templates/tree/master/mongodb
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/mongodb/mongodb.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/mongodb/screenshot.png
+
+# https://github.com/influxdata/community-templates/tree/master/monitoring_influxdb_1.x
+monitoring_influxdb_1.x:
+    name: InfluxDB 1.x Open Source Monitoring Template
+    description: This InfluxDB Template can be used to monitor your already running InfluxDB 1.x instance. It provides a quick way to get started on InfluxDB 2.0 if you are an existing InfluxDB user.
+    author: Russ Savage <russ@influxdata.com>
+    website: https://github.com/influxdata/community-templates/tree/master/monitoring_influxdb_1.x
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/monitoring_influxdb_1.x/influxdb1.x.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/monitoring_influxdb_1.x/img/influxdb1-dashboard.png
+
+# https://github.com/influxdata/community-templates/tree/master/mssql
+mssql:
+    name: Microsoft SQL Server Template for InfluxDB v2
+    description: This Dashboard offers you information about your Microsoft SQL Server. Uptime, Current Queries. Active Threads, Connections, Locks, Traffic and more.
+    author: Ignacio Van Droogenbroeck <ignacio[at]vandroogenbroeck[dot]net>
+    website: https://github.com/influxdata/community-templates/tree/master/mssql
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/mssql/mssql.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/mssql/screenshot.png
+
+# https://github.com/influxdata/community-templates/tree/master/mysql_mariadb
+mysql_mariadb:
+    name: MySQL / MariaDB Dashboard for InfluxDB v2
+    description: This Dashboard offers you information about your MySQL/MariaDB instance. Uptime, Current Queries. Active Threads, Connections, Locks, Traffic and more.
+    author: Ignacio Van Droogenbroeck <ignacio[at]vandroogenbroeck[dot]net>
+    website: https://github.com/influxdata/community-templates/tree/master/mysql_mariadb
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/mysql_mariadb/mysql_mariadb.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/mysql_mariadb/screenshot.png
+
+# https://github.com/influxdata/community-templates/tree/master/network_interface_performance
+network_interface_performance:
+    name: Network Interface Performance Template
+    description: This InfluxDB Template can be used to monitor your network traffic across multiple hosts.
+    author: Russ Savage <russ@influxdata.com>
+    website: https://github.com/influxdata/community-templates/tree/master/network_interface_performance
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/network_interface_performance/network_interface_performance.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/network_interface_performance/img/network-dashboard.png
+
+# https://github.com/influxdata/community-templates/tree/master/nginx_mysql
+nginx_mysql:
+    name: NGINX & MySQL Monitoring Template
+    description: This InfluxDB Template can be used to monitor a website running on NGINX and MySQL
+    author: Ray Farias <ray@sudokrew.com>
+    website: https://github.com/influxdata/community-templates/tree/master/nginx_mysql
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/nginx_mysql/nginx_mysql.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/nginx_mysql/img/Dashboard.png
+
+# https://github.com/influxdata/community-templates/tree/master/postgresql
+postgresql:
+    name: Postgres Template for InfluxDB v2
+    description: This Dashboard offers you information about your Postgres instance. CPU Usage, RAM Usage, Deadlocks, Fetch, Update, Return Data and more.
+    author: Ignacio Van Droogenbroeck <ignacio[at]vandroogenbroeck[dot]net>
+    website: https://github.com/influxdata/community-templates/tree/master/postgresql
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/postgresql/postgres.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/postgresql/screenshot.png
+
+# https://github.com/influxdata/community-templates/tree/master/redis
+redis:
+    name: Redis Monitoring Template
+    description: This InfluxDB Template can be used to monitor Redis.
+    author: Russ Savage <russ@influxdata.com>
+    website: https://github.com/influxdata/community-templates/tree/master/redis
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/redis/redis.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/redis/img/redis_dashboard.png
+
+# https://github.com/influxdata/community-templates/tree/master/sflow
+sflow:
+    name: sFlow Monitoring Template
+    description: This InfluxDB Template can be used to monitor traffic from sFlow sources.
+    author: Russ Savage <russ@influxdata.com>
+    website: https://github.com/influxdata/community-templates/tree/master/sflow
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/sflow/sflow.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/sflow/img/sflow_dashboard_2.png
+        - https://github.com/influxdata/community-templates/raw/master/sflow/img/sflow_dashboard_1.png
+
+# https://github.com/influxdata/community-templates/tree/master/snmp
+snmp:
+    name: SNMP Monitoring Template
+    description: This template provides several dashboards showing metrics provided via SNMP protocol. It provides both an example of system SNMP stats and examples from Mikrotik and Cisco devices.
+    author: Miroslav Malecha, https://www.bonitoo.io
+    website: https://github.com/influxdata/community-templates/tree/master/snmp
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/snmp/snmp.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/snmp/img/snmp-dashboard.png
+
+# https://github.com/influxdata/community-templates/tree/master/telegraf
+telegraf:
+    name: Telegraf Dashboard
+    description: This is a dashboard for the telegraf service. It shows metrics collected, graphs errors, and shows throughput rates for inputs, outputs, and time spent collecting and writing metrics.
+    author: Steven Soroka
+    website: https://github.com/influxdata/community-templates/tree/master/telegraf
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/telegraf/manifest.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/telegraf/telegraf-dashboard.png
+
+# https://github.com/influxdata/community-templates/tree/master/tomcat
+tomcat:
+    name: Tomcat Dashboard for InfluxDB v2
+    description: This Dashboard offers you information about your Apache Tomcat instance. Current Threads, Processing Time, Traffic, Request Count and more.
+    author: Ignacio Van Droogenbroeck <ignacio[at]vandroogenbroeck[dot]net>
+    website: https://github.com/influxdata/community-templates/tree/master/tomcat
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/tomcat/tomcat.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/tomcat/screenshot.png
+
+# https://github.com/influxdata/community-templates/tree/master/vsphere
+vsphere:
+    name: vSphere Dashboard for InfluxDB v2
+    description: This Dashboard offers you information about your vSphere host. Uptime, CPU, RAM, Graph about CPU and RAM Utilization, Network Usage, Total Disk Latency (Write and Read) and Storage Adapter Latency
+    author: Ignacio Van Droogenbroeck <ignacio[at]vandroogenbroeck[dot]net>
+    website: https://github.com/influxdata/community-templates/tree/master/vsphere
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/vsphere/vsphere.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/vsphere/screenshot.png
+
+# https://github.com/influxdata/community-templates/tree/master/windows_system
+windows_system:
+    name: Windows System Monitoring Template
+    description: This InfluxDB Template can be used to monitor your Windows System.
+    author: Russ Savage <russ@influxdata.com>
+    website: https://github.com/influxdata/community-templates/tree/master/windows_system
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/windows_system/windows_system.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/windows_system/img/windows_system_dashboard.png
+
+# https://github.com/influxdata/community-templates/tree/master/x509
+x509:
+    name: x509 SSL Certificates Monitoring Dashboard
+    description: This Dashboard is very simple but can help you with information about your x509 certificates about to expire. You can know how much certificates you're monitoring and the days to expire to each one of them.
+    author: Ignacio Van Droogenbroeck <ignacio[at]vandroogenbroeck[dot]net>
+    website: https://github.com/influxdata/community-templates/tree/master/x509
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/x509/x509.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/x509/screenshot.png
+
+# https://github.com/influxdata/community-templates/tree/master/zookeeper
+zookeeper:
+    name: ZooKeeper Dashboard for InfluxDB v2
+    description: This Dashboard offers you information about your ZooKeeper. Almost all of the metrics can be exploted are in this dashboard. https://github.com/influxdata/telegraf/tree/master/plugins/inputs/zookeeper
+    author: Ignacio Van Droogenbroeck <ignacio[at]vandroogenbroeck[dot]net>
+    website: https://github.com/influxdata/community-templates/tree/master/zookeeper
+    manifest: https://raw.githubusercontent.com/influxdata/community-templates/master/zookeeper/zookeeper.yml
+    screenshots: 
+        - https://github.com/influxdata/community-templates/raw/master/zookeeper/screenshot.png
+
