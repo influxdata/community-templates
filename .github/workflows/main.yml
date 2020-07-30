@@ -1,0 +1,50 @@
+# This is a basic workflow to help you get started with Actions
+
+name: verify-all-templates
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  pull_request:
+    branches: [ master ]
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  deploy:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+    # Runs a set of commands using the runners shell
+    - name: Load every template to InfluxDB nightly
+    
+      run: |
+        cd /tmp
+        wget https://dl.influxdata.com/platform/nightlies/influx_nightly_linux_amd64.tar.gz
+        tar xvfz influx_nightly_linux_amd64.tar.gz
+        sudo cp influx_nightly_linux_amd64/{influx,influxd} /usr/local/bin/
+        influxd --reporting-disabled > /dev/null 2>&1 &
+        sleep 5
+        influx setup -f -b dummy -o influxdata -u ci_user -p password
+        cd $GITHUB_WORKSPACE
+        find $GITHUB_WORKSPACE \( ! -path '*/.*' \) -type f -name "*.yml" -print0 | while read -d $'\0' file
+        do
+          echo Trying $file
+          cat $file | influx apply --force true
+          STACK_ID=$(influx stacks --json | jq -r '.[].ID')
+          if [ -z "$STACK_ID" ]; then
+            echo FAIL: Could not load $file
+            echo $RESULT
+            exit 1
+          else
+            echo SUCCESS: Loaded $file
+            yes | influx stacks rm --stack-id $STACK_ID
+          fi
+        done
