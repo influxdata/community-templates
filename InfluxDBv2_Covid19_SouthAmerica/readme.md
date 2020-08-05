@@ -2,7 +2,7 @@
 
 Provided by: Ignacio Van Droogenbroeck
 
-This Dashboard graph information about COVID-19 focused in Argentina, Bolivia, Brasil, Chile, Paraguay and Uruguay. Current data, new cases, graph about totals of cases and deaths. Also overall worldwide information about cases and deaths.  
+This Dashboard graph information about COVID-19 focused in Argentina, Bolivia, Brasil, Chile, Paraguay and Uruguay. Current data, new cases, graph about totals and new (24 hours) cases, deaths total and by country. Also overall worldwide information about total cases, new cases (24 hours), total deaths and new deaths (24 hours).  
 
 ![Dashboard Screenshot](screenshot.png)
 
