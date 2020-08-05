@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: jolly-blackburn-e60001
+    name: vigorous-pike-607001
 spec:
     color: '#326BBA'
     name: covid
@@ -9,27 +9,27 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Bucket
 metadata:
-    name: awesome-hoover-e60005
+    name: dangerous-cori-607005
 spec:
     associations:
       - kind: Label
-        name: jolly-blackburn-e60001
+        name: vigorous-pike-607001
     name: covid
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: unbridled-lewin-260001
+    name: zealous-benz-e07001
 spec:
     associations:
       - kind: Label
-        name: jolly-blackburn-e60001
+        name: vigorous-pike-607001
     charts:
       - colors:
           - hex: '#00C9FF'
             name: laser
             type: text
-        decimalPlaces: 0
+        decimalPlaces: 2
         height: 1
         kind: Single_Stat
         name: Argentina
@@ -44,10 +44,10 @@ spec:
           - hex: '#ffffff'
             name: white
             type: text
-        decimalPlaces: 0
+        decimalPlaces: 2
         height: 1
         kind: Single_Stat
-        name: Nuevos casos
+        name: Nuevos casos 24 horas
         queries:
           - query: |-
                 from(bucket: "covid")
@@ -59,25 +59,10 @@ spec:
         width: 2
         yPos: 1
       - colors:
-          - hex: '#BF3D5E'
-            name: ruby
+          - hex: '#00C9FF'
+            name: laser
             type: text
-            value: 1
-        decimalPlaces: 0
-        height: 1
-        kind: Single_Stat
-        name: Fallecidos (24 horas)
-        queries:
-          - query: |-
-                from(bucket: "covid")
-                  |> range(start: -24h)
-                  |> filter(fn: (r) => r["_measurement"] == "exec_argentina")
-                  |> filter(fn: (r) => r["_field"] == "location_latest_deaths")
-                  |> increase()
-                  |> yield(name: "increase")
-        width: 2
-        yPos: 2
-      - decimalPlaces: 0
+        decimalPlaces: 2
         height: 2
         kind: Single_Stat
         name: Total Casos
@@ -85,14 +70,18 @@ spec:
           - query: |-
                 from(bucket: "covid")
                   |> range(start: -12h)
-                  |> filter(fn: (r) => r["_measurement"] == "execBrasil" or r["_measurement"] == "execChile" or r["_measurement"] == "execParaguay" or r["_measurement"] == "exec_argentina" or r["_measurement"] == "exec_bolivia" or r["_measurement"] == "exec_uruguay")
+                  |> filter(fn: (r) => r["_measurement"] == "exec_brasil" or r["_measurement"] == "exec_chile" or r["_measurement"] == "exec_paraguay" or r["_measurement"] == "exec_argentina" or r["_measurement"] == "exec_bolivia" or r["_measurement"] == "exec_uruguay")
                   |> filter(fn: (r) => r["_field"] == "location_latest_confirmed")
-                  |> last()
+                  |> mean()
                   |> group()
                   |> sum()
         width: 2
-        yPos: 3
-      - decimalPlaces: 0
+        yPos: 2
+      - colors:
+          - hex: '#DC4E58'
+            name: fire
+            type: text
+        decimalPlaces: 2
         height: 2
         kind: Single_Stat
         name: Fallecidos
@@ -100,17 +89,18 @@ spec:
           - query: |-
                 from(bucket: "covid")
                   |> range(start: -12h)
-                  |> filter(fn: (r) => r["_measurement"] == "exec_argentina" or r["_measurement"] == "exec_uruguay" or r["_measurement"] == "exec_bolivia" or r["_measurement"] == "execParaguay" or r["_measurement"] == "execChile" or r["_measurement"] == "execBrasil")
+                  |> filter(fn: (r) => r["_measurement"] == "exec_argentina" or r["_measurement"] == "exec_uruguay" or r["_measurement"] == "exec_bolivia" or r["_measurement"] == "exec_paraguay" or r["_measurement"] == "exec_chile" or r["_measurement"] == "exec_brasil")
                   |> filter(fn: (r) => r["_field"] == "location_latest_deaths")
-                  |> last()
+                  |> mean()
                   |> group()
                   |> sum()
         width: 2
-        yPos: 5
+        yPos: 4
       - colors:
           - hex: '#00C9FF'
             name: laser
             type: text
+        decimalPlaces: 2
         height: 2
         kind: Single_Stat
         name: Casos - Total
@@ -118,68 +108,31 @@ spec:
           - query: |-
                 from(bucket: "covid")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r["_measurement"] == "execworldwide")
+                  |> filter(fn: (r) => r["_measurement"] == "exec_worldwide")
                   |> filter(fn: (r) => r["_field"] == "latest_confirmed")
-        width: 1
-        yPos: 7
+        width: 2
+        yPos: 6
       - colors:
           - hex: '#00C9FF'
             name: laser
             type: text
-        decimalPlaces: 0
+        decimalPlaces: 2
         height: 2
         kind: Single_Stat
-        name: Fallecidos
+        name: Fallecidos - Todo el mundo
         queries:
           - query: |-
                 from(bucket: "covid")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r["_measurement"] == "execworldwide")
+                  |> filter(fn: (r) => r["_measurement"] == "exec_worldwide")
                   |> filter(fn: (r) => r["_field"] == "latest_deaths")
-        width: 1
-        yPos: 9
+        width: 2
+        yPos: 8
       - colors:
           - hex: '#00C9FF'
             name: laser
             type: text
-        height: 2
-        kind: Single_Stat
-        name: 24 horas
-        queries:
-          - query: |-
-                from(bucket: "covid")
-                  |> range(start: -24h)
-                  |> filter(fn: (r) => r["_measurement"] == "execworldwide")
-                  |> filter(fn: (r) => r["_field"] == "latest_confirmed")
-                  |> increase()
-                  |> yield(name: "increase")
-        width: 1
-        xPos: 1
-        yPos: 7
-      - colors:
-          - hex: '#00C9FF'
-            name: laser
-            type: text
-        decimalPlaces: 0
-        height: 2
-        kind: Single_Stat
-        name: 24 horas
-        queries:
-          - query: |-
-                from(bucket: "covid")
-                  |> range(start: -24h)
-                  |> filter(fn: (r) => r["_measurement"] == "execworldwide")
-                  |> filter(fn: (r) => r["_field"] == "latest_deaths")
-                  |> increase()
-                  |> yield(name: "increase")
-        width: 1
-        xPos: 1
-        yPos: 9
-      - colors:
-          - hex: '#00C9FF'
-            name: laser
-            type: text
-        decimalPlaces: 0
+        decimalPlaces: 2
         height: 1
         kind: Single_Stat
         name: Bolivia
@@ -195,10 +148,10 @@ spec:
           - hex: '#ffffff'
             name: white
             type: text
-        decimalPlaces: 0
+        decimalPlaces: 2
         height: 1
         kind: Single_Stat
-        name: Nuevos casos
+        name: Nuevos casos 24 horas
         queries:
           - query: |-
                 from(bucket: "covid")
@@ -210,26 +163,6 @@ spec:
         width: 2
         xPos: 2
         yPos: 1
-      - colors:
-          - hex: '#BF3D5E'
-            name: ruby
-            type: text
-            value: 1
-        decimalPlaces: 0
-        height: 1
-        kind: Single_Stat
-        name: Fallecidos (24 horas)
-        queries:
-          - query: |-
-                from(bucket: "covid")
-                  |> range(start: -24h)
-                  |> filter(fn: (r) => r["_measurement"] == "exec_bolivia")
-                  |> filter(fn: (r) => r["_field"] == "location_latest_deaths")
-                  |> increase()
-                  |> yield(name: "increase")
-        width: 2
-        xPos: 2
-        yPos: 2
       - axes:
           - base: "10"
             name: x
@@ -257,14 +190,13 @@ spec:
           - query: |-
                 from(bucket: "covid")
                   |> range(start: -7d)
-                  |> filter(fn: (r) => r["_measurement"] == "exec_argentina" or r["_measurement"] == "exec_uruguay" or r["_measurement"] == "exec_bolivia" or r["_measurement"] == "execParaguay" or r["_measurement"] == "execChile" or r["_measurement"] == "execBrasil")
+                  |> filter(fn: (r) => r["_measurement"] == "exec_argentina" or r["_measurement"] == "exec_uruguay" or r["_measurement"] == "exec_bolivia" or r["_measurement"] == "exec_paraguay" or r["_measurement"] == "exec_chile" or r["_measurement"] == "exec_brasil")
                   |> filter(fn: (r) => r["_field"] == "location_latest_confirmed")
-        shade: true
         width: 10
         xCol: _time
         xPos: 2
         yCol: _value
-        yPos: 3
+        yPos: 2
       - axes:
           - base: "10"
             name: x
@@ -292,14 +224,13 @@ spec:
           - query: |-
                 from(bucket: "covid")
                   |> range(start: -7d)
-                  |> filter(fn: (r) => r["_measurement"] == "exec_argentina" or r["_measurement"] == "exec_uruguay" or r["_measurement"] == "exec_bolivia" or r["_measurement"] == "execParaguay" or r["_measurement"] == "execChile" or r["_measurement"] == "execBrasil")
+                  |> filter(fn: (r) => r["_measurement"] == "exec_argentina" or r["_measurement"] == "exec_uruguay" or r["_measurement"] == "exec_bolivia" or r["_measurement"] == "exec_paraguay" or r["_measurement"] == "exec_chile" or r["_measurement"] == "exec_brasil")
                   |> filter(fn: (r) => r["_field"] == "location_latest_deaths")
-        shade: true
         width: 10
         xCol: _time
         xPos: 2
         yCol: _value
-        yPos: 5
+        yPos: 4
       - axes:
           - base: "10"
             name: x
@@ -318,7 +249,7 @@ spec:
           - hex: '#FF7E27'
             name: Nineteen Eighty Four
             type: scale
-        geom: monotoneX
+        geom: line
         height: 2
         kind: Xy
         name: Casos Mundial - Grafico
@@ -327,30 +258,29 @@ spec:
           - query: |-
                 from(bucket: "covid")
                   |> range(start: -7d)
-                  |> filter(fn: (r) => r["_measurement"] == "execworldwide")
+                  |> filter(fn: (r) => r["_measurement"] == "exec_worldwide")
                   |> filter(fn: (r) => r["_field"] == "latest_confirmed")
-        shade: true
         width: 10
         xCol: _time
         xPos: 2
         yCol: _value
-        yPos: 7
+        yPos: 6
       - axes:
-          - base: "10"
-            name: x
-            scale: linear
           - base: "10"
             name: y
             scale: linear
+          - base: "10"
+            name: x
+            scale: linear
         colors:
-          - hex: '#DC4E58'
-            name: Solid Red
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
             type: scale
-          - hex: '#DC4E58'
-            name: Solid Red
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
             type: scale
-          - hex: '#DC4E58'
-            name: Solid Red
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
             type: scale
         geom: line
         height: 2
@@ -361,19 +291,18 @@ spec:
           - query: |-
                 from(bucket: "covid")
                   |> range(start: -7d)
-                  |> filter(fn: (r) => r["_measurement"] == "execworldwide")
+                  |> filter(fn: (r) => r["_measurement"] == "exec_worldwide")
                   |> filter(fn: (r) => r["_field"] == "latest_deaths")
-        shade: true
         width: 10
         xCol: _time
         xPos: 2
         yCol: _value
-        yPos: 9
+        yPos: 8
       - colors:
           - hex: '#00C9FF'
             name: laser
             type: text
-        decimalPlaces: 0
+        decimalPlaces: 2
         height: 1
         kind: Single_Stat
         name: Brasil
@@ -381,7 +310,7 @@ spec:
           - query: |-
                 from(bucket: "covid")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r["_measurement"] == "execBrasil")
+                  |> filter(fn: (r) => r["_measurement"] == "exec_brasil")
                   |> filter(fn: (r) => r["_field"] == "location_latest_confirmed")
         width: 2
         xPos: 4
@@ -389,15 +318,15 @@ spec:
           - hex: '#ffffff'
             name: white
             type: text
-        decimalPlaces: 0
+        decimalPlaces: 2
         height: 1
         kind: Single_Stat
-        name: Nuevos casos
+        name: Nuevos casos 24 horas
         queries:
           - query: |-
                 from(bucket: "covid")
                   |> range(start: -24h)
-                  |> filter(fn: (r) => r["_measurement"] == "execBrasil")
+                  |> filter(fn: (r) => r["_measurement"] == "exec_brasil")
                   |> filter(fn: (r) => r["_field"] == "location_latest_confirmed")
                   |> increase()
                   |> yield(name: "increase")
@@ -405,30 +334,10 @@ spec:
         xPos: 4
         yPos: 1
       - colors:
-          - hex: '#BF3D5E'
-            name: ruby
-            type: text
-            value: 1
-        decimalPlaces: 0
-        height: 1
-        kind: Single_Stat
-        name: Fallecidos (24 horas)
-        queries:
-          - query: |-
-                from(bucket: "covid")
-                  |> range(start: -24h)
-                  |> filter(fn: (r) => r["_measurement"] == "execBrasil")
-                  |> filter(fn: (r) => r["_field"] == "location_latest_deaths")
-                  |> increase()
-                  |> yield(name: "increase")
-        width: 2
-        xPos: 4
-        yPos: 2
-      - colors:
           - hex: '#00C9FF'
             name: laser
             type: text
-        decimalPlaces: 0
+        decimalPlaces: 2
         height: 1
         kind: Single_Stat
         name: Chile
@@ -436,7 +345,7 @@ spec:
           - query: |-
                 from(bucket: "covid")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r["_measurement"] == "execChile")
+                  |> filter(fn: (r) => r["_measurement"] == "exec_chile")
                   |> filter(fn: (r) => r["_field"] == "location_latest_confirmed")
         width: 2
         xPos: 6
@@ -444,15 +353,15 @@ spec:
           - hex: '#ffffff'
             name: white
             type: text
-        decimalPlaces: 0
+        decimalPlaces: 2
         height: 1
         kind: Single_Stat
-        name: Nuevos casos
+        name: Nuevos casos 24 horas
         queries:
           - query: |-
                 from(bucket: "covid")
                   |> range(start: -24h)
-                  |> filter(fn: (r) => r["_measurement"] == "execChile")
+                  |> filter(fn: (r) => r["_measurement"] == "exec_chile")
                   |> filter(fn: (r) => r["_field"] == "location_latest_confirmed")
                   |> increase()
                   |> yield(name: "increase")
@@ -460,30 +369,10 @@ spec:
         xPos: 6
         yPos: 1
       - colors:
-          - hex: '#BF3D5E'
-            name: ruby
-            type: text
-            value: 1
-        decimalPlaces: 0
-        height: 1
-        kind: Single_Stat
-        name: Fallecidos (24 horas)
-        queries:
-          - query: |-
-                from(bucket: "covid")
-                  |> range(start: -24h)
-                  |> filter(fn: (r) => r["_measurement"] == "execChile")
-                  |> filter(fn: (r) => r["_field"] == "location_latest_deaths")
-                  |> increase()
-                  |> yield(name: "increase")
-        width: 2
-        xPos: 6
-        yPos: 2
-      - colors:
           - hex: '#00C9FF'
             name: laser
             type: text
-        decimalPlaces: 0
+        decimalPlaces: 2
         height: 1
         kind: Single_Stat
         name: Paraguay
@@ -491,7 +380,7 @@ spec:
           - query: |-
                 from(bucket: "covid")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r["_measurement"] == "execParaguay")
+                  |> filter(fn: (r) => r["_measurement"] == "exec_paraguay")
                   |> filter(fn: (r) => r["_field"] == "location_latest_confirmed")
         width: 2
         xPos: 8
@@ -499,15 +388,15 @@ spec:
           - hex: '#ffffff'
             name: white
             type: text
-        decimalPlaces: 0
+        decimalPlaces: 2
         height: 1
         kind: Single_Stat
-        name: Nuevos casos
+        name: Nuevos casos 24 horas
         queries:
           - query: |-
                 from(bucket: "covid")
                   |> range(start: -24h)
-                  |> filter(fn: (r) => r["_measurement"] == "execParaguay")
+                  |> filter(fn: (r) => r["_measurement"] == "exec_paraguay")
                   |> filter(fn: (r) => r["_field"] == "location_latest_confirmed")
                   |> increase()
                   |> yield(name: "increase")
@@ -515,30 +404,10 @@ spec:
         xPos: 8
         yPos: 1
       - colors:
-          - hex: '#BF3D5E'
-            name: ruby
-            type: text
-            value: 1
-        decimalPlaces: 0
-        height: 1
-        kind: Single_Stat
-        name: Fallecidos (24 horas)
-        queries:
-          - query: |-
-                from(bucket: "covid")
-                  |> range(start: -24h)
-                  |> filter(fn: (r) => r["_measurement"] == "execParaguay")
-                  |> filter(fn: (r) => r["_field"] == "location_latest_deaths")
-                  |> increase()
-                  |> yield(name: "increase")
-        width: 2
-        xPos: 8
-        yPos: 2
-      - colors:
           - hex: '#00C9FF'
             name: laser
             type: text
-        decimalPlaces: 0
+        decimalPlaces: 2
         height: 1
         kind: Single_Stat
         name: Uruguay
@@ -554,10 +423,10 @@ spec:
           - hex: '#ffffff'
             name: white
             type: text
-        decimalPlaces: 0
+        decimalPlaces: 2
         height: 1
         kind: Single_Stat
-        name: Nuevos casos
+        name: Nuevos casos 24 horas
         queries:
           - query: |-
                 from(bucket: "covid")
@@ -569,28 +438,7 @@ spec:
         width: 2
         xPos: 10
         yPos: 1
-      - colors:
-          - hex: '#BF3D5E'
-            name: ruby
-            type: text
-            value: 1
-        decimalPlaces: 0
-        height: 1
-        kind: Single_Stat
-        name: Fallecidos (24 horas)
-        queries:
-          - query: |-
-                from(bucket: "covid")
-                  |> range(start: -24h)
-                  |> filter(fn: (r) => r["_measurement"] == "exec_uruguay")
-                  |> filter(fn: (r) => r["_field"] == "location_latest_deaths")
-                  |> increase()
-                  |> yield(name: "increase")
-        width: 2
-        xPos: 10
-        yPos: 2
-    name: COVID19
-
+    name: COVID19 América del Sur y Resto del mundo
 ---
 
 apiVersion: influxdata.com/v2alpha1
@@ -600,7 +448,7 @@ metadata:
 spec:
     associations:
       - kind: Label
-        name: jolly-blackburn-e60001
+        name: vigorous-pike-607001
     config: |
          [[outputs.influxdb_v2]]
          ## The URLs of the InfluxDB cluster nodes.
