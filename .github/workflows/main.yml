@@ -34,7 +34,7 @@ jobs:
         sleep 5
         influx setup -f -b dummy -o influxdata -u ci_user -p password
         cd $GITHUB_WORKSPACE
-        find $GITHUB_WORKSPACE \( ! -path '*/.*' \) -type f -name "*.yml" -print0 | while read -d $'\0' file
+        find $GITHUB_WORKSPACE \( ! -path '*/.*' ! -path '*/generated_manifest.yml' \) -type f -name "*.yml" -print0 | while read -d $'\0' file
         do
           echo Trying $file
           cat $file | influx apply --force true
