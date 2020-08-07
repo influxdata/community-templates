@@ -1,5 +1,6 @@
 # InfluxDB Community Templates
 
+![verify-all-templates](https://github.com/influxdata/community-templates/workflows/verify-all-templates/badge.svg)
 [![Slack Status](https://img.shields.io/badge/slack-join_chat-white.svg?logo=slack&style=social)](https://www.influxdata.com/slack)
 
 InfluxDB 2.0 [introduces InfluxDB templates](https://www.influxdata.com/blog/introducing-community-influxdb-templates/)&mdash;prepackaged InfluxDB configurations that contain everything from dashboards and Telegraf configurations to notifications and alerts in a single manifest file. Use InfluxDB templates to get a fresh instance of InfluxDB set up quickly, create reusable templates for common setups, back up your own deployment setup, and share your templates with the community.
