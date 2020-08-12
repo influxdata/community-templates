@@ -1,10 +1,10 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Task
 metadata:
-    name: downsample-monitoring-task
+    name: failed-tasks-check-1m
 spec:
     every: 1m
-    name: 00. Downsample Monitoring Task
+    name: 00. Failed Tasks Check
     query: |-
         import "strings"
         import "regexp"
@@ -13,32 +13,28 @@ spec:
 
         task_data = from(bucket: "_tasks")
             |> range(start: -1m, stop: now())
-            |> filter(fn: (r) => r["_measurement"] == "runs")
-            |> filter(fn: (r) => r["_field"] == "logs")
-            |> map(fn: (r) => ({ r with name: regexp.findString(r: /[0-9]+\. downsample_[a-z_]+_[0-9]+[mhd]/, v: r._value) }))
-            |> map(fn: (r) => ({ r with every: regexp.findString(r: /every: ([0-9]+[smhd])+/, v: r._value) }))
-            |> map(fn: (r) => ({ r with every: if r.every != "" then strings.split(v: r.every , t: " ")[1] else "" }))
-            |> filter(fn: (r) => r.name != "")
-            |> drop(columns: ["_value","_start","_stop"])
-            |> group(columns: ["name","taskID","status","_measurement"])
-            |> map(fn: (r) => ({ r with _value: if r.status == "failed" then 1 else 0 }))
+            |> filter(fn: (r) =>
+                (r["_measurement"] == "runs"))
+            |> filter(fn: (r) =>
+                (r["_field"] == "logs"))
+            |> map(fn: (r) => ({ r with name: strings.split(v: regexp.findString(r: /option task = \{([^\}]+)/, v: r._value), t: "\\\\\\\"")[1] }))
+            |> drop(columns: ["_value", "_start", "_stop"])
+            |> group(columns: ["name", "taskID", "status", "_measurement"])
+            |> map(fn: (r) =>
+                ({r with _value: if r.status == "failed" then 1 else 0}))
             |> last()
-
         check = {
-            _check_id: "00000000deadbeef",
-            _check_name: "00. Downsample Monitoring Task",
+            _check_id: "00000000ba5eba11",
+            _check_name: "Failed Tasks Check",
             _type: "threshold",
             tags: {},
         }
-
         ok = (r) =>
             (r["logs"] == 0)
-
         crit = (r) =>
             (r["logs"] == 1)
-
         messageFn = (r) =>
-            ("The downsampling task: ${r.taskID} - ${r.name} has a status of ${r.status}")
+            ("The task: ${r.taskID} - ${r.name} has a status of ${r.status}")
 
         task_data
             |> v1["fieldsAsCols"]()
