@@ -73,21 +73,28 @@ with open('/etc/telegraf/players.csv', newline='') as csvfile:
         acct_id = row['acct_id']
         pro = row['pro']
         player_name = row['player_name']
-        
+
         response = requests.get(url,
                         headers = {'Authorization': FORTNITE_API_TOKEN},
                         params={'account': acct_id,
                                 'season': season
-                               }
-                       )
-        data = response.json()
-        data_api_dict = parse_data(data)
-        data_api_dict['acct_id'] = acct_id
-        data_api_dict['pro'] = pro
-        data_api_list.append(data_api_dict.copy())
+                                }
+                    )
 
-        time.sleep(5)
+        data = response.json()
+
+        # if account level is set to 'None', "Show on Career Leaderboard" may be set to Off
+        if data['account']['level']:
+            data_api_dict = parse_data(data)
+            data_api_dict['acct_id'] = acct_id
+            data_api_dict['pro'] = pro
+            data_api_list.append(data_api_dict.copy())
+
+            time.sleep(5)
 
 api_output = json.dumps(data_api_list)
 
-print(api_output)
+if not data_api_list:
+    print('No players found.')
+else:
+    print(api_output)
