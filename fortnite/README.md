@@ -27,11 +27,12 @@ Provides performance insights and metrics tracking for both professional and ama
 
 ### Quick Install
 
-If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
+If you have your InfluxDB credentials [configured in the CLI](https://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
-influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/fortnite/fn-template.yml
+influx apply -f https://raw.githubusercontent.com/influxdata/community-templates/master/fortnite/fn-template.yml --env-ref=fn_bucket=<INFLUX_BUCKET>
 ```
+Note: If `fortnite` is not used for the `fn_bucket` name, the bucket name will need to be updated in the `wins` task, and the `player`, `player2` and `season` query variables.
 
 ## Included Resources
 - 1 Bucket: `fortnite`
@@ -56,27 +57,31 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
     - used by Telegraf exec plugin to access Fortnite API endpoint
 - 1 CSV file: `players.csv`
     - seeded with professional Fortnite player ids
+    - used by Python script
 
 ## Setup Instructions
 
-1. Register for an account at [fortniteapi.io](fortniteapi.io)
-2. Retrieve your API key at [dashboard.fortniteapi.io](dashboard.fortniteapi.io)
+1. Register for an account at [fortniteapi.io](https://fortniteapi.io/)
+2. Retrieve your Fortnite API token at [dashboard.fortniteapi.io](https://dashboard.fortniteapi.io)
 3. Look up Fortnite account ids with the following curl request:
-```
-curl --request GET 'https://fortniteapi.io/lookup?username=<USERNAME>' \
-     --header 'Authorization: <API_KEY>'`
-```
-4. Add accounts to track in `players.csv`. For example:
+    ```
+    curl --request GET 'https://fortniteapi.io/lookup?username=<USERNAME>' \
+         --header 'Authorization: <FORTNITE_API_TOKEN>'
+    ```
+4. Check that the account returns metrics:
+    ```
+    curl --request GET 'https://fortniteapi.io/stats?account=<PLAYER_ID>&season=<SEASON>' \
+         --header 'Authorization: <FORTNITE_API_TOKEN>'
+    ```
+    - Note: If the response contains `"global_stats":null` it's likely that that the **Show on Career Leaderboard** setting is set to **OFF** in the **Account and Privacy** section of the player's profile.
+
+5. Add accounts to track in `players.csv`. For example:
     - `4735ce9132924caf8a5b17789b40f79c,yes,Ninja`
     - The second column indicates professional status: `yes`|`no`
-5. Apply template: `./influx apply -f fn-template.yml`
-    - General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
-6. You will be prompted for the bucket name (which will be created if it doesn't exist):
-    - `Please provide environment reference value for key fn_bucket:`
-    - The default bucket name is `fortnite`. If another bucket is used, the bucket name will need to be updated in the `wins` task, and the `player`, `player2` and `season` query variables.
 
 ### Telegraf
 The Telegraf configuration requires the following environmental variables:
+- `INFLUX_HOST` - The connection URL to your Cloud 2 account.
 - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `<FORTNITE>` bucket.
 - `INFLUX_ORG` - The name of your organization found on the profile page.
 - `INFLUX_BUCKET` - The name of the bucket to write to.
@@ -108,6 +113,10 @@ The Influx task requires the following [influx secret](https://v2.docs.influxdat
 
 - `SLACK_WEBHOOK` - The Slack webhook is used to send a message when a player wins a match.
     - https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX
+```
+influx secret update -k SLACK_WEBHOOK
+```
+Note: You will be prompted for the secret to add the Slack webhook.
 
 ## Customizations
 
