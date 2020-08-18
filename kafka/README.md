@@ -8,7 +8,7 @@
 ## Requirements
 
 * Set environment variables on host/s from which Telegraf will be sending metrics.  These are:
-  - `INFLUX_ORG`, `INFLUX_TOKEN`, `INFLUX_HOST`, and `INFLUX_BUCKET`
+  - `INFLUX_ORG`, `INFLUX_TOKEN`, `INFLUX_HOST`, `INFLUX_BUCKET` and `ZOOKEEPER_HOST`
 * [Jolokia JVM Agent](https://jolokia.org/agent/jvm.html)
 * [Apache Kafka](https://kafka.apache.org/documentation/)
 * [Apache Zookeeper](https://zookeeper.apache.org/)
@@ -18,7 +18,7 @@
 ## Get started
 If you have your InfluxDB credentials configured in the CLI, you can install this template with:
 
-`influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/kafka/{your_template_file}`
+`influx apply -f https://raw.githubusercontent.com/influxdata/community-templates/master/kafka/kafka-template.yml`
 
 Once installed, you'll need to start up Telegraf to pull metrics from your Jolokia-attached Kafka broker/s.  Checkout [Telegraf docs](https://docs.influxdata.com/telegraf/v1.14/) for installing and starting Telegraf.
 
