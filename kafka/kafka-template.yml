@@ -434,9 +434,7 @@ spec:
 
         [[outputs.influxdb_v2]]
 
-        # urls = ["$INFLUX_HOST"]
-        # urls = ["https://enb37b16zawnc.x.pipedream.net"]
-        urls = ["https://enqkw5jnpufjr.x.pipedream.net"]
+        urls = ["$INFLUX_HOST"]
         token = "$INFLUX_TOKEN"
         organization = "$INFLUX_ORG"
         bucket = "$INFLUX_BUCKET"
@@ -557,8 +555,7 @@ spec:
           tag_keys   = ["topic"]
 
         [[inputs.zookeeper]]
-
-        # servers = ["$ZOOKEEPER_CONNECTION_STRING"]
+          servers = ["$ZOOKEEPER_HOST"]
 
         ## Timeout for metric collections from all servers.  Minimum timeout is "1s".
         # timeout = "5s"
