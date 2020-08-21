@@ -2,8 +2,13 @@
 
 ## Dashboards
 
-   <img src="https://github.com/influxdata/community-templates/blob/master/kafka/images/kafka-dash.png" width="425"/> <img src="https://github.com/influxdata/community-templates/blob/master/kafka/images/kafka-dash-light.png" width="425"/>
+### Kafka
 
+   <img src="images/kafka-dash.png" width="425"/> <img src="images/kafka-dash-light.png" width="425"/>
+
+### Kafka JVM
+   
+   <img src="images/kafka-dash-jvm.png" width="425"/> <img src="images/kafka-dash-jvm-light.png" width="425"/>
 
 ## Requirements
 
@@ -44,10 +49,10 @@ To start Telegraf with the template-provided configuration, you can do one of tw
 
 ## Included resources
 
-- 1 label: `kafka`
+- 2 label: `kafka`, `jvm`
 - 1 Telegraf Configuration: `kafka-zk-jolokia`
-- 1 Dashboards: `Kafka-metrics`
-- 3 Variables: `bucket`, `broker_host`, and `kafka_topic`
+- 2 Dashboards: `Kafka Metrics`, `Kafka JVM Metrics` 
+- 3 Variables: `bucket`, `kafka_broker`, and `kafka_topic`
 
 ## Pre-work
 
@@ -79,7 +84,6 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
 <summary>kafka_broker</summary>
 
   * Tags
-    * host
     * jolokia_agent_url
     * topic
   * Fields
@@ -100,7 +104,6 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
 <summary>kafka_controller</summary>
 
 * Tags
-  * host
   * jolokia_agent_url
 * Fields
   * ActiveControllerCount
@@ -119,7 +122,6 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
 <summary>kafka_network</summary>
 
 * Tags
-  * host
   * jolokia_agent_url
   * request
 * Fields
@@ -132,7 +134,6 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
 <summary>kafka_partition</summary>
 
 * Tags
-  * host
   * jolokia_agent_url
   * partition
   * topic
@@ -149,7 +150,6 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
 <summary>kafka_replica_manager</summary>
 
 * Tags
-  * host
   * jolokia_agent_url
 * Fields
   * FailedIsrUpdatesPerSec
@@ -164,7 +164,6 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
 <summary>kafka_requests</summary>
 
 * Tags
-  * host
   * jolokia_agent_url
   * request
 * Fields
@@ -197,7 +196,6 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
 <summary>kafka_topics</summary>
 
 * Tags
-  * host
   * jolokia_agent_url
   * topic
 * Fields
@@ -212,7 +210,6 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
 <summary>zookeeper</summary>
 
 * Tags
-  * host
   * port
   * server
   * state
@@ -231,6 +228,98 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * version
   * watch_count
   * znode_count
+</details>
+
+<details open>
+<summary>jvm_runtime</summary>
+
+* Tags
+  * jolokia_agent_url
+* Fields
+  * SpecVersion
+  * StartTime
+  * Uptime
+  * VmName
+</details>
+
+<details open>
+<summary>jvm_os</summary>
+
+* Tags
+  * jolokia_agent_url
+* Fields
+  * AvailableProcessors
+  * CommittedVirtualMemorySize
+  * FreePhysicalMemorySize
+  * Name
+  * ProcessCpuLoad
+  * SystemCpuLoad
+  * SystemLoadAverage
+  * TotalPhysicalMemorySize
+  * Version
+</details>
+
+<details open>
+<summary>jvm_mem</summary>
+
+* Tags
+  * jolokia_agent_url
+* Fields
+  * HeapMemoryUsage_committed
+  * HeapMemoryUsage_init
+  * HeapMemoryUsage_max
+  * HeapMemoryUsage_used
+  * NonHeapMemoryUsage_committed
+  * NonHeapMemoryUsage_init
+  * NonHeapMemoryUsage_max
+  * NonHeapMemoryUsage_used
+</details>
+
+<details open>
+<summary>jvm_threading</summary>
+
+* Tags
+  * jolokia_agent_url
+* Fields
+  * DaemonThreadCount
+  * PeakThreadCount
+  * ThreadCount
+  * TotalStartedThreadCount
+</details>
+
+<details open>
+<summary>java_gc</summary>
+
+* Tags
+  * jolokia_agent_url
+  * name
+* Fields
+  * CollectionCount
+  * CollectionTime
+</details>
+
+<details open>
+<summary>java_classes</summary>
+
+* Tags
+  * jolokia_agent_url
+* Fields
+  * LoadedClassCount
+  * TotalLoadedClassCount
+  * UnloadedClassCount
+</details>
+
+<details open>
+<summary>java_mem_pool</summary>
+
+* Tags
+  * jolokia_agent_url
+  * name
+* Fields
+  * Usage_Usage_committed
+  * Usage_Usage_init
+  * Usage_Usage_max
+  * Usage_Usage_used
 </details>
 
 ## Contact

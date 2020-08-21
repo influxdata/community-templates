@@ -1,30 +1,34 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: priceless-knuth-725001
+    name: ridiculous-morse-705003
 spec:
     color: '#8e1fc3'
     name: kafka
 ---
 apiVersion: influxdata.com/v2alpha1
-kind: Variable
+kind: Label
 metadata:
-    name: burfect-bohr-725001
+    name: suspicious-lewin-705001
 spec:
-    language: flux
-    name: broker_host
-    query: |-
-        import "influxdata/influxdb/v1"
-        all_data = buckets() |> limit(n:1) |> set(key: "_value", value: "*") |> keep(columns:["_value"])
-        hosts = v1.measurementTagValues(bucket: v.bucket, measurement: "cpu", tag: "host")
-        union(tables: [all_data, hosts]) |> sort()
-    type: query
+    color: '#FFB94A'
+    name: jvm
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: kind-chandrasekhar-705005
+spec:
+    name: my-bucket
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: friendly-montalcini-325001
+    name: competent-sutherland-705009
 spec:
+    associations:
+      - kind: Label
+        name: ridiculous-morse-705003
     language: flux
     name: kafka_topic
     query: |-
@@ -38,7 +42,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: xenodochial-khorana-325003
+    name: laughing-lamport-70500b
 spec:
     language: flux
     name: bucket
@@ -50,13 +54,695 @@ spec:
     type: query
 ---
 apiVersion: influxdata.com/v2alpha1
-kind: Dashboard
+kind: Variable
 metadata:
-    name: realistic-hugle-325001
+    name: suspicious-noyce-b05003
 spec:
     associations:
       - kind: Label
-        name: priceless-knuth-725001
+        name: ridiculous-morse-705003
+    language: flux
+    name: kafka_broker
+    query: |-
+        import "influxdata/influxdb/v1"
+        import "strings"
+
+        all_data = buckets() |> limit(n:1) |> set(key: "_value", value: "*") |> keep(columns:["_value"])
+        hosts = v1.measurementTagValues(bucket: v.bucket, measurement: "jvm_runtime", tag: "jolokia_agent_url")
+        union(tables: [all_data, hosts]) |> sort()
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: elegant-roentgen-b05001
+spec:
+    associations:
+      - kind: Label
+        name: suspicious-lewin-705001
+    charts:
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Uptime
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_runtime")
+                  |> filter(fn: (r) => r["_field"] == "Uptime")
+                  |> filter(fn: (r) => (if v.kafka_broker == "*" then true else r["jolokia_agent_url"] == v.kafka_broker))
+                  |> last()
+                  |> map(fn: (r) => ({_value: float(v: r._value) / 86400000.0}))
+                  |> yield(name: "last")
+        suffix: ' days'
+        width: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: RAM
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        name: Physical Memory
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_os")
+                  |> filter(fn: (r) => (if v.kafka_broker == "*" then true else r["jolokia_agent_url"] == v.kafka_broker))
+                  |> filter(fn: (r) => r["_field"] == "CommittedVirtualMemorySize" or r["_field"] == "FreePhysicalMemorySize" or r["_field"] == "TotalPhysicalMemorySize")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+        width: 4
+        xCol: _time
+        yCol: _value
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: '%'
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: CPU Load
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_os")
+                  |> filter(fn: (r) => (if v.kafka_broker == "*" then true else r["jolokia_agent_url"] == v.kafka_broker))
+                  |> filter(fn: (r) => r["_field"] == "ProcessCpuLoad" or r["_field"] == "SystemCpuLoad")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> map(fn: (r) => ({ r with _value: r._value * 100.0}))
+        width: 12
+        xCol: _time
+        yCol: _value
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: ms
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: GC Elapsed Time [1 min rate]
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "java_gc")
+                  |> filter(fn: (r) => r["_field"] == "CollectionTime")
+                  |> filter(fn: (r) => (if v.kafka_broker == "*" then true else r["jolokia_agent_url"] == v.kafka_broker))
+                  |> difference(nonNegative: false, columns: ["_value"])
+                  |> aggregateWindow(every: 1m, fn: sum, createEmpty: false)
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: count
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Threads
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_threading")
+                  |> filter(fn: (r) => r["_field"] == "DaemonThreadCount" or r["_field"] == "PeakThreadCount" or r["_field"] == "ThreadCount" or r["_field"] == "TotalStartedThreadCount")
+                  |> filter(fn: (r) => (if v.kafka_broker == "*" then true else r["jolokia_agent_url"] == v.kafka_broker))
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 11
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: RAM
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Memory Pool - Code Cache
+        position: overlaid
+        queries:
+          - query: |-
+                import "strings"
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "java_mem_pool")
+                  |> filter(fn: (r) => r["name"] == "Code Cache")
+                  |> filter(fn: (r) => r["_field"] == "Usage_Usage_committed" or r["_field"] == "Usage_Usage_init" or r["_field"] == "Usage_Usage_max" or r["_field"] == "Usage_Usage_used")
+                  |> filter(fn: (r) => (if v.kafka_broker == "*" then true else r["jolokia_agent_url"] == v.kafka_broker))
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 4
+        xCol: _time
+        yCol: _value
+        yPos: 14
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: RAM
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Memory Pool - G1 Eden Space
+        position: overlaid
+        queries:
+          - query: |-
+                import "strings"
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "java_mem_pool")
+                  |> filter(fn: (r) => r["name"] == "G1 Eden Space")
+                  |> filter(fn: (r) => r["_field"] == "Usage_Usage_committed" or r["_field"] == "Usage_Usage_init" or r["_field"] == "Usage_Usage_max" or r["_field"] == "Usage_Usage_used")
+                  |> filter(fn: (r) => (if v.kafka_broker == "*" then true else r["jolokia_agent_url"] == v.kafka_broker))
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 4
+        xCol: _time
+        yCol: _value
+        yPos: 16
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Start Time
+        queries:
+          - query: |-
+                import "date"
+                import "strings"
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_runtime")
+                  |> filter(fn: (r) => r["_field"] == "StartTime")
+                  |> filter(fn: (r) => (if v.kafka_broker == "*" then true else r["jolokia_agent_url"] == v.kafka_broker))
+                  |> last()
+                  |> map(fn:(r) => ({ r with _value: time(v: int(v:r._value) * 1000000) }))
+                  |> map(fn: (r) => ({ r with _value: date.truncate(t: r._value, unit: 1s) }))
+                  |> map(fn: (r) => ({ r with _value: strings.replaceAll(v: strings.trimSuffix(v: string(v: r._value), suffix: ".000000000Z"), t: "T", u: " ") }))
+        width: 2
+        xPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Available CPUs
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_os")
+                  |> filter(fn: (r) => r["_field"] == "AvailableProcessors")
+                  |> filter(fn: (r) => (if v.kafka_broker == "*" then true else r["jolokia_agent_url"] == v.kafka_broker))
+                  |> last()
+        width: 2
+        xPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: RAM
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        name: Heap Memory
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_mem")
+                  |> filter(fn: (r) => r["_field"] == "HeapMemoryUsage_used" or r["_field"] == "HeapMemoryUsage_max" or r["_field"] == "HeapMemoryUsage_committed" or r["_field"] == "HeapMemoryUsage_init")
+                  |> filter(fn: (r) => (if v.kafka_broker == "*" then true else r["jolokia_agent_url"] == v.kafka_broker))
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: RAM
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Memory Pool - Compressed Class Space
+        position: overlaid
+        queries:
+          - query: |-
+                import "strings"
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "java_mem_pool")
+                  |> filter(fn: (r) => r["name"] == "Compressed Class Space")
+                  |> filter(fn: (r) => r["_field"] == "Usage_Usage_committed" or r["_field"] == "Usage_Usage_init" or r["_field"] == "Usage_Usage_max" or r["_field"] == "Usage_Usage_used")
+                  |> filter(fn: (r) => (if v.kafka_broker == "*" then true else r["jolokia_agent_url"] == v.kafka_broker))
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 14
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: RAM
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Memory Pool - G1 Old Gen
+        position: overlaid
+        queries:
+          - query: |-
+                import "strings"
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "java_mem_pool")
+                  |> filter(fn: (r) => r["name"] == "G1 Old Gen")
+                  |> filter(fn: (r) => r["_field"] == "Usage_Usage_committed" or r["_field"] == "Usage_Usage_init" or r["_field"] == "Usage_Usage_max" or r["_field"] == "Usage_Usage_used")
+                  |> filter(fn: (r) => (if v.kafka_broker == "*" then true else r["jolokia_agent_url"] == v.kafka_broker))
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 16
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: System Load Average
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_os")
+                  |> filter(fn: (r) => r["_field"] == "SystemLoadAverage")
+                  |> filter(fn: (r) => (if v.kafka_broker == "*" then true else r["jolokia_agent_url"] == v.kafka_broker))
+                  |> last()
+        width: 2
+        xPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: count
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Garbage Collector Count [1 min rate]
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "java_gc")
+                  |> filter(fn: (r) => r["_field"] == "CollectionCount")
+                  |> filter(fn: (r) => (if v.kafka_broker == "*" then true else r["jolokia_agent_url"] == v.kafka_broker))
+                  |> difference(nonNegative: false, columns: ["_value"])
+                  |> aggregateWindow(every: 1m, fn: sum, createEmpty: false)
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: count
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Class Loading
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "java_classes")
+                  |> filter(fn: (r) => r["_field"] == "LoadedClassCount" or r["_field"] == "TotalLoadedClassCount" or r["_field"] == "UnloadedClassCount")
+                  |> filter(fn: (r) => (if v.kafka_broker == "*" then true else r["jolokia_agent_url"] == v.kafka_broker))
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 11
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: JVM Version
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_runtime")
+                  |> filter(fn: (r) => r["_field"] == "SpecVersion" or r["_field"] == "VmName")
+                  |> filter(fn: (r) => (if v.kafka_broker == "*" then true else r["jolokia_agent_url"] == v.kafka_broker))
+                  |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+                  |> map(fn: (r) => ({ r with _value: r["VmName"] + " " + r["SpecVersion"] }))
+                  |> last()
+        width: 4
+        xPos: 8
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: OS Version
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_os")
+                  |> filter(fn: (r) => r["_field"] == "Name" or r["_field"] == "Version")
+                  |> filter(fn: (r) => (if v.kafka_broker == "*" then true else r["jolokia_agent_url"] == v.kafka_broker))
+                  |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+                  |> map(fn: (r) => ({ r with _value: r["Name"] + " " + r["Version"] }))
+                  |> last()
+        width: 4
+        xPos: 8
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: RAM
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Non Heap Memory
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_mem")
+                  |> filter(fn: (r) => r["_field"] == "NonHeapMemoryUsage_committed" or r["_field"] == "NonHeapMemoryUsage_max" or r["_field"] == "NonHeapMemoryUsage_used" or r["_field"] == "NonHeapMemoryUsage_init")
+                  |> filter(fn: (r) => (if v.kafka_broker == "*" then true else r["jolokia_agent_url"] == v.kafka_broker))
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 4
+        xCol: _time
+        xPos: 8
+        yCol: _value
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: RAM
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Memory Pool - Metaspace
+        position: overlaid
+        queries:
+          - query: |-
+                import "strings"
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "java_mem_pool")
+                  |> filter(fn: (r) => r["name"] == "Metaspace")
+                  |> filter(fn: (r) => r["_field"] == "Usage_Usage_committed" or r["_field"] == "Usage_Usage_init" or r["_field"] == "Usage_Usage_max" or r["_field"] == "Usage_Usage_used")
+                  |> filter(fn: (r) => (if v.kafka_broker == "*" then true else r["jolokia_agent_url"] == v.kafka_broker))
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 4
+        xCol: _time
+        xPos: 8
+        yCol: _value
+        yPos: 14
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: RAM
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Memory Pool - G1 Survivor Space
+        position: overlaid
+        queries:
+          - query: |-
+                import "strings"
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "java_mem_pool")
+                  |> filter(fn: (r) => r["name"] == "G1 Survivor Space")
+                  |> filter(fn: (r) => r["_field"] == "Usage_Usage_committed" or r["_field"] == "Usage_Usage_init" or r["_field"] == "Usage_Usage_max" or r["_field"] == "Usage_Usage_used")
+                  |> filter(fn: (r) => (if v.kafka_broker == "*" then true else r["jolokia_agent_url"] == v.kafka_broker))
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 4
+        xCol: _time
+        xPos: 8
+        yCol: _value
+        yPos: 16
+    name: Kafka JVM Metrics
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: naughty-robinson-b05001
+spec:
+    associations:
+      - kind: Label
+        name: ridiculous-morse-705003
     charts:
       - colors:
           - hex: '#00C9FF'
@@ -193,7 +879,7 @@ spec:
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "kafka_controller")
                   |> filter(fn: (r) => r["_field"] == "ActiveControllerCount")
-                  |> group(columns: ["host"])
+                  |> group(columns: ["jolokia_agent_url"])
                   |> last()
                   |> group()
                   |> sum()
@@ -249,10 +935,8 @@ spec:
                   |> filter(fn: (r) => r["_field"] == "BytesCount")
                   |> window(every: 1m)
                   |> derivative(unit: 1m, nonNegative: true, columns: ["_value"], timeColumn: "_time")
-                  |> filter(fn: (r) =>
-                		(if v.broker_host == "*" then true
-                     else r["host"] == v.broker_host))
-                  |> group(columns: ["host"])
+                  |> filter(fn: (r) => (if v.kafka_broker == "*" then true else r["jolokia_agent_url"] == v.kafka_broker))
+                  |> group(columns: ["jolokia_agent_url"])
                   |> sort(columns: ["_time"])
         shade: true
         width: 4
@@ -306,10 +990,8 @@ spec:
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "kafka_requests")
                   |> filter(fn: (r) => r["_field"] == "BytesCount")
-                  |> filter(fn: (r) =>
-                (if v.broker_host == "*" then true
-                  else r["host"] == v.broker_host))
-                  |> group(columns: ["host"])
+                  |> filter(fn: (r) => (if v.kafka_broker == "*" then true else r["jolokia_agent_url"] == v.kafka_broker))
+                  |> group(columns: ["jolokia_agent_url"])
                   |> sort(columns: ["_time"])
                   |> derivative(unit: 1s, nonNegative: true, columns: ["_value"], timeColumn: "_time")
         shade: true
@@ -370,11 +1052,11 @@ spec:
         width: 4
         xPos: 8
       - axes:
-          - base: "2"
-            name: y
-            scale: linear
           - base: "10"
             name: x
+            scale: linear
+          - base: "2"
+            name: y
             scale: linear
         colors:
           - hex: '#31C0F6'
@@ -411,8 +1093,13 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Telegraf
 metadata:
-    name: blissful-ramanujan-b25001
+    name: agreeing-aryabhata-f05005
 spec:
+    associations:
+      - kind: Label
+        name: ridiculous-morse-705003
+      - kind: Label
+        name: suspicious-lewin-705001
     config: |
         [agent]
 
@@ -428,7 +1115,7 @@ spec:
         quiet = false
         logfile = ""
         hostname = ""
-        omit_hostname = false
+        omit_hostname = true
 
         # Outputs
 
@@ -449,23 +1136,11 @@ spec:
 
         # for more info on input plugins: https://github.com/influxdata/telegraf/tree/master/plugins/inputs
 
-        [[inputs.cpu]]
-        [[inputs.mem]]
-        [[inputs.disk]]
-        [[inputs.diskio]]
-        [[inputs.net]]
-        [[inputs.kernel]]
-        [[inputs.swap]]
-        [[inputs.processes]]
-
         [[inputs.jolokia2_agent]]
         default_tag_prefix = ""
         default_field_prefix = ""
         default_field_separator = "_"
         urls = ["$JOLOKIA_AGENT_URL"]
-        tagexclude = ["jolokia_agent_url"]
-        # [[inputs.jolokia2_agent.tagdrop]]
-        #   jolokia_agent_url = "*"
 
         # (still have to add Type=DelayedOperationPurgatory)
         [[inputs.jolokia2_agent.metric]]
@@ -553,6 +1228,38 @@ spec:
           mbean      = "kafka.cluster:name=UnderReplicated,partition=*,topic=*,type=Partition"
           field_name = "UnderReplicatedPartitions"
           tag_keys   = ["topic"]
+
+        # JVM
+        [[inputs.jolokia2_agent.metric]]
+          name  = "jvm_runtime"
+          mbean = "java.lang:type=Runtime"
+          paths = ["Uptime", "StartTime", "VmName", "SpecVersion"]
+        [[inputs.jolokia2_agent.metric]]
+          name  = "jvm_os"
+          mbean = "java.lang:type=OperatingSystem"
+          paths = ["AvailableProcessors", "SystemLoadAverage", "FreePhysicalMemorySize", "TotalPhysicalMemorySize", "CommittedVirtualMemorySize", "Name", "Version", "ProcessCpuLoad", "SystemCpuLoad"]
+        [[inputs.jolokia2_agent.metric]]
+          name  = "jvm_mem"
+          mbean = "java.lang:type=Memory"
+          paths = ["HeapMemoryUsage", "NonHeapMemoryUsage"]
+        [[inputs.jolokia2_agent.metric]]
+          name  = "jvm_threading"
+          mbean = "java.lang:type=Threading"
+          paths = ["TotalStartedThreadCount", "PeakThreadCount", "ThreadCount", "DaemonThreadCount"]
+        [[inputs.jolokia2_agent.metric]]
+          name     = "java_gc"
+          mbean    = "java.lang:name=*,type=GarbageCollector"
+          paths    = ["CollectionTime", "CollectionCount"]
+          tag_keys = ["name"]
+        [[inputs.jolokia2_agent.metric]]
+          name  = "java_classes"
+          mbean = "java.lang:type=ClassLoading"
+          paths = ["LoadedClassCount", "UnloadedClassCount", "TotalLoadedClassCount"]
+        [[inputs.jolokia2_agent.metric]]
+          name     = "java_mem_pool"
+          mbean    = "java.lang:name=*,type=MemoryPool"
+          paths    = ["Usage"]
+          tag_keys = ["name"]
 
         [[inputs.zookeeper]]
           servers = ["$ZOOKEEPER_HOST"]
