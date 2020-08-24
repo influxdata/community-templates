@@ -5,6 +5,14 @@
 ### Kafka
 
    <img src="images/kafka-dash.png" width="425"/> <img src="images/kafka-dash-light.png" width="425"/>
+   
+### Kafka Producer Metrics
+
+   <img src="images/kafka-dash-producer.png" width="425"/> <img src="images/kafka-dash-producer-light.png" width="425"/>
+   
+### Kafka Consumer Metrics
+
+   <img src="images/kafka-dash-consumer.png" width="425"/> <img src="images/kafka-dash-consumer-light.png" width="425"/>
 
 ### Kafka JVM
    
@@ -13,7 +21,14 @@
 ## Requirements
 
 * Set environment variables on host/s from which Telegraf will be sending metrics.  These are:
-  - `INFLUX_ORG`, `INFLUX_TOKEN`, `INFLUX_HOST`, `INFLUX_BUCKET` and `ZOOKEEPER_HOST`
+  - `INFLUX_ORG`
+  - `INFLUX_TOKEN`
+  - `INFLUX_HOST`
+  - `INFLUX_BUCKET`
+  - `KAFKA_JOLOKIA_HOSTS`
+  - `KAFKA_PRODUCERS_JOLOKIA_HOSTS`
+  - `KAFKA_CONSUMERS_JOLOKIA_HOSTS` 
+  - `ZOOKEEPER_HOST`
 * [Jolokia JVM Agent](https://jolokia.org/agent/jvm.html)
 * [Apache Kafka](https://kafka.apache.org/documentation/)
 * [Apache Zookeeper](https://zookeeper.apache.org/)
@@ -51,8 +66,8 @@ To start Telegraf with the template-provided configuration, you can do one of tw
 
 - 2 label: `kafka`, `jvm`
 - 1 Telegraf Configuration: `kafka-zk-jolokia`
-- 2 Dashboards: `Kafka Metrics`, `Kafka JVM Metrics` 
-- 3 Variables: `bucket`, `kafka_broker`, and `kafka_topic`
+- 4 Dashboards: `Kafka Metrics`, `Kafka Consumer Metrics`, `Kafka Producer Metrics` and `Kafka JVM Metrics` 
+- 7 Variables: `bucket`, `kafka_broker`, `kafka_topic`, `kafka_consumer`, `kafka_consumer_partition`, `kafka_producer` and `jvm_host`
 
 ## Pre-work
 
@@ -204,6 +219,51 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * ProduceMessageConversionsPerSec
   * TotalFetchRequestsPerSec
   * TotalProduceRequestsPerSec
+</details>
+
+<details open>
+<summary>kafka_topics</summary>
+
+* Tags
+  * jolokia_agent_url
+  * topic
+* Fields
+  * BytesInPerSec
+  * MessagesInPerSec
+  * ProduceMessageConversionsPerSec
+  * TotalFetchRequestsPerSec
+  * TotalProduceRequestsPerSec
+</details>
+
+<details open>
+<summary>kafka_consumer</summary>
+
+* Tags
+  * jolokia_agent_url
+  * client-id
+  * partition
+  * topic
+* Fields
+  * bytes-consumed-rate
+  * fetch-rate_fetch-rate
+  * records-consumed-rate
+  * records-lag-avg_records-lag-avg
+</details>
+
+<details open>
+<summary>kafka_producer</summary>
+
+* Tags
+  * jolokia_agent_url
+  * client-id
+* Fields
+  * batch-size-avg
+  * compression-rate-avg
+  * io-wait-ratio
+  * outgoing-byte-rate
+  * response-rate
+  * request-latency-avg
+  * request-rate
 </details>
 
 <details open>
