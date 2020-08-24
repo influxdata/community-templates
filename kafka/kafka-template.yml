@@ -1828,16 +1828,12 @@ spec:
 
         # Outputs
 
-        # [[outputs.influxdb_v2]]
+        [[outputs.influxdb_v2]]
 
         urls = ["$INFLUX_HOST"]
         token = "$INFLUX_TOKEN"
         organization = "$INFLUX_ORG"
         bucket = "$INFLUX_BUCKET"
-
-        [[outputs.file]]
-
-
 
         ###############################################################################
         #                            INPUT PLUGINS                                    #
