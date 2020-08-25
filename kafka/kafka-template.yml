@@ -1265,7 +1265,9 @@ spec:
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "kafka_topics")
                   |> filter(fn: (r) => r["_field"] == "TotalFetchRequestsPerSec")
+                  |> filter(fn: (r) => (if v.kafka_topic == "*" then true else r["topic"] == v.kafka_topic))
                   |> group(columns: ["topic"])
+                  |> sort(columns: ["_time"])
         shade: true
         width: 4
         xCol: _time
