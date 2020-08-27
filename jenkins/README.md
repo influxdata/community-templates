@@ -59,7 +59,7 @@ No configuration is necessary to gather Jenkins data other than having valid cre
 
 ## Customizations
 
-Be sure to update the values for these variables: `jenkinsBucket`, `jenkinsExcludedJobs`.
+Be sure to update the values for these variables: `jenkinsBucket`, `jenkinsExcludedJobs`.  
 These variables are populated dynamically: `jenkinsHostnames`, `jenkinJobNames` 
 
 ## Contact
