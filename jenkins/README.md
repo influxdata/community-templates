@@ -18,7 +18,7 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
 - `Jenkins - Jobs` Dashboard
 - `Jenkins - Single Job` Dashboard
 - `Jenkins` Telegraf configuration
-- Variables for `jenkinsJobNames`, `jenkinsBucket`, `jenkinsHostnames` and `jenkinsExcludedJob`. You will need to update the value for these thru the InfluxDB UI `Settings` > `Variables` after you've installed this dashboard template
+- Variables for `jenkinsJobNames`, `jenkinsBucket`, `jenkinsHostnames` and `jenkinsExcludedJobs`. You will need to update the value for these thru the InfluxDB UI `Settings` > `Variables` after you've installed this dashboard template
 - Bucket handled by variable `jenkinsBucket`
 - Label `Jenkins` applied to all resources
 - `Job Duration Check` a **threshold** alert
