@@ -783,22 +783,27 @@ spec:
         width: 5
       - colors:
           - hex: '#4ED8A0'
+            id: base
             name: rainforest
             type: background
             value: 0
           - hex: '#F95F53'
+            id: 2ad18e5d-818e-4e5f-aa81-c38b746dfaa6
             name: curacao
             type: background
             value: 1
           - hex: '#545667'
+            id: 28ebafd3-cf8e-4572-bf14-a02b0e543f39
             name: graphite
             type: background
             value: 2
           - hex: '#FFD255'
+            id: e510204d-b629-43c9-acad-89dbd5148287
             name: thunder
             type: background
             value: 3
           - hex: '#545667'
+            id: 0b210208-6a4c-4bcd-835c-83ee9a154b11
             name: graphite
             type: background
             value: 4
@@ -872,21 +877,27 @@ spec:
         yPos: 8
       - colors:
           - hex: '#BF3D5E'
+            id: base
             name: ruby
             type: background
+            value: 0
           - hex: '#DC4E58'
+            id: 3fe676af-09e5-47ab-a32e-d1b99335c5f3
             name: fire
             type: background
             value: 33
           - hex: '#F48D38'
+            id: 94ece9fa-23bf-43aa-910f-e5e1c56cec77
             name: tiger
             type: background
             value: 50
           - hex: '#FFB94A'
+            id: 82593475-2ea4-437c-9ffe-3ab2fa57bb3c
             name: pineapple
             type: background
             value: 75
           - hex: '#4ED8A0'
+            id: 8b045ebd-007e-46ff-9c1e-bd60d4bf8517
             name: rainforest
             type: background
             value: 100
@@ -1048,22 +1059,27 @@ spec:
         yPos: 1
       - colors:
           - hex: '#4ED8A0'
+            id: base
             name: rainforest
             type: background
             value: 0
           - hex: '#F95F53'
+            id: 2ad18e5d-818e-4e5f-aa81-c38b746dfaa6
             name: curacao
             type: background
             value: 1
           - hex: '#545667'
+            id: 28ebafd3-cf8e-4572-bf14-a02b0e543f39
             name: graphite
             type: background
             value: 2
           - hex: '#FFD255'
+            id: e510204d-b629-43c9-acad-89dbd5148287
             name: thunder
             type: background
             value: 3
           - hex: '#545667'
+            id: 0b210208-6a4c-4bcd-835c-83ee9a154b11
             name: graphite
             type: background
             value: 4
