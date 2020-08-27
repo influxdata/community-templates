@@ -17,9 +17,9 @@ spec:
     description: Availability via mem_total
     every: 5m0s
     level: CRIT
-    name: Node Health (mem_total)
+    name: Jenkins node health
     query: |-
-        from(bucket: "regency-aloha-one")
+        from(bucket: "jenkins")
           |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
           |> filter(fn: (r) => r._measurement == "jenkins_node")
           |> filter(fn: (r) => r._field == "memory_total")
@@ -37,9 +37,9 @@ spec:
       - kind: Label
         name: noshing-gagarin-8d2001
     every: 15m0s
-    name: Job Duration Check
+    name: Jenkins job duration
     query: |-
-        from(bucket: "regency-aloha-one")
+        from(bucket: "jenkins")
           |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
           |> filter(fn: (r) => r._measurement == "jenkins_job")
           |> filter(fn: (r) => r._field == "duration")
@@ -68,10 +68,11 @@ spec:
     associations:
       - kind: Label
         name: noshing-gagarin-8d2001
+    language: flux
     name: jenkinsHostnames
-    type: constant
-    values:
-      - ctzen-ctrl.local
+    query: "import \"influxdata/influxdb/v1\"\r\n\r\nv1.tagValues(\r\n  bucket: v.jenkinsBucket,\r\n
+        \ tag: \"host\",\r\n  predicate: (r) => true,\r\n)"
+    type: query
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
@@ -84,8 +85,40 @@ spec:
     name: jenkinsBucket
     type: constant
     values:
-      - sgnl's Bucket
-      - regency-aloha-one
+      - jenkins
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: focused-shirley-506003
+spec:
+    associations:
+      - kind: Label
+        name: noshing-gagarin-8d2001
+    language: flux
+    name: jenkinsJobNames
+    query: "import \"csv\"\r\nimport \"influxdata/influxdb/v1\"\r\n\r\nactual = v1.tagValues(\r\n
+        \ bucket: v.jenkinsBucket,\r\n  tag: \"name\",\r\n  predicate: (r) => true,\r\n)\r\n\r\ncsvData
+        = \"\r\n#datatype,string,long,string\r\n#group,false,false,false\r\n#default,,,\r\n,result,table,_value\r\n,,0,<all>\r\n,,0,<without
+        excluded>\r\n\"\r\n\r\nall = csv.from(csv: csvData)\r\nunion(tables: [all,
+        actual])"
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: rustling-chaplygin-d06003
+spec:
+    associations:
+      - kind: Label
+        name: noshing-gagarin-8d2001
+    name: jenkinsExcludedJobs
+    selected:
+      - <service jobs>
+    type: map
+    values:
+        <none>: ""
+        <service jobs>: deploy-tickstack-eprise-partial,ec2-cleanup weekly,ec2-terminator-all
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
@@ -190,7 +223,7 @@ spec:
                 from(bucket: v.jenkinsBucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "jenkins_job")
-                  |> filter(fn: (r) => r.host == "ctzen-ctrl.local")
+                  |> filter(fn: (r) => r.host == v.jenkinsHostnames)
                   |> filter(fn: (r) => r._field == "result_code")
                   |> filter(fn: (r) => r.result == "SUCCESS" or r.result == "FAILURE")
                   |> group(columns: ["result"])
@@ -339,7 +372,7 @@ spec:
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "jenkins_job")
                   |> filter(fn: (r) => r._field == "result_code")
-                  |> filter(fn: (r) => r.host == "ctzen-ctrl.local")
+                  |> filter(fn: (r) => r.host == v.jenkinsHostnames)
                   |> filter(fn: (r) => r.result == "FAILURE")
                   |> group(columns: ["result"])
                   |> sort(columns: ["_time"])
@@ -356,7 +389,7 @@ spec:
         decimalPlaces: 2
         height: 1
         kind: Single_Stat
-        name: Volitile Job
+        name: Volatile Job
         note: no job failures reported
         noteOnEmpty: true
         queries:
@@ -393,7 +426,7 @@ spec:
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "jenkins_job")
                   |> filter(fn: (r) => r._field == "result_code")
-                  |> filter(fn: (r) => r.host == "ctzen-ctrl.local")
+                  |> filter(fn: (r) => r.host == v.jenkinsHostnames)
                   |> filter(fn: (r) => r.result == "SUCCESS")
                   |> group(columns: ["result"])
                   |> sort(columns: ["_time"])
@@ -459,7 +492,7 @@ spec:
                 from(bucket: v.jenkinsBucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "jenkins_node")
-                  |> filter(fn: (r) => r.host == "ctzen-ctrl.local")
+                  |> filter(fn: (r) => r.host == v.jenkinsHostnames)
                   |> filter(fn: (r) => r._field == "disk_available" or r._field == "swap_total" or r._field == "swap_available" or r._field == "temp_available")
         shade: true
         width: 2
@@ -522,7 +555,7 @@ spec:
                 from(bucket: v.jenkinsBucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "jenkins_node")
-                  |> filter(fn: (r) => r.host == "ctzen-ctrl.local")
+                  |> filter(fn: (r) => r.host == v.jenkinsHostnames)
                   |> filter(fn: (r) => r._field == "response_time")
         width: 3
         xCol: _time
@@ -539,7 +572,7 @@ spec:
 
             Recent Failed/Success Job - Shows the most recent failing or successful jobs by name
 
-            Volitile/Stable Job - Shows the most failing or successful build from the "duration" specificied in the dashboard
+            Volatile/Stable Job - Shows the most failing or successful build from the "duration" specified in the dashboard
 
 
             "Gauge" cell - Something I was messing around with. note: I wish I could use a variable as a value for "customize - maximum threshold"
@@ -567,6 +600,9 @@ kind: Dashboard
 metadata:
     name: zen-taussig-127001
 spec:
+    associations:
+      - kind: Label
+        name: noshing-gagarin-8d2001
     charts:
       - colors:
           - hex: '#00C9FF'
@@ -581,7 +617,7 @@ spec:
                 from(bucket: v.jenkinsBucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "jenkins_job")
-                  |> filter(fn: (r) => r.name == v.jenkinJobNames)
+                  |> filter(fn: (r) => r.name == v.jenkinsJobNames)
                   |> keep(columns: ["name"])
                   |> rename(columns: {name: "_value"})
                   |> first()
@@ -614,7 +650,7 @@ spec:
                   |> filter(fn: (r) => r.host == v.jenkinsHostnames)
                   |> filter(fn: (r) => r._field == "result_code")
                   |> filter(fn: (r) => r.result == "FAILURE")
-                  |> filter(fn: (r) => r.name == v.jenkinJobNames)
+                  |> filter(fn: (r) => r.name == v.jenkinsJobNames)
                   |> group(columns: ["result"])
                   |> count()
                   |> yield(name: "count")
@@ -648,7 +684,7 @@ spec:
                   |> filter(fn: (r) => r.host == v.jenkinsHostnames)
                   |> filter(fn: (r) => r._field == "result_code")
                   |> filter(fn: (r) => r.result == "SUCCESS")
-                  |> filter(fn: (r) => r.name == v.jenkinJobNames)
+                  |> filter(fn: (r) => r.name == v.jenkinsJobNames)
                   |> group(columns: ["result"])
                   |> count()
                   |> yield(name: "count")
@@ -686,7 +722,7 @@ spec:
                   |> filter(fn: (r) => r._measurement == "jenkins_job")
                   |> filter(fn: (r) => r._field == "duration")
                   |> filter(fn: (r) => r.host == v.jenkinsHostnames)
-                  |> filter(fn: (r) => r.name == v.jenkinJobNames)
+                  |> filter(fn: (r) => r.name == v.jenkinsJobNames)
                   |> map(fn: (r) => ({
                     r with
                     _value: r._value / 1000
@@ -708,10 +744,462 @@ spec:
     name: Jenkins - Single Job
 ---
 apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: alerting-morse-fcb001
+spec:
+    associations:
+      - kind: Label
+        name: noshing-gagarin-8d2001
+    charts:
+      - colors:
+          - hex: '#F95F53'
+            name: curacao
+            type: min
+          - hex: '#4ED8A0'
+            name: rainforest
+            type: max
+            value: 100
+        decimalPlaces: 0
+        height: 4
+        kind: Gauge
+        name: Success ratio
+        queries:
+          - query: "import \"influxdata/influxdb/v1\"\r\nimport \"strings\"\r\n\r\nfrom(bucket:
+                v.jenkinsBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n
+                \ |> filter(fn: (r) => r._measurement == \"jenkins_job\")\r\n  |>
+                filter(fn: (r) => r.host == v.jenkinsHostnames)\r\n    |> filter(fn:
+                (r) => \r\n      if v.jenkinsJobNames == \"<all>\" then true\r\n      else
+                if v.jenkinsJobNames == \"<without excluded>\" then not contains(set:
+                strings.split(v: v.jenkinsExcludedJobs, t: \",\"), value: r.name)\r\n
+                \     else r.name == v.jenkinsJobNames\r\n    )\r\n  |> v1.fieldsAsCols()\r\n
+                \ |> duplicate(column: \"result_code\", as: \"_value\")\r\n  |> group()\r\n
+                \ |> reduce(\r\n       fn: (r, accumulator) => ({\r\n            total:
+                accumulator.total + 1,\r\n            success: accumulator.success
+                + (if r.result_code == 0 then 1 else 0),\r\n        }),\r\n        identity:
+                {total: 0, success: 0}\r\n    )  \r\n   |> map(fn: (r) => ({r with
+                _value: (float(v: 100 * r.success) / float(v: r.total))}))"
+        suffix: '%'
+        width: 5
+      - colors:
+          - hex: '#4ED8A0'
+            name: rainforest
+            type: background
+            value: 0
+          - hex: '#F95F53'
+            name: curacao
+            type: background
+            value: 1
+          - hex: '#545667'
+            name: graphite
+            type: background
+            value: 2
+          - hex: '#FFD255'
+            name: thunder
+            type: background
+            value: 3
+          - hex: '#545667'
+            name: graphite
+            type: background
+            value: 4
+        decimalPlaces: 0
+        fieldOptions:
+          - displayName: time
+            fieldName: _time
+            visible: true
+          - displayName: _start
+            fieldName: _start
+            visible: true
+          - displayName: _stop
+            fieldName: _stop
+            visible: true
+          - displayName: _measurement
+            fieldName: _measurement
+            visible: true
+          - displayName: host
+            fieldName: host
+          - displayName: job name
+            fieldName: name
+            visible: true
+          - displayName: port
+            fieldName: port
+          - displayName: source
+            fieldName: source
+            visible: true
+          - displayName: duration
+            fieldName: duration
+          - displayName: result code
+            fieldName: result_code
+            visible: true
+          - displayName: result
+            fieldName: _value
+            visible: true
+          - displayName: build
+            fieldName: link
+            visible: true
+          - displayName: _zlink
+            fieldName: _zlink
+        height: 4
+        kind: Table
+        name: Last Builds
+        queries:
+          - query: "import \"influxdata/influxdb/v1\"\r\nimport \"strings\"\r\n\r\nfrom(bucket:
+                v.jenkinsBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n
+                \ |> filter(fn: (r) => r._measurement == \"jenkins_job\")\r\n  |>
+                filter(fn: (r) => r.host == v.jenkinsHostnames)\r\n  |> filter(fn:
+                (r) => \r\n      if v.jenkinsJobNames == \"<all>\" then true\r\n      else
+                if v.jenkinsJobNames == \"<without excluded>\" then not contains(set:
+                strings.split(v: v.jenkinsExcludedJobs, t: \",\"), value: r.name)\r\n
+                \     else r.name == v.jenkinsJobNames\r\n    )\r\n  |> v1.fieldsAsCols()\r\n
+                \ |> duplicate(column: \"result_code\", as: \"_value\")\r\n  |> group()\r\n
+                \ |> keep(columns: [\"_time\", \"host\", \"port\", \"name\", \"result\",
+                \"result_code\", \"duration\"])\r\n  |> map(fn: (r) => ({r with link:
+                \"https://\" + r.host + \":\" + r.port + \"/job/\" + r.name + \"/\"}))"
+        tableOptions:
+            sortBy: _time
+            verticalTimeAxis: true
+        timeFormat: YYYY/MM/DD HH:mm:ss
+        width: 11
+        yPos: 4
+      - height: 2
+        kind: Markdown
+        name: Name this Cell
+        note: |-
+            ---
+            Last 7 days statistics
+            ---
+        width: 11
+        yPos: 8
+      - colors:
+          - hex: '#BF3D5E'
+            name: ruby
+            type: background
+          - hex: '#DC4E58'
+            name: fire
+            type: background
+            value: 33
+          - hex: '#F48D38'
+            name: tiger
+            type: background
+            value: 50
+          - hex: '#FFB94A'
+            name: pineapple
+            type: background
+            value: 75
+          - hex: '#4ED8A0'
+            name: rainforest
+            type: background
+            value: 100
+        decimalPlaces: 0
+        fieldOptions:
+          - displayName: name
+            fieldName: name
+            visible: true
+          - displayName: ratio (%)
+            fieldName: _value
+            visible: true
+          - displayName: success
+            fieldName: success
+          - displayName: total
+            fieldName: total
+        height: 4
+        kind: Table
+        name: Success Rate (last 7 days)
+        queries:
+          - query: "import \"influxdata/influxdb/v1\"\r\nimport \"strings\"\r\n\r\nfrom(bucket:
+                v.jenkinsBucket)\r\n  |> range(start: -1w)\r\n  |> filter(fn: (r)
+                => r._measurement == \"jenkins_job\")\r\n  |> filter(fn: (r) => r.host
+                == v.jenkinsHostnames)\r\n  |> filter(fn: (r) => \r\n      if v.jenkinsJobNames
+                == \"<all>\" then true\r\n      else if v.jenkinsJobNames == \"<without
+                excluded>\" then not contains(set: strings.split(v: v.jenkinsExcludedJobs,
+                t: \",\"), value: r.name)\r\n      else r.name == v.jenkinsJobNames\r\n
+                \   )\r\n  |> v1.fieldsAsCols()\r\n  |> duplicate(column: \"result_code\",
+                as: \"_value\")\r\n  |> group(columns: [\"name\"])\r\n  |> reduce(\r\n
+                \      fn: (r, accumulator) => ({\r\n            total: accumulator.total
+                + 1,\r\n            success: accumulator.success + (if r.result_code
+                == 0 then 1 else 0),\r\n        }),\r\n        identity: {total: 0,
+                success: 0}\r\n    )  \r\n   |> map(fn: (r) => ({r with _value: (float(v:
+                100 * r.success) / float(v: r.total))}))\r\n   |> group()"
+        tableOptions:
+            sortBy: _value
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 3
+        yPos: 10
+      - height: 2
+        kind: Markdown
+        name: Name this Cell
+        note: |-
+            ---
+            Last builds of each job irrespective of time window and job filter.
+            ---
+        width: 11
+        yPos: 14
+      - colors:
+          - hex: '#F95F53'
+            name: curacao
+            type: min
+          - hex: '#4ED8A0'
+            name: rainforest
+            type: max
+            value: 100
+        decimalPlaces: 0
+        height: 4
+        kind: Gauge
+        name: Success ratio (Distinct)
+        queries:
+          - query: "import \"influxdata/influxdb/v1\"\r\n\r\nfrom(bucket: v.jenkinsBucket)\r\n
+                \ |> range(start: -1y)\r\n  |> filter(fn: (r) => r._measurement ==
+                \"jenkins_job\")\r\n  |> filter(fn: (r) => r.host == v.jenkinsHostnames)\r\n
+                \ |> v1.fieldsAsCols()\r\n  |> duplicate(column: \"result_code\",
+                as: \"_value\")\r\n  |> group(columns: [\"name\"])\r\n  |> last()\r\n
+                \ |> group()\r\n  |> reduce(\r\n       fn: (r, accumulator) => ({\r\n
+                \           total: accumulator.total + 1,\r\n            success:
+                accumulator.success + (if r.result_code == 0 then 1 else 0),\r\n        }),\r\n
+                \       identity: {total: 0, success: 0}\r\n    )  \r\n   |> map(fn:
+                (r) => ({r with _value: (float(v: 100 * r.success) / float(v: r.total))}))"
+        suffix: '%'
+        width: 5
+        yPos: 16
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#FD7A5D'
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            name: Delorean
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Builds Duration (last 7 days)
+        position: overlaid
+        queries:
+          - query: "import \"influxdata/influxdb/v1\"\r\nimport \"strings\"\r\n\r\nfrom(bucket:
+                v.jenkinsBucket)\r\n  |> range(start: -1w)\r\n  |> filter(fn: (r)
+                => r._measurement == \"jenkins_job\")\r\n  |> filter(fn: (r) => r.host
+                == v.jenkinsHostnames)\r\n  |> filter(fn: (r) => \r\n      if v.jenkinsJobNames
+                == \"<all>\" then true\r\n      else if v.jenkinsJobNames == \"<without
+                excluded>\" then not contains(set: strings.split(v: v.jenkinsExcludedJobs,
+                t: \",\"), value: r.name)\r\n      else r.name == v.jenkinsJobNames\r\n
+                \   )\r\n  |> v1.fieldsAsCols()\r\n  |> filter(fn: (r) => r.result_code
+                == 0)\r\n  |> duplicate(column: \"duration\", as: \"_value\")\r\n
+                \ |> keep(columns: [\"name\", \"_time\", \"_value\"])"
+        width: 8
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 10
+      - colors:
+          - hex: '#7A65F2'
+            id: base
+            name: star
+            type: text
+            value: 0
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Projects
+        queries:
+          - query: "import \"influxdata/influxdb/v1\"\nimport \"strings\"\n\nfrom(bucket:
+                v.jenkinsBucket)\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n
+                \ |> filter(fn: (r) => r._measurement == \"jenkins_job\")\n  |> filter(fn:
+                (r) => r.host == v.jenkinsHostnames)\n  |> filter(fn: (r) => \n      if
+                v.jenkinsJobNames == \"<all>\" then true\n      else if v.jenkinsJobNames
+                == \"<without excluded>\" then not contains(set: strings.split(v:
+                v.jenkinsExcludedJobs, t: \",\"), value: r.name)\n      else r.name
+                == v.jenkinsJobNames\n    )\n  |> v1.fieldsAsCols()\n  |> duplicate(column:
+                \"result_code\", as: \"_value\")\n  |> group()\n  |> distinct(column:
+                \"name\")\n  |> count()"
+        width: 3
+        xPos: 5
+      - colors:
+          - hex: '#4ED8A0'
+            id: base
+            name: rainforest
+            type: text
+            value: 0
+        decimalPlaces: 0
+        height: 3
+        kind: Single_Stat
+        name: Successful Builds
+        queries:
+          - query: "import \"influxdata/influxdb/v1\"\nimport \"strings\"\n\nfrom(bucket:
+                v.jenkinsBucket)\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n
+                \ |> filter(fn: (r) => r._measurement == \"jenkins_job\")\n  |> filter(fn:
+                (r) => r.host == v.jenkinsHostnames)\n  |> filter(fn: (r) => \n      if
+                v.jenkinsJobNames == \"<all>\" then true\n      else if v.jenkinsJobNames
+                == \"<without excluded>\" then not contains(set: strings.split(v:
+                v.jenkinsExcludedJobs, t: \",\"), value: r.name)\n      else r.name
+                == v.jenkinsJobNames\n    )\n  |> v1.fieldsAsCols()\n  |> filter(fn:
+                (r) => r.result_code == 0)\n  |> duplicate(column: \"result_code\",
+                as: \"_value\")\n  |> group()\n  |> count()"
+        width: 2
+        xPos: 5
+        yPos: 1
+      - colors:
+          - hex: '#4ED8A0'
+            name: rainforest
+            type: background
+            value: 0
+          - hex: '#F95F53'
+            name: curacao
+            type: background
+            value: 1
+          - hex: '#545667'
+            name: graphite
+            type: background
+            value: 2
+          - hex: '#FFD255'
+            name: thunder
+            type: background
+            value: 3
+          - hex: '#545667'
+            name: graphite
+            type: background
+            value: 4
+        decimalPlaces: 0
+        fieldOptions:
+          - displayName: time
+            fieldName: _time
+            visible: true
+          - displayName: _start
+            fieldName: _start
+            visible: true
+          - displayName: _stop
+            fieldName: _stop
+            visible: true
+          - displayName: _measurement
+            fieldName: _measurement
+            visible: true
+          - displayName: host
+            fieldName: host
+            visible: true
+          - displayName: job name
+            fieldName: name
+            visible: true
+          - displayName: port
+            fieldName: port
+            visible: true
+          - displayName: source
+            fieldName: source
+            visible: true
+          - displayName: duration
+            fieldName: duration
+          - displayName: result code
+            fieldName: result_code
+            visible: true
+          - displayName: _value
+            fieldName: _value
+            visible: true
+        height: 4
+        kind: Table
+        name: Last Jobs Builds (Distinct)
+        queries:
+          - query: "import \"influxdata/influxdb/v1\"\r\n\r\nfrom(bucket: v.jenkinsBucket)\r\n
+                \ |> range(start: -1y)\r\n  |> filter(fn: (r) => r._measurement ==
+                \"jenkins_job\")\r\n  |> filter(fn: (r) => r.host == v.jenkinsHostnames)\r\n
+                \ |> v1.fieldsAsCols()\r\n  |> duplicate(column: \"result_code\",
+                as: \"_value\")\r\n  |> group(columns: [\"name\"])\r\n  |> last()\r\n
+                \ |> group()\r\n  |> keep(columns: [\"name\", \"_time\", \"result\",
+                \"result_code\", \"duration\"])"
+        tableOptions:
+            sortBy: _time
+            verticalTimeAxis: true
+        timeFormat: YYYY/MM/DD HH:mm:ss
+        width: 6
+        xPos: 5
+        yPos: 16
+      - colors:
+          - hex: '#FFD255'
+            id: base
+            name: thunder
+            type: text
+            value: 0
+        decimalPlaces: 0
+        height: 3
+        kind: Single_Stat
+        name: Unstable Builds
+        queries:
+          - query: "import \"influxdata/influxdb/v1\"\nimport \"strings\"\n\nfrom(bucket:
+                v.jenkinsBucket)\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n
+                \ |> filter(fn: (r) => r._measurement == \"jenkins_job\")\n  |> filter(fn:
+                (r) => r.host == v.jenkinsHostnames)\n  |> filter(fn: (r) => \n      if
+                v.jenkinsJobNames == \"<all>\" then true\n      else if v.jenkinsJobNames
+                == \"<without excluded>\" then not contains(set: strings.split(v:
+                v.jenkinsExcludedJobs, t: \",\"), value: r.name)\n      else r.name
+                == v.jenkinsJobNames\n    )\n  |> v1.fieldsAsCols()\n  |> filter(fn:
+                (r) => r.result_code == 3)\n  |> duplicate(column: \"result_code\",
+                as: \"_value\")\n  |> group()\n  |> count()"
+        width: 2
+        xPos: 7
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+            value: 0
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Builds
+        queries:
+          - query: "import \"influxdata/influxdb/v1\"\nimport \"strings\"\n\nfrom(bucket:
+                v.jenkinsBucket)\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n
+                \ |> filter(fn: (r) => r._measurement == \"jenkins_job\")\n  |> filter(fn:
+                (r) => r.host == v.jenkinsHostnames)\n  |> filter(fn: (r) => \n      if
+                v.jenkinsJobNames == \"<all>\" then true\n      else if v.jenkinsJobNames
+                == \"<without excluded>\" then not contains(set: strings.split(v:
+                v.jenkinsExcludedJobs, t: \",\"), value: r.name)\n      else r.name
+                == v.jenkinsJobNames\n    )\n  |> v1.fieldsAsCols()\n  |> duplicate(column:
+                \"result_code\", as: \"_value\")\n  |> group()\n  |> count()"
+        width: 3
+        xPos: 8
+      - colors:
+          - hex: '#F95F53'
+            id: base
+            name: curacao
+            type: text
+            value: 0
+        decimalPlaces: 0
+        height: 3
+        kind: Single_Stat
+        name: Failed Builds
+        queries:
+          - query: "import \"influxdata/influxdb/v1\"\nimport \"strings\"\n\nfrom(bucket:
+                v.jenkinsBucket)\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n
+                \ |> filter(fn: (r) => r._measurement == \"jenkins_job\")\n  |> filter(fn:
+                (r) => r.host == v.jenkinsHostnames)\n  |> filter(fn: (r) => \n      if
+                v.jenkinsJobNames == \"<all>\" then true\n      else if v.jenkinsJobNames
+                == \"<without excluded>\" then not contains(set: strings.split(v:
+                v.jenkinsExcludedJobs, t: \",\"), value: r.name)\n      else r.name
+                == v.jenkinsJobNames\n    )\n  |> v1.fieldsAsCols()\n  |> filter(fn:
+                (r) => r.result_code == 1)\n  |> duplicate(column: \"result_code\",
+                as: \"_value\")\n  |> group()\n  |> count()"
+        width: 2
+        xPos: 9
+        yPos: 1
+    description: Jenkins jobs dashboard
+    name: Jenkins - Jobs
+---
+apiVersion: influxdata.com/v2alpha1
 kind: Telegraf
 metadata:
     name: wiggitty-huh-127001
 spec:
+    associations:
+      - kind: Label
+        name: noshing-gagarin-8d2001
     config: |
         # Telegraf Configuration
         #
@@ -901,4 +1389,5 @@ spec:
         ###############################################################################
         #                            SERVICE INPUT PLUGINS                            #
         ###############################################################################
-    name: Website Monitor
+    description: Telegraf config for Jenkins monitoring
+    name: Jenkins Monitor
