@@ -92,8 +92,8 @@ Information on using enviromental variables can be found in the [Telegraf Config
 The Telegraf `exec` input plugin requires the following files:
 - `get_fn_stats.py` - Python script used to ingest metrics via the unofficial [Fortnite API](https://fortniteapi.io/)
     - `requests` module required
-    - The current season is hardcoded: `season = 13`
-        - Update this once the new season starts.
+    - The current season is hardcoded: `season = 14`
+        - Update this when a new season starts.
 
 - `players.csv` - CSV file containing a list of players to track using the following fields:
     - `acct_id` - Fortnite Account ID
