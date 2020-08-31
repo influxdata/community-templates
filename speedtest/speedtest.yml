@@ -169,7 +169,7 @@ spec:
          [[inputs.exec]]
            ## Commands array
            commands = [
-             "speedtest --json"
+             "speedtest --json --single"
            ]         
 
            ## Timeout for each command to complete.
