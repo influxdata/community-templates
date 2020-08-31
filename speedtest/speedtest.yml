@@ -153,7 +153,7 @@ spec:
            ## Multiple URLs can be specified for a single cluster, only ONE of the
            ## urls will be written to each interval.
            ## urls exp: http://127.0.0.1:9999
-           urls = ["$INFLUX_ORG"]     
+           urls = ["$INFLUX_HOST"]     
            ## Token for authentication.
            token = "$INFLUX_TOKEN"         
 
