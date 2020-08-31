@@ -1,0 +1,185 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: adoring-hellman-62a001
+spec:
+    color: '#0f0e15'
+    name: speedtest
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: blissful-antonelli-62a003
+spec:
+    associations:
+      - kind: Label
+        name: adoring-hellman-62a001
+    name: speedtest
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: condescending-davinci-a2a001
+spec:
+    associations:
+      - kind: Label
+        name: adoring-hellman-62a001
+    charts:
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Home'
+        width: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#BE2EE4'
+            name: Solid Purple
+            type: scale
+          - hex: '#BE2EE4'
+            name: Solid Purple
+            type: scale
+          - hex: '#BE2EE4'
+            name: Solid Purple
+            type: scale
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat_Plus_Line
+        name: Ping (ms)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "speedtest")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_speedtest")
+                  |> filter(fn: (r) => r["_field"] == "ping")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        shade: true
+        width: 2
+        xCol: _time
+        yCol: _value
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 4
+        kind: Single_Stat_Plus_Line
+        name: Download
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "speedtest")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_speedtest")
+                  |> filter(fn: (r) => r["_field"] == "download")
+                  |> map(fn: (r) => ({r with _value: r._value / 1048576.0}))
+                  |> yield(name: "last")
+        shade: true
+        suffix: ' Mbps'
+        width: 5
+        xCol: _time
+        xPos: 2
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#FFD255'
+            name: Solid Yellow
+            type: scale
+          - hex: '#FFD255'
+            name: Solid Yellow
+            type: scale
+          - hex: '#FFD255'
+            name: Solid Yellow
+            type: scale
+        decimalPlaces: 2
+        height: 4
+        kind: Single_Stat_Plus_Line
+        name: Upload
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "speedtest")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_speedtest")
+                  |> filter(fn: (r) => r["_field"] == "upload")
+                  |> map(fn: (r) => ({r with _value: r._value / 1048576.0}))
+                  |> yield(name: "last")
+        shade: true
+        suffix: ' Mbps'
+        width: 5
+        xCol: _time
+        xPos: 7
+        yCol: _value
+    name: Speedtest
+
+---
+
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: speedtest-config
+spec:
+    config: |
+         [[outputs.influxdb_v2]]
+           ## The URLs of the InfluxDB cluster nodes.
+           ##
+           ## Multiple URLs can be specified for a single cluster, only ONE of the
+           ## urls will be written to each interval.
+           ## urls exp: http://127.0.0.1:9999
+           urls = ["$INFLUX_HOST"]     
+           ## Token for authentication.
+           token = "$INFLUX_TOKEN"         
+
+           ## Organization is the name of the organization you wish to write to; must exist.
+           organization = "$INFLUX_ORG"         
+
+           ## Destination bucket to write into.
+           bucket = "speedtest"         
+
+           [agent]
+           interval = "1m"         
+
+         [[inputs.exec]]
+           ## Commands array
+           commands = [
+             "speedtest --json --single"
+           ]         
+
+           ## Timeout for each command to complete.
+           timeout = "90s"         
+
+           ## measurement name suffix (for separating different commands)
+           name_suffix = "_speedtest"         
+
+           ## Data format to consume.
+           ## Each data format has its own unique set of configuration options, read
+           ## more about them here:
+           ## https://github.com/influxdata/telegraf/blob/master/docs/DATA_FORMATS_INPUT.md
+           data_format = "json"
