@@ -20,7 +20,7 @@ spec:
         	|> to(bucket: "sam-bucket-minutely", org: "sam's organization")
 
 
-        params:
+      params:
           - key: bucket
             default: "wrong_bucket"
             type: string  
