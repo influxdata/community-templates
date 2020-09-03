@@ -1,16 +1,20 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Task
 metadata:
-    name: admiring-bassi-e89001
+    name: inspiring-euclid-d06001
 spec:
     every: 2m
     name: cpu-minutely
     query: |-
-        from(bucket: "sam's Bucket")
-          |> range(start: -2m)
-          |> filter(fn: (r) => r._measurement == "cpu")
-          |> filter(fn: (r) => r._field == "time_guest" or r._field == "time_guest_nice" or r._field == "time_idle" or r._field == "time_iowait" or r._field == "time_irq" or r._field == "time_nice" or r._field == "time_softirq" or r._field == "time_steal" or r._field == "time_user" or r._field == "time_system" or r._field == "usage_guest" or r._field == "usage_guest_nice" or r._field == "usage_idle" or r._field == "usage_iowait" or r._field == "usage_irq" or r._field == "usage_nice" or r._field == "usage_softirq" or r._field == "usage_steal" or r._field == "usage_system" or r._field == "usage_user")
-          |> group(columns: ["cpu"])
-          |> group(columns: ["host"])
-          |> aggregateWindow(every: 1m, fn: mean)
-          |> to(bucket: "sam-bucket-minutely", org: "sam's organization")
+        option params = {bucket: "wrong_bucket"}
+
+        from(bucket: params.bucket)
+        	|> range(start: -2m)
+        	|> filter(fn: (r) =>
+        		(r._measurement == "cpu"))
+        	|> filter(fn: (r) =>
+        		(r._field == "time_guest" or r._field == "time_guest_nice" or r._field == "time_idle" or r._field == "time_iowait" or r._field == "time_irq" or r._field == "time_nice" or r._field == "time_softirq" or r._field == "time_steal" or r._field == "time_user" or r._field == "time_system" or r._field == "usage_guest" or r._field == "usage_guest_nice" or r._field == "usage_idle" or r._field == "usage_iowait" or r._field == "usage_irq" or r._field == "usage_nice" or r._field == "usage_softirq" or r._field == "usage_steal" or r._field == "usage_system" or r._field == "usage_user"))
+        	|> group(columns: ["cpu"])
+        	|> group(columns: ["host"])
+        	|> aggregateWindow(every: 1m, fn: mean)
+        	|> to(bucket: "sam-bucket-minutely", org: "sam's organization")
