@@ -18,3 +18,9 @@ spec:
         	|> group(columns: ["host"])
         	|> aggregateWindow(every: 1m, fn: mean)
         	|> to(bucket: "sam-bucket-minutely", org: "sam's organization")
+
+
+        params:
+          - key: bucket
+            default: "wrong_bucket"
+            type: string  
