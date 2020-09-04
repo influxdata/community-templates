@@ -95,7 +95,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
 
 
 ## Measurements
-<details open>
+<details>
 <summary>kafka_broker</summary>
 
   * Tags
@@ -161,7 +161,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
 
 </details>
 
-<details open>
+<details>
 <summary>kafka_replica_manager</summary>
 
 * Tags
@@ -175,7 +175,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * UnderReplicatedPartitions
 </details>
 
-<details open>
+<details>
 <summary>kafka_requests</summary>
 
 * Tags
@@ -207,7 +207,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * QueueTimeStdDev
 </details>
 
-<details open>
+<details>
 <summary>kafka_topics</summary>
 
 * Tags
@@ -221,7 +221,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * TotalProduceRequestsPerSec
 </details>
 
-<details open>
+<details>
 <summary>kafka_topics</summary>
 
 * Tags
@@ -235,7 +235,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * TotalProduceRequestsPerSec
 </details>
 
-<details open>
+<details>
 <summary>kafka_consumer</summary>
 
 * Tags
@@ -250,7 +250,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * records-lag-avg_records-lag-avg
 </details>
 
-<details open>
+<details>
 <summary>kafka_producer</summary>
 
 * Tags
@@ -266,7 +266,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * request-rate
 </details>
 
-<details open>
+<details>
 <summary>zookeeper</summary>
 
 * Tags
@@ -290,7 +290,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * znode_count
 </details>
 
-<details open>
+<details>
 <summary>jvm_runtime</summary>
 
 * Tags
@@ -302,7 +302,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * VmName
 </details>
 
-<details open>
+<details>
 <summary>jvm_os</summary>
 
 * Tags
@@ -319,7 +319,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * Version
 </details>
 
-<details open>
+<details>
 <summary>jvm_mem</summary>
 
 * Tags
@@ -335,7 +335,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * NonHeapMemoryUsage_used
 </details>
 
-<details open>
+<details>
 <summary>jvm_threading</summary>
 
 * Tags
@@ -347,7 +347,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * TotalStartedThreadCount
 </details>
 
-<details open>
+<details>
 <summary>java_gc</summary>
 
 * Tags
@@ -358,7 +358,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * CollectionTime
 </details>
 
-<details open>
+<details>
 <summary>java_classes</summary>
 
 * Tags
@@ -369,7 +369,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * UnloadedClassCount
 </details>
 
-<details open>
+<details>
 <summary>java_mem_pool</summary>
 
 * Tags
