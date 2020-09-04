@@ -115,7 +115,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   
 </details>
 
-<details open>
+<details>
 <summary>kafka_controller</summary>
 
 * Tags
@@ -133,7 +133,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * TopicsToDeleteCount
 </details>
 
-<details open>
+<details>
 <summary>kafka_network</summary>
 
 * Tags
@@ -145,7 +145,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * NONE
 </details>
 
-<details open>
+<details>
 <summary>kafka_partition</summary>
 
 * Tags
