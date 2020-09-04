@@ -6,7 +6,12 @@ Use this InfluxDB template to monitor Docker.
 
 ### Quick install
 
-If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
+#### InfluxDB UI
+
+In the InfluxDB UI, go to Settings->Templates and enter this URL: https://raw.githubusercontent.com/influxdata/community-templates/master/docker/docker.yml
+
+#### Influx CLI
+If you have your InfluxDB credentials [configured in the CLI](https://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
 influx apply -f https://raw.githubusercontent.com/influxdata/community-templates/master/docker/docker.yml
@@ -23,7 +28,7 @@ influx apply -f https://raw.githubusercontent.com/influxdata/community-templates
 - 1 Notification Endpoint: Http Post
 - 1 Notification Rules: Crit Alert
 
-## Setup instructions
+## Setup Instructions
 
   General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
     

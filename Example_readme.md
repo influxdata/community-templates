@@ -11,7 +11,12 @@ Provide a short description of your template and use case here. Try to keep it t
 
 ### Quick Install
 
-If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
+#### InfluxDB UI
+
+In the InfluxDB UI, go to Settings->Templates and enter this URL: https://raw.githubusercontent.com/influxdata/community-templates/master/{your_template_dir}/{your_template_file}
+
+#### Influx CLI
+If you have your InfluxDB credentials [configured in the CLI](https://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
 influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/{your_template_dir}/{your_template_file}

@@ -1,22 +1,33 @@
-# Kafka Monitoring Template with Telegraf and Jolokia
+## Kafka Monitoring Template with Telegraf and Jolokia
 
-## Dashboards
+### Dashboards
 
-### Kafka
+#### Kafka
 
    <img src="images/kafka-dash.png" width="425"/> <img src="images/kafka-dash-light.png" width="425"/>
    
-### Kafka Producer Metrics
+#### Kafka Producer Metrics
 
    <img src="images/kafka-dash-producer.png" width="425"/> <img src="images/kafka-dash-producer-light.png" width="425"/>
    
-### Kafka Consumer Metrics
+#### Kafka Consumer Metrics
 
    <img src="images/kafka-dash-consumer.png" width="425"/> <img src="images/kafka-dash-consumer-light.png" width="425"/>
 
-### Kafka JVM
+#### Kafka JVM
    
    <img src="images/kafka-dash-jvm.png" width="425"/> <img src="images/kafka-dash-jvm-light.png" width="425"/>
+
+### Quick Install
+
+#### InfluxDB UI
+
+In the InfluxDB UI, go to Settings->Templates and enter this URL: https://raw.githubusercontent.com/influxdata/community-templates/master/kafka/kafka-template.yml
+
+#### Influx CLI
+If you have your InfluxDB credentials configured in the CLI, you can install this template with:
+
+`influx apply -f https://raw.githubusercontent.com/influxdata/community-templates/master/kafka/kafka-template.yml`
 
 ## Requirements
 
@@ -35,10 +46,7 @@
 
 *Note: Kafka and Zookeper can be easily obtained and managed through the open source [Confluent Platform](https://www.confluent.io/download).*
 
-## Get started
-If you have your InfluxDB credentials configured in the CLI, you can install this template with:
-
-`influx apply -f https://raw.githubusercontent.com/influxdata/community-templates/master/kafka/kafka-template.yml`
+## Setup Instructions
 
 Once installed, you'll need to start up Telegraf to pull metrics from your Jolokia-attached Kafka broker/s.  Checkout [Telegraf docs](https://docs.influxdata.com/telegraf/v1.14/) for installing and starting Telegraf.
 

@@ -15,7 +15,12 @@ Provided by: [bonitoo.io](.)
 
 ### Quick install
 
-If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
+#### InfluxDB UI
+
+In the InfluxDB UI, go to Settings->Templates and enter this URL: https://raw.githubusercontent.com/influxdata/community-templates/master/aws_cloudwatch/aws_cloudwatch.yml
+
+#### Influx CLI
+If you have your InfluxDB credentials [configured in the CLI](https://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
 influx apply -f https://raw.githubusercontent.com/influxdata/community-templates/master/aws_cloudwatch/aws_cloudwatch.yml
@@ -30,7 +35,7 @@ This template includes the following:
 - 1 Variable: `bucket`
 - 1 Telegraf Configuration: `AWS CloudWatch`
 
-## Setup instructions
+## Setup Instructions
 
 Load the dashboards and use the [Telegraf CloudWatch plugin](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/cloudwatch) into your
 environment.
