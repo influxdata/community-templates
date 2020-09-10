@@ -31,7 +31,7 @@ jobs:
         tar xvfz influx_nightly_linux_amd64.tar.gz
         sudo cp influx_nightly_linux_amd64/{influx,influxd} /usr/local/bin/
         influxd --reporting-disabled > /dev/null 2>&1 &
-        sleep 5
+        until curl -s http://localhost:8086/health; do sleep 1; done
         influx setup -f -b dummy -o influxdata -u ci_user -p password
         cd $GITHUB_WORKSPACE
         find $GITHUB_WORKSPACE \( ! -path '*/.*' \) -type f -name "*.yml" -print0 | while read -d $'\0' file
