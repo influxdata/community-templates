@@ -124,8 +124,11 @@ spec:
         name: linux-system-template
     language: flux
     query: |-
+        option params = {
+          bucket: "telegraf"
+        }
         import "influxdata/influxdb/v1"
-        v1.measurementTagValues(bucket: v.bucket, measurement: "cpu", tag: "host")
+        v1.measurementTagValues(bucket: params.bucket, measurement: "cpu", tag: "host")
     type: query
 ---
 apiVersion: influxdata.com/v2alpha1
@@ -422,7 +425,11 @@ spec:
         name: System Uptime
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                option params = {
+                  bucket: "telegraf"
+                }
+
+                from(bucket: params.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "system")
                   |> filter(fn: (r) => r._field == "uptime")
@@ -449,7 +456,11 @@ spec:
         name: Disk Usage
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                option params = {
+                  bucket: "telegraf"
+                }
+
+                from(bucket: params.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "disk")
                   |> filter(fn: (r) => r._field == "used_percent")
@@ -474,7 +485,11 @@ spec:
         name: Disk IO
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                option params = {
+                  bucket: "telegraf"
+                }
+
+                from(bucket: params.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "diskio")
                   |> filter(fn: (r) => r._field == "read_bytes" or r._field == "write_bytes")
@@ -492,7 +507,11 @@ spec:
         name: nCPUs
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                option params = {
+                  bucket: "telegraf"
+                }
+
+                from(bucket: params.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "system")
                   |> filter(fn: (r) => r._field == "n_cpus")
@@ -519,7 +538,11 @@ spec:
         name: CPU Usage
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                option params = {
+                  bucket: "telegraf"
+                }
+
+                from(bucket: params.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "cpu")
                   |> filter(fn: (r) => r._field == "usage_user" or r._field == "usage_system" or r._field == "usage_idle")
@@ -546,7 +569,11 @@ spec:
         name: Network
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                option params = {
+                  bucket: "telegraf"
+                }
+
+                from(bucket: params.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "net")
                   |> filter(fn: (r) => r._field == "bytes_recv" or r._field == "bytes_sent")
@@ -567,7 +594,11 @@ spec:
         name: System Load
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                option params = {
+                  bucket: "telegraf"
+                }
+
+                from(bucket: params.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "system")
                   |> filter(fn: (r) => r._field == "load1")
@@ -593,7 +624,11 @@ spec:
         name: System Load
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                option params = {
+                  bucket: "telegraf"
+                }
+
+                from(bucket: params.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "system")
                   |> filter(fn: (r) => r._field == "load1" or r._field == "load5" or r._field == "load15")
@@ -618,7 +653,11 @@ spec:
         name: Processes
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                option params = {
+                  bucket: "telegraf"
+                }
+
+                from(bucket: params.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "processes")
                   |> filter(fn: (r) => r._field == "running" or r._field == "blocked" or r._field == "idle" or r._field == "unknown")
@@ -637,12 +676,16 @@ spec:
         name: Total Memory
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                option params = {
+                  bucket: "telegraf"
+                }
+
+                from(bucket: params.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "mem")  
+                  |> filter(fn: (r) => r._measurement == "mem")
                   |> filter(fn: (r) => r._field == "total")
                   |> filter(fn: (r) => r.host == v.linux_host)
-                  |> last()  
+                  |> last()
                   |> map(fn: (r) => ({r with _value: float(v: r._value) / 1024.0 / 1024.0 / 1024.0}))
         suffix: ' GB'
         width: 2
@@ -678,7 +721,11 @@ spec:
         name: Memory Usage
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                option params = {
+                  bucket: "telegraf"
+                }
+
+                from(bucket: params.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "mem")
                   |> filter(fn: (r) => r._field == "used_percent")
@@ -704,7 +751,11 @@ spec:
         name: Swap
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                option params = {
+                  bucket: "telegraf"
+                }
+
+                from(bucket: params.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "swap")
                   |> filter(fn: (r) => r._field == "total" or r._field == "used")
