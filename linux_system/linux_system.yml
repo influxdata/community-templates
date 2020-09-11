@@ -125,14 +125,10 @@ spec:
     language: flux
     query: |-
         option params = {
-          bucket: "v.bucket"
+          bucket: "telegraf"
         }
         import "influxdata/influxdb/v1"
         v1.measurementTagValues(bucket: params.bucket, measurement: "cpu", tag: "host")
-    params:
-      - key: bucket
-        default: "v.bucket"
-        type: string
     type: query
 ---
 apiVersion: influxdata.com/v2alpha1
@@ -430,20 +426,15 @@ spec:
         queries:
           - query: |-
                 option params = {
-                  bucket: "v.bucket"
+                  bucket: "telegraf"
                 }
 
                 from(bucket: params.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "system")
                   |> filter(fn: (r) => r._field == "uptime")
-                  |> filter(fn: (r) => r.host == v.linux_host)
                   |> last()
                   |> map(fn: (r) => ({ _value: float(v: r._value) / 86400.00 }))
-            params:
-            - key: bucket
-              default: "v.bucket"
-              type: string
         suffix: ' days'
         width: 3
         yPos: 1
@@ -465,19 +456,14 @@ spec:
         queries:
           - query: |-
                 option params = {
-                  bucket: "v.bucket"
+                  bucket: "telegraf"
                 }
 
                 from(bucket: params.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "disk")
                   |> filter(fn: (r) => r._field == "used_percent")
-                  |> filter(fn: (r) => r.host == v.linux_host)
                   |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
-            params:
-            - key: bucket
-              default: "v.bucket"
-              type: string
         width: 3
         yPos: 2
       - axes:
@@ -498,19 +484,14 @@ spec:
         queries:
           - query: |-
                 option params = {
-                  bucket: "v.bucket"
+                  bucket: "telegraf"
                 }
 
                 from(bucket: params.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "diskio")
                   |> filter(fn: (r) => r._field == "read_bytes" or r._field == "write_bytes")
-                  |> filter(fn: (r) => r.host == v.linux_host)
                   |> derivative(unit: v.windowPeriod, nonNegative: false)
-            params:
-            - key: bucket
-              default: "v.bucket"
-              type: string
         width: 3
         yPos: 5
       - colors:
@@ -524,19 +505,14 @@ spec:
         queries:
           - query: |-
                 option params = {
-                  bucket: "v.bucket"
+                  bucket: "telegraf"
                 }
 
                 from(bucket: params.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "system")
                   |> filter(fn: (r) => r._field == "n_cpus")
-                  |> filter(fn: (r) => r.host == v.linux_host)
                   |> last()
-            params:
-            - key: bucket
-              default: "v.bucket"
-              type: string
         suffix: ' cpus'
         width: 2
         xPos: 3
@@ -559,7 +535,7 @@ spec:
         queries:
           - query: |-
                 option params = {
-                  bucket: "v.bucket"
+                  bucket: "telegraf"
                 }
 
                 from(bucket: params.bucket)
@@ -567,12 +543,7 @@ spec:
                   |> filter(fn: (r) => r._measurement == "cpu")
                   |> filter(fn: (r) => r._field == "usage_user" or r._field == "usage_system" or r._field == "usage_idle")
                   |> filter(fn: (r) => r.cpu == "cpu-total")
-                  |> filter(fn: (r) => r.host == v.linux_host)
                   |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
-            params:
-            - key: bucket
-              default: "v.bucket"
-              type: string
         width: 3
         xPos: 3
         yPos: 2
@@ -594,19 +565,14 @@ spec:
         queries:
           - query: |-
                 option params = {
-                  bucket: "v.bucket"
+                  bucket: "telegraf"
                 }
 
                 from(bucket: params.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "net")
                   |> filter(fn: (r) => r._field == "bytes_recv" or r._field == "bytes_sent")
-                  |> filter(fn: (r) => r.host == v.linux_host)
                   |> derivative(unit: v.windowPeriod, nonNegative: false)
-            params:
-            - key: bucket
-              default: "v.bucket"
-              type: string
         width: 3
         xCol: _time
         xPos: 3
@@ -623,19 +589,14 @@ spec:
         queries:
           - query: |-
                 option params = {
-                  bucket: "v.bucket"
+                  bucket: "telegraf"
                 }
 
                 from(bucket: params.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "system")
                   |> filter(fn: (r) => r._field == "load1")
-                  |> filter(fn: (r) => r.host == v.linux_host)
                   |> last()
-            params:
-            - key: bucket
-              default: "v.bucket"
-              type: string
         width: 2
         xPos: 5
         yPos: 1
@@ -657,19 +618,14 @@ spec:
         queries:
           - query: |-
                 option params = {
-                  bucket: "v.bucket"
+                  bucket: "telegraf"
                 }
 
                 from(bucket: params.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "system")
                   |> filter(fn: (r) => r._field == "load1" or r._field == "load5" or r._field == "load15")
-                  |> filter(fn: (r) => r.host == v.linux_host)
                   |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
-            params:
-            - key: bucket
-              default: "v.bucket"
-              type: string
         width: 3
         xPos: 6
         yPos: 2
@@ -690,19 +646,14 @@ spec:
         queries:
           - query: |-
                 option params = {
-                  bucket: "v.bucket"
+                  bucket: "telegraf"
                 }
 
                 from(bucket: params.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "processes")
                   |> filter(fn: (r) => r._field == "running" or r._field == "blocked" or r._field == "idle" or r._field == "unknown")
-                  |> filter(fn: (r) => r.host == v.linux_host)
                   |> aggregateWindow(every: v.windowPeriod, fn: max)
-            params:
-            - key: bucket
-              default: "v.bucket"
-              type: string
         width: 3
         xPos: 6
         yPos: 5
@@ -717,20 +668,15 @@ spec:
         queries:
           - query: |-
                 option params = {
-                  bucket: "v.bucket"
+                  bucket: "telegraf"
                 }
 
                 from(bucket: params.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "mem")
                   |> filter(fn: (r) => r._field == "total")
-                  |> filter(fn: (r) => r.host == v.linux_host)
                   |> last()
                   |> map(fn: (r) => ({r with _value: float(v: r._value) / 1024.0 / 1024.0 / 1024.0}))
-            params:
-            - key: bucket
-              default: "v.bucket"
-              type: string
         suffix: ' GB'
         width: 2
         xPos: 7
@@ -766,19 +712,14 @@ spec:
         queries:
           - query: |-
                 option params = {
-                  bucket: "v.bucket"
+                  bucket: "telegraf"
                 }
 
                 from(bucket: params.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "mem")
                   |> filter(fn: (r) => r._field == "used_percent")
-                  |> filter(fn: (r) => r.host == v.linux_host)
                   |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
-            params:
-            - key: bucket
-              default: "v.bucket"
-              type: string
         suffix: '%'
         width: 3
         xPos: 9
@@ -800,23 +741,14 @@ spec:
         queries:
           - query: |-
                 option params = {
-                  bucket: "v.bucket"
+                  bucket: "telegraf"
                 }
 
                 from(bucket: params.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "swap")
                   |> filter(fn: (r) => r._field == "total" or r._field == "used")
-                  |> filter(fn: (r) => r.host == v.linux_host)
                   |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
-            params:
-            - key: bucket
-              default: "v.bucket"
-              type: string
-            params:
-            - key: bucket
-              default: "v.bucket"
-              type: string
         width: 3
         xPos: 9
         yPos: 5
