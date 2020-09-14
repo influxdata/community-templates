@@ -29,16 +29,16 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
 ## Setup Instructions
 
 General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
-    
+
     Telegraf Configuration requires the following environment variables
     - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your operator token to get started.
     - `INFLUX_ORG` - The name of your Organization.
     - `INFLUX_HOST` - The address of you InfluxDB
-    - `INFLUX_BUCKET` - The name of the Bucket. If you going to use the bucket included, you need to export the variable. Ex: <code>export INFLUX_BUCKET=mariadb</code>
+    - `INFLUX_BUCKET` - The name of the Bucket. If you going to use the bucket included, you need to export the variable. Ex: ```export INFLUX_BUCKET=mariadb```
 
 In order to use this Dashboard, you need to specify the connection string to the mySQL/MariaDB instance as variable. The same needs to define user and password (read only recommended)
 
-ex: <code>$ export $MYSQL_CONNECTION_STRING=user@tcp(127.0.0.1:3306)/?tls=false</code>
+ex: ```$ export $MYSQL_CONNECTION_STRING=user@tcp(127.0.0.1:3306)/?tls=false```
 
 ## Contact
 
@@ -46,6 +46,6 @@ Author: Ignacio Van Droogenbroeck
 
 Email: ignacio[at]vandroogenbroeck[dot]net
 
-Github and Gitlab user: @xe-nvdk 
+Github and Gitlab user: @xe-nvdk
 
 Influx Slack: Ignacio Van Droogenbroeck
