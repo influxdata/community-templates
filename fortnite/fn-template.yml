@@ -37,14 +37,13 @@ spec:
         import "strings"
         import "influxdata/influxdb/secrets"
 
+
+
         webhook = secrets.get(key: "SLACK_WEBHOOK")
         sendSlackMessage = (text) =>
         	(slack.message(
         		url: webhook,
-                token: "",
-        		username: "",
-        		workspace: "",
-        		iconEmoji: "",
+        		token: "",
         		channel: "",
         		text: text,
         		color: "good",
