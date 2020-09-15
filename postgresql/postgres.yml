@@ -15,6 +15,9 @@ spec:
       - kind: Label
         name: flamboyant-dubinsky-332001
     name: postgres
+    retentionRules:
+    - everySeconds: 2.592e+6
+      type: expire
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
@@ -548,24 +551,24 @@ spec:
           ## urls will be written to each interval.
           ## urls exp: http://127.0.0.1:9999
           urls = ["$INFLUX_HOST"]
-        
+
           ## Token for authentication.
           token = "$INFLUX_TOKEN"
-        
+
           ## Organization is the name of the organization you wish to write to; must exist.
           organization = "$INFLUX_ORG"
-        
+
           ## Destination bucket to write into.
           bucket = "$INFLUX_BUCKET"
-              
+
           [agent]
           interval = "1m"
-          
+
         [[inputs.postgresql]]
           # address = "postgres://postgres:mysecretpassword@localhost:5432"
           address = "$PSQL_STRING_CONNECTION"
           ignored_databases = ["template0", "template1"]
-        
+
         [[inputs.cpu]]
           ## Whether to report per-cpu stats or not
           percpu = true
@@ -575,15 +578,15 @@ spec:
           collect_cpu_time = false
           ## If true, compute and report the sum of all non-idle CPU states.
           report_active = false
-        
+
         [[inputs.disk]]
           ## By default stats will be gathered for all mount points.
           ## Set mount_points will restrict the stats to only the specified mount points.
           # mount_points = ["/"]
-        
+
           ## Ignore mount points by filesystem type.
           ignore_fs = ["tmpfs", "devtmpfs", "devfs", "iso9660", "overlay", "aufs", "squashfs"]
-        
+
         # Read metrics about disk IO by device
         [[inputs.diskio]]
           ## By default, telegraf will gather stats for all devices including
@@ -611,8 +614,8 @@ spec:
           ## The typical use case is for LVM volumes, to get the VG/LV name instead of
           ## the near-meaningless DM-0 name.
           # name_templates = ["$ID_FS_LABEL","$DM_VG_NAME/$DM_LV_NAME"]
-        
+
         # Read metrics about memory usage
         [[inputs.mem]]
           # no configuration
-      
+

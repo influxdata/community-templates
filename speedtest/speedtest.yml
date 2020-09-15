@@ -15,6 +15,9 @@ spec:
       - kind: Label
         name: adoring-hellman-62a001
     name: speedtest
+    retentionRules:
+    - everySeconds: 2.592e+6
+      type: expire
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
@@ -153,30 +156,30 @@ spec:
            ## Multiple URLs can be specified for a single cluster, only ONE of the
            ## urls will be written to each interval.
            ## urls exp: http://127.0.0.1:9999
-           urls = ["$INFLUX_HOST"]     
+           urls = ["$INFLUX_HOST"]
            ## Token for authentication.
-           token = "$INFLUX_TOKEN"         
+           token = "$INFLUX_TOKEN"
 
            ## Organization is the name of the organization you wish to write to; must exist.
-           organization = "$INFLUX_ORG"         
+           organization = "$INFLUX_ORG"
 
            ## Destination bucket to write into.
-           bucket = "speedtest"         
+           bucket = "speedtest"
 
            [agent]
-           interval = "1m"         
+           interval = "1m"
 
          [[inputs.exec]]
            ## Commands array
            commands = [
              "speedtest --json --single"
-           ]         
+           ]
 
            ## Timeout for each command to complete.
-           timeout = "90s"         
+           timeout = "90s"
 
            ## measurement name suffix (for separating different commands)
-           name_suffix = "_speedtest"         
+           name_suffix = "_speedtest"
 
            ## Data format to consume.
            ## Each data format has its own unique set of configuration options, read

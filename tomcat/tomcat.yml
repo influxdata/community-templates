@@ -15,6 +15,9 @@ spec:
       - kind: Label
         name: terrifying-hodgkin-1cb001
     name: tomcat
+    retentionRules:
+    - everySeconds: 2.592e+6
+      type: expire
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
@@ -270,7 +273,7 @@ kind: Telegraf
 metadata:
     name: apache-tomcat
 spec:
-    config: | 
+    config: |
          [[outputs.influxdb_v2]]
           ## The URLs of the InfluxDB cluster nodes.
           ##
@@ -310,5 +313,5 @@ spec:
             # insecure_skip_verify = false
     name: Apache Tomcat
     Description: Dashboard to monitor Apache Tomcat
-        
-         
+
+

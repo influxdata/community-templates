@@ -102,6 +102,9 @@ metadata:
   name: relaxed-turing-d4d019
 spec:
   name: dave
+  retentionRules:
+    - everySeconds: 2.592e+6
+      type: expire
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: CheckThreshold

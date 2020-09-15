@@ -15,6 +15,9 @@ spec:
       - kind: Label
         name: inspiring-dirac-5a3001
     name: jboss-wildfly
+    retentionRules:
+    - everySeconds: 2.592e+6
+      type: expire
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
@@ -650,79 +653,79 @@ spec:
          ## urls will be written to each interval.
          ## urls exp: http://127.0.0.1:9999
          urls = ["$INFLUX_HOST"]
-        
+
          ## Token for authentication.
          token = "$INFLUX_TOKEN"
-        
+
           ## Organization is the name of the organization you wish to write to; must exist.
          organization = "$INFLUX_ORG"
-        
+
           ## Destination bucket to write into.
          bucket = "$INFLUX_BUCKET"
-        
+
          [agent]
          interval = "1m"
-        
+
          [[inputs.jolokia2_agent]]
           urls = ["$JBOSS_CONNECTION_STRING"]
           name_prefix = "jboss."
-        
+
           ### JVM Generic
-        
+
          [[inputs.jolokia2_agent.metric]]
             name  = "OperatingSystem"
             mbean = "java.lang:type=OperatingSystem"
             paths = ["ProcessCpuLoad","SystemLoadAverage","SystemCpuLoad"]
-        
+
          [[inputs.jolokia2_agent.metric]]
             name  = "jvm_runtime"
             mbean = "java.lang:type=Runtime"
             paths = ["Uptime"]
-        
+
          [[inputs.jolokia2_agent.metric]]
             name  = "jvm_memory"
             mbean = "java.lang:type=Memory"
             paths = ["HeapMemoryUsage", "NonHeapMemoryUsage", "ObjectPendingFinalizationCount"]
-        
+
          [[inputs.jolokia2_agent.metric]]
             name     = "jvm_garbage_collector"
             mbean    = "java.lang:name=*,type=GarbageCollector"
             paths    = ["CollectionTime", "CollectionCount"]
             tag_keys = ["name"]
-        
+
          [[inputs.jolokia2_agent.metric]]
             name       = "jvm_memory_pool"
             mbean      = "java.lang:name=*,type=MemoryPool"
             paths      = ["Usage", "PeakUsage", "CollectionUsage"]
             tag_keys   = ["name"]
             tag_prefix = "pool_"
-        
+
           ### JBOSS
-        
+
          [[inputs.jolokia2_agent.metric]]
             name     = "connectors.http"
             mbean    = "jboss.as:https-listener=*,server=*,subsystem=undertow"
             paths    = ["bytesReceived","bytesSent","errorCount","requestCount"]
             tag_keys = ["server","https-listener"]
-        
+
          [[inputs.jolokia2_agent.metric]]
             name     = "connectors.http"
             mbean    = "jboss.as:http-listener=*,server=*,subsystem=undertow"
             paths    = ["bytesReceived","bytesSent","errorCount","requestCount"]
             tag_keys = ["server","http-listener"]
-        
+
          [[inputs.jolokia2_agent.metric]]
             name     = "datasource.jdbc"
             mbean    = "jboss.as:data-source=*,statistics=jdbc,subsystem=datasources"
             paths    = ["PreparedStatementCacheAccessCount","PreparedStatementCacheHitCount","PreparedStatementCacheMissCount"]
             tag_keys = ["data-source"]
-        
+
          [[inputs.jolokia2_agent.metric]]
             name     = "datasource.pool"
             mbean    = "jboss.as:data-source=*,statistics=pool,subsystem=datasources"
             paths    = ["AvailableCount","ActiveCount","MaxUsedCount"]
             tag_keys = ["data-source"]
-        
+
          [[inputs.cpu]]
             ## Whether to report per-cpu stats or not
             percpu = true
@@ -744,4 +747,3 @@ spec:
          [[inputs.processes]]
          [[inputs.swap]]
          [[inputs.system]]
-    

@@ -15,6 +15,9 @@ spec:
       - kind: Label
         name: cranky-ramanujan-708001
     name: mariadb
+    retentionRules:
+    - everySeconds: 2.592e+6
+      type: expire
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard

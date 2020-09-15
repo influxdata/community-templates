@@ -4,6 +4,9 @@ metadata:
     name: telegraf-1d-bucket
 spec:
     name: telegraf_1d
+    retentionRules:
+    - everySeconds: 2.592e+6
+      type: expire
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Bucket
@@ -11,6 +14,9 @@ metadata:
     name: telegraf-bucket
 spec:
     name: telegraf
+    retentionRules:
+    - everySeconds: 2.592e+6
+      type: expire
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Bucket
@@ -18,6 +24,9 @@ metadata:
     name: telegraf-1h-bucket
 spec:
     name: telegraf_1h
+    retentionRules:
+    - everySeconds: 2.592e+6
+      type: expire
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Bucket
@@ -25,6 +34,9 @@ metadata:
     name: telegraf-1m-bucket
 spec:
     name: telegraf_1m
+    retentionRules:
+    - everySeconds: 2.592e+6
+      type: expire
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Bucket
@@ -32,3 +44,6 @@ metadata:
     name: telegraf-10m-bucket
 spec:
     name: telegraf_10m
+    retentionRules:
+    - everySeconds: 2.592e+6
+      type: expire
