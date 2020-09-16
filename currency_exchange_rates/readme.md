@@ -49,7 +49,7 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
     
   - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your operator token to get started.
   - `INFLUX_ORG` - The name of your Organization
-  - `INFLUX_HOST` - The URL of your InfluxDB host (this can your localhost, a remote instance, or InfluxDB Cloud)
+  - `INFLUX_URL` - The URL of your InfluxDB host (this can your localhost, a remote instance, or InfluxDB Cloud)
   - `QUANDL_API_KEY` - The API key for quandl
 
   You **MUST** set these environment variables before running Telegraf using something similar to the following commands
