@@ -33,6 +33,7 @@ General instructions on using InfluxDB Templates can be found in the [use a temp
     Telegraf Configuration requires the following environment variables
     - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your operator token to get started.
     - `INFLUX_ORG` - The name of your Organization.
+    - `INFLUX_HOST` - The URL of your InfluxDB host (this can be your localhost, a remote instance, or InfluxDB Cloud).
     - `GITHUB_ACCESS_TOKEN` - Your personal Github token for making API calls
 
 > You can generate a Token Access Key from Github on this page: https://github.com/settings/tokens. 
