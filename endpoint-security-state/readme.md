@@ -1,4 +1,4 @@
-# Endpoint Security State Template
+## Endpoint Security State Template
 
 This InfluxDB template works by connecting to secure endpoints and attempting to log in. Using the `http_response` and `x509_cert` Telegraf plugins, availability, authentication, and certificate information is collected.
 The dashboard displays the general availability for each endpoint along with the x509 certificate status and authentication state.
@@ -9,6 +9,18 @@ The dashboard displays the general availability for each endpoint along with the
 - "🟡" Service needs attention. The certificate will expire in less than 30 days.
 - "🔴" Service is critical.  Endpoint is unavailable, certificate is or will expire in less than 1 day, or authentication is failing.
 - "❓" We could not determine the state of the service.
+
+### Quick Install
+
+#### InfluxDB UI
+
+In the InfluxDB UI, go to Settings->Templates and enter this URL: https://raw.githubusercontent.com/influxdata/community-templates/master/endpoint-security-state/endpoint-security-state.yml
+
+#### Influx CLI
+From your [InfluxDB configured CLI environment](https://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/):
+```
+influx apply --template-url https://raw.githubusercontent.com/influxdata/community-templates/master/endpoint-security-state/endpoint-security-state.yml
+```
 
 ## Included Resources
 
@@ -24,12 +36,6 @@ The dashboard displays the general availability for each endpoint along with the
 - 1 Variable: `bucket`
 
 ## Setup Instructions
-
-### Install the template package
-From your [InfluxDB configured CLI environment](https://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/):
-```
-influx apply --template-url https://raw.githubusercontent.com/influxdata/community-templates/master/endpoint-security-state/endpoint-security-state.yml
-```
 
 ### Customize the Telegraf configuration
 Add the endpoints you would like to watch to specific input section(s).

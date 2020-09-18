@@ -1,28 +1,32 @@
-# Network Interface Performance Template
+## Windows System Monitoring Template
 
-Provided by: InfluxData
+This InfluxDB Template can be used to monitor your Windows System.
 
-This InfluxDB Template can be used to monitor your network traffic across multiple hosts.
-
-![Network Interface Performance Screenshot](img/network-dashboard.png)
+![Windows System Dashboard Screenshot](img/windows_system_dashboard.png)
 
 ### Quick Install
 
-If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
+#### InfluxDB UI
+
+In the InfluxDB UI, go to Settings->Templates and enter this URL: https://raw.githubusercontent.com/influxdata/community-templates/master/windows_system/windows_system.yml
+
+#### Influx CLI
+If you have your InfluxDB credentials [configured in the CLI](https://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
-influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/network_interface_performance/network_interface_performance.yml
+influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/windows_system/windows_system.yml
 ```
 
-## Included Resources
+### Included Resources
 
-  - 1 Bucket: `network_data`, 7d retention
-  - 1 Telegraf Configuration: `network-data.conf`
-  - 1 Dashboard: `Network Interface Performance`
-  - 2 Labels: `outputs.influxdb_v2`, `inputs.net`
+- 1 Bucket: `telegraf`, 7d retention
+- Labels: `Windows System Template` + Telegraf Plugin Labels
+- 1 Telegraf Configuration
+- 1 Dashboard: `Windows System`
+- 2 Variables: `bucket` and `windows_host`
 
 ## Setup Instructions
-
+  
   General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
     
   The data for the dashboard is populated by the included Telegraf configuration. The Telegraf Configuration requires the following environment variables
@@ -40,9 +44,11 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
 
 ## Customizations
 
-You can run the provided Telegraf configuration on multiple machines, and switch between them using the `network_host` filter at the top of the dashboard.
+You can run the provided Telegraf configuration on multiple Windows machines, and switch between them using the `windows_host` filter at the top of the dashboard.
 
 ## Contact
+
+Provide a way for users to get in touch with you if they have questions or need help using your template. What information you give is up to you, but we encourage providing those below.
 
 - Author: Russ Savage
 - Email: russ@influxdata.com

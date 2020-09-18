@@ -1,7 +1,5 @@
 # Enviro+
 
-Provided by: Simon Loffler
-
 View the air quality readings from a [Pimoroni Enviro+](https://shop.pimoroni.com/products/enviro-plus) with a [PMS5003](https://shop.pimoroni.com/products/pms5003-particulate-matter-sensor-with-cable) particulate matter sensor.
 
 ![Enviro+ dashboard](img/enviro-plus-influxdb-template.png)
@@ -11,7 +9,7 @@ View the air quality readings from a [Pimoroni Enviro+](https://shop.pimoroni.co
 If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
-influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/enviro_plus/enviro_plus.json
+influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/enviro_plus/enviro_plus.yml
 ```
 
 ## Included Resources
@@ -44,7 +42,12 @@ ENV DEBUG="true"
 
 ## Contact
 
-- Author: Simon Loffler
-- Email: sighmon@sighmon.com
-- Github: @sighmon
-- Influx Slack: @sighmon
+- Original Author: Simon Loffler
+- Original Email: sighmon@sighmon.com
+- Original Github: [@sighmon](https://github.com/sighmon)
+- Original Influx Slack: [@sighmon](https://influxdata.com/slack)
+
+- Maintainer: Russ Savage
+- Email: russ@influxdata.com
+- Github: [@russorat](https://github.com/russorat)
+- Influx Slack: [@russ](https://influxdata.com/slack)

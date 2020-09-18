@@ -10,7 +10,12 @@ This template provides several dashboards showing metrics provided via SNMP prot
 
 ### Quick Install
 
-If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
+#### InfluxDB UI
+
+In the InfluxDB UI, go to Settings->Templates and enter this URL: https://raw.githubusercontent.com/influxdata/community-templates/master/snmp/snmp.yml
+
+#### Influx CLI
+If you have your InfluxDB credentials [configured in the CLI](https://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
 influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/snmp/snmp.yml

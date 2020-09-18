@@ -8,7 +8,12 @@ This Dashboard offers you information about your game in CSGO. Information about
 
 ### Quick Install
 
-If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
+#### InfluxDB UI
+
+In the InfluxDB UI, go to Settings->Templates and enter this URL: https://raw.githubusercontent.com/influxdata/community-templates/master/csgo/csgo.yml
+
+#### Influx CLI
+If you have your InfluxDB credentials [configured in the CLI](https://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
 influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/csgo/csgo.yml
@@ -25,12 +30,12 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
 ## Setup Instructions
 
 General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
-    
+
     Telegraf Configuration requires the following environment variables
     - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your operator token to get started.
     - `INFLUX_ORG` - The name of your Organization.
     - `INFLUX_HOST` - The address of you InfluxDB
-    - `INFLUX_BUCKET` - The name of the Bucket. If you going to use the bucket included, you need to export the variable. Ex: <code>INFLUX_BUCKET=mssql</code>
+    - `INFLUX_BUCKET` - The name of the Bucket. If you going to use the bucket included, you need to export the variable. Ex: ```INFLUX_BUCKET=mssql```
 
 In order to use this dashboard you need to get an API key and your Steam User ID:
 
@@ -45,6 +50,6 @@ Author: Ignacio Van Droogenbroeck
 
 Email: ignacio[at]vandroogenbroeck[dot]net
 
-Github and Gitlab user: @xe-nvdk 
+Github and Gitlab user: @xe-nvdk
 
 Influx Slack: Ignacio Van Droogenbroeck

@@ -19,7 +19,12 @@ Cloud Monitoring API v3. There are three dashboards in this template.**
 
 ### Quick install
 
-If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
+#### InfluxDB UI
+
+In the InfluxDB UI, go to Settings->Templates and enter this URL: https://raw.githubusercontent.com/influxdata/community-templates/master/gcp_monitoring/gcp_monitoring.yml
+
+#### Influx CLI
+If you have your InfluxDB credentials [configured in the CLI](https://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
 influx apply -f https://raw.githubusercontent.com/influxdata/community-templates/master/gcp_monitoring/gcp_monitoring.yml
@@ -34,7 +39,7 @@ This template includes the following:
 - 1 Variable: `bucket`
 - 1 Telegraf Config: `GCP Stackdriver`
 
-## Setup instructions
+## Setup Instructions
 
 
 Load the dashboards and use the Telegraf Stackdriver plugin into your

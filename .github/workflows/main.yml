@@ -27,12 +27,12 @@ jobs:
     
       run: |
         cd /tmp
-        wget https://dl.influxdata.com/platform/nightlies/influx_nightly_linux_amd64.tar.gz
-        tar xvfz influx_nightly_linux_amd64.tar.gz
-        sudo cp influx_nightly_linux_amd64/{influx,influxd} /usr/local/bin/
-        influxd --reporting-disabled > /dev/null 2>&1 &
-        sleep 5
-        influx setup -f -b dummy -o influxdata -u ci_user -p password
+        wget https://dl.influxdata.com/influxdb/releases/influxdb_2.0.0-beta.16_linux_amd64.tar.gz
+        tar xvfz influxdb_2.0.0-beta.16_linux_amd64.tar.gz
+        sudo cp influxdb_2.0.0-beta.16_linux_amd64/{influx,influxd} /usr/local/bin/
+        influxd --http-bind-address :8086 --reporting-disabled > /dev/null 2>&1 &
+        until curl -s http://localhost:8086/health; do sleep 1; done
+        influx setup --host http://localhost:8086 -f -b dummy -o influxdata -u ci_user -p password
         cd $GITHUB_WORKSPACE
         find $GITHUB_WORKSPACE \( ! -path '*/.*' \) -type f -name "*.yml" -print0 | while read -d $'\0' file
         do

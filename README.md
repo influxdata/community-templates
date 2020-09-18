@@ -23,7 +23,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [Docker](docker/) | Monitor your running docker containers. | [@russorat](https://github.com/russorat) |
 | [Downsampling](downsampling/) | Downsample common Telegraf metrics. | [@russorat](https://github.com/russorat) |
 | [Endpoint Security State](endpoint-security-state/) | Watch endpoint authentication availability and certificate status | [Darin Fisher](https://github.com/darinfisher) |
-| [Enviro+](enviro_plus/) | View the air quality readings from a Pimoroni Enviro+ particulate matter sensor. | Simon Loffler |
+| [Enviro+](enviro_plus/) | View the air quality readings from a Pimoroni Enviro+ particulate matter sensor. | Russ Savage |
 | [Fortnite](fortnite/) | Track and analyze Fortnite player performance. | [@abalone23](https://github.com/abalone23) |
 | [GCP Monitoring](gcp_monitoring/) | Monitor Google Cloud Platform.  | [bonitoo.io](.) |
 | [Github](github/) | View information about your Github Repos. Forks, Issues, Stars and more. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
@@ -47,6 +47,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [Redis Monitor](redis/) | Monitor your Redis server. | [@russorat](https://github.com/russorat) |
 | [sFlow Traffic Monitor](sflow/) | Monitor your sFlow traffic. | [@russorat](https://github.com/russorat) |
 | [SNMP Monitoring](snmp/) | Dashboards showing metrics provided via SNMP protocol | [bonitoo.io](.) |
+| [Speedtest Dashboard](speedtest/) | This template will show you information about the speed of your Internet connection using speedtest-cli | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Telegraf Dashboard](telegraf/) | View throughput and internal stats about your Telegraf instances | Steven Soroka |
 | [Tomcat Dashboard](tomcat/) | Monitor your Tomcat instance. Include Threads, Commit Memory, Request Count, Traffic and more | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [vSphere System Monitor](vsphere/) | View information about vSphere system. CPU, RAM, Network, Disk Latency and more | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |

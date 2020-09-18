@@ -1,22 +1,33 @@
-# Kafka Monitoring Template with Telegraf and Jolokia
+## Kafka Monitoring Template with Telegraf and Jolokia
 
-## Dashboards
+### Dashboards
 
-### Kafka
+#### Kafka
 
    <img src="images/kafka-dash.png" width="425"/> <img src="images/kafka-dash-light.png" width="425"/>
    
-### Kafka Producer Metrics
+#### Kafka Producer Metrics
 
    <img src="images/kafka-dash-producer.png" width="425"/> <img src="images/kafka-dash-producer-light.png" width="425"/>
    
-### Kafka Consumer Metrics
+#### Kafka Consumer Metrics
 
    <img src="images/kafka-dash-consumer.png" width="425"/> <img src="images/kafka-dash-consumer-light.png" width="425"/>
 
-### Kafka JVM
+#### Kafka JVM
    
    <img src="images/kafka-dash-jvm.png" width="425"/> <img src="images/kafka-dash-jvm-light.png" width="425"/>
+
+### Quick Install
+
+#### InfluxDB UI
+
+In the InfluxDB UI, go to Settings->Templates and enter this URL: https://raw.githubusercontent.com/influxdata/community-templates/master/kafka/kafka-template.yml
+
+#### Influx CLI
+If you have your InfluxDB credentials configured in the CLI, you can install this template with:
+
+`influx apply -f https://raw.githubusercontent.com/influxdata/community-templates/master/kafka/kafka-template.yml`
 
 ## Requirements
 
@@ -35,10 +46,7 @@
 
 *Note: Kafka and Zookeper can be easily obtained and managed through the open source [Confluent Platform](https://www.confluent.io/download).*
 
-## Get started
-If you have your InfluxDB credentials configured in the CLI, you can install this template with:
-
-`influx apply -f https://raw.githubusercontent.com/influxdata/community-templates/master/kafka/kafka-template.yml`
+## Setup Instructions
 
 Once installed, you'll need to start up Telegraf to pull metrics from your Jolokia-attached Kafka broker/s.  Checkout [Telegraf docs](https://docs.influxdata.com/telegraf/v1.14/) for installing and starting Telegraf.
 
@@ -95,7 +103,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
 
 
 ## Measurements
-<details open>
+<details>
 <summary>kafka_broker</summary>
 
   * Tags
@@ -115,7 +123,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   
 </details>
 
-<details open>
+<details>
 <summary>kafka_controller</summary>
 
 * Tags
@@ -133,7 +141,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * TopicsToDeleteCount
 </details>
 
-<details open>
+<details>
 <summary>kafka_network</summary>
 
 * Tags
@@ -145,7 +153,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * NONE
 </details>
 
-<details open>
+<details>
 <summary>kafka_partition</summary>
 
 * Tags
@@ -161,7 +169,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
 
 </details>
 
-<details open>
+<details>
 <summary>kafka_replica_manager</summary>
 
 * Tags
@@ -175,7 +183,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * UnderReplicatedPartitions
 </details>
 
-<details open>
+<details>
 <summary>kafka_requests</summary>
 
 * Tags
@@ -207,7 +215,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * QueueTimeStdDev
 </details>
 
-<details open>
+<details>
 <summary>kafka_topics</summary>
 
 * Tags
@@ -221,7 +229,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * TotalProduceRequestsPerSec
 </details>
 
-<details open>
+<details>
 <summary>kafka_topics</summary>
 
 * Tags
@@ -235,7 +243,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * TotalProduceRequestsPerSec
 </details>
 
-<details open>
+<details>
 <summary>kafka_consumer</summary>
 
 * Tags
@@ -250,7 +258,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * records-lag-avg_records-lag-avg
 </details>
 
-<details open>
+<details>
 <summary>kafka_producer</summary>
 
 * Tags
@@ -266,7 +274,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * request-rate
 </details>
 
-<details open>
+<details>
 <summary>zookeeper</summary>
 
 * Tags
@@ -290,7 +298,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * znode_count
 </details>
 
-<details open>
+<details>
 <summary>jvm_runtime</summary>
 
 * Tags
@@ -302,7 +310,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * VmName
 </details>
 
-<details open>
+<details>
 <summary>jvm_os</summary>
 
 * Tags
@@ -319,7 +327,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * Version
 </details>
 
-<details open>
+<details>
 <summary>jvm_mem</summary>
 
 * Tags
@@ -335,7 +343,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * NonHeapMemoryUsage_used
 </details>
 
-<details open>
+<details>
 <summary>jvm_threading</summary>
 
 * Tags
@@ -347,7 +355,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * TotalStartedThreadCount
 </details>
 
-<details open>
+<details>
 <summary>java_gc</summary>
 
 * Tags
@@ -358,7 +366,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * CollectionTime
 </details>
 
-<details open>
+<details>
 <summary>java_classes</summary>
 
 * Tags
@@ -369,7 +377,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * UnloadedClassCount
 </details>
 
-<details open>
+<details>
 <summary>java_mem_pool</summary>
 
 * Tags

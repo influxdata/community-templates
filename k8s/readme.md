@@ -15,7 +15,12 @@ supports Google Cloud Platform, AWS and on-premise K8S environments.**
 
 ### Quick install
 
-If you have your InfluxDB credentials [configured in the CLI](Vhttps://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
+#### InfluxDB UI
+
+In the InfluxDB UI, go to Settings->Templates and enter this URL: https://raw.githubusercontent.com/influxdata/community-templates/master/k8s/k8s.yml
+
+#### Influx CLI
+If you have your InfluxDB credentials [configured in the CLI](https://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
 influx apply -f https://raw.githubusercontent.com/influxdata/community-templates/master/k8s/k8s.yml
@@ -31,7 +36,7 @@ This template includes the following:
 - 1 Telegraf Config: `K8S Configuration`
 
 
-## Setup instructions
+## Setup Instructions
 
 Set up and install Telegraf `kubernetes` and `kube_inventory` plugins into your
 Telegraf configmap.
