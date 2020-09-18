@@ -1,10 +1,54 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
+    name: eloquent-lovelace-776001
+spec:
+    color: '#7A65F2'
+    name: Linux System Template
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
     name: tender-wu-ecc001
 spec:
     color: '#E30B5D'
     name: raspberry-pi
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: gifted-chatterjee-776004
+spec:
+    associations:
+      - kind: Label
+        name: eloquent-lovelace-776001
+      - kind: Label
+        name: tender-wu-ecc001
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> filter(fn: (r) => r.name !~ /^_/)
+          |> rename(columns: {name: "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: trusting-carson-b76004
+spec:
+    associations:
+      - kind: Label
+        name: eloquent-lovelace-776001
+      - kind: Label
+        name: tender-wu-ecc001
+    language: flux
+    name: linux_host
+    query: |-
+        import "influxdata/influxdb/v1"
+        v1.measurementTagValues(bucket: v.bucket, measurement: "cpu", tag: "host")
+    type: query
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
@@ -35,11 +79,12 @@ spec:
                   |> filter(fn: (r) => r._measurement == "system")
                   |> filter(fn: (r) => r["host"] == v.linux_host)
                   |> filter(fn: (r) => r._field == "uptime")
-                   |> last()
-                   |> map(fn: (r) => ({r with _value: r._value / 86400}))
+                  |> last()
+                  |> toFloat()
+                  |> map(fn: (r) => ({r with _value: r._value / 86400.0}))
                   |> yield(name: "last")
         suffix: ' days'
-        width: 1
+        width: 2
         yPos: 1
       - axes:
           - base: "10"
@@ -133,7 +178,7 @@ spec:
                   |> yield(name: "last")
         suffix: ' °C'
         width: 1
-        xPos: 1
+        xPos: 2
         yPos: 1
       - colors:
           - hex: '#00C9FF'
@@ -170,27 +215,6 @@ spec:
                   |> yield(name: "last")
         suffix: ' °C'
         width: 1
-        xPos: 2
-        yPos: 1
-      - colors:
-          - hex: '#00C9FF'
-            name: laser
-            type: text
-        decimalPlaces: 2
-        height: 1
-        kind: Single_Stat
-        name: nCPUs
-        queries:
-          - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart)
-                  |> filter(fn: (r) => r["host"] == v.linux_host)
-                  |> filter(fn: (r) => r._measurement == "system")
-                  |> filter(fn: (r) => r._field == "n_cpus")
-                  |> last()
-                  |> yield(name: "last")
-        suffix: ' cpus'
-        width: 2
         xPos: 3
         yPos: 1
       - axes:
@@ -252,6 +276,27 @@ spec:
         xPos: 3
         yCol: _value
         yPos: 5
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: nCPUs
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["host"] == v.linux_host)
+                  |> filter(fn: (r) => r._measurement == "system")
+                  |> filter(fn: (r) => r._field == "n_cpus")
+                  |> last()
+                  |> yield(name: "last")
+        suffix: ' '
+        width: 1
+        xPos: 4
+        yPos: 1
       - colors:
           - hex: '#00C9FF'
             name: laser
@@ -459,7 +504,7 @@ spec:
           ## Organization is the name of the organization you wish to write to; must exist.
           organization = "$INFLUX_ORG"
           ## Destination bucket to write into.
-          bucket = "telegraf"
+          bucket = "$INFLUX_BUCKET"
         [[inputs.cpu]]
           ## Whether to report per-cpu stats or not
           percpu = true
