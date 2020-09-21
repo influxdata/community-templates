@@ -28,10 +28,10 @@ influx apply --template-url https://raw.githubusercontent.com/influxdata/communi
 - 4 Labels: `outputs.influxdb_v2`, `Telegraf`, `Solution`, `security`
 - 1 Telegraf Configuration 
 - 4 Checks: 
-    - Endpoint availablility
-    - x509 Certificate status
-    - Authentication is enabled
-    - Authentication is working
+  - Endpoint availablility
+  - x509 Certificate status
+  - Authentication is enabled
+  - Authentication is working
 - 1 Dashboard: `Endpoint Security State`
 - 1 Variable: `bucket`
 

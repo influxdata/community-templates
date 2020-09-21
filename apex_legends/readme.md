@@ -25,9 +25,9 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
 
 ## Included Resources
 
-    - 1 Bucket: apexlegends
-    - 2 Dashboards: Apex Legends for InfluxDB 2 and for Grafana
-    - 1 Label: Game Data
+  - 1 Bucket: apexlegends
+  - 2 Dashboards: Apex Legends for InfluxDB 2 and for Grafana
+  - 1 Label: Game Data
 
 ## Setup Instructions
 
@@ -53,13 +53,14 @@ Due to limitations on the API and the way Telegraf processes the JSON data it's 
 
 This will run curl every 5 minutes to pull the stats from the API endpoint and write them to `/etc/telegraf/apex_legends.json` - This can be anywhere your Telegraf instance can read from.
     
-    Telegraf Configuration requires the following environment variables
-    - `INFLUX_HOST` - The URL for your InfluxDB instance.
-    - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your operator token to get started.
-    - `INFLUX_ORG` - The name of your Organization
-    You **MUST** set these environment variables before running Telegraf using something similar to the following commands
-    - This can be found on the `Load Data` > `Tokens` page in your browser: `export INFLUX_TOKEN=TOKEN`
-    - Your Organization name can be found on the Settings page in your browser: `export INFLUX_ORG=my_org`
+Telegraf Configuration requires the following environment variables
+  - `INFLUX_HOST` - The URL for your InfluxDB instance.
+  - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your operator token to get started.
+  - `INFLUX_ORG` - The name of your Organization
+
+You **MUST** set these environment variables before running Telegraf using something similar to the following commands
+  - This can be found on the `Load Data` > `Tokens` page in your browser: `export INFLUX_TOKEN=TOKEN`
+  - Your Organization name can be found on the Settings page in your browser: `export INFLUX_ORG=my_org`
 
 ## Contact
 

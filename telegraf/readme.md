@@ -72,9 +72,9 @@ ___example___
 export TELEGRAF_MANIFEST_URL=https://raw.githubusercontent.com/influxdata/community-templates/master/telegraf/manifest.yml
 
 influx apply --url $TELEGRAF_MANIFEST_URL \
-           --org $INFLUX_ORG \
-           --host $INFLUX_HOST \
-           --token $INFLUX_TOKEN
+             --org $INFLUX_ORG \
+             --host $INFLUX_HOST \
+             --token $INFLUX_TOKEN
 ```
 
 ## Contact
