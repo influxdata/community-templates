@@ -8,7 +8,7 @@
 
 #### InfluxDB UI
 
-In the InfluxDB UI, go to Settings->Templates and enter this URL: https://raw.githubusercontent.com/influxdata/community-templates/master/fail2ban/fail2ban-template.yml
+In the InfluxDB UI, go to Settings->Templates and enter this URL: https://raw.githubusercontent.com/rhajek/community-templates/feat/fail2ban-template/fail2ban/img/fail2ban-template.yml
 
 #### Influx CLI
 If you have your InfluxDB credentials configured in the CLI, you can install this template with:
@@ -30,7 +30,7 @@ Once installed, you'll need to start up Telegraf to pull metrics from your Fail2
 
 To start Telegraf with the template-provided configuration follow setup instructions:
 
-  <img src="https://github.com/influxdata/community-templates/blob/master/fail2ban/img/fail2ban-telegraf1.png" width="500"/>
+  <img src="https://raw.githubusercontent.com/rhajek/community-templates/feat/fail2ban-template/fail2ban/img/fail2ban-telegraf1.png" width="500"/>
 
 ## Setup Fail2Ban
 
