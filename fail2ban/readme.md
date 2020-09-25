@@ -34,7 +34,8 @@ To start Telegraf with the template-provided configuration follow setup instruct
 
 ## Setup Fail2Ban
 
-You can use Fail2Ban that is packed in your favorite Linux Distribution. Debian was `apt install fail2ban` was tested.
+You can use Fail2Ban that is packed in your favorite Linux Distribution. 
+On Debian based distributions you can use `apt install fail2ban`.
  
 Telegraf uses `fail2ban-client` commandline tool to read metrics. Telegraf needs to have a permission
 to access `/var/run/fail2ban/fail2ban.sock` run  `fail2ban-client`.
