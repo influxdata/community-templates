@@ -42,6 +42,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [MongoDB](mongodb/) | View information of MongoDB Server. Uptime, Connectios, Queries, Documents Operations and more. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [MySQL / MariaDB](mysql_mariadb/) | View information of MySQL Instance. Uptime, Current Queries, Active Threads, Connections, Traffic and more. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Network Interface Monitor](network_interface_performance/) | Monitor network interfaces on one or more hosts. | [@russorat](https://github.com/russorat) |
+| [Nextcloud](nextcloud/) | Show stats about your Nextcloud Instance. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Postgres Monitor](postgresql/) | Monitor Postgres Server. CPU, Deadlocks, Data and more | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Redis Monitor](redis/) | Monitor your Redis server. | [@russorat](https://github.com/russorat) |
 | [Sensu Go](sensu_go/) | Monitor the performance of your Sensu Go observability tool. | [@nikkictl](https://github.com/nikkictl) |
