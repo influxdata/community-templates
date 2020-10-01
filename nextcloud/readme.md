@@ -37,7 +37,7 @@ Telegraf Configuration requires the following environment variables
 
 In order to use this Dashboard, you need to pass as variable the information about your user and password and Nextcloud server.
 
-ex: ```$ export NEXTCLOUDURL=https://user:password'@'your-server.com```
+ex: ```$ export NEXTCLOUDURL=https://user:password@your-server.com```
 
 ## Contact
 
