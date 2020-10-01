@@ -751,7 +751,7 @@ spec:
 
           ## URL of each server in the service's cluster
           servers = [
-            "$NEXTCLOUD-URL/ocs/v2.php/apps/serverinfo/api/v1/info?format=json",
+            "$NEXTCLOUDURL/ocs/v2.php/apps/serverinfo/api/v1/info?format=json",
           ]
           ## Set response_timeout (default 5 seconds)
           response_timeout = "10s"
