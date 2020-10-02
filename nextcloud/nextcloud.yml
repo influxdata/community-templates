@@ -1,0 +1,787 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: distracted-taussig-630001
+spec:
+    color: '#066fc5'
+    name: nextcloud
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: bettering-leakey-630005
+spec:
+    associations:
+      - kind: Label
+        name: distracted-taussig-630001
+    name: nextcloud
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: upbeat-blackburn-230001
+spec:
+    associations:
+      - kind: Label
+        name: distracted-taussig-630001
+    charts:
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#34BB55'
+            name: Solid Green
+            type: scale
+          - hex: '#34BB55'
+            name: Solid Green
+            type: scale
+          - hex: '#34BB55'
+            name: Solid Green
+            type: scale
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat_Plus_Line
+        name: CPU Load
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_data_nextcloud_system_cpuload_0")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 2
+        xCol: _time
+        yCol: _value
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Storage'
+        width: 1
+        yPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Local Drives
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_data_nextcloud_storage_num_storages_local")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 1
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Apps Installed
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_data_nextcloud_system_apps_num_installed")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 1
+        yPos: 4
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Drives
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_data_nextcloud_storage_num_storages")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 1
+        xPos: 1
+        yPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Others
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_data_nextcloud_storage_num_users")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 1
+        xPos: 1
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#DC4E58'
+            name: fire
+            type: text
+            value: 1
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Updates Available
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_data_nextcloud_system_apps_num_updates_available")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 1
+        xPos: 1
+        yPos: 4
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Total Memory (GB)
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_data_nextcloud_system_mem_total")
+                  |> map(fn: (r) => ({r with _value: r._value / 1024.00}))
+        suffix: ' '
+        width: 2
+        xPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#DC4E58'
+            name: Solid Red
+            type: scale
+          - hex: '#DC4E58'
+            name: Solid Red
+            type: scale
+          - hex: '#DC4E58'
+            name: Solid Red
+            type: scale
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat_Plus_Line
+        name: Files
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_data_nextcloud_storage_num_files")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        shade: true
+        width: 3
+        xCol: _time
+        xPos: 2
+        yCol: _value
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#74D495'
+            name: Atlantis
+            type: scale
+          - hex: '#3F3FBA'
+            name: Atlantis
+            type: scale
+          - hex: '#FF4D9E'
+            name: Atlantis
+            type: scale
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat_Plus_Line
+        name: Users Active Last five minutes
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_data_activeUsers_last5minutes")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        shade: true
+        width: 2
+        xCol: _time
+        xPos: 2
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#DA6FF1'
+            name: Ectoplasm
+            type: scale
+          - hex: '#00717A'
+            name: Ectoplasm
+            type: scale
+          - hex: '#ACFF76'
+            name: Ectoplasm
+            type: scale
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat_Plus_Line
+        name: Free Memory (GB)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_data_nextcloud_system_mem_free")
+                  |> map(fn: (r) => ({r with _value: r._value / 1024.00}))
+        shade: true
+        width: 2
+        xCol: _time
+        xPos: 4
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#74D495'
+            name: Atlantis
+            type: scale
+          - hex: '#3F3FBA'
+            name: Atlantis
+            type: scale
+          - hex: '#FF4D9E'
+            name: Atlantis
+            type: scale
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat_Plus_Line
+        name: Users Active Last Hour
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_data_activeUsers_last1hour")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        shade: true
+        width: 2
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#FDC44F'
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            name: Cthulhu
+            type: scale
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat_Plus_Line
+        name: Free Space (GB)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_data_nextcloud_system_freespace")
+                  |> map(fn: (r) => ({r with _value: r._value / 1000024.00}))
+        shade: true
+        width: 3
+        xCol: _time
+        xPos: 5
+        yCol: _value
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Swap Total
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_data_nextcloud_system_swap_total")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 2
+        xCol: _time
+        xPos: 6
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#8F8AF4'
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#A51414'
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#F4CF31'
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat_Plus_Line
+        name: Users Active Last 24 hours
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_data_activeUsers_last24hours")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        shade: true
+        width: 2
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Swap Free
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_data_nextcloud_system_swap_free")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 2
+        xCol: _time
+        xPos: 8
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat_Plus_Line
+        name: Response Time
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "response_time")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        shade: true
+        width: 2
+        xCol: _time
+        xPos: 8
+        yCol: _value
+        yPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Database Size (MB)
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_data_server_database_size")
+                  |> map(fn: (r) => ({r with _value: r._value / 1000024.0}))
+        width: 2
+        xPos: 8
+        yPos: 4
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: HTTP - Status Code
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_meta_statuscode")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 2
+        xPos: 8
+        yPos: 5
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Sharing Stats'
+        width: 2
+        xPos: 10
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Received
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 1
+        xPos: 10
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Links
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_data_nextcloud_shares_num_shares_link")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 1
+        xPos: 10
+        yPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: By email
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_data_nextcloud_shares_num_shares_mail")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 1
+        xPos: 10
+        yPos: 3
+      - colors:
+          - hex: '#7CE490'
+            name: honeydew
+            type: text
+          - hex: '#BF3D5E'
+            name: ruby
+            type: text
+            value: 1
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Without password
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_data_nextcloud_shares_num_shares_link_no_password")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 2
+        xPos: 10
+        yPos: 4
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: PHP Max Exec Time
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_data_server_php_max_execution_time")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 2
+        xPos: 10
+        yPos: 5
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Sent
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_data_nextcloud_shares_num_fed_shares_sent")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 1
+        xPos: 11
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Group
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_data_nextcloud_shares_num_shares_groups")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 1
+        xPos: 11
+        yPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Room (Chats)
+        queries:
+          - query: |-
+                from(bucket: "nextcloud")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "httpjson_nextcloud_stats")
+                  |> filter(fn: (r) => r["_field"] == "ocs_data_nextcloud_shares_num_shares_room")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 1
+        xPos: 11
+        yPos: 3
+    name: Nextcloud
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: nextcloud-config
+spec:
+    associations:
+      - kind: Label
+        name: distracted-taussig-630001
+    config: |
+        [[outputs.influxdb_v2]]
+          ## The URLs of the InfluxDB cluster nodes.
+          ##
+          ## Multiple URLs can be specified for a single cluster, only ONE of the
+          ## urls will be written to each interval.
+          ## urls exp: http://127.0.0.1:8086
+          urls = ["$INFLUX_HOST"]
+
+          ## Token for authentication.
+          token = "$INFLUX_TOKEN"
+
+          ## Organization is the name of the organization you wish to write to; must exist.
+          organization = "$INFLUX_ORG"
+
+          ## Destination bucket to write into.
+          bucket = "nextcloud"
+          
+          [agent] 
+          interval = "5m" 
+
+        [[inputs.httpjson]]
+          ## NOTE This plugin only reads numerical measurements, strings and booleans
+          ## will be ignored.
+          ## Name for the service being polled.  Will be appended to the name of the
+          ## measurement e.g. "httpjson_webserver_stats".
+          ##
+          ## Deprecated (1.3.0): Use name_override, name_suffix, name_prefix instead.
+          name = "nextcloud_stats"
+
+          ## URL of each server in the service's cluster
+          servers = [
+            "$NEXTCLOUDURL/ocs/v2.php/apps/serverinfo/api/v1/info?format=json",
+          ]
+          ## Set response_timeout (default 5 seconds)
+          response_timeout = "10s"
+          
+          ## HTTP method to use: GET or POST (case-sensitive)
+          method = "GET"
+          
+          ## Tags to extract from top-level of JSON server response.
+          # tag_keys = [
+          #   "my_tag_1",
+          #   "my_tag_2"
+          # ]
+          
+          ## Optional TLS Config
+          # tls_ca = "/etc/telegraf/ca.pem"
+          # tls_cert = "/etc/telegraf/cert.pem"
+          # tls_key = "/etc/telegraf/key.pem"
+          
+          ## Use TLS but skip chain & host verification
+          # insecure_skip_verify = false
+          
+          ## HTTP Request Parameters (all values must be strings).  For "GET" requests, data
+          ## will be included in the query.  For "POST" requests, data will be included
+          ## in the request body as "x-www-form-urlencoded".
+          
+          # [inputs.httpjson.parameters]
+          #   event_type = "cpu_spike"
+          #   threshold = "0.75"
+          
+          ## HTTP Request Headers (all values must be strings).
+          # [inputs.httpjson.headers]
+          #   X-Auth-Token = ""
+          #   apiVersion = "v1"
