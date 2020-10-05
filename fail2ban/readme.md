@@ -10,23 +10,20 @@
 
 In the InfluxDB UI, go to Settings->Templates and enter this URL: https://raw.githubusercontent.com/influxdata/community-templates/master/fail2ban/img/fail2ban-template.yml
 
-#### Influx CLI
+## Setup Instructions
+
 If you have your InfluxDB credentials configured in the CLI, you can install this template with:
 
 `influx apply -f https://raw.githubusercontent.com/influxdata/community-templates/master/fail2ban/fail2ban-template.yml`
 
-## Requirements
-
-* Set environment variables on host/s from which Telegraf will be sending metrics.  These are:
-
-  - `INFLUX_ORG`
-  - `INFLUX_TOKEN`
-  - `INFLUX_HOST`
-  - `INFLUX_BUCKET`
-
-## Setup Instructions
-
 Once installed, you'll need to start up Telegraf to pull metrics from your Fail2Ban client.  Checkout [Telegraf docs](https://docs.influxdata.com/telegraf/) for installing and starting Telegraf.
+
+Telegraf Configuration requires the following environment variables:
+
+- `INFLUX_ORG`
+- `INFLUX_TOKEN`
+- `INFLUX_HOST`
+- `INFLUX_BUCKET`
 
 To start Telegraf with the template-provided configuration follow setup instructions:
 
@@ -38,7 +35,7 @@ You can use Fail2Ban that is packed in your favorite Linux Distribution.
 On Debian based distributions you can use `apt install fail2ban`.
  
 Telegraf uses `fail2ban-client` commandline tool to read metrics. Telegraf needs to have a permission
-to access `/var/run/fail2ban/fail2ban.sock` run  `fail2ban-client`.
+to access `/var/run/fail2ban/fail2ban.sock` to execute  `fail2ban-client`.
 
 To check this try run `fail2ban-client status` under telegraf user account.
 If you see:
