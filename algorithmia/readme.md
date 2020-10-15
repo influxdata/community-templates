@@ -74,7 +74,7 @@ defined:
 You **MUST** set these environment variables before running Telegraf using
 something similar to the following commands:
 
-  - This can be found on the `Load Data` > `Tokens` page in your browser:
+  - This is the URL for your InfluxDB host should be in the format:
   - `export INFLUX_HOST=http://1.2.3.4:8086/`
 
   - This can be found on the `Load Data` > `Tokens` page in your browser:
@@ -83,7 +83,7 @@ something similar to the following commands:
   - Your organization name can be found on the Settings page in your browser:
   - `export INFLUX_ORG=my_org`
 
-  - The Kafka broker URL should be in the format:
+  - This is the URL for your Kafka broker and should be in the format:
   - `export KAFKA_BROKER=1.2.3.4:9092`
 
   - The Kafka topic should be the same topic that you configured in Algorithmia:
@@ -93,11 +93,9 @@ something similar to the following commands:
 
 Note that this dashboard uses the `duration_milliseconds` metric, which is one
 of the operational metrics that is included in the default JSON payload from
-Algorithmia.
-
-The other metrics used in the dashboard (`risk_score` and `approved`) were
-defined by the algorithm developer and will be different depending on your
-particular algorithm and use case.
+Algorithmia. The other metrics used in the dashboard (`risk_score` and
+`approved`) were defined by the algorithm developer and will be different
+depending on your particular algorithm and use case.
 
 Additional metrics can include any user-defined, inference-related metrics that
 are specified in Algorithmia by the algorithm developer then analyzed in
