@@ -15,6 +15,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 
 | Template             | Description | Author |
 |----------------------|-------------|:------:|
+| [Algorithmia](algorithmia/) | Monitor machine learning model performance metrics | [@koverholt](https://github.com/koverholt) |
 | [Apex Legends](apex_legends/) | Collect player metrics from the game Apex Legends | [@b3vis](https://github.com/b3vis) |
 | [AWS Cloudwatch Monitoring](aws_cloudwatch/) | Monitor AWS EC2 and ELB | [bonitoo.io](.) |
 | [Counter Strike: Global Offensive](csgo/) | Get stats about your game. Kills, Deaths and stats by weapon. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
@@ -39,7 +40,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [Linux System Monitor](linux_system/) | Monitor system resources on one or more Linux hosts. | [@russorat](https://github.com/russorat) |
 | [Jenkins](jenkins/) | Monitor your Jenkins node and jobs. | Ray Farias |
 | [Microsoft SQL Server](mssql/) | View information of SQL Server Instance. Uptime, Databases Activities, Read and Write times and more. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
-| [MinIO](minio/) | Monitor MinIO instance. Uptime, CPU process time, Memory allocated, s3 total and current request, Storage used and available and more. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) | 
+| [MinIO](minio/) | Monitor MinIO instance. Uptime, CPU process time, Memory allocated, s3 total and current request, Storage used and available and more. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [MongoDB](mongodb/) | View information of MongoDB Server. Uptime, Connectios, Queries, Documents Operations and more. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [MySQL / MariaDB](mysql_mariadb/) | View information of MySQL Instance. Uptime, Current Queries, Active Threads, Connections, Traffic and more. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Network Interface Monitor](network_interface_performance/) | Monitor network interfaces on one or more hosts. | [@russorat](https://github.com/russorat) |
