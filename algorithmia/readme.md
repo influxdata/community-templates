@@ -74,7 +74,7 @@ defined:
 You **MUST** set these environment variables before running Telegraf using
 something similar to the following commands:
 
-  - This is the URL for your InfluxDB host should be in the format:
+  - This is the URL for your InfluxDB host and should be in the format:
   - `export INFLUX_HOST=http://1.2.3.4:8086/`
 
   - This can be found on the `Load Data` > `Tokens` page in your browser:
