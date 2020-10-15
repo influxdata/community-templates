@@ -74,20 +74,20 @@ defined:
 You **MUST** set these environment variables before running Telegraf using
 something similar to the following commands:
 
-  - This is the URL for your InfluxDB host and should be in the format:
-  - `export INFLUX_HOST=http://1.2.3.4:8086/`
+  - This is the URL for your InfluxDB host and should be in the following format:
+    - `export INFLUX_HOST=http://1.2.3.4:8086/`
 
-  - This can be found on the `Load Data` > `Tokens` page in your browser:
-  - `export INFLUX_TOKEN=TOKEN`
+  - This can be found on the `Load Data` > `Tokens` page in InfluxDB:
+    - `export INFLUX_TOKEN=TOKEN`
 
-  - Your organization name can be found on the Settings page in your browser:
-  - `export INFLUX_ORG=my_org`
+  - Your organization name can be found on the `Settings` page in InfluxDB:
+    - `export INFLUX_ORG=my_org`
 
-  - This is the URL for your Kafka broker and should be in the format:
-  - `export KAFKA_BROKER=1.2.3.4:9092`
+  - This is the URL for your Kafka broker and should be in the following format:
+    - `export KAFKA_BROKER=1.2.3.4:9092`
 
   - The Kafka topic should be the same topic that you configured in Algorithmia:
-  - `export KAFKA_TOPIC=insights`
+    - `export KAFKA_TOPIC=insights`
 
 ## Customizations
 
