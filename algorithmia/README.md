@@ -48,7 +48,7 @@ includes operational metrics and inference-related metrics that can be analyzed
 in InfluxDB.
 
 1. From your Algorithmia instance, configure Algorithmia Insights to connect to
-   a Kafka broker.
+   a Kafka broker and specify a Kafka topic.
 2. Start Telegraf using the configuration included in this template.
 3. In Algorithmia, instrument your algorithm and publish a version that has
    Insights enabled.
@@ -75,10 +75,19 @@ You **MUST** set these environment variables before running Telegraf using
 something similar to the following commands:
 
   - This can be found on the `Load Data` > `Tokens` page in your browser:
+  - `export INFLUX_HOST=http://1.2.3.4:8086/`
+
+  - This can be found on the `Load Data` > `Tokens` page in your browser:
   - `export INFLUX_TOKEN=TOKEN`
 
   - Your organization name can be found on the Settings page in your browser:
   - `export INFLUX_ORG=my_org`
+
+  - The Kafka broker URL should be in the format:
+  - `export KAFKA_BROKER=1.2.3.4:9092`
+
+  - The Kafka topic should be the same topic that you configured in Algorithmia:
+  - `export KAFKA_TOPIC=insights`
 
 ## Customizations
 

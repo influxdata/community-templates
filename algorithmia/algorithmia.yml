@@ -238,7 +238,7 @@ spec:
         ###############################################################################
 
         [[inputs.kafka_consumer]]
-          brokers = ["$KAFKA_BROKER_URL"]
+          brokers = ["$KAFKA_BROKER"]
           topics = ["$KAFKA_TOPIC"]
           data_format = "json"
           json_string_fields = [
