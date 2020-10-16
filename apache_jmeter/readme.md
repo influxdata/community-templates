@@ -39,8 +39,8 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
 
 The template consists of the following:
 
-    - 1 Dashboard: `JMeter`
-    - 1 Variable: `bucket`
+  - 1 Dashboard: `JMeter`
+  - 1 Variable: `bucket`
 
 The sample **Test Plan** boilerplate project in the `samples` directory.
 
@@ -52,7 +52,7 @@ General instructions on using InfluxDB Templates can be found in the [use a temp
 **Import the template**
 
 ```
- influx apply --file ./apache_jmeter.yml
+influx apply --file ./apache_jmeter.yml
 ```
 
 **Start with a sample test project:**

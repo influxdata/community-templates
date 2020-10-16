@@ -25,12 +25,12 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
 
 This template includes the following:
 
-    - 1 Bucket: `snmp`, 1d retention
-    - 3 Labels: `inputs.net`,`inputs.system`,`SNMP`
-    - 3 Telegraf Configurations: `Linux SNMP`, `Cisco SNMP`, `Mikrotik SNMP`
-    - 0 Checks: 
-    - 3 Dashboards: `SNMP System Monitoring`, `SNMP Mikrotik Monitoring`, `SNMP Network Monitoring`
-    - 2 Variables: `snmp_host`, and `snmp_ifName`
+  - 1 Bucket: `snmp`, 1d retention
+  - 3 Labels: `inputs.net`,`inputs.system`,`SNMP`
+  - 3 Telegraf Configurations: `Linux SNMP`, `Cisco SNMP`, `Mikrotik SNMP`
+  - 0 Checks: 
+  - 3 Dashboards: `SNMP System Monitoring`, `SNMP Mikrotik Monitoring`, `SNMP Network Monitoring`
+  - 2 Variables: `snmp_host`, and `snmp_ifName`
 
 ## Setup Instructions
 

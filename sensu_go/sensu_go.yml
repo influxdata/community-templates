@@ -1,0 +1,367 @@
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: sensu-go-template
+spec:
+    name: Sensu Go Template
+    color: '#7A65F2'
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: outputs-influxdb-v2
+spec:
+    name: outputs.influxdb_v2
+    color: '#108174'
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: inputs-prometheus
+spec:
+    name: inputs.prometheus
+    color: '#326BBA'
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: telegraf
+spec:
+    name: telegraf
+    retentionRules:
+      - everySeconds: 604800
+        type: expire
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: bucket
+spec:
+    associations:
+      - kind: Label
+        name: sensu-go-template
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> filter(fn: (r) => r.name !~ /^_/)
+          |> rename(columns: {name: "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: sensu-go-monitoring
+spec:
+    name: Sensu Go Monitoring
+    associations:
+      - kind: Label
+        name: outputs-influxdb-v2
+      - kind: Label
+        name: inputs-prometheus
+      - kind: Label
+        name: sensu-go-template
+    config: |
+        # Configuration for telegraf agent
+        [agent]
+          interval = "10s"
+          round_interval = true
+          metric_batch_size = 1000
+          metric_buffer_limit = 10000
+          collection_jitter = "0s"
+          flush_interval = "10s"
+          flush_jitter = "0s"
+          precision = ""
+          hostname = ""
+          omit_hostname = false
+        # Configuration for sending metrics to InfluxDB
+        [[outputs.influxdb_v2]]	
+          urls = ["$INFLUX_HOST"]
+          token = "$INFLUX_TOKEN"
+          organization = "$INFLUX_ORG"
+          bucket = "telegraf"
+        # Read metrics from one or many prometheus clients
+        [[inputs.prometheus]]
+          ## An array of urls to scrape metrics from.
+          urls = ["http://localhost:8080/metrics"]
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: sensu-go
+spec:
+    charts:
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: agent sessions
+            name: y
+            scale: linear
+        colors:
+          - hex: '#FDC44F'
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            name: Cthulhu
+            type: scale
+        geom: monotoneX
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        name: Agent sessions per namespace
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sensu_go_agent_sessions")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: true)
+                  |> yield(name: "last")
+        shade: true
+        width: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#DA6FF1'
+            name: Ectoplasm
+            type: scale
+          - hex: '#00717A'
+            name: Ectoplasm
+            type: scale
+          - hex: '#ACFF76'
+            name: Ectoplasm
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        name: Message publish latency distributions
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sensu_go_bus_message_duration")
+                  |> filter(fn: (r) => r["_field"] == "0.5" or r["_field"] == "0.9" or r["_field"] == "0.99")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        shade: true
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#FD7A5D'
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            name: Delorean
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        name: Event handler latency distribution
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sensu_go_event_handler_duration")
+                  |> filter(fn: (r) => r["_field"] == "0.5" or r["_field"] == "0.9" or r["_field"] == "0.99")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        shade: true
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 6
+      - colors:
+          - hex: '#7CE490'
+            name: honeydew
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Total etcd servers
+        queries:
+          - query: |-
+                from(bucket: "telegraf")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "etcd_server_id")
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum, createEmpty: false)
+                  |> yield(name: "sum")
+        width: 2
+        xPos: 5
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Total agent sessions
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sensu_go_agent_sessions")
+                  |> group()
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum, createEmpty: true)
+                  |> yield(name: "sum")
+        width: 2
+        xPos: 5
+        yPos: 1
+      - colors:
+          - hex: '#F48D38'
+            name: tiger
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Total check schedulers
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sensu_go_cron_schedulers" or r["_measurement"] == "sensu_go_interval_schedulers" or r["_measurement"] == "sensu_go_round_robin_cron_schedulers" or r["_measurement"] == "sensu_go_round_robin_interval_schedulers")
+                  |> group()
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum, createEmpty: true)
+                  |> yield(name: "sum")
+        width: 2
+        xPos: 5
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: messages published
+            name: y
+            scale: linear
+        colors:
+          - hex: '#74D495'
+            name: Atlantis
+            type: scale
+          - hex: '#3F3FBA'
+            name: Atlantis
+            type: scale
+          - hex: '#FF4D9E'
+            name: Atlantis
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        name: Messages published per second
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sensu_go_bus_messages_published")
+                  |> derivative(unit: 1s, nonNegative: true)
+                  |> yield(name: "nonnegative derivative")
+        shade: true
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: processed events
+            name: y
+            scale: linear
+        colors:
+          - hex: '#FD7A5D'
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            name: Delorean
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        name: Processed events per second
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sensu_go_events_processed")
+                  |> derivative(unit: 1s, nonNegative: true)
+                  |> yield(name: "nonnegative derivative")
+        shade: true
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: check schedulers
+            name: y
+            scale: linear
+        colors:
+          - hex: '#FD7A5D'
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            name: Delorean
+            type: scale
+        geom: monotoneX
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        name: Check schedulers per type
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sensu_go_round_robin_interval_schedulers" or r["_measurement"] == "sensu_go_round_robin_cron_schedulers" or r["_measurement"] == "sensu_go_interval_schedulers" or r["_measurement"] == "sensu_go_cron_schedulers")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: true)
+                  |> yield(name: "last")
+        shade: true
+        width: 5
+        xCol: _time
+        xPos: 7
+        yCol: _value
+    description: Monitoring your Sensu Go observability tool with Telegraf and Prometheus
+    name: Sensu Go
