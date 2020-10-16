@@ -5,17 +5,17 @@
 #### Kafka
 
    <img src="images/kafka-dash.png" width="425"/> <img src="images/kafka-dash-light.png" width="425"/>
-   
+
 #### Kafka Producer Metrics
 
    <img src="images/kafka-dash-producer.png" width="425"/> <img src="images/kafka-dash-producer-light.png" width="425"/>
-   
+
 #### Kafka Consumer Metrics
 
    <img src="images/kafka-dash-consumer.png" width="425"/> <img src="images/kafka-dash-consumer-light.png" width="425"/>
 
 #### Kafka JVM
-   
+
    <img src="images/kafka-dash-jvm.png" width="425"/> <img src="images/kafka-dash-jvm-light.png" width="425"/>
 
 ### Quick Install
@@ -38,7 +38,7 @@ If you have your InfluxDB credentials configured in the CLI, you can install thi
   - `INFLUX_BUCKET`
   - `KAFKA_JOLOKIA_HOSTS`
   - `KAFKA_PRODUCERS_JOLOKIA_HOSTS`
-  - `KAFKA_CONSUMERS_JOLOKIA_HOSTS` 
+  - `KAFKA_CONSUMERS_JOLOKIA_HOSTS`
   - `ZOOKEEPER_HOST`
 * [Jolokia JVM Agent](https://jolokia.org/agent/jvm.html)
 * [Apache Kafka](https://kafka.apache.org/documentation/)
@@ -74,7 +74,7 @@ To start Telegraf with the template-provided configuration, you can do one of tw
 
 - 2 label: `kafka`, `jvm`
 - 1 Telegraf Configuration: `kafka-zk-jolokia`
-- 4 Dashboards: `Kafka Metrics`, `Kafka Consumer Metrics`, `Kafka Producer Metrics` and `Kafka JVM Metrics` 
+- 4 Dashboards: `Kafka Metrics`, `Kafka Consumer Metrics`, `Kafka Producer Metrics` and `Kafka JVM Metrics`
 - 7 Variables: `bucket`, `kafka_broker`, `kafka_topic`, `kafka_consumer`, `kafka_consumer_partition`, `kafka_producer` and `jvm_host`
 
 ## Pre-work
@@ -102,8 +102,9 @@ To start Telegraf with the template-provided configuration, you can do one of tw
 Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/inputs/zookeeper#metrics
 
 
-## Measurements
+## Measurements YEAH
 <details>
+
 <summary>kafka_broker</summary>
 
   * Tags
@@ -120,10 +121,11 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
     * Rebalance
     * kafka_metrics_count
     * txn-marker-purgatory
-  
+
 </details>
 
 <details>
+
 <summary>kafka_controller</summary>
 
 * Tags
@@ -139,9 +141,11 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
   * ReplicasToDeleteCount
   * TopicsIneligibleToDeleteCount
   * TopicsToDeleteCount
+
 </details>
 
 <details>
+
 <summary>kafka_network</summary>
 
 * Tags
@@ -154,6 +158,7 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
 </details>
 
 <details>
+
 <summary>kafka_partition</summary>
 
 * Tags
