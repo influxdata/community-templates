@@ -36,6 +36,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [Jboss Wildfly](jboss_wildfly/) | View information your Jboss Wildfly Instance using Jolokia. Uptime, Heap Memory, Non Heap Memory, Memory Pool, etc | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [JMeter](apache_jmeter/) | This template provides Apache JMeter dashboard | [bonitoo.io](.) |
 | [Kafka](kafka/) | Monitor Kafka via Jolokia agent | [@samhld](https:/github.com/samhld)
+| [Kube Prometheus](kube_prometheus/) | A set of dashboards and tasks to monitor your Kubernetes cluster similar to the Kube Prometheus project. | [@russorat](https://github.com/russorat) |
 | [Kubernetes Dashboards](k8s/) | Monitor your Kubernetes cluster. | [bonitoo.io](.) |
 | [Linux System Monitor](linux_system/) | Monitor system resources on one or more Linux hosts. | [@russorat](https://github.com/russorat) |
 | [Jenkins](jenkins/) | Monitor your Jenkins node and jobs. | Ray Farias |

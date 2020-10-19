@@ -1,0 +1,151 @@
+## Default values.yaml for Telegraf
+## This is a YAML-formatted file.
+## ref: https://hub.docker.com/r/library/telegraf/tags/
+
+replicaCount: 1
+
+image:
+  repo: "telegraf"
+  tag: "1.15-alpine"
+  pullPolicy: IfNotPresent
+
+podAnnotations: {}
+
+imagePullSecrets: []
+
+env:
+  - name: HOSTNAME
+    value: "telegraf-polling-service"
+
+# An older "volumeMounts" key was previously added which will likely
+# NOT WORK as you expect. Please use this newer configuration.
+
+# volumes:
+# - name: telegraf-output-influxdb2
+#   configMap:
+#     name: "telegraf-output-influxdb2"
+# mountPoints:
+# - name: telegraf-output-influxdb2
+#   mountPath: /etc/telegraf/conf.d
+#   subPath: influxdb2.conf
+
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+resources: {}
+  # requests:
+  #   memory: 128Mi
+  #   cpu: 100m
+  # limits:
+  #   memory: 128Mi
+  #   cpu: 100m
+
+## Node labels for pod assignment
+## ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+
+service:
+  enabled: true
+  type: ClusterIP
+  annotations: {}
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+  # Create only for the release namespace or cluster wide (Role vs ClusterRole)
+  clusterWide: true
+  # Rules for the created rule
+  rules: 
+# When using the prometheus input to scrape all pods you need extra rules set to the ClusterRole to be
+# able to scan the pods for scraping labels. The following rules have been taken from:
+# https://github.com/helm/charts/blob/master/stable/prometheus/templates/server-clusterrole.yaml#L8-L46
+    - apiGroups:
+        - ""
+      resources:
+        - nodes
+        - nodes/proxy
+        - nodes/metrics
+        - services
+        - endpoints
+        - pods
+        - ingresses
+        - configmaps
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - "extensions"
+      resources:
+        - ingresses/status
+        - ingresses
+      verbs:
+        - get
+        - list
+        - watch
+    - nonResourceURLs:
+        - "/metrics"
+      verbs:
+        - get
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+## Exposed telegraf configuration
+## For full list of possible values see `/docs/all-config-values.yaml` and `/docs/all-config-values.toml`
+## ref: https://docs.influxdata.com/telegraf/v1.1/administration/configuration/
+config:
+  agent:
+    interval: "10s"
+    round_interval: true
+    metric_batch_size: 1000
+    metric_buffer_limit: 10000
+    collection_jitter: "0s"
+    flush_interval: "10s"
+    flush_jitter: "0s"
+    precision: ""
+    debug: false
+    quiet: false
+    logfile: ""
+    hostname: "$HOSTNAME"
+    omit_hostname: false
+  processors:
+    - enum:
+        mapping:
+          field: "status"
+          dest: "status_code"
+          value_mappings:
+            healthy: 1
+            problem: 2
+            critical: 3
+  outputs:
+    - influxdb_v2:
+        urls:
+          - "$INFLUX_URL"
+        organization: "$INFLUX_ORG"
+        token: "$INFLUX_TOKEN"
+        bucket: "kube_prometheus"
+  inputs:
+    - prometheus:
+        metric_version: 1
+        insecure_skip_verify: true
+        bearer_token: "/var/run/secrets/kubernetes.io/serviceaccount/token"
+        tls_ca: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+        kubernetes_services:
+          - "https://kube-state-metrics.monitoring:9443/metrics"
+          - "https://kube-state-metrics.monitoring:8443/metrics"
+          - "https://node-exporter.monitoring:9100/metrics"
+          - "http://alertmanager-main.monitoring:9093/metrics"
+          - "https://kubelet.kube-system:10250/metrics"
+          - "https://kubelet.kube-system:10250/metrics/cadvisor"
+          - "https://kubelet.kube-system:10250/metrics/probes"
+        monitor_kubernetes_pods: true
+
+# Lifecycle hooks
+# hooks:
+#   postStart: ["/bin/sh", "-c", "echo Telegraf started"]
+#   preStop: ["/bin/sh", "-c", "sleep 60"]

@@ -1,0 +1,873 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: kube-prometheus-label
+spec:
+    color: '#326BBA'
+    name: kube_prometheus
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Task
+metadata:
+    name: ns-kube-pod-ctr-resource-req-cpu-cores-sum-task
+spec:
+    associations:
+      - kind: Label
+        name: kube-prometheus-label
+    every: 30s
+    name: namespace:kube_pod_container_resource_requests_cpu_cores:sum
+    query: |-
+        import "system"
+
+        container_resource_requests_cpu_cores = from(bucket: "kube_prometheus")
+        	|> range(start: -task.every, stop: now())
+        	|> filter(fn: (r) =>
+        		(r["_measurement"] == "kube_pod_container_resource_requests_cpu_cores"))
+        	|> group(columns: ["namespace", "pod", "container"], mode: "by")
+        	|> last()
+        status_phase = from(bucket: "kube_prometheus")
+        	|> range(start: -task.every, stop: now())
+        	|> filter(fn: (r) =>
+        		(r["_measurement"] == "kube_pod_status_phase"))
+        	|> filter(fn: (r) =>
+        		(r["phase"] =~ /Pending|Running/))
+        	|> group(columns: ["namespace", "pod"], mode: "by")
+        	|> filter(fn: (r) =>
+        		(r._value == 1))
+        	|> last()
+
+        join(tables: {key1: container_resource_requests_cpu_cores, key2: status_phase}, on: ["namespace", "pod"], method: "inner")
+        	|> map(fn: (r) =>
+        		({r with _value: r._value_key1 * r._value_key2}))
+        	|> group(columns: ["namespace", "pod"], mode: "by")
+        	|> sum()
+        	|> group(columns: ["namespace"], mode: "by")
+        	|> sum()
+        	|> group()
+        	|> map(fn: (r) =>
+        		({r with _measurement: "kube_pod_container_resource_requests_cpu_cores", _field: "gauge", _time: system.time()}))
+        	|> to(bucket: "kube_prometheus")
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Task
+metadata:
+    name: node-memory-memavailable-bytes-sum-task
+spec:
+    associations:
+      - kind: Label
+        name: kube-prometheus-label
+    every: 30s
+    name: :node_memory_MemAvailable_bytes:sum
+    query: |-
+        import "system"
+
+        node_memory_MemAvailable_bytes = from(bucket: "kube_prometheus")
+        	|> range(start: -task.every, stop: now())
+        	|> filter(fn: (r) =>
+        		(r["_measurement"] == "node_memory_MemAvailable_bytes"))
+        	|> filter(fn: (r) =>
+        		(r["_field"] == "gauge"))
+        	|> last()
+        	|> keep(columns: ["_time", "_measurement", "_field", "_value"])
+        node_memory_Buffers_bytes = from(bucket: "kube_prometheus")
+        	|> range(start: -task.every, stop: now())
+        	|> filter(fn: (r) =>
+        		(r["_measurement"] == "node_memory_Buffers_bytes"))
+        	|> filter(fn: (r) =>
+        		(r["_field"] == "gauge"))
+        	|> last()
+        	|> keep(columns: ["_time", "_measurement", "_field", "_value"])
+        node_memory_Cached_bytes = from(bucket: "kube_prometheus")
+        	|> range(start: -task.every, stop: now())
+        	|> filter(fn: (r) =>
+        		(r["_measurement"] == "node_memory_Cached_bytes"))
+        	|> filter(fn: (r) =>
+        		(r["_field"] == "gauge"))
+        	|> last()
+        	|> keep(columns: ["_time", "_measurement", "_field", "_value"])
+        node_memory_MemFree_bytes = from(bucket: "kube_prometheus")
+        	|> range(start: -task.every, stop: now())
+        	|> filter(fn: (r) =>
+        		(r["_measurement"] == "node_memory_MemFree_bytes"))
+        	|> filter(fn: (r) =>
+        		(r["_field"] == "gauge"))
+        	|> last()
+        	|> keep(columns: ["_time", "_measurement", "_field", "_value"])
+        node_memory_Slab_bytes = from(bucket: "kube_prometheus")
+        	|> range(start: -task.every, stop: now())
+        	|> filter(fn: (r) =>
+        		(r["_measurement"] == "node_memory_Slab_bytes"))
+        	|> filter(fn: (r) =>
+        		(r["_field"] == "gauge"))
+        	|> last()
+        	|> keep(columns: ["_time", "_measurement", "_field", "_value"])
+        node_memory = union(tables: [node_memory_Buffers_bytes, node_memory_Cached_bytes, node_memory_MemFree_bytes, node_memory_Slab_bytes])
+        	|> group()
+        	|> sum()
+
+        union(tables: [node_memory_MemAvailable_bytes, node_memory])
+        	|> group()
+        	|> keep(columns: ["_measurement", "_field", "_value"])
+        	|> max()
+        	|> map(fn: (r) =>
+        		({r with _measurement: ":node_memory_MemAvailable_bytes:sum", _time: system.time()}))
+        	|> set(key: "_field", value: "gauge")
+        	|> to(bucket: "kube_prometheus")
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Task
+metadata:
+    name: ns-workload-pod-kube-pod-owner-relabel-task
+spec:
+    associations:
+      - kind: Label
+        name: kube-prometheus-label
+    every: 30s
+    name: namespace_workload_pod:kube_pod_owner:relabel
+    query: |-
+        import "system"
+
+        pod_owner = from(bucket: "kube_prometheus")
+        	|> range(start: -task.every, stop: now())
+        	|> filter(fn: (r) =>
+        		(r["_measurement"] == "kube_pod_owner"))
+        	|> filter(fn: (r) =>
+        		(r["_field"] == "gauge"))
+        	|> rename(columns: {owner_name: "replicaset"})
+        	|> filter(fn: (r) =>
+        		(r["owner_kind"] == "ReplicaSet"))
+        	|> last()
+        replicaset_owner = from(bucket: "kube_prometheus")
+        	|> range(start: -task.every, stop: now())
+        	|> filter(fn: (r) =>
+        		(r["_measurement"] == "kube_replicaset_owner"))
+        	|> filter(fn: (r) =>
+        		(r["_field"] == "gauge"))
+        	|> last()
+        	|> group(columns: ["replicaset", "namespace", "owner"], mode: "by")
+        	|> max()
+        	|> top(n: 1)
+
+        join(tables: {key1: pod_owner, key2: replicaset_owner}, on: ["replicaset", "namespace", "_field"], method: "inner")
+        	|> map(fn: (r) =>
+        		({r with _value: r._value_key1 * r._value_key2}))
+        	|> rename(columns: {owner_name: "workload"})
+        	|> group(columns: ["namespace", "workload", "pod"])
+        	|> max()
+        	|> group()
+        	|> map(fn: (r) =>
+        		({
+        			_value: r._value,
+        			_measurement: "namespace_workload_pod:kube_pod_owner:relabel",
+        			_field: "gauge",
+        			namespace: r.namespace,
+        			workload: r.workload,
+        			pod: r.pod,
+        			workload_type: "deployment",
+        			_time: system.time(),
+        		}))
+        	|> to(bucket: "kube_prometheus")
+
+        pod_owner_ds = from(bucket: "kube_prometheus")
+        	|> range(start: -task.every, stop: now())
+        	|> filter(fn: (r) =>
+        		(r["_measurement"] == "kube_pod_owner"))
+        	|> filter(fn: (r) =>
+        		(r["_field"] == "gauge"))
+        	|> rename(columns: {owner_name: "workload"})
+        	|> filter(fn: (r) =>
+        		(r["owner_kind"] == "DaemonSet"))
+        	|> last()
+        	|> group()
+        	|> map(fn: (r) =>
+        		({
+        			_value: r._value,
+        			_measurement: "namespace_workload_pod:kube_pod_owner:relabel",
+        			_field: "gauge",
+        			namespace: r.namespace,
+        			workload: r.workload,
+        			pod: r.pod,
+        			workload_type: "daemonset",
+        			_time: system.time(),
+        		}))
+        	|> to(bucket: "kube_prometheus")
+        pod_owner_ss = from(bucket: "kube_prometheus")
+        	|> range(start: -task.every, stop: now())
+        	|> filter(fn: (r) =>
+        		(r["_measurement"] == "kube_pod_owner"))
+        	|> filter(fn: (r) =>
+        		(r["_field"] == "gauge"))
+        	|> rename(columns: {owner_name: "workload"})
+        	|> filter(fn: (r) =>
+        		(r["owner_kind"] == "StatefulSet"))
+        	|> last()
+        	|> group()
+        	|> map(fn: (r) =>
+        		({
+        			_value: r._value,
+        			_measurement: "namespace_workload_pod:kube_pod_owner:relabel",
+        			_field: "gauge",
+        			namespace: r.namespace,
+        			workload: r.workload,
+        			pod: r.pod,
+        			workload_type: "statefulset",
+        			_time: system.time(),
+        		}))
+        	|> to(bucket: "kube_prometheus")
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Task
+metadata:
+    name: node-ns-pod-ctr-ctr-cpu-usage-secs-total-sum-rate-task
+spec:
+    associations:
+      - kind: Label
+        name: kube-prometheus-label
+    every: 30s
+    name: node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate
+    query: |-
+        import "system"
+        import "experimental/aggregate"
+
+        cpu_usage = from(bucket: "kube_prometheus")
+        	|> range(start: -1h, stop: now())
+        	|> filter(fn: (r) =>
+        		(r["_measurement"] == "container_cpu_usage_seconds_total"))
+        	|> filter(fn: (r) =>
+        		(r["_field"] == "counter"))
+        	|> filter(fn: (r) =>
+        		(r["container"] != "POD"))
+        	|> filter(fn: (r) =>
+        		(r["image"] != ""))
+        	|> filter(fn: (r) =>
+        		(r["url"] =~ /\/metrics\/cadvisor/))
+        	|> aggregate.rate(every: 5m, groupColumns: ["_field", "_measurement", "address", "container", "cpu", "host", "id", "image", "name", "namespace", "pod", "url"])
+        	|> last()
+        	|> group()
+        topk = from(bucket: "kube_prometheus")
+        	|> range(start: -1h, stop: now())
+        	|> filter(fn: (r) =>
+        		(r["_measurement"] == "kube_pod_info"))
+        	|> filter(fn: (r) =>
+        		(r["_field"] == "gauge"))
+        	|> filter(fn: (r) =>
+        		(r["node"] != ""))
+        	|> last()
+        	|> group(columns: ["namespace", "pod", "node", "container"])
+        	|> max()
+        	|> keep(columns: ["host_ip", "namespace", "pod", "node", "container", "_value"])
+        	|> top(n: 1, columns: ["_value"])
+        	|> group()
+        	|> rename(columns: {host_ip: "address"})
+
+        join(tables: {key1: cpu_usage, key2: topk}, on: ["address", "namespace", "pod"], method: "inner")
+        	|> map(fn: (r) =>
+        		({r with _value: r._value_key1 * r._value_key2}))
+        	|> group(columns: ["namespace", "pod", "node", "container"])
+        	|> sum()
+        	|> group()
+        	|> map(fn: (r) =>
+        		({r with _measurement: "node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate", _field: "counter", _time: system.time()}))
+        	|> to(bucket: "kube_prometheus")
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: kubernetes-compute-resources-cluster-dashboard
+spec:
+    associations:
+      - kind: Label
+        name: kube-prometheus-label
+    charts:
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '##### Headlines'
+        width: 12
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: CPU Utilization
+        queries:
+          - query: |-
+                import "experimental/aggregate"
+
+                from(bucket: "kube_prometheus")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "node_cpu_seconds_total")
+                  |> filter(fn: (r) => r["_field"] == "counter")
+                  |> filter(fn: (r) => r["mode"] == "idle")
+                  |> aggregate.rate(every: 1m, groupColumns: ["host","cpu"])
+                  |> last()
+                  |> group()
+                  |> mean()
+                  |> map(fn: (r) => ({ r with _value: (1.0 - r._value) * 100.0 }))
+        suffix: '%'
+        width: 2
+        yPos: 1
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '##### CPU'
+        width: 12
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 0df467b1-38f4-4d03-b1a8-57942deb5f04
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 53e3fc9e-3be1-4a82-bae7-d92163c91217
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: bcc80cc0-f055-4196-b78d-14196f68af6f
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendOpacity: 1
+        legendOrientationThreshold: 10
+        name: CPU Usage
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: "kube_prometheus")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate")
+                  |> filter(fn: (r) => r["_field"] == "counter")
+                  |> group(columns: ["namespace"], mode:"by")
+                  |> sort(columns: ["_time"], desc: false)
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum, createEmpty: true)
+                  |> fill(column: "_value", usePrevious: true)
+        shade: true
+        width: 12
+        xCol: _time
+        yCol: _value
+        yPos: 4
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '##### CPU Quota'
+        width: 12
+        yPos: 7
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        decimalPlaces: 2
+        fieldOptions:
+          - displayName: _start
+            fieldName: _start
+            visible: true
+          - displayName: _stop
+            fieldName: _stop
+            visible: true
+          - displayName: namespace
+            fieldName: namespace
+            visible: true
+          - displayName: _value
+            fieldName: _value
+            visible: true
+          - displayName: _time
+            fieldName: _time
+            visible: true
+          - displayName: _field
+            fieldName: _field
+            visible: true
+          - displayName: _measurement
+            fieldName: _measurement
+            visible: true
+          - displayName: address
+            fieldName: address
+            visible: true
+          - displayName: host
+            fieldName: host
+            visible: true
+          - displayName: owner_is_controller
+            fieldName: owner_is_controller
+            visible: true
+          - displayName: owner_kind
+            fieldName: owner_kind
+            visible: true
+          - displayName: owner_name
+            fieldName: owner_name
+            visible: true
+          - displayName: pod
+            fieldName: pod
+            visible: true
+          - displayName: url
+            fieldName: url
+            visible: true
+          - displayName: Pods
+            fieldName: Pods
+            visible: true
+          - displayName: container
+            fieldName: container
+            visible: true
+          - displayName: node
+            fieldName: node
+            visible: true
+          - displayName: Workloads
+            fieldName: Workloads
+            visible: true
+          - displayName: CPU Usage
+            fieldName: CPU Usage
+            visible: true
+          - displayName: CPU Requests
+            fieldName: CPU Requests
+            visible: true
+          - displayName: CPU Limits
+            fieldName: CPU Limits
+            visible: true
+        height: 3
+        kind: Table
+        name: CPU Quota
+        queries:
+          - query: |-
+                pods = from(bucket: "kube_prometheus")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "kube_pod_owner")
+                  |> filter(fn: (r) => r["_field"] == "gauge")
+                  |> last()
+                  |> group(columns: ["namespace", "_field"])
+                  |> sum()
+                  |> group()
+                  |> set(key: "_field", value: "Pods")
+                  |> toFloat()
+
+                workloads = from(bucket: "kube_prometheus")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "namespace_workload_pod:kube_pod_owner:relabel")
+                  |> filter(fn: (r) => r["_field"] == "gauge")
+                  |> last()
+                  |> group(columns: ["workload", "namespace", "_field"])
+                  |> mean()
+                  |> group(columns: ["namespace", "_field"])
+                  |> count()
+                  |> group()
+                  |> set(key: "_field", value: "Workloads")
+                  |> toFloat()
+
+                cpu_usage = from(bucket: "kube_prometheus")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "node_namespace_pod_container:container_cpu_usage_seconds_total:sum_rate")
+                  |> filter(fn: (r) => r["_field"] == "counter")
+                  |> last()
+                  |> group(columns: ["namespace", "_field"])
+                  |> sum()
+                  |> group()
+                  |> set(key: "_field", value: "CPU Usage")
+
+                cpu_requests = from(bucket: "kube_prometheus")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "kube_pod_container_resource_requests_cpu_cores")
+                  |> filter(fn: (r) => r["_field"] == "gauge")
+                  |> last()
+                  |> group(columns: ["namespace", "_field"])
+                  |> sum()
+                  |> group()
+                  |> set(key: "_field", value: "CPU Requests")
+
+                cpu_limits = from(bucket: "kube_prometheus")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "kube_pod_container_resource_limits_cpu_cores")
+                  |> filter(fn: (r) => r["_field"] == "gauge")
+                  |> last()
+                  |> group(columns: ["namespace", "_field"])
+                  |> sum()
+                  |> group()
+                  |> set(key: "_field", value: "CPU Limits")
+
+                union(tables: [pods, workloads, cpu_usage, cpu_requests, cpu_limits])
+                  |> pivot(rowKey:["namespace"], columnKey: ["_field"], valueColumn: "_value")
+
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 12
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 32f96e72-00ba-4116-acc6-e8d2d36f1197
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: b6097bc8-dc27-4660-95dc-d5f725e168b1
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 35dfb910-3238-422a-814b-d4817769b41a
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendOpacity: 1
+        legendOrientationThreshold: 10
+        name: Memory Usage (w/o cache)
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: "kube_prometheus")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "container_memory_rss")
+                  |> filter(fn: (r) => r["_field"] == "gauge")
+                  |> filter(fn: (r) => r["container"] != "")
+                  |> group(columns: ["namespace"])
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum)
+                  |> movingAverage(n: 15)
+        shade: true
+        width: 12
+        xCol: _time
+        yCol: _value
+        yPos: 11
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '##### Memory Requests'
+        width: 12
+        yPos: 14
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        decimalPlaces: 2
+        fieldOptions:
+          - displayName: _start
+            fieldName: _start
+            visible: true
+          - displayName: _stop
+            fieldName: _stop
+            visible: true
+          - displayName: namespace
+            fieldName: namespace
+            visible: true
+          - displayName: _value
+            fieldName: _value
+            visible: true
+          - displayName: _time
+            fieldName: _time
+            visible: true
+          - displayName: _field
+            fieldName: _field
+            visible: true
+          - displayName: _measurement
+            fieldName: _measurement
+            visible: true
+          - displayName: address
+            fieldName: address
+            visible: true
+          - displayName: host
+            fieldName: host
+            visible: true
+          - displayName: owner_is_controller
+            fieldName: owner_is_controller
+            visible: true
+          - displayName: owner_kind
+            fieldName: owner_kind
+            visible: true
+          - displayName: owner_name
+            fieldName: owner_name
+            visible: true
+          - displayName: pod
+            fieldName: pod
+            visible: true
+          - displayName: url
+            fieldName: url
+            visible: true
+          - displayName: Pods
+            fieldName: Pods
+            visible: true
+          - displayName: container
+            fieldName: container
+            visible: true
+          - displayName: node
+            fieldName: node
+            visible: true
+          - displayName: Workloads
+            fieldName: Workloads
+            visible: true
+          - displayName: CPU Usage
+            fieldName: CPU Usage
+            visible: true
+          - displayName: CPU Requests
+            fieldName: CPU Requests
+            visible: true
+          - displayName: CPU Limits
+            fieldName: CPU Limits
+            visible: true
+          - displayName: Memory Usage
+            fieldName: Memory Usage
+            visible: true
+          - displayName: Memory Usage (GiB)
+            fieldName: Memory Usage (GiB)
+            visible: true
+          - displayName: Memory Limits
+            fieldName: Memory Limits
+            visible: true
+          - displayName: Memory Requests
+            fieldName: Memory Requests
+            visible: true
+          - displayName: Memory Requests (MiB)
+            fieldName: Memory Requests (MiB)
+            visible: true
+          - displayName: Memory Limits (MiB)
+            fieldName: Memory Limits (MiB)
+            visible: true
+        height: 3
+        kind: Table
+        name: Requests by Namespace
+        queries:
+          - query: |-
+                pods = from(bucket: "kube_prometheus")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "kube_pod_owner")
+                  |> filter(fn: (r) => r["_field"] == "gauge")
+                  |> last()
+                  |> group(columns: ["namespace", "_field"])
+                  |> sum()
+                  |> group()
+                  |> set(key: "_field", value: "Pods")
+                  |> toFloat()
+
+                workloads = from(bucket: "kube_prometheus")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "namespace_workload_pod:kube_pod_owner:relabel")
+                  |> filter(fn: (r) => r["_field"] == "gauge")
+                  |> last()
+                  |> group(columns: ["workload", "namespace", "_field"])
+                  |> mean()
+                  |> group(columns: ["namespace", "_field"])
+                  |> count()
+                  |> group()
+                  |> set(key: "_field", value: "Workloads")
+                  |> toFloat()
+
+                memory_usage = from(bucket: "kube_prometheus")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "container_memory_rss")
+                  |> filter(fn: (r) => r["_field"] == "gauge")
+                  |> filter(fn: (r) => r["container"] != "")
+                  |> last()
+                  |> group(columns: ["namespace", "_field"])
+                  |> sum()
+                  |> group()
+                  |> set(key: "_field", value: "Memory Usage (GiB)")
+                  |> map(fn: (r) => ({ r with _value: r._value / 1024.0 / 1024.0 / 1024.0 }))
+
+                memory_requests = from(bucket: "kube_prometheus")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "kube_pod_container_resource_requests_memory_bytes")
+                  |> filter(fn: (r) => r["_field"] == "gauge")
+                  |> last()
+                  |> group(columns: ["namespace", "_field"])
+                  |> sum()
+                  |> group()
+                  |> set(key: "_field", value: "Memory Requests (MiB)")
+                  |> map(fn: (r) => ({ r with _value: r._value / 1024.0 / 1024.0 }))
+
+                memory_limits = from(bucket: "kube_prometheus")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "kube_pod_container_resource_limits_memory_bytes")
+                  |> filter(fn: (r) => r["_field"] == "gauge")
+                  |> last()
+                  |> group(columns: ["namespace", "_field"])
+                  |> sum()
+                  |> group()
+                  |> set(key: "_field", value: "Memory Limits (MiB)")
+                  |> map(fn: (r) => ({ r with _value: r._value / 1024.0 / 1024.0 }))
+
+                union(tables: [pods, workloads, memory_usage, memory_requests, memory_limits])
+                  |> pivot(rowKey:["namespace"], columnKey: ["_field"], valueColumn: "_value")
+                  
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 12
+        yPos: 15
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: CPU Requests Commitment
+        queries:
+          - query: |-
+                requests = from(bucket: "kube_prometheus")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "kube_pod_container_resource_requests_cpu_cores")
+                  |> filter(fn: (r) => r["_field"] == "gauge")
+                  |> filter(fn: (r) => r["container"] != "")
+                  |> last()
+                  |> group(columns: ["_field"])
+                  |> sum()
+
+                allocatable = from(bucket: "kube_prometheus")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "kube_node_status_allocatable_cpu_cores")
+                  |> filter(fn: (r) => r["_field"] == "gauge")
+                  |> last()
+                  |> group(columns: ["_field"])
+                  |> sum()
+
+                join(tables: {key1: requests, key2: allocatable}, on: ["_field"], method: "inner")
+                  |> map(fn: (r) => ({ _value: (r._value_key1 / r._value_key2) * 100.0 }))
+        suffix: ' %'
+        width: 2
+        xPos: 2
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: CPU Limits Commitment
+        queries:
+          - query: |-
+                requests = from(bucket: "kube_prometheus")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "kube_pod_container_resource_limits_cpu_cores")
+                  |> filter(fn: (r) => r["_field"] == "gauge")
+                  |> last()
+                  |> group(columns: ["_field"])
+                  |> sum()
+
+                allocatable = from(bucket: "kube_prometheus")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "kube_node_status_allocatable_cpu_cores")
+                  |> filter(fn: (r) => r["_field"] == "gauge")
+                  |> last()
+
+                join(tables: {key1: requests, key2: allocatable}, on: ["_field"], method: "inner")
+                  |> map(fn: (r) => ({ _value: (r._value_key1 / r._value_key2) * 100.0 }))
+
+        suffix: ' %'
+        width: 2
+        xPos: 4
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Memory Utilization
+        queries:
+          - query: |-
+                mem_available = from(bucket: "kube_prometheus")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == ":node_memory_MemAvailable_bytes:sum")
+                  |> filter(fn: (r) => r["_field"] == "gauge")
+                  |> last()
+                  |> group(columns: ["_field"])
+                  |> sum()
+
+                allocatable = from(bucket: "kube_prometheus")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "kube_node_status_allocatable_memory_bytes")
+                  |> filter(fn: (r) => r["_field"] == "gauge")
+                  |> last()
+
+                join(tables: {key1: mem_available, key2: allocatable}, on: ["_field"], method: "inner")
+                  |> map(fn: (r) => ({ _value: (1.0 - (r._value_key1 / r._value_key2)) * 100.0 }))
+
+        suffix: ' %'
+        width: 2
+        xPos: 6
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Memory Requests Commitment
+        queries:
+          - query: |-
+                requests = from(bucket: "kube_prometheus")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "kube_pod_container_resource_requests_memory_bytes")
+                  |> filter(fn: (r) => r["_field"] == "gauge")
+                  |> last()
+                  |> group(columns: ["_field"])
+                  |> sum()
+
+                allocatable = from(bucket: "kube_prometheus")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "kube_node_status_allocatable_memory_bytes")
+                  |> filter(fn: (r) => r["_field"] == "gauge")
+                  |> last()
+
+                join(tables: {key1: requests, key2: allocatable}, on: ["_field"], method: "inner")
+                  |> map(fn: (r) => ({ _value: (r._value_key1 / r._value_key2) * 100.0 }))
+
+        suffix: ' %'
+        width: 2
+        xPos: 8
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Memory Limits Commitment
+        queries:
+          - query: |-
+                limits = from(bucket: "kube_prometheus")
+                    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                    |> filter(fn: (r) => r["_measurement"] == "kube_pod_container_resource_limits_memory_bytes")
+                    |> filter(fn: (r) => r["_field"] == "gauge")
+                    |> last()
+                    |> group(columns: ["_field"])
+                    |> sum()
+                    
+                allocatable = from(bucket: "kube_prometheus")
+                    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                    |> filter(fn: (r) => r["_measurement"] == "kube_node_status_allocatable_memory_bytes")
+                    |> filter(fn: (r) => r["_field"] == "gauge")
+                    |> last()
+                
+                join(tables: {key1: limits, key2: allocatable}, on: ["_field"], method: "inner")
+                    |> map(fn: (r) => ({ _value: (r._value_key1 / r._value_key2) * 100.0}))
+        suffix: ' %'
+        width: 2
+        xPos: 10
+        yPos: 1
+    name: Kubernetes / Compute Resources / Cluster
