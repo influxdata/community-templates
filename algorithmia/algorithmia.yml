@@ -241,10 +241,11 @@ spec:
           brokers = ["$KAFKA_BROKER"]
           topics = ["$KAFKA_TOPIC"]
           data_format = "json"
-          json_string_fields = [
+          tag_keys = [
             "algorithm_name",
             "algorithm_owner",
             "algorithm_version",
             "session_id",
             "request_id"
           ]
+          name_override = "algorithmia"
