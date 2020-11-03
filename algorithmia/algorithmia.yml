@@ -244,7 +244,9 @@ spec:
           tag_keys = [
             "algorithm_name",
             "algorithm_owner",
-            "algorithm_version",
+            "algorithm_version"
+          ]
+          json_string_fields = [
             "session_id",
             "request_id"
           ]
