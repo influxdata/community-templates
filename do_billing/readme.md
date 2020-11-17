@@ -36,7 +36,7 @@ Telegraf Configuration requires the following environment variables
   - `INFLUX_ORG` - The name of your Organization.
   - `INFLUX_HOST` - The address of you InfluxDB
 
-To use this dashboard, you need a DigitalOcean Token. Read Only is sufficient and you can get one [from here](https://cloud.digitalocean.com/account/api/tokens) and pass as to environment variable. In the balance.sh file, the variable expected is $TOKEN_DO.
+To use this dashboard, you need a DigitalOcean Token. Read Only is sufficient and you can get one [from here](https://cloud.digitalocean.com/account/api/tokens) and pass as to environment variable. In the balance.sh file, the variable expected is $DO_TOKEN.
 
 The Telegraf config has set up a path to the balance.sh file the working directory from where Telegraf is running.
 
