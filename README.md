@@ -46,6 +46,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [Network Interface Monitor](network_interface_performance/) | Monitor network interfaces on one or more hosts. | [@russorat](https://github.com/russorat) |
 | [Nextcloud](nextcloud/) | Show stats about your Nextcloud Instance. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Postgres Monitor](postgresql/) | Monitor Postgres Server. CPU, Deadlocks, Data and more | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
+| [Raspberry Pi System Monitor](raspberry-pi/) | System overview monitoring for your Raspberry Pi with Raspbian. | [@bonitoo.io](https://github.com/bonitoo-io) |
 | [Redis Monitor](redis/) | Monitor your Redis server. | [@russorat](https://github.com/russorat) |
 | [Sensu Go](sensu_go/) | Monitor the performance of your Sensu Go observability tool. | [@nikkictl](https://github.com/nikkictl) |
 | [sFlow Traffic Monitor](sflow/) | Monitor your sFlow traffic. | [@russorat](https://github.com/russorat) |

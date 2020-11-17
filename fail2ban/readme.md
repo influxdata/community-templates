@@ -84,7 +84,7 @@ ExecStartPost=/bin/chmod g+w /run/fail2ban/fail2ban.sock
 
 Then restart the service:
 ```
-root@server:~$ systemctl restart zabbix-agent.service
+root@server:~$ systemctl restart fail2ban.service
 ```
 
 ## Included resources
