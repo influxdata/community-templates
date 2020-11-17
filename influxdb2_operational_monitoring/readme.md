@@ -46,9 +46,6 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
 
   You must already have a task running in order to populate the `Task Summary Dashboard` with data. [Get started with InfluxDB tasks](https://docs.influxdata.com/influxdb/v2.0/process-data/get-started/) to create a task and populate the dashboard.  
 
-
-<img src="img/create-scraper.png" width="200" />
-
 ## Contact
 
 - Author: Anais Dotis-Georgiou
