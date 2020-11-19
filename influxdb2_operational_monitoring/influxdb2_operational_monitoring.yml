@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: sharp-fermi-211001
+    name: affectionate-jackson-9aa001
 spec:
     color: '#ebadf8'
     description: tasks and cardinality monitoring
@@ -10,21 +10,21 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Bucket
 metadata:
-    name: mystifying-moser-a11003
+    name: sharp-thompson-daa003
 spec:
     associations:
       - kind: Label
-        name: sharp-fermi-211001
+        name: affectionate-jackson-9aa001
     name: cardinality
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Task
 metadata:
-    name: interesting-hermann-611003
+    name: alerting-northcutt-daa003
 spec:
     associations:
       - kind: Label
-        name: sharp-fermi-211001
+        name: affectionate-jackson-9aa001
     every: 1h
     name: cardinality_by_bucket
     query: |-
@@ -49,13 +49,46 @@ spec:
         	|> to(bucket: "cardinality")
 ---
 apiVersion: influxdata.com/v2alpha1
-kind: Dashboard
+kind: Variable
 metadata:
-    name: eloquent-keller-e11001
+    name: eager-proskuriakova-9aa003
 spec:
     associations:
       - kind: Label
-        name: sharp-fermi-211001
+        name: affectionate-jackson-9aa001
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> filter(fn: (r) => r.name !~ /^_/)
+          |> rename(columns: {name: "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: relaxed-archimedes-5aa003
+spec:
+    associations:
+      - kind: Label
+        name: affectionate-jackson-9aa001
+    language: flux
+    name: measurement
+    query: |-
+        import "influxdata/influxdb/v1"
+
+        v1.measurements(bucket: v.bucket)
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: magical-brahmagupta-5aa001
+spec:
+    associations:
+      - kind: Label
+        name: affectionate-jackson-9aa001
     charts:
       - colors:
           - hex: '#00C9FF'
@@ -84,7 +117,7 @@ spec:
                   |> group(columns: ["_start"])
                   |> count()
                   |> rename(columns: {_start: "_time"})
-        width: 3
+        width: 4
       - colors:
           - hex: '#ffffff'
             id: base
@@ -131,7 +164,7 @@ spec:
             sortBy: failed
             verticalTimeAxis: true
         timeFormat: YYYY-MM-DD HH:mm:ss
-        width: 9
+        width: 12
         yPos: 4
       - colors:
           - hex: '#ffffff'
@@ -172,7 +205,7 @@ spec:
           - displayName: message
             fieldName: message
             visible: true
-        height: 4
+        height: 3
         kind: Table
         name: Error List
         queries:
@@ -193,7 +226,7 @@ spec:
             sortBy: failed
             verticalTimeAxis: true
         timeFormat: YYYY-MM-DD HH:mm:ss
-        width: 9
+        width: 12
         yPos: 8
       - axes:
           - base: "10"
@@ -241,10 +274,10 @@ spec:
                   |> pivot(rowKey:["_time"], columnKey: ["status"], valueColumn: "_value")
                   |> filter(fn: (r) => r.failed + r.success != 0)
                   |> map(fn: (r)=> ({r with  _value:  float(v: r.failed)/float(v: r.success+r.failed) }))
-        width: 9
+        width: 12
         xCol: _time
         yCol: _value
-        yPos: 12
+        yPos: 11
       - colors:
           - hex: '#ffffff'
             id: base
@@ -313,8 +346,8 @@ spec:
         tableOptions:
             verticalTimeAxis: true
         timeFormat: YYYY-MM-DD HH:mm:ss
-        width: 9
-        yPos: 16
+        width: 12
+        yPos: 15
       - colors:
           - hex: '#7CE490'
             id: base
@@ -337,8 +370,8 @@ spec:
                   |> group(columns: ["_start"])
                   |> count()
                   |> rename(columns: {_start: "_time"})
-        width: 3
-        xPos: 3
+        width: 5
+        xPos: 4
       - colors:
           - hex: '#BF3D5E'
             id: base
@@ -362,17 +395,17 @@ spec:
                   |> count()
                   |> rename(columns: {_start: "_time"})
         width: 3
-        xPos: 6
+        xPos: 9
     name: Task  Summary Dashboard
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: xenodochial-babbage-611003
+    name: nostalgic-kirch-1aa001
 spec:
     associations:
       - kind: Label
-        name: sharp-fermi-211001
+        name: affectionate-jackson-9aa001
     charts:
       - height: 2
         kind: Markdown
