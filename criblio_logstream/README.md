@@ -1,5 +1,7 @@
 # Cribl LogStream
-This InfluxDB Template can be used to monitor [Cribl LogStream](https://cribl.io)
+Provided by [Cribl](https://cribl.io) 
+
+This InfluxDB Template can be used to see the metrics created by your Cribl LogStream deployment. 
 
 ![Screenshot](img/cribl_logstream_influxdb.png)
 
