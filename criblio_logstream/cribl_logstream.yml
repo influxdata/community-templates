@@ -1,10 +1,21 @@
 apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: obstinate-moore-59a001
+spec:
+    color: '#00C9FF'
+    name: cribl
+---
+apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: crazy-goodall-804001
+    name: intelligent-hypatia-99a001
 spec:
+    associations:
+      - kind: Label
+        name: obstinate-moore-59a001
     language: flux
-    name: bucket
+    name: criblBucket
     query: |-
         buckets()
           |> filter(fn: (r) => r.name !~ /^_/)
@@ -15,8 +26,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: burfect-greider-c04001
+    name: earning-williamson-99a001
 spec:
+    associations:
+      - kind: Label
+        name: obstinate-moore-59a001
     charts:
       - height: 1
         kind: Markdown
@@ -41,7 +55,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                from(bucket: v.criblBucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "cribl.logstream.total")
                   |> filter(fn: (r) => r["_field"] == "activeCxn")
@@ -49,8 +63,6 @@ spec:
                   |> aggregateWindow(every: v.windowPeriod, fn: max)
                   |> yield(name: "max")
         width: 2
-        xCol: _time
-        yCol: _value
         yPos: 1
       - axes:
           - base: "10"
@@ -76,17 +88,16 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                from(bucket: v.criblBucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "cribl.logstream.total")
                   |> filter(fn: (r) => r["_field"] == "in_events")
-                  |> filter(fn: (r) => exists r["ci"] and r["ci"] != "cribl:CriblMetrics")
-                  |> group(columns: ["ci"])
+                  |> filter(fn: (r) => exists r["input"] and r["input"] != "cribl:CriblMetrics")
+                  |> group(columns: ["input"])
                   |> aggregateWindow(every: v.windowPeriod, fn: sum)
+                  |> fill(usePrevious: true)
                   |> yield(name: "sum")
         width: 12
-        xCol: _time
-        yCol: _value
         yPos: 4
       - axes:
           - base: "10"
@@ -112,17 +123,16 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                from(bucket: v.criblBucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "cribl.logstream.total")
                   |> filter(fn: (r) => r["_field"] == "out_events")
-                  |> filter(fn: (r) => exists r["co"])
-                  |> group(columns: ["co"])
+                  |> filter(fn: (r) => exists r["output"])
+                  |> group(columns: ["output"])
                   |> aggregateWindow(every: v.windowPeriod, fn: sum)
+                  |> fill(usePrevious: true)
                   |> yield(name: "sum")
         width: 12
-        xCol: _time
-        yCol: _value
         yPos: 7
       - axes:
           - base: "10"
@@ -148,16 +158,15 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                from(bucket: v.criblBucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "cribl.logstream.pipe")
                   |> filter(fn: (r) => r["_field"] == "in_events" or r["_field"] == "out_events")
                   |> group(columns: ["id"])
                   |> aggregateWindow(every: v.windowPeriod, fn: sum)
+                  |> fill(usePrevious: true)
                   |> yield(name: "sum")
         width: 12
-        xCol: _time
-        yCol: _value
         yPos: 10
       - axes:
           - base: "10"
@@ -177,16 +186,14 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                from(bucket: v.criblBucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "cribl.logstream.total")
                   |> filter(fn: (r) => r["_field"] == "openCxn")
                   |> aggregateWindow(every: 1m, fn: sum)
                   |> yield(name: "sum")
         width: 2
-        xCol: _time
         xPos: 2
-        yCol: _value
       - axes:
           - base: "10"
             name: x
@@ -205,7 +212,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                from(bucket: v.criblBucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "cribl.logstream.total")
                   |> filter(fn: (r) => r["_field"] == "closeCxn")
@@ -238,17 +245,16 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                from(bucket: v.criblBucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "cribl.logstream.total")
                   |> filter(fn: (r) => r["_field"] == "in_events" or r["_field"] == "out_events")
-                  |> filter(fn: (r) => not exists r["ci"] and not exists r["co"])
+                  |> filter(fn: (r) => not exists r["input"] and not exists r["output"]) // Filter null inputs and outputs, which are summaries
                   |> aggregateWindow(every: v.windowPeriod, fn: sum)
+                  |> fill(usePrevious: true)
                   |> yield(name: "sum")
         width: 4
-        xCol: _time
         xPos: 4
-        yCol: _value
       - axes:
           - base: "10"
             name: x
@@ -273,15 +279,14 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: v.bucket)
+                from(bucket: v.criblBucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "cribl.logstream.total")
                   |> filter(fn: (r) => r["_field"] == "in_bytes" or r["_field"] == "out_bytes")
-                  |> filter(fn: (r) => not exists r["ci"] and not exists r["co"])
+                  |> filter(fn: (r) => not exists r["input"] and not exists r["output"]) // Filter null values of input and output, which are summaries
                   |> aggregateWindow(every: v.windowPeriod, fn: sum)
+                  |> fill(usePrevious: true)
                   |> yield(name: "sum")
         width: 4
-        xCol: _time
         xPos: 8
-        yCol: _value
     name: Cribl LogStream
