@@ -48,7 +48,7 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
 - 1 Notification Rule: `Fireboard Stall Notification`
 - 1 Label: `Fireboard`
 
-## Setup
+## Setup Instructions
 
 General instructions on using InfluxDB Templates can be found in [Use a template](../docs/use_a_template.md).
 
