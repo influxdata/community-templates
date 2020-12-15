@@ -27,6 +27,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [Endpoint Security State](endpoint-security-state/) | Watch endpoint authentication availability and certificate status | [Darin Fisher](https://github.com/darinfisher) |
 | [Enviro+](enviro_plus/) | View the air quality readings from a Pimoroni Enviro+ particulate matter sensor. | Russ Savage |
 | [Fail2Ban](fail2ban/) | Monitor your Fail2Ban instance on multiple hosts and services. | [bonitoo.io](.) |
+| [Fireboard](fireboard/) | Monitor data collected by a Fireboard thermometer. | [Scott Anderson](https://github.com/sanderson) |
 | [Fortnite](fortnite/) | Track and analyze Fortnite player performance. | [@abalone23](https://github.com/abalone23) |
 | [GCP Monitoring](gcp_monitoring/) | Monitor Google Cloud Platform.  | [bonitoo.io](.) |
 | [Github](github/) | View information about your Github Repos. Forks, Issues, Stars and more. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
