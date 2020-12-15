@@ -946,13 +946,13 @@ spec:
 
         # Configuration for telegraf agent
         [agent]
-          interval = "1m"
+          interval = "30s"
           round_interval = true
           metric_batch_size = 1000
           metric_buffer_limit = 10000
           collection_jitter = "0s"
           flush_interval = "10s"
-          flush_jitter = "1m"
+          flush_jitter = "30s"
           precision = ""
           hostname = ""
           omit_hostname = true
