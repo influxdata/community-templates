@@ -27,7 +27,7 @@ To contribute a new template or enhance an existing template, submit a pull requ
 
     * To update an existing template, make the changes to template files in the appropriate directory.
 
-    > **Tip:** Replace any hard-coded URLs to InfluxDB in your Telegraf configurations with the `$INFLUX_URL` environment variable so users can easily point it to their own InfluxDB instance location. For example: `urls = ["$INFLUX_URL"]`
+    > **Tip:** Replace any hard-coded URLs to InfluxDB in your Telegraf configurations with the `$INFLUX_HOST` environment variable so users can easily point it to their own InfluxDB instance location. For example: `urls = ["$INFLUX_HOST"]`
 
 3. If you are submitting a new Template, add it to the table of Templates in the main `README.md` file in the root of the repository.
 

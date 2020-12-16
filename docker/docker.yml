@@ -760,7 +760,7 @@ spec:
 
     # Configuration for sending metrics to InfluxDB
     [[outputs.influxdb_v2]]
-      urls = ["$INFLUX_URL"]
+      urls = ["$INFLUX_HOST"]
       token = "$INFLUX_TOKEN"
       organization = "$INFLUX_ORG" ## Destination bucket to write into.
       bucket = "docker"
