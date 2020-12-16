@@ -1,0 +1,975 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: hopeful-golick-f36001
+spec:
+    color: '#E85B1C'
+    name: Fireboard
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: youthful-rubin-f36005
+spec:
+    associations:
+      - kind: Label
+        name: hopeful-golick-f36001
+    name: fireboard
+---
+apiVersion: influxdata.com/v2alpha1
+kind: NotificationEndpointHTTP
+metadata:
+    name: wonderful-goodall-336001
+spec:
+    associations:
+      - kind: Label
+        name: hopeful-golick-f36001
+    description: Example endpoint. Add your own notification endpoint to send Fireboard
+        notifications to and delete this one.
+    method: POST
+    name: Example Endpoint
+    status: active
+    type: none
+    url: https://www.example.com/endpoint
+---
+apiVersion: influxdata.com/v2alpha1
+kind: NotificationRule
+metadata:
+    name: loving-jones-336005
+spec:
+    associations:
+      - kind: Label
+        name: hopeful-golick-f36001
+    description: Send a notification whenever the temperature on a probe is stalling.
+    endpointName: wonderful-goodall-336001
+    every: 5m0s
+    name: Fireboard Stall Notification
+    statusRules:
+      - currentLevel: WARN
+        previousLevel: OK
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Task
+metadata:
+    name: adventuring-roentgen-336009
+spec:
+    associations:
+      - kind: Label
+        name: hopeful-golick-f36001
+    every: 5m
+    name: Fireboard Stall Check
+    query: |-
+        import "influxdata/influxdb/monitor"
+
+
+        meatProbes = [2,3,4,5,6]
+
+        checkData = {
+          _check_name: "Fireboard stall check",
+          _check_id: "fireboard_stalling",
+          _type: "custom",
+          tags: {}
+        }
+
+        check_data = from(bucket:"fireboard")
+          |> range(start: -15m)
+          |> filter(fn: (r) => r._measurement == "fireboard" and contains(set: meatProbes, value: int(v: r.channel)))
+          |> difference(nonNegative: false)
+          |> aggregateWindow(every: 5m, fn: mean)
+          |> fill(usePrevious: true)
+          |> map(fn: (r) => ({ r with
+              status:
+                if r._value <= 0.0 then "cooling"
+                else if r._value <= 0.02 then "stalling"
+                else "cooking"
+          }))
+
+        check_data
+          |> monitor.check(
+            crit: (r) => r.status == "cooling",
+            warn: (r) => r.status == "stalling",
+            ok:   (r) => r.status <= "cooking",
+            messageFn: (r) => "Probe${r.channel} appears to be ${r.status}",
+            data: checkData
+          )
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: blissful-franklin-336035
+spec:
+    associations:
+      - kind: Label
+        name: hopeful-golick-f36001
+    name: probe3_target
+    selected:
+      - "200"
+    type: constant
+    values:
+      - "35"
+      - "40"
+      - "45"
+      - "50"
+      - "55"
+      - "60"
+      - "65"
+      - "70"
+      - "75"
+      - "80"
+      - "85"
+      - "90"
+      - "95"
+      - "100"
+      - "105"
+      - "110"
+      - "115"
+      - "120"
+      - "125"
+      - "130"
+      - "135"
+      - "140"
+      - "145"
+      - "150"
+      - "155"
+      - "160"
+      - "165"
+      - "170"
+      - "175"
+      - "180"
+      - "185"
+      - "190"
+      - "195"
+      - "200"
+      - "205"
+      - "210"
+      - "215"
+      - "220"
+      - "225"
+      - "230"
+      - "235"
+      - "240"
+      - "245"
+      - "250"
+      - "255"
+      - "260"
+      - "265"
+      - "270"
+      - "275"
+      - "280"
+      - "285"
+      - "290"
+      - "295"
+      - "300"
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: bold-jang-336031
+spec:
+    associations:
+      - kind: Label
+        name: hopeful-golick-f36001
+    name: probe3_type
+    selected:
+      - Food
+    type: constant
+    values:
+      - Ambient
+      - Food
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: busy-wing-336025
+spec:
+    associations:
+      - kind: Label
+        name: hopeful-golick-f36001
+    name: probe1_type
+    selected:
+      - Ambient
+    type: constant
+    values:
+      - Ambient
+      - Food
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: cool-ramanujan-336021
+spec:
+    associations:
+      - kind: Label
+        name: hopeful-golick-f36001
+    name: probe1_target
+    selected:
+      - "200"
+    type: constant
+    values:
+      - "35"
+      - "40"
+      - "45"
+      - "50"
+      - "55"
+      - "60"
+      - "65"
+      - "70"
+      - "75"
+      - "80"
+      - "85"
+      - "90"
+      - "95"
+      - "100"
+      - "105"
+      - "110"
+      - "115"
+      - "120"
+      - "125"
+      - "130"
+      - "135"
+      - "140"
+      - "145"
+      - "150"
+      - "155"
+      - "160"
+      - "165"
+      - "170"
+      - "175"
+      - "180"
+      - "185"
+      - "190"
+      - "195"
+      - "200"
+      - "205"
+      - "210"
+      - "215"
+      - "220"
+      - "225"
+      - "230"
+      - "235"
+      - "240"
+      - "245"
+      - "250"
+      - "255"
+      - "260"
+      - "265"
+      - "270"
+      - "275"
+      - "280"
+      - "285"
+      - "290"
+      - "295"
+      - "300"
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: dangerous-kirch-33600d
+spec:
+    associations:
+      - kind: Label
+        name: hopeful-golick-f36001
+    name: probe5_type
+    selected:
+      - Food
+    type: constant
+    values:
+      - Ambient
+      - Food
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: distracted-davinci-336039
+spec:
+    associations:
+      - kind: Label
+        name: hopeful-golick-f36001
+    name: probe4_target
+    selected:
+      - "200"
+    type: constant
+    values:
+      - "35"
+      - "40"
+      - "45"
+      - "50"
+      - "55"
+      - "60"
+      - "65"
+      - "70"
+      - "75"
+      - "80"
+      - "85"
+      - "90"
+      - "95"
+      - "100"
+      - "105"
+      - "110"
+      - "115"
+      - "120"
+      - "125"
+      - "130"
+      - "135"
+      - "140"
+      - "145"
+      - "150"
+      - "155"
+      - "160"
+      - "165"
+      - "170"
+      - "175"
+      - "180"
+      - "185"
+      - "190"
+      - "195"
+      - "200"
+      - "205"
+      - "210"
+      - "215"
+      - "220"
+      - "225"
+      - "230"
+      - "235"
+      - "240"
+      - "245"
+      - "250"
+      - "255"
+      - "260"
+      - "265"
+      - "270"
+      - "275"
+      - "280"
+      - "285"
+      - "290"
+      - "295"
+      - "300"
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: eager-khorana-33602d
+spec:
+    associations:
+      - kind: Label
+        name: hopeful-golick-f36001
+    name: probe6_type
+    selected:
+      - Food
+    type: constant
+    values:
+      - Ambient
+      - Food
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: endangered-hermann-33601d
+spec:
+    associations:
+      - kind: Label
+        name: hopeful-golick-f36001
+    name: probe2_target
+    selected:
+      - "200"
+    type: constant
+    values:
+      - "35"
+      - "40"
+      - "45"
+      - "50"
+      - "55"
+      - "60"
+      - "65"
+      - "70"
+      - "75"
+      - "80"
+      - "85"
+      - "90"
+      - "95"
+      - "100"
+      - "105"
+      - "110"
+      - "115"
+      - "120"
+      - "125"
+      - "130"
+      - "135"
+      - "140"
+      - "145"
+      - "150"
+      - "155"
+      - "160"
+      - "165"
+      - "170"
+      - "175"
+      - "180"
+      - "185"
+      - "190"
+      - "195"
+      - "200"
+      - "205"
+      - "210"
+      - "215"
+      - "220"
+      - "225"
+      - "230"
+      - "235"
+      - "240"
+      - "245"
+      - "250"
+      - "255"
+      - "260"
+      - "265"
+      - "270"
+      - "275"
+      - "280"
+      - "285"
+      - "290"
+      - "295"
+      - "300"
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: focused-goodall-336029
+spec:
+    associations:
+      - kind: Label
+        name: hopeful-golick-f36001
+    name: probe4_type
+    selected:
+      - Food
+    type: constant
+    values:
+      - Ambient
+      - Food
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: gallant-mclean-336011
+spec:
+    associations:
+      - kind: Label
+        name: hopeful-golick-f36001
+    name: probe2_type
+    selected:
+      - Food
+    type: constant
+    values:
+      - Ambient
+      - Food
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: hungry-golick-336015
+spec:
+    associations:
+      - kind: Label
+        name: hopeful-golick-f36001
+    name: probe5_target
+    selected:
+      - "200"
+    type: constant
+    values:
+      - "35"
+      - "40"
+      - "45"
+      - "50"
+      - "55"
+      - "60"
+      - "65"
+      - "70"
+      - "75"
+      - "80"
+      - "85"
+      - "90"
+      - "95"
+      - "100"
+      - "105"
+      - "110"
+      - "115"
+      - "120"
+      - "125"
+      - "130"
+      - "135"
+      - "140"
+      - "145"
+      - "150"
+      - "155"
+      - "160"
+      - "165"
+      - "170"
+      - "175"
+      - "180"
+      - "185"
+      - "190"
+      - "195"
+      - "200"
+      - "205"
+      - "210"
+      - "215"
+      - "220"
+      - "225"
+      - "230"
+      - "235"
+      - "240"
+      - "245"
+      - "250"
+      - "255"
+      - "260"
+      - "265"
+      - "270"
+      - "275"
+      - "280"
+      - "285"
+      - "290"
+      - "295"
+      - "300"
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: shiny-sanderson-336019
+spec:
+    associations:
+      - kind: Label
+        name: hopeful-golick-f36001
+    name: probe6_target
+    selected:
+      - "200"
+    type: constant
+    values:
+      - "35"
+      - "40"
+      - "45"
+      - "50"
+      - "55"
+      - "60"
+      - "65"
+      - "70"
+      - "75"
+      - "80"
+      - "85"
+      - "90"
+      - "95"
+      - "100"
+      - "105"
+      - "110"
+      - "115"
+      - "120"
+      - "125"
+      - "130"
+      - "135"
+      - "140"
+      - "145"
+      - "150"
+      - "155"
+      - "160"
+      - "165"
+      - "170"
+      - "175"
+      - "180"
+      - "185"
+      - "190"
+      - "195"
+      - "200"
+      - "205"
+      - "210"
+      - "215"
+      - "220"
+      - "225"
+      - "230"
+      - "235"
+      - "240"
+      - "245"
+      - "250"
+      - "255"
+      - "260"
+      - "265"
+      - "270"
+      - "275"
+      - "280"
+      - "285"
+      - "290"
+      - "295"
+      - "300"
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: angry-tereshkova-f36001
+spec:
+    associations:
+      - kind: Label
+        name: hopeful-golick-f36001
+    charts:
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+            suffix: °F
+        colors:
+          - hex: '#8F8AF4'
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#A51414'
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#F4CF31'
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+        geom: line
+        height: 6
+        kind: Xy
+        name: Overview
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "fireboard")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "fireboard")
+                  |> filter(fn: (r) => r["_field"] == "temperature")
+        shade: true
+        width: 8
+        xCol: _time
+        yCol: _value
+      - colors:
+          - hex: '#22ADF6'
+            name: pool
+            type: background
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Probe 1
+        queries:
+          - query: |-
+                from(bucket: "fireboard")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "fireboard")
+                  |> filter(fn: (r) => r["_field"] == "temperature")
+                  |> filter(fn: (r) => r["channel"] == "1")
+        suffix: °
+        width: 2
+        xPos: 8
+      - colors:
+          - hex: '#DC4E58'
+            id: base
+            name: fire
+            type: background
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Probe 2
+        queries:
+          - query: |-
+                from(bucket: "fireboard")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "fireboard")
+                  |> filter(fn: (r) => r["_field"] == "temperature")
+                  |> filter(fn: (r) => r["channel"] == "2")
+        suffix: °
+        width: 2
+        xPos: 8
+        yPos: 1
+      - colors:
+          - hex: '#F48D38'
+            id: base
+            name: tiger
+            type: background
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Probe 3
+        queries:
+          - query: |-
+                from(bucket: "fireboard")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "fireboard")
+                  |> filter(fn: (r) => r["_field"] == "temperature")
+                  |> filter(fn: (r) => r["channel"] == "3")
+        suffix: °
+        width: 2
+        xPos: 8
+        yPos: 2
+      - colors:
+          - hex: '#FFB94A'
+            id: base
+            name: pineapple
+            type: background
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Probe 4
+        queries:
+          - query: |-
+                from(bucket: "fireboard")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "fireboard")
+                  |> filter(fn: (r) => r["_field"] == "temperature")
+                  |> filter(fn: (r) => r["channel"] == "4")
+        suffix: °
+        width: 2
+        xPos: 8
+        yPos: 3
+      - colors:
+          - hex: '#FFD255'
+            id: base
+            name: thunder
+            type: background
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Probe 5
+        queries:
+          - query: |-
+                from(bucket: "fireboard")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "fireboard")
+                  |> filter(fn: (r) => r["_field"] == "temperature")
+                  |> filter(fn: (r) => r["channel"] == "5")
+        suffix: °
+        width: 2
+        xPos: 8
+        yPos: 4
+      - colors:
+          - hex: '#7CE490'
+            id: base
+            name: honeydew
+            type: background
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Probe 6
+        queries:
+          - query: |-
+                from(bucket: "fireboard")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "fireboard")
+                  |> filter(fn: (r) => r["_field"] == "temperature")
+                  |> filter(fn: (r) => r["channel"] == "6")
+        suffix: °
+        width: 2
+        xPos: 8
+        yPos: 5
+      - colors:
+          - hex: '#22ADF6'
+            name: pool
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Probe 1 Status
+        queries:
+          - query: "import \"experimental\"\n\ntype = v.probe1_type\ntarget = float(v:
+                v.probe1_target)\n\naddStatus = (tables=<-) =>\n  tables\n    |> map(fn:
+                (r) => ({ r with\n      _value: if r.scale == \"Celsius\" then (r._value
+                * (9.0/5.0)) + 32.0 else r._value,\n      status: if r._value >= target
+                then \"Done\" else \"\"\n    }))\n    |> difference()\n    |> experimental.group(columns:
+                [\"status\"], mode: \"extend\")\n    |> aggregateWindow(every: 5m,
+                fn: mean)\n    |> group(columns: [\"_time\", \"_value\", \"status\"],
+                mode: \"except\")\n    |> fill(usePrevious: true)\n    |> map(fn:
+                (r) => ({ r with\n      _value: \n        if type == \"Ambient\" then
+                \"--\"\n        else if r.status == \"Done\" then \"Done\"\n        else
+                if r._value < 0.0 then \"Cooling\"\n        else if r._value <= 0.02
+                then \"Stalling\"\n        else \"Cooking\"\n    }))\n\nfrom(bucket:
+                \"fireboard\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n
+                \ |> filter(fn: (r) => r[\"_measurement\"] == \"fireboard\")\n  |>
+                filter(fn: (r) => r[\"_field\"] == \"temperature\")\n  |> filter(fn:
+                (r) => r[\"channel\"] == \"1\")\n  |> addStatus()\n  |> last()"
+        width: 2
+        xPos: 10
+      - colors:
+          - hex: '#F95F53'
+            id: base
+            name: curacao
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Probe 2 Status
+        queries:
+          - query: "import \"experimental\"\n\ntype = v.probe2_type\ntarget = float(v:
+                v.probe2_target)\n\naddStatus = (tables=<-) =>\n  tables\n    |> map(fn:
+                (r) => ({ r with\n      _value: if r.scale == \"Celsius\" then (r._value
+                * (9.0/5.0)) + 32.0 else r._value,\n      status: if r._value >= target
+                then \"Done\" else \"\"\n    }))\n    |> difference()\n    |> experimental.group(columns:
+                [\"status\"], mode: \"extend\")\n    |> aggregateWindow(every: 5m,
+                fn: mean)\n    |> group(columns: [\"_time\", \"_value\", \"status\"],
+                mode: \"except\")\n    |> fill(usePrevious: true)\n    |> map(fn:
+                (r) => ({ r with\n      _value: \n        if type == \"Ambient\" then
+                \"--\"\n        else if r.status == \"Done\" then \"Done\"\n        else
+                if r._value < 0.0 then \"Cooling\"\n        else if r._value <= 0.02
+                then \"Stalling\"\n        else \"Cooking\"\n    }))\n\nfrom(bucket:
+                \"fireboard\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n
+                \ |> filter(fn: (r) => r[\"_measurement\"] == \"fireboard\")\n  |>
+                filter(fn: (r) => r[\"_field\"] == \"temperature\")\n  |> filter(fn:
+                (r) => r[\"channel\"] == \"2\")\n  |> addStatus()\n  |> last()"
+        width: 2
+        xPos: 10
+        yPos: 1
+      - colors:
+          - hex: '#F48D38'
+            id: base
+            name: tiger
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Probe 3 Status
+        queries:
+          - query: "import \"experimental\"\n\ntype = v.probe3_type\ntarget = float(v:
+                v.probe3_target)\n\naddStatus = (tables=<-) =>\n  tables\n    |> map(fn:
+                (r) => ({ r with\n      _value: if r.scale == \"Celsius\" then (r._value
+                * (9.0/5.0)) + 32.0 else r._value,\n      status: if r._value >= target
+                then \"Done\" else \"\"\n    }))\n    |> difference()\n    |> experimental.group(columns:
+                [\"status\"], mode: \"extend\")\n    |> aggregateWindow(every: 5m,
+                fn: mean)\n    |> group(columns: [\"_time\", \"_value\", \"status\"],
+                mode: \"except\")\n    |> fill(usePrevious: true)\n    |> map(fn:
+                (r) => ({ r with\n      _value: \n        if type == \"Ambient\" then
+                \"--\"\n        else if r.status == \"Done\" then \"Done\"\n        else
+                if r._value < 0.0 then \"Cooling\"\n        else if r._value <= 0.02
+                then \"Stalling\"\n        else \"Cooking\"\n    }))\n\nfrom(bucket:
+                \"fireboard\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n
+                \ |> filter(fn: (r) => r[\"_measurement\"] == \"fireboard\")\n  |>
+                filter(fn: (r) => r[\"_field\"] == \"temperature\")\n  |> filter(fn:
+                (r) => r[\"channel\"] == \"3\")\n  |> addStatus()\n  |> last()"
+        width: 2
+        xPos: 10
+        yPos: 2
+      - colors:
+          - hex: '#FFB94A'
+            id: base
+            name: pineapple
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Probe 4 Status
+        queries:
+          - query: "import \"experimental\"\n\ntype = v.probe4_type\ntarget = float(v:
+                v.probe4_target)\n\naddStatus = (tables=<-) =>\n  tables\n    |> map(fn:
+                (r) => ({ r with\n      _value: if r.scale == \"Celsius\" then (r._value
+                * (9.0/5.0)) + 32.0 else r._value,\n      status: if r._value >= target
+                then \"Done\" else \"\"\n    }))\n    |> difference()\n    |> experimental.group(columns:
+                [\"status\"], mode: \"extend\")\n    |> aggregateWindow(every: 5m,
+                fn: mean)\n    |> group(columns: [\"_time\", \"_value\", \"status\"],
+                mode: \"except\")\n    |> fill(usePrevious: true)\n    |> map(fn:
+                (r) => ({ r with\n      _value: \n        if type == \"Ambient\" then
+                \"--\"\n        else if r.status == \"Done\" then \"Done\"\n        else
+                if r._value < 0.0 then \"Cooling\"\n        else if r._value <= 0.002
+                then \"Stalling\"\n        else \"Cooking\"\n    }))\n\nfrom(bucket:
+                \"fireboard\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n
+                \ |> filter(fn: (r) => r[\"_measurement\"] == \"fireboard\")\n  |>
+                filter(fn: (r) => r[\"_field\"] == \"temperature\")\n  |> filter(fn:
+                (r) => r[\"channel\"] == \"4\")\n  |> addStatus()\n  |> last()"
+        width: 2
+        xPos: 10
+        yPos: 3
+      - colors:
+          - hex: '#FFD255'
+            id: base
+            name: thunder
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Probe 5 Status
+        queries:
+          - query: "import \"experimental\"\n\ntype = v.probe5_type\ntarget = float(v:
+                v.probe5_target)\n\naddStatus = (tables=<-) =>\n  tables\n    |> map(fn:
+                (r) => ({ r with\n      _value: if r.scale == \"Celsius\" then (r._value
+                * (9.0/5.0)) + 32.0 else r._value,\n      status: if r._value >= target
+                then \"Done\" else \"\"\n    }))\n    |> difference()\n    |> experimental.group(columns:
+                [\"status\"], mode: \"extend\")\n    |> aggregateWindow(every: 5m,
+                fn: mean)\n    |> group(columns: [\"_time\", \"_value\", \"status\"],
+                mode: \"except\")\n    |> fill(usePrevious: true)\n    |> map(fn:
+                (r) => ({ r with\n      _value: \n        if type == \"Ambient\" then
+                \"--\"\n        else if r.status == \"Done\" then \"Done\"\n        else
+                if r._value < 0.0 then \"Cooling\"\n        else if r._value <= 0.02
+                then \"Stalling\"\n        else \"Cooking\"\n    }))\n\nfrom(bucket:
+                \"fireboard\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n
+                \ |> filter(fn: (r) => r[\"_measurement\"] == \"fireboard\")\n  |>
+                filter(fn: (r) => r[\"_field\"] == \"temperature\")\n  |> filter(fn:
+                (r) => r[\"channel\"] == \"5\")\n  |> addStatus()\n  |> last()"
+        width: 2
+        xPos: 10
+        yPos: 4
+      - colors:
+          - hex: '#7CE490'
+            id: base
+            name: honeydew
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Probe 6 Status
+        queries:
+          - query: "import \"experimental\"\n\ntype = v.probe6_type\ntarget = float(v:
+                v.probe6_target)\n\naddStatus = (tables=<-) =>\n  tables\n    |> map(fn:
+                (r) => ({ r with\n      _value: if r.scale == \"Celsius\" then (r._value
+                * (9.0/5.0)) + 32.0 else r._value,\n      status: if r._value >= target
+                then \"Done\" else \"\"\n    }))\n    |> difference()\n    |> experimental.group(columns:
+                [\"status\"], mode: \"extend\")\n    |> aggregateWindow(every: 5m,
+                fn: mean)\n    |> group(columns: [\"_time\", \"_value\", \"status\"],
+                mode: \"except\")\n    |> fill(usePrevious: true)\n    |> map(fn:
+                (r) => ({ r with\n      _value: \n        if type == \"Ambient\" then
+                \"--\"\n        else if r.status == \"Done\" then \"Done\"\n        else
+                if r._value < 0.0 then \"Cooling\"\n        else if r._value <= 0.02
+                then \"Stalling\"\n        else \"Cooking\"\n    }))\n\nfrom(bucket:
+                \"fireboard\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n
+                \ |> filter(fn: (r) => r[\"_measurement\"] == \"fireboard\")\n  |>
+                filter(fn: (r) => r[\"_field\"] == \"temperature\")\n  |> filter(fn:
+                (r) => r[\"channel\"] == \"6\")\n  |> addStatus()\n  |> last()"
+        width: 2
+        xPos: 10
+        yPos: 5
+    description: Display real-time temperature data collected from the Fireboard API
+    name: Fireboard
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: compassionate-rosalind-f36005
+spec:
+    associations:
+      - kind: Label
+        name: hopeful-golick-f36001
+    config: |-
+        # Global tags can be specified here in key="value" format.
+        [global_tags]
+
+        # Configuration for telegraf agent
+        [agent]
+          interval = "30s"
+          round_interval = true
+          metric_batch_size = 1000
+          metric_buffer_limit = 10000
+          collection_jitter = "0s"
+          flush_interval = "10s"
+          flush_jitter = "30s"
+          precision = ""
+          hostname = ""
+          omit_hostname = true
+
+
+        ###############################################################################
+        #                            OUTPUT PLUGINS                                   #
+        ###############################################################################
+
+        [[outputs.influxdb_v2]]
+          urls = ["$INFLUX_HOST"]
+          token = "$INFLUX_TOKEN"
+          organization = "$INFLUX_ORG"
+          bucket = "fireboard"
+
+        [[inputs.fireboard]]
+          ## Specify auth token for your account
+          auth_token = "$FIREBOARD_TOKEN"
+    description: Pull sensor data from the Fireboard API
+    name: Fireboard
