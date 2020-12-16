@@ -1,6 +1,6 @@
 ## jenkins Monitoring Template
 
-This InfluxDB Template can be used to montior a Jenkins instance
+This InfluxDB Template can be used to monitor a Jenkins instance
 
 ![Website Monitoring Dashboard Screenshot](img/Dashboard.png)
 
@@ -20,11 +20,12 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
 ### Included Resources
 
 - `Jenkins - High-Resolution` Dashboard (see screenshot above)
+- `Jenkins - Jobs` Dashboard
 - `Jenkins - Single Job` Dashboard
 - `Jenkins` Telegraf configuration
-- Variables for `jenkinJobNames`, `jenkinsBucket`, and `jenkinsHostnames`. You will need to update the value for these thru the InfluxDB UI `Settings` > `Variables` after you've installed this dashboard template
+- Variables for `jenkinsJobNames`, `jenkinsBucket`, `jenkinsHostnames` and `jenkinsExcludedJobs`. You will need to update the value for these thru the InfluxDB UI `Settings` > `Variables` after you've installed this dashboard template
 - Bucket handled by variable `jenkinsBucket`
-- Label `jenkins` applied to all resources
+- Label `Jenkins` applied to all resources
 - `Job Duration Check` a **threshold** alert
 - `Node Health` a **deadman** alert based on the `mem_total`
 
@@ -63,7 +64,8 @@ No configuration is necessary to gather Jenkins data other than having valid cre
 
 ## Customizations
 
-Be sure to update the values for these variables: `jenkinJobNames`, `jenkinsBucket`, and `jenkinsHostnames`
+Be sure to update the values for these variables: `jenkinsBucket`, `jenkinsExcludedJobs`.  
+These variables are populated dynamically: `jenkinsHostnames`, `jenkinJobNames` 
 
 ## Contact
 
@@ -71,3 +73,10 @@ Be sure to update the values for these variables: `jenkinJobNames`, `jenkinsBuck
 - Email: ray@sudokrew.com
 - Github: [@sgnl](https://github.com/sgnl)
 - Influx Slack: [@Ray Farias](https://influxdata.com/slack)
+
+---
+
+- Contributor: Ales Pour
+- Email: ales.pour@bonitoo.io
+- Github: [@alespour](https://github.com/alespour)
+- Influx Slack: [@Ales Pour](https://influxdata.com/slack)
