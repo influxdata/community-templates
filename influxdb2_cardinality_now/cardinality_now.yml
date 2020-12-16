@@ -1,0 +1,238 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: kind-spence-53b001
+spec:
+    color: '#fafafc'
+    name: cardinality
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: amazing-boyd-93b003
+spec:
+    associations:
+      - kind: Label
+        name: kind-spence-53b001
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> filter(fn: (r) => r.name !~ /^_/)
+          |> rename(columns: {name: "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: blissful-morse-53b003
+spec:
+    associations:
+      - kind: Label
+        name: kind-spence-53b001
+    language: flux
+    name: measurement
+    query: |-
+        import "influxdata/influxdb/v1"
+
+        v1.measurements(bucket: v.bucket)
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: nostalgic-einstein-13b001
+spec:
+    associations:
+      - kind: Label
+        name: kind-spence-53b001
+    charts:
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 5b3aea53-4f8a-47e5-bda3-3e9299df5fa1
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: e8fec99c-5ff4-43aa-b30a-d3c88d343fb9
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 3f9c84bb-6dfa-42e3-aa35-2e87e6a88842
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendOpacity: 1
+        legendOrientationThreshold: 10
+        name: Cardinality Per Bucket
+        position: overlaid
+        queries:
+          - query: |-
+                import "influxdata/influxdb"
+                import "experimental"
+
+                time = experimental.subDuration(
+                  d: v.timeRangeStart,
+                  from: now(),
+                )
+
+                buckets()
+                	|> map(fn: (r) => {
+                		cardinality = influxdb.cardinality(bucket: r.name, start: -7d)
+                			|> findRecord(idx: 0, fn: (key) =>
+                				(true))
+                		return {
+                			_time: time,
+                			_measurement: "buckets",
+                			bucket: r.name,
+                			_field: "cardinality",
+                			_value: cardinality._value,
+                		}
+                	})
+                  |> group(columns: ["bucket"], mode:"by")
+        width: 12
+        xCol: _time
+        yCol: _value
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        fieldOptions:
+          - displayName: _field
+            fieldName: _field
+          - displayName: _measurement
+            fieldName: _measurement
+          - displayName: _time
+            fieldName: _time
+          - displayName: bucket
+            fieldName: bucket
+            visible: true
+          - displayName: _value
+            fieldName: _value
+            visible: true
+        height: 4
+        kind: Table
+        name: Top 10 Buckets
+        queries:
+          - query: |-
+                import "influxdata/influxdb"
+                import "experimental"
+
+                time = experimental.subDuration(
+                  d: v.timeRangeStart,
+                  from: now(),
+                )
+
+                buckets()
+                	|> map(fn: (r) => {
+                		cardinality = influxdb.cardinality(bucket: r.name, start: -7d)
+                			|> findRecord(idx: 0, fn: (key) =>
+                				(true))
+                		return {
+                			_time: time,
+                			_measurement: "buckets",
+                			bucket: r.name,
+                			_field: "cardinality",
+                			_value: cardinality._value,
+                		}
+                	})
+                  |> group(columns: ["bucket"], mode:"by")
+                  |> last()
+                  |> group()
+                  |> top(n:10)
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 12
+        yPos: 3
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        fieldOptions:
+          - displayName: bucket
+            fieldName: bucket
+            visible: true
+          - displayName: measurement
+            fieldName: measurement
+            visible: true
+          - displayName: cardinality
+            fieldName: _value
+            visible: true
+        height: 3
+        kind: Table
+        name: Cardinality By Mesurement
+        queries:
+          - query: |-
+                import "influxdata/influxdb"
+                import "influxdata/influxdb/schema"
+
+
+                schema.measurements(bucket: v.bucket)
+                  |> map(fn: (r) => {
+                      m = r._value
+                      return {
+                        bucket: v.bucket,
+                        measurement: m,
+                        _value: (influxdb.cardinality(bucket: v.bucket, start: v.timeRangeStart, predicate: (r) => r._measurement == m) |> findRecord(idx:0, fn:(key) => true))._value
+                      }
+                    })
+                  |> sort(desc:true)
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 12
+        yPos: 7
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        fieldOptions:
+          - displayName: tag
+            fieldName: tag
+            visible: true
+          - displayName: cardinality
+            fieldName: _value
+            visible: true
+        height: 3
+        kind: Table
+        name: Cardinality By Tag
+        queries:
+          - query: |-
+                import "influxdata/influxdb/schema"
+
+                cardinalityByTag = (bucket, measurement) => schema.tagKeys(bucket: bucket, predicate: (r) => r._measurement == measurement)
+                    |> filter(fn: (r) => r._value != "_start" and r._value != "_stop")
+                    |> map(
+                        fn: (r) => ({
+                            tag: r._value,
+                            _value: (schema.tagValues(bucket: bucket, tag: r._value)
+                                |> count()
+                                |> findRecord(fn: (key) => true, idx: 0))._value,
+                        }),
+                    )
+                    |> group(columns: ["tag"])
+                    |> sum()
+
+                cardinalityByTag(bucket: v.bucket, measurement: v.measurement)
+                    |> group()
+                    |> top(n: 10)
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 12
+        yPos: 10
+    name: Cardinality Now
