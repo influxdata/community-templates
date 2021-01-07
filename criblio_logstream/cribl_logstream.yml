@@ -32,7 +32,7 @@ spec:
       - kind: Label
         name: obstinate-moore-59a001
     charts:
-      - height: 1
+      - height: 4
         kind: Markdown
         name: Name this Cell
         note: '# Cluster Metrics'
@@ -173,8 +173,8 @@ spec:
                   |> aggregateWindow(every: v.windowPeriod, fn: sum)
                   |> fill(usePrevious: true)
                   |> yield(name: "sum")
-        width: 4
-        xPos: 4
+        width: 5
+        xPos: 2
       - axes:
           - base: "10"
             name: x
@@ -207,6 +207,6 @@ spec:
                   |> aggregateWindow(every: v.windowPeriod, fn: sum)
                   |> fill(usePrevious: true)
                   |> yield(name: "sum")
-        width: 4
-        xPos: 8
+        width: 5
+        xPos: 7
     name: Cribl LogStream
