@@ -45,33 +45,6 @@ spec:
             name: y
             scale: linear
         colors:
-          - hex: '#00C9FF'
-            name: laser
-            type: text
-        decimalPlaces: 2
-        height: 3
-        kind: Single_Stat_Plus_Line
-        name: Active Connections
-        position: overlaid
-        queries:
-          - query: |-
-                from(bucket: v.criblBucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r["_measurement"] == "cribl.logstream.total")
-                  |> filter(fn: (r) => r["_field"] == "activeCxn")
-                  |> group()
-                  |> aggregateWindow(every: v.windowPeriod, fn: max)
-                  |> yield(name: "max")
-        width: 2
-        yPos: 1
-      - axes:
-          - base: "10"
-            name: x
-            scale: linear
-          - base: "10"
-            name: y
-            scale: linear
-        colors:
           - hex: '#FD7A5D'
             name: Delorean
             type: scale
@@ -168,59 +141,6 @@ spec:
                   |> yield(name: "sum")
         width: 12
         yPos: 10
-      - axes:
-          - base: "10"
-            name: x
-            scale: linear
-          - base: "10"
-            name: y
-            scale: linear
-        colors:
-          - hex: '#00C9FF'
-            name: laser
-            type: text
-        decimalPlaces: 2
-        height: 2
-        kind: Single_Stat_Plus_Line
-        name: Open Connections
-        position: overlaid
-        queries:
-          - query: |-
-                from(bucket: v.criblBucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r["_measurement"] == "cribl.logstream.total")
-                  |> filter(fn: (r) => r["_field"] == "openCxn")
-                  |> aggregateWindow(every: 1m, fn: sum)
-                  |> yield(name: "sum")
-        width: 2
-        xPos: 2
-      - axes:
-          - base: "10"
-            name: x
-            scale: linear
-          - base: "10"
-            name: y
-            scale: linear
-        colors:
-          - hex: '#00C9FF'
-            name: laser
-            type: text
-        decimalPlaces: 2
-        height: 2
-        kind: Single_Stat_Plus_Line
-        name: Closed Connections
-        position: overlaid
-        queries:
-          - query: |-
-                from(bucket: v.criblBucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r["_measurement"] == "cribl.logstream.total")
-                  |> filter(fn: (r) => r["_field"] == "closeCxn")
-                  |> aggregateWindow(every: 1m, fn: sum)
-                  |> yield(name: "sum")
-        width: 2
-        xPos: 2
-        yPos: 2
       - axes:
           - base: "10"
             name: x
