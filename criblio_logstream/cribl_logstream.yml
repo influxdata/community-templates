@@ -169,7 +169,7 @@ spec:
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "cribl.logstream.total")
                   |> filter(fn: (r) => r["_field"] == "in_events" or r["_field"] == "out_events")
-                  |> filter(fn: (r) => exists r["input"] or exists r["output"]) // Filter null inputs and outputs, which are summaries
+                  |> group(columns:["_field"])
                   |> aggregateWindow(every: v.windowPeriod, fn: sum)
                   |> fill(usePrevious: true)
                   |> yield(name: "sum")
@@ -203,6 +203,7 @@ spec:
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "cribl.logstream.total")
                   |> filter(fn: (r) => r["_field"] == "in_bytes" or r["_field"] == "out_bytes")
+                  |> group(columns:["_field"])
                   |> aggregateWindow(every: v.windowPeriod, fn: sum)
                   |> fill(usePrevious: true)
                   |> yield(name: "sum")
