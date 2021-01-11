@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: adoring-hellman-62a001
+    name: crumbling-lovelace-a76001
 spec:
     color: '#0f0e15'
     name: speedtest
@@ -9,27 +9,22 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Bucket
 metadata:
-    name: blissful-antonelli-62a003
+    name: serene-mendel-e76003
 spec:
     associations:
       - kind: Label
-        name: adoring-hellman-62a001
+        name: crumbling-lovelace-a76001
     name: speedtest
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: condescending-davinci-a2a001
+    name: wonderful-aryabhata-676001
 spec:
     associations:
       - kind: Label
-        name: adoring-hellman-62a001
+        name: crumbling-lovelace-a76001
     charts:
-      - height: 1
-        kind: Markdown
-        name: Name this Cell
-        note: '## Home'
-        width: 2
       - axes:
           - base: "10"
             name: x
@@ -39,35 +34,42 @@ spec:
             scale: linear
         colors:
           - hex: '#00C9FF'
+            id: base
             name: laser
             type: text
-          - hex: '#BE2EE4'
-            name: Solid Purple
+          - hex: '#8F8AF4'
+            id: 28549e84-6c39-444c-99e2-e624b69367a8
+            name: Do Androids Dream of Electric Sheep?
             type: scale
-          - hex: '#BE2EE4'
-            name: Solid Purple
+          - hex: '#A51414'
+            id: 269843ae-13d9-40ce-b26f-aa9b115c8623
+            name: Do Androids Dream of Electric Sheep?
             type: scale
-          - hex: '#BE2EE4'
-            name: Solid Purple
+          - hex: '#F4CF31'
+            id: 0850f5db-849c-4a9f-aa2b-c80079438317
+            name: Do Androids Dream of Electric Sheep?
             type: scale
         decimalPlaces: 2
         height: 3
+        hoverDimension: auto
         kind: Single_Stat_Plus_Line
-        name: Ping (ms)
+        legendOpacity: 1
+        legendOrientationThreshold: 10
+        name: Last Ping
         position: overlaid
         queries:
           - query: |-
                 from(bucket: "speedtest")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "exec_speedtest")
-                  |> filter(fn: (r) => r["_field"] == "ping")
-                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
-                  |> yield(name: "mean")
+                  |> filter(fn: (r) => r["_field"] == "ping_latency")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
         shade: true
-        width: 2
+        suffix: ' ms'
+        width: 3
         xCol: _time
         yCol: _value
-        yPos: 1
       - axes:
           - base: "10"
             name: x
@@ -77,11 +79,121 @@ spec:
             scale: linear
         colors:
           - hex: '#00C9FF'
+            id: base
             name: laser
             type: text
         decimalPlaces: 2
-        height: 4
+        height: 2
+        hoverDimension: auto
         kind: Single_Stat_Plus_Line
+        legendOpacity: 1
+        legendOrientationThreshold: 10
+        name: Jitter
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "speedtest")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_speedtest")
+                  |> filter(fn: (r) => r["_field"] == "ping_jitter")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        shade: true
+        suffix: ' ms'
+        width: 3
+        xCol: _time
+        yCol: _value
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Packet Loss
+        queries:
+          - query: |-
+                from(bucket: "speedtest")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_speedtest")
+                  |> filter(fn: (r) => r["_field"] == "packetLoss")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 3
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 0a95ec1f-e930-4258-9ada-737d4d3ab744
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 410467af-c2df-465c-8ad7-75ed8370ec99
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 67483e16-7ca5-409f-8078-9d7fa0e50124
+            name: Nineteen Eighty Four
+            type: scale
+        geom: monotoneX
+        height: 6
+        hoverDimension: x
+        kind: Xy
+        legendOpacity: 1
+        legendOrientationThreshold: 10
+        name: Download, Upload
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "speedtest")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_speedtest")
+                  |> filter(fn: (r) => r["_field"] == "upload_bandwidth" or r["_field"] == "download_bandwidth")
+                  |> map(fn: (r) => ({ r with _value: r._value / 100000.0 }))
+                  |> yield(name: "last")
+        shade: true
+        width: 12
+        xCol: _time
+        yCol: _value
+        yPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#34BB55'
+            id: fd0ff04f-1825-47c0-8779-2856608e35ce
+            name: Solid Green
+            type: scale
+          - hex: '#34BB55'
+            id: 4d7072de-d648-41dd-8fb7-b126cf62eb11
+            name: Solid Green
+            type: scale
+          - hex: '#34BB55'
+            id: e4d378a4-616b-41a1-a110-4e625b80d13b
+            name: Solid Green
+            type: scale
+          - hex: '#4ED8A0'
+            id: base
+            name: rainforest
+            type: text
+        decimalPlaces: 2
+        height: 3
+        hoverDimension: auto
+        kind: Single_Stat_Plus_Line
+        legendOpacity: 1
+        legendOrientationThreshold: 10
         name: Download
         position: overlaid
         queries:
@@ -89,14 +201,14 @@ spec:
                 from(bucket: "speedtest")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "exec_speedtest")
-                  |> filter(fn: (r) => r["_field"] == "download")
-                  |> map(fn: (r) => ({r with _value: r._value / 1048576.0}))
+                  |> filter(fn: (r) => r["_field"] == "download_bandwidth")
+                  |> map(fn: (r) => ({ r with _value: r._value / 100000.0 }))
                   |> yield(name: "last")
         shade: true
-        suffix: ' Mbps'
-        width: 5
+        suffix: ' Mb/s'
+        width: 9
         xCol: _time
-        xPos: 2
+        xPos: 3
         yCol: _value
       - axes:
           - base: "10"
@@ -107,20 +219,15 @@ spec:
             scale: linear
         colors:
           - hex: '#00C9FF'
+            id: base
             name: laser
             type: text
-          - hex: '#FFD255'
-            name: Solid Yellow
-            type: scale
-          - hex: '#FFD255'
-            name: Solid Yellow
-            type: scale
-          - hex: '#FFD255'
-            name: Solid Yellow
-            type: scale
         decimalPlaces: 2
-        height: 4
+        height: 3
+        hoverDimension: auto
         kind: Single_Stat_Plus_Line
+        legendOpacity: 1
+        legendOrientationThreshold: 10
         name: Upload
         position: overlaid
         queries:
@@ -128,58 +235,39 @@ spec:
                 from(bucket: "speedtest")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "exec_speedtest")
-                  |> filter(fn: (r) => r["_field"] == "upload")
-                  |> map(fn: (r) => ({r with _value: r._value / 1048576.0}))
+                  |> filter(fn: (r) => r["_field"] == "upload_bandwidth")
+                  |> map(fn: (r) => ({ r with _value: r._value / 100000.0 }))
                   |> yield(name: "last")
         shade: true
-        suffix: ' Mbps'
-        width: 5
+        suffix: ' Mb/s'
+        width: 9
         xCol: _time
-        xPos: 7
+        xPos: 3
         yCol: _value
+        yPos: 3
     name: Speedtest
-
 ---
-
 apiVersion: influxdata.com/v2alpha1
 kind: Telegraf
 metadata:
-    name: speedtest-config
+    name: nostalgic-lederberg-676001
 spec:
-    config: |
-         [[outputs.influxdb_v2]]
-           ## The URLs of the InfluxDB cluster nodes.
-           ##
-           ## Multiple URLs can be specified for a single cluster, only ONE of the
-           ## urls will be written to each interval.
-           ## urls exp: http://127.0.0.1:9999
-           urls = ["$INFLUX_HOST"]     
-           ## Token for authentication.
-           token = "$INFLUX_TOKEN"         
-
-           ## Organization is the name of the organization you wish to write to; must exist.
-           organization = "$INFLUX_ORG"         
-
-           ## Destination bucket to write into.
-           bucket = "speedtest"         
-
-           [agent]
-           interval = "1m"         
-
-         [[inputs.exec]]
-           ## Commands array
-           commands = [
-             "speedtest --json --single"
-           ]         
-
-           ## Timeout for each command to complete.
-           timeout = "90s"         
-
-           ## measurement name suffix (for separating different commands)
-           name_suffix = "_speedtest"         
-
-           ## Data format to consume.
-           ## Each data format has its own unique set of configuration options, read
-           ## more about them here:
-           ## https://github.com/influxdata/telegraf/blob/master/docs/DATA_FORMATS_INPUT.md
-           data_format = "json"
+    associations:
+      - kind: Label
+        name: crumbling-lovelace-a76001
+    config: "[[outputs.influxdb_v2]]\n  ## The URLs of the InfluxDB cluster nodes.\n
+        \ ##\n  ## Multiple URLs can be specified for a single cluster, only ONE of
+        the\n  ## urls will be written to each interval.\n  ## urls exp: http://127.0.0.1:9999\n
+        \ urls = [\"$INFLUX_HOST\"]     \n  ## Token for authentication.\n  token
+        = \"$INFLUX_TOKEN\"         \n\n  ## Organization is the name of the organization
+        you wish to write to; must exist.\n  organization = \"$INFLUX_ORG\"         \n\n
+        \ ## Destination bucket to write into.\n  bucket = \"speedtest\"         \n\n
+        \ [agent]\n  interval = \"5m\"\n  flush_interval = \"6m\"\n  round_interval
+        = false     \n\n[[inputs.exec]]\n  ## Commands array\n  commands = [\n    \"speedtest
+        --format=json-pretty -u Mbps\"\n  ]         \n\n  ## Timeout for each command
+        to complete.\n  timeout = \"90s\"         \n\n  ## measurement name suffix
+        (for separating different commands)\n  name_suffix = \"_speedtest\"         \n\n
+        \ ## Data format to consume.\n  ## Each data format has its own unique set
+        of configuration options, read\n  ## more about them here:\n  ## https://github.com/influxdata/telegraf/blob/master/docs/DATA_FORMATS_INPUT.md\n
+        \ data_format = \"json\"\n"
+    name: speedtest-config
