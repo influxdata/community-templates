@@ -15,7 +15,7 @@ spec:
       - kind: Label
         name: obstinate-moore-59a001
     language: flux
-    name: prodLogstream
+    name: criblBucket
     query: |-
         buckets()
           |> filter(fn: (r) => r.name !~ /^_/)
@@ -61,7 +61,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: v.prodLogstream)
+                from(bucket: v.criblBucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "cribl.logstream.total")
                   |> filter(fn: (r) => r["_field"] == "in_events")
@@ -96,7 +96,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: v.prodLogstream)
+                from(bucket: v.criblBucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "cribl.logstream.total")
                   |> filter(fn: (r) => r["_field"] == "out_events")
@@ -131,7 +131,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: v.prodLogstream)
+                from(bucket: v.criblBucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "cribl.logstream.pipe")
                   |> filter(fn: (r) => r["_field"] == "in_events" or r["_field"] == "out_events")
@@ -165,7 +165,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: v.prodLogstream)
+                from(bucket: v.criblBucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "cribl.logstream.total")
                   |> filter(fn: (r) => r["_field"] == "in_events" or r["_field"] == "out_events")
@@ -199,7 +199,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: v.prodLogstream)
+                from(bucket: v.criblBucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "cribl.logstream.total")
                   |> filter(fn: (r) => r["_field"] == "in_bytes" or r["_field"] == "out_bytes")

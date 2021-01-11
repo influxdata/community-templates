@@ -18,7 +18,7 @@ If you have your InfluxDB credentials conrigured in the CLI, you can isntall thi
 
 ## Included Resources
 - 1 Dashboard: Cribl LogStream
-- 1 bucket: 'prod-logstream'
+- 1 bucket: 'criblBucket'
 
 ## Setup Instructions
 
@@ -32,8 +32,8 @@ Log Into your Cribl LogStream master node and configure your InfluxDB Destinatio
 
 ![Screenshot InfluxDB](img/influx_db_cribl_destination_02.png) 
 
-- `Write API URL` - Your InfluxDB Cloud Endpoint, here's an example:  `https://us-west-2-1.aws.cloud2.influxdata.com/api/v2/write?org=<your_org_id>&bucket=prod-logstream&precision=ms` 
-- `Database Name` - Your InfluxDB Name: `prod-logstream`
+- `Write API URL` - Your InfluxDB Cloud Endpoint, here's an example:  `https://us-west-2-1.aws.cloud2.influxdata.com/api/v2/write?org=<your_org_id>&bucket=criblLogstream&precision=ms` 
+- `Database Name` - Your InfluxDB Name: `criblBucket`
 - `Extra HTTP Headers` - Navigate to Advanced Settings and add the `Authorization` Header with your `Token` as the value.
 
 ![Screenshot InfluxDB](img/influx_db_cribl_destination_03.png) 
