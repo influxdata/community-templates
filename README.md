@@ -20,6 +20,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [AWS Cloudwatch Monitoring](aws_cloudwatch/) | Monitor AWS EC2 and ELB | [bonitoo.io](.) |
 | [Counter Strike: Global Offensive](csgo/) | Get stats about your game. Kills, Deaths and stats by weapon. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Covid-19 in South America](covid19-southamerica/) | Current data and graphs covering Covid-19 cases and deaths in South America | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
+| [Cribl LogStream](criblio_logstream/) | Monitor and visualize your metric data from Cribl LogStream. | [Clint Sharp](https://github.com/criblio) |
 | [Currency Exchange Rates](currency_exchange_rates/) | Visualize and analyze currency exchange rates using Quandl. | Wojciech Kocjan |
 | [DigitalOcean Billing](do_billing/) | Get your balance, month consumption and month to date balance from your DigitalOcean account | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Docker](docker/) | Monitor your running docker containers. | [@russorat](https://github.com/russorat) |
