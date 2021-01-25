@@ -246,7 +246,9 @@ spec:
         yCol: _value
         yPos: 3
     name: Speedtest
+
 ---
+
 apiVersion: influxdata.com/v2alpha1
 kind: Telegraf
 metadata:
@@ -255,19 +257,39 @@ spec:
     associations:
       - kind: Label
         name: crumbling-lovelace-a76001
-    config: "[[outputs.influxdb_v2]]\n  ## The URLs of the InfluxDB cluster nodes.\n
-        \ ##\n  ## Multiple URLs can be specified for a single cluster, only ONE of
-        the\n  ## urls will be written to each interval.\n  ## urls exp: http://127.0.0.1:9999\n
-        \ urls = [\"$INFLUX_HOST\"]     \n  ## Token for authentication.\n  token
-        = \"$INFLUX_TOKEN\"         \n\n  ## Organization is the name of the organization
-        you wish to write to; must exist.\n  organization = \"$INFLUX_ORG\"         \n\n
-        \ ## Destination bucket to write into.\n  bucket = \"speedtest\"         \n\n
-        \ [agent]\n  interval = \"5m\"\n  flush_interval = \"6m\"\n  round_interval
-        = false     \n\n[[inputs.exec]]\n  ## Commands array\n  commands = [\n    \"speedtest
-        --format=json-pretty -u Mbps\"\n  ]         \n\n  ## Timeout for each command
-        to complete.\n  timeout = \"90s\"         \n\n  ## measurement name suffix
-        (for separating different commands)\n  name_suffix = \"_speedtest\"         \n\n
-        \ ## Data format to consume.\n  ## Each data format has its own unique set
-        of configuration options, read\n  ## more about them here:\n  ## https://github.com/influxdata/telegraf/blob/master/docs/DATA_FORMATS_INPUT.md\n
-        \ data_format = \"json\"\n"
-    name: speedtest-config
+    config: |
+          [[outputs.influxdb_v2]]
+          ## The URLs of the InfluxDB cluster nodes.
+          ##
+          ## Multiple URLs can be specified for a single cluster, only ONE of the
+          ## urls will be written to each interval.
+          ## urls exp: http://127.0.0.1:9999
+          urls = ["$INFLUX_HOST"]
+
+          ## Token for authentication.
+          token = "$INFLUX_TOKEN"
+
+          ## Organization is the name of the organization you wish to write to; must exist.
+          organization = "$INFLUX_ORG"
+
+          ## Destination bucket to write into.
+          bucket = "speedtest"
+
+          [agent]
+          interval = "30m"
+
+          [[inputs.exec]]
+          ## Commands array
+          commands = ["speedtest --format=json-pretty -u Mbps"]
+
+          ## Timeout for each command to complete.
+          timeout = "90s"
+
+          ## measurement name suffix (for separating different commands)
+          name_suffix = "_speedtest"
+
+          ## Data format to consume.
+          ## Each data format has its own unique set of configuration options, read
+          ## more about them here:
+          ## https://github.com/influxdata/telegraf/blob/master/docs/DATA_FORMATS_INPUT.md
+          data_format = "json"
