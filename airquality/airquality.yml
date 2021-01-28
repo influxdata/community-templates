@@ -201,8 +201,8 @@ spec:
           token = "$INFLUX_TOKEN"         
           ## Organization is the name of the organization you wish to write to; must exist.
           organization = "$INFLUX_ORG"         
-          ## Destination bucket to write into.  CHANGE THIS if you want to write to a different bucket
-          bucket = "airquality"   
+          ## Destination bucket to write into.  Default should be set to 'airquality'
+          bucket = "$INFLUX_BUCKET"   
           # interval at which the API is called.  air quality is only updated 1-2 times per day
           [agent]
           interval = "12h"
@@ -210,7 +210,7 @@ spec:
         # Read formatted metrics from one or more HTTP endpoints
         [[inputs.http]]
           ## One or more URLs from which to read formatted metrics
-          urls = [<CHANGE ME>]
+          urls = ["$INFLUX_AIRQUAL_URL"]
 
           ## HTTP method
           method = "GET"
