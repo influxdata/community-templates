@@ -21,20 +21,20 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
 
 ## Included Resources
 
-    - 1 Telegraf Configuration: 'mongodb-config'
-    - 1 Dashboards: 'MongoDB'
-    - 1 bucket: 'mongodb'
-    - 1 label: 'mongodb'
+  - 1 Telegraf Configuration: 'mongodb-config'
+  - 1 Dashboards: 'MongoDB'
+  - 1 bucket: 'mongodb'
+  - 1 label: 'mongodb'
 
 ## Setup Instructions
 
 General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
 
-    Telegraf Configuration requires the following environment variables
-    - `INFLUX_HOST` - Your InfluxDB host (ex:http://localhost:9999)
-    - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your operator token to get started.
-    - `INFLUX_ORG` - The name of your Organization.
-    - `INFLUX_BUCKET` - The name of the bucket you will store the data.
+Telegraf Configuration requires the following environment variables
+  - `INFLUX_HOST` - Your InfluxDB host (ex:http://localhost:9999)
+  - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your operator token to get started.
+  - `INFLUX_ORG` - The name of your Organization.
+  - `INFLUX_BUCKET` - The name of the bucket you will store the data.
 
 In order to use this Dashboard, you need to specify the string connection to MongoDB instance as variable. Ex:
 

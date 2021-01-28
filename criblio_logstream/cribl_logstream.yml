@@ -1,0 +1,212 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: obstinate-moore-59a001
+spec:
+    color: '#00C9FF'
+    name: cribl
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: intelligent-hypatia-99a001
+spec:
+    associations:
+      - kind: Label
+        name: obstinate-moore-59a001
+    language: flux
+    name: criblBucket
+    query: |-
+        buckets()
+          |> filter(fn: (r) => r.name !~ /^_/)
+          |> rename(columns: {name: "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: earning-williamson-99a001
+spec:
+    associations:
+      - kind: Label
+        name: obstinate-moore-59a001
+    charts:
+      - height: 4
+        kind: Markdown
+        name: Name this Cell
+        note: '# Cluster Metrics'
+        width: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#FD7A5D'
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            name: Delorean
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Sources (events)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.criblBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cribl.logstream.total")
+                  |> filter(fn: (r) => r["_field"] == "in_events")
+                  |> filter(fn: (r) => exists r["input"] and r["input"] != "cribl:CriblMetrics")
+                  |> group(columns: ["input"])
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum)
+                  |> fill(usePrevious: true)
+                  |> yield(name: "sum")
+        width: 12
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#DA6FF1'
+            name: Ectoplasm
+            type: scale
+          - hex: '#00717A'
+            name: Ectoplasm
+            type: scale
+          - hex: '#ACFF76'
+            name: Ectoplasm
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Destinations (events)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.criblBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cribl.logstream.total")
+                  |> filter(fn: (r) => r["_field"] == "out_events")
+                  |> filter(fn: (r) => exists r["output"])
+                  |> group(columns: ["output"])
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum)
+                  |> fill(usePrevious: true)
+                  |> yield(name: "sum")
+        width: 12
+        yPos: 7
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Routes
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.criblBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cribl.logstream.pipe")
+                  |> filter(fn: (r) => r["_field"] == "in_events" or r["_field"] == "out_events")
+                  |> group(columns: ["id"])
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum)
+                  |> fill(usePrevious: true)
+                  |> yield(name: "sum")
+        width: 12
+        yPos: 10
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Events In/Out
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.criblBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cribl.logstream.total")
+                  |> filter(fn: (r) => r["_field"] == "in_events" or r["_field"] == "out_events")
+                  |> group(columns:["_field"])
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum)
+                  |> fill(usePrevious: true)
+                  |> yield(name: "sum")
+        width: 5
+        xPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#74D495'
+            name: Atlantis
+            type: scale
+          - hex: '#3F3FBA'
+            name: Atlantis
+            type: scale
+          - hex: '#FF4D9E'
+            name: Atlantis
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Bytes In/Out
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.criblBucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cribl.logstream.total")
+                  |> filter(fn: (r) => r["_field"] == "in_bytes" or r["_field"] == "out_bytes")
+                  |> group(columns:["_field"])
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum)
+                  |> fill(usePrevious: true)
+                  |> yield(name: "sum")
+        width: 5
+        xPos: 7
+    name: Cribl LogStream

@@ -16,21 +16,28 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | Template             | Description | Author |
 |----------------------|-------------|:------:|
 | [Air Quality](airquality/) | Retrieve air quality statistics from the US EPA website | [Kristina Robinson](https://github.com/kristinarobinson) |
+| [Algorithmia](algorithmia/) | Monitor machine learning model performance metrics | [@koverholt](https://github.com/koverholt) |
 | [Apex Legends](apex_legends/) | Collect player metrics from the game Apex Legends | [@b3vis](https://github.com/b3vis) |
 | [AWS Cloudwatch Monitoring](aws_cloudwatch/) | Monitor AWS EC2 and ELB | [bonitoo.io](.) |
+| [Ceph Cluster](ceph/) | Monitor your Ceph Cluster with Prometheus metrics | [@bonitoo.io](https://github.com/bonitoo-io) |
 | [Counter Strike: Global Offensive](csgo/) | Get stats about your game. Kills, Deaths and stats by weapon. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
+| [Covid-19 in South America](covid19-southamerica/) | Current data and graphs covering Covid-19 cases and deaths in South America | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
+| [Cribl LogStream](criblio_logstream/) | Monitor and visualize your metric data from Cribl LogStream. | [Clint Sharp](https://github.com/criblio) |
 | [Currency Exchange Rates](currency_exchange_rates/) | Visualize and analyze currency exchange rates using Quandl. | Wojciech Kocjan |
-| [Covid-19 in South America](InfluxDBv2_Covid19_SouthAmerica/) | Current data and graphs covering Covid-19 cases and deaths in South America | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
+| [DigitalOcean Billing](do_billing/) | Get your balance, month consumption and month to date balance from your DigitalOcean account | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Docker](docker/) | Monitor your running docker containers. | [@russorat](https://github.com/russorat) |
 | [Downsampling](downsampling/) | Downsample common Telegraf metrics. | [@russorat](https://github.com/russorat) |
 | [Endpoint Security State](endpoint-security-state/) | Watch endpoint authentication availability and certificate status | [Darin Fisher](https://github.com/darinfisher) |
 | [Enviro+](enviro_plus/) | View the air quality readings from a Pimoroni Enviro+ particulate matter sensor. | Russ Savage |
+| [Fail2Ban](fail2ban/) | Monitor your Fail2Ban instance on multiple hosts and services. | [bonitoo.io](.) |
+| [Fireboard](fireboard/) | Monitor data collected by a Fireboard thermometer. | [Scott Anderson](https://github.com/sanderson) |
 | [Fortnite](fortnite/) | Track and analyze Fortnite player performance. | [@abalone23](https://github.com/abalone23) |
 | [GCP Monitoring](gcp_monitoring/) | Monitor Google Cloud Platform.  | [bonitoo.io](.) |
 | [Github](github/) | View information about your Github Repos. Forks, Issues, Stars and more. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [HAProxy](haproxy/) | Get metrics of your HAProxy instance. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [InfluxDB 1.x Monitor](monitoring_influxdb_1.x/) | Monitor your already running InfluxDB 1.x instance. | [@russorat](https://github.com/russorat) |
 | [InfluxDB 2 OSS Metrics](influxdb2_oss_metrics/) | Monitor your InfluxDB 2 OSS instance using scrapers. | [@russorat](https://github.com/russorat) |
+| [InfluxDB 2 Operational Monitoring](influxdb2_operational_monitoring/) | Monitor you tasks and cardinality on your already running InfluxDB 2 instance. | [@Anaisdg](https://github.com/Anaisdg) |
 | [Island Pulse (Modbus)](modbus/) | Monitor Island Pulse energy gauge over Modbus | Ray Farias |
 | [Jboss Wildfly](jboss_wildfly/) | View information your Jboss Wildfly Instance using Jolokia. Uptime, Heap Memory, Non Heap Memory, Memory Pool, etc | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [JMeter](apache_jmeter/) | This template provides Apache JMeter dashboard | [bonitoo.io](.) |
@@ -39,12 +46,15 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [Linux System Monitor](linux_system/) | Monitor system resources on one or more Linux hosts. | [@russorat](https://github.com/russorat) |
 | [Jenkins](jenkins/) | Monitor your Jenkins node and jobs. | Ray Farias |
 | [Microsoft SQL Server](mssql/) | View information of SQL Server Instance. Uptime, Databases Activities, Read and Write times and more. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
-| [MinIO](minio/) | Monitor MinIO instance. Uptime, CPU process time, Memory allocated, s3 total and current request, Storage used and available and more. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) | 
+| [MinIO](minio/) | Monitor MinIO instance. Uptime, CPU process time, Memory allocated, s3 total and current request, Storage used and available and more. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [MongoDB](mongodb/) | View information of MongoDB Server. Uptime, Connectios, Queries, Documents Operations and more. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [MySQL / MariaDB](mysql_mariadb/) | View information of MySQL Instance. Uptime, Current Queries, Active Threads, Connections, Traffic and more. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Network Interface Monitor](network_interface_performance/) | Monitor network interfaces on one or more hosts. | [@russorat](https://github.com/russorat) |
+| [Nextcloud](nextcloud/) | Show stats about your Nextcloud Instance. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Postgres Monitor](postgresql/) | Monitor Postgres Server. CPU, Deadlocks, Data and more | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
+| [Raspberry Pi System Monitor](raspberry-pi/) | System overview monitoring for your Raspberry Pi with Raspbian. | [@bonitoo.io](https://github.com/bonitoo-io) |
 | [Redis Monitor](redis/) | Monitor your Redis server. | [@russorat](https://github.com/russorat) |
+| [Sensu Go](sensu_go/) | Monitor the performance of your Sensu Go observability tool. | [@nikkictl](https://github.com/nikkictl) |
 | [sFlow Traffic Monitor](sflow/) | Monitor your sFlow traffic. | [@russorat](https://github.com/russorat) |
 | [SNMP Monitoring](snmp/) | Dashboards showing metrics provided via SNMP protocol | [bonitoo.io](.) |
 | [Speedtest Dashboard](speedtest/) | This template will show you information about the speed of your Internet connection using speedtest-cli | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
