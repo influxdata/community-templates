@@ -15,6 +15,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 
 | Template             | Description | Author |
 |----------------------|-------------|:------:|
+| [Air Quality](airquality/) | Retrieve air quality statistics from the US EPA website | [Kristina Robinson](https://github.com/kristinarobinson) |
 | [Apex Legends](apex_legends/) | Collect player metrics from the game Apex Legends | [@b3vis](https://github.com/b3vis) |
 | [AWS Cloudwatch Monitoring](aws_cloudwatch/) | Monitor AWS EC2 and ELB | [bonitoo.io](.) |
 | [Counter Strike: Global Offensive](csgo/) | Get stats about your game. Kills, Deaths and stats by weapon. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
