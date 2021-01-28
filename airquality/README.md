@@ -8,7 +8,7 @@ InfluxDB UI
 
 In the InfluxDB UI, go to Settings-> Templates and enter this URL: http://raw.githubusercontent.com/influxdata/community-templates/master/airquality/airquality.yml
 
-InfluxCLI
+Influx CLI
 
 If you have your InfluxDB credentials configured in teh CLI, you can install this template with: 
 ```influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/airquality/airquality.yml```
