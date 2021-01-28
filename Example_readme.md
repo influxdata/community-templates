@@ -28,12 +28,12 @@ List what resources your template provides in this section. That will allow user
 
 **Example:**
 
-    - 1 Bucket: `Telegraf`, 7d retention
-    - 3 Labels: `InfluxDB1.x`,`Solution`,`Telegraf`
-    - 1 Telegraf Configuration
-    - 3 Checks: `Disk Usage Check`, `Host Deadman`, and `Memory Usage Check`
-    - 2 Dashboards: `InfluxDB 1.x` and `Telegraf`
-    - 3 Variables: `bucket`, `influxdb_host`, and `telegraf_host`
+  - 1 Bucket: `Telegraf`, 7d retention
+  - 3 Labels: `InfluxDB1.x`,`Solution`,`Telegraf`
+  - 1 Telegraf Configuration
+  - 3 Checks: `Disk Usage Check`, `Host Deadman`, and `Memory Usage Check`
+  - 2 Dashboards: `InfluxDB 1.x` and `Telegraf`
+  - 3 Variables: `bucket`, `influxdb_host`, and `telegraf_host`
 
 ## Setup Instructions
 
@@ -43,13 +43,13 @@ Describe any steps needed to finish setting up and running your template, includ
 
 **Example:**
     
-    Telegraf Configuration requires the following environment variables
-    - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your operator token to get started.
-    - `INFLUX_ORG` - The name of your Organization
+Telegraf Configuration requires the following environment variables
+  - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your operator token to get started.
+  - `INFLUX_ORG` - The name of your Organization
 
-    You **MUST** set these environment variables before running Telegraf using something similar to the following commands
-    - This can be found on the `Load Data` > `Tokens` page in your browser: `export INFLUX_TOKEN=TOKEN`
-    - Your Organization name can be found on the Settings page in your browser: `export INFLUX_ORG=my_org`
+You **MUST** set these environment variables before running Telegraf using something similar to the following commands
+  - This can be found on the `Load Data` > `Tokens` page in your browser: `export INFLUX_TOKEN=TOKEN`
+  - Your Organization name can be found on the Settings page in your browser: `export INFLUX_ORG=my_org`
 
 ## Customizations
 
@@ -57,7 +57,7 @@ Show off the flexibility of your template by letting users know different ways t
 
 **Example:**
 
-    You can easily update the Telegraf configurations to point to a specific InfluxDB 1.x location by setting the options in the [InfluxDB Input](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/influxdb) or the [InfluxDB 2.0 Output](https://github.com/influxdata/telegraf/tree/master/plugins/outputs/influxdb_v2). 
+You can easily update the Telegraf configurations to point to a specific InfluxDB 1.x location by setting the options in the [InfluxDB Input](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/influxdb) or the [InfluxDB 2.0 Output](https://github.com/influxdata/telegraf/tree/master/plugins/outputs/influxdb_v2). 
 
 ## Contact
 

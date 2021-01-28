@@ -97,13 +97,6 @@ spec:
       type: expire
 ---
 apiVersion: influxdata.com/v2alpha1
-kind: Bucket
-metadata:
-  name: relaxed-turing-d4d019
-spec:
-  name: dave
----
-apiVersion: influxdata.com/v2alpha1
 kind: CheckThreshold
 metadata:
   name: crumbling-meitner-14d002
@@ -237,20 +230,6 @@ spec:
       previousLevel: OK
 ---
 apiVersion: influxdata.com/v2alpha1
-kind: Variable
-metadata:
-  name: tender-mayer-14d00a
-spec:
-  language: flux
-  name: bucket
-  query: |-
-    buckets()
-      |> filter(fn: (r) => r.name !~ /^_/)
-      |> rename(columns: {name: "_value"})
-      |> keep(columns: ["_value"])
-  type: query
----
-apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
   name: earning-boyd-94d001
@@ -329,7 +308,7 @@ spec:
       name: Swap
       queries:
         - query: |-
-            from(bucket: v.bucket)
+            from(bucket: "docker")
               |> range(start: v.timeRangeStart)
               |> filter(fn: (r) => r._measurement == "swap")
               |> filter(fn: (r) => r._field == "total" or r._field == "used")
@@ -355,13 +334,16 @@ spec:
       kind: Xy
       name: Network TX trafic per container / sec
       queries:
-        - query: "from(bucket: v.bucket)\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n
-                \ |> filter(fn: (r) => r._measurement == \"docker_container_net\")\n
-                \ |> filter(fn: (r) => r._field == \"tx_bytes\")  \n  |> derivative(unit:1s,
-                nonNegative: false)\n  |> window(period: v.windowPeriod)\n  |> mean()\n
-                \ |> keep(columns: [\"_measurement\",\"container_name\", \"host\",\"_value\",\"_field\",\"_stop\"])\n
-                \ |> group(columns: [\"_value\", \"_time\", \"_start\", \"_stop\"],mode:
-                \"except\")"
+        - query: |-
+            from(bucket: "docker")
+              |> range(start: v.timeRangeStart, stop:v.timeRangeStop)
+              |> filter(fn: (r) => r._measurement == "docker_container_net")
+              |> filter(fn: (r) => r._field == "tx_bytes")
+              |> derivative(unit:1s, nonNegative: false)
+              |> window(period: v.windowPeriod)
+              |> mean()
+              |> keep(columns: ["_measurement","container_name", "host","_value","_field","_stop"])
+              |> group(columns: ["_value", "_time", "_start", "_stop"],mode: "except")
       width: 6
       xCol: _stop
       yCol: _value
@@ -389,7 +371,7 @@ spec:
       name: Disk Usage
       queries:
         - query: |-
-            from(bucket: v.bucket)
+            from(bucket: "docker")
               |> range(start: v.timeRangeStart)
               |> filter(fn: (r) => r._measurement == "disk")
               |> filter(fn: (r) => r._field == "used_percent")
@@ -426,7 +408,7 @@ spec:
       name: System Load
       queries:
         - query: |-
-            from(bucket: v.bucket)
+            from(bucket: "docker")
               |> range(start: v.timeRangeStart)
               |> filter(fn: (r) => r._measurement == "system")
               |> filter(fn: (r) => r._field == "load1")
@@ -454,7 +436,7 @@ spec:
       name: System Load
       queries:
         - query: |-
-            from(bucket: v.bucket)
+            from(bucket: "docker")
               |> range(start: v.timeRangeStart)
               |> filter(fn: (r) => r._measurement == "system")
               |> filter(fn: (r) => r._field == "load1" or r._field == "load5" or r._field == "load15")
@@ -478,7 +460,7 @@ spec:
       name: Memory usage % per container
       queries:
         - query: |-
-            from(bucket: v.bucket)
+            from(bucket: "docker")
               |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
               |> filter(fn: (r) => r._measurement == "docker_container_mem")
               |> filter(fn: (r) => r._field == "usage_percent")
@@ -518,7 +500,7 @@ spec:
       name: Docker Daemon nCPUs
       queries:
         - query: |-
-            from(bucket: v.bucket)
+            from(bucket: "docker")
               |> range(start: v.timeRangeStart)
               |> filter(fn: (r) => r._measurement == "docker")
               |> filter(fn: (r) => r._field == "n_cpus")
@@ -547,7 +529,7 @@ spec:
       name: CPU Usage
       queries:
         - query: |-
-            from(bucket: v.bucket)
+            from(bucket: "docker")
               |> range(start: v.timeRangeStart)
               |> filter(fn: (r) => r._measurement == "cpu")
               |> filter(fn: (r) => r._field == "usage_user" or r._field == "usage_system" or r._field == "usage_idle")
@@ -586,7 +568,7 @@ spec:
       name: Network RX trafic per container / sec
       queries:
         - query: |-
-            from(bucket: v.bucket)
+            from(bucket: "docker")
               |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
               |> filter(fn: (r) => r._measurement == "docker_container_net")
               |> filter(fn: (r) => r._field == "rx_bytes" )
@@ -613,7 +595,7 @@ spec:
       name: Memory usage per container
       queries:
         - query: |-
-            from(bucket: v.bucket)
+            from(bucket: "docker")
               |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
               |> filter(fn: (r) => r._measurement == "docker_container_mem")
               |> filter(fn: (r) => r._field == "usage")
@@ -635,7 +617,7 @@ spec:
       name: Docker Daemon Total Mem
       queries:
         - query: |-
-            from(bucket: v.bucket)
+            from(bucket: "docker")
               |> range(start: v.timeRangeStart)
               |> filter(fn: (r) => r._measurement == "docker")
               |> filter(fn: (r) => r._field == "memory_total")
@@ -678,7 +660,7 @@ spec:
       name: System Memory Usage
       queries:
         - query: |-
-            from(bucket: v.bucket)
+            from(bucket: "docker")
               |> range(start: v.timeRangeStart)
               |> filter(fn: (r) => r._measurement == "mem")
               |> filter(fn: (r) => r._field == "used_percent")
@@ -705,7 +687,7 @@ spec:
       name: CPU usage per container
       queries:
         - query: |-
-            from(bucket: v.bucket)
+            from(bucket: "docker")
               |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
               |> filter(fn: (r) => r._measurement == "cpu" or r._measurement == "docker_container_cpu")
               |> filter(fn: (r) => r._field == "usage_percent")
@@ -778,7 +760,7 @@ spec:
 
     # Configuration for sending metrics to InfluxDB
     [[outputs.influxdb_v2]]
-      urls = ["$INFLUX_URL"]
+      urls = ["$INFLUX_HOST"]
       token = "$INFLUX_TOKEN"
       organization = "$INFLUX_ORG" ## Destination bucket to write into.
       bucket = "docker"

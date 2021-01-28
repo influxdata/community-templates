@@ -1,0 +1,253 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: unruffled-almeida-c0c001
+spec:
+    name: insights
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: mystifying-booth-40c001
+spec:
+    charts:
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#DC4E58'
+            name: fire
+            type: text
+            value: 0.7
+        decimalPlaces: 2
+        height: 4
+        kind: Single_Stat_Plus_Line
+        name: Risk Score
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "insights")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "kafka_consumer")
+                  |> filter(fn: (r) => r["_field"] == "risk_score")
+                  |> group()
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 4
+        xCol: _time
+        yCol: _value
+      - colors:
+          - hex: '#32B08C'
+            name: viridian
+            type: min
+          - hex: '#DC4E58'
+            name: fire
+            type: max
+            value: 1
+        decimalPlaces: 2
+        height: 4
+        kind: Gauge
+        name: Risk Score
+        queries:
+          - query: |-
+                from(bucket: "insights")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "kafka_consumer")
+                  |> filter(fn: (r) => r["_field"] == "risk_score")
+                  |> group()
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 4
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#DC4E58'
+            name: fire
+            type: text
+            value: 0.8
+        decimalPlaces: 2
+        height: 4
+        kind: Single_Stat_Plus_Line
+        name: Approvals
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "insights")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "kafka_consumer")
+                  |> filter(fn: (r) => r["_field"] == "approved")
+                  |> group()
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+      - axes:
+          - name: x
+          - domain:
+              - 0
+              - 1
+            name: y
+        binSize: 20
+        colors:
+          - hex: '#000004'
+          - hex: '#110a30'
+          - hex: '#320a5e'
+          - hex: '#57106e'
+          - hex: '#781c6d'
+          - hex: '#9a2865'
+          - hex: '#bc3754'
+          - hex: '#d84c3e'
+          - hex: '#ed6925'
+          - hex: '#f98e09'
+          - hex: '#fbb61a'
+          - hex: '#f4df53'
+        height: 4
+        kind: Heatmap
+        name: Approved
+        queries:
+          - query: |-
+                from(bucket: "insights")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "kafka_consumer")
+                  |> filter(fn: (r) => r["_field"] == "approved")
+                  |> group()
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 4
+        kind: Single_Stat_Plus_Line
+        name: Algorithm Duration
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "insights")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "kafka_consumer")
+                  |> filter(fn: (r) => r["_field"] == "duration_milliseconds")
+                  |> group()
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        suffix: ' ms'
+        width: 4
+        xCol: _time
+        xPos: 8
+        yCol: _value
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: min
+          - hex: '#9394FF'
+            name: comet
+            type: max
+            value: 100
+        decimalPlaces: 0
+        height: 4
+        kind: Gauge
+        name: Algorithm Duration
+        queries:
+          - query: |-
+                from(bucket: "insights")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "kafka_consumer")
+                  |> filter(fn: (r) => r["_field"] == "duration_milliseconds")
+                  |> group()
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        suffix: ' ms'
+        width: 4
+        xPos: 8
+        yPos: 4
+    description: Monitor machine learning model performance metrics
+    name: Algorithmia - ML Model Performance Metrics
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: algorithmia-telegraf
+spec:
+    name: Algorithmia
+    config: |
+        [agent]
+          interval = "10s"
+          round_interval = true
+          metric_batch_size = 1000
+          metric_buffer_limit = 10000
+          collection_jitter = "0s"
+          flush_interval = "10s"
+          flush_jitter = "0s"
+          precision = ""
+          hostname = ""
+          omit_hostname = false
+
+        ###############################################################################
+        #                            OUTPUT PLUGINS                                   #
+        ###############################################################################
+
+        [[outputs.influxdb_v2]]
+          urls = ["$INFLUX_HOST"]
+          token = "$INFLUX_TOKEN"
+          organization = "$INFLUX_ORG"
+          bucket = "insights"
+
+        ###############################################################################
+        #                            PROCESSOR PLUGINS                                #
+        ###############################################################################
+
+
+        ###############################################################################
+        #                            AGGREGATOR PLUGINS                               #
+        ###############################################################################
+
+
+        ###############################################################################
+        #                            INPUT PLUGINS                                    #
+        ###############################################################################
+
+        [[inputs.kafka_consumer]]
+          brokers = ["$KAFKA_BROKER"]
+          topics = ["$KAFKA_TOPIC"]
+          data_format = "json"
+          tag_keys = [
+            "algorithm_name",
+            "algorithm_owner",
+            "algorithm_version"
+          ]
+          json_string_fields = [
+            "session_id",
+            "request_id"
+          ]
+          name_override = "algorithmia"

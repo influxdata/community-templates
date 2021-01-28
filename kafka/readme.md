@@ -126,268 +126,269 @@ Zookeeper metrics: https://github.com/influxdata/telegraf/tree/master/plugins/in
 <details>
 <summary>kafka_controller</summary>
 
-* Tags
-  * jolokia_agent_url
-* Fields
-  * ActiveControllerCount
-  * ControllerState
-  * GlobalPartitionCount
-  * GlobalTopicCount
-  * OfflinePartitionsCount
-  * PreferredReplicaImbalanceCount
-  * ReplicasIneligibleToDeleteCount
-  * ReplicasToDeleteCount
-  * TopicsIneligibleToDeleteCount
-  * TopicsToDeleteCount
+  * Tags
+    * jolokia_agent_url
+  * Fields
+    * ActiveControllerCount
+    * ControllerState
+    * GlobalPartitionCount
+    * GlobalTopicCount
+    * OfflinePartitionsCount
+    * PreferredReplicaImbalanceCount
+    * ReplicasIneligibleToDeleteCount
+    * ReplicasToDeleteCount
+    * TopicsIneligibleToDeleteCount
+    * TopicsToDeleteCount
+
 </details>
 
 <details>
 <summary>kafka_network</summary>
 
-* Tags
-  * jolokia_agent_url
-  * request
-* Fields
-  * FENCED_LEADER_EPOCH
-  * LEADER_NOT_AVAILABLE
-  * NONE
+  * Tags
+    * jolokia_agent_url
+    * request
+  * Fields
+    * FENCED_LEADER_EPOCH
+    * LEADER_NOT_AVAILABLE
+    * NONE
+
 </details>
 
 <details>
 <summary>kafka_partition</summary>
 
-* Tags
-  * jolokia_agent_url
-  * partition
-  * topic
-* Fields
-  * LogEndOffset
-  * LogStartOffset
-  * NumLogSegments
-  * Size
-  * UnderReplicatedPartitions
+  * Tags
+    * jolokia_agent_url
+    * partition
+    * topic
+  * Fields
+    * LogEndOffset
+    * LogStartOffset
+    * NumLogSegments
+    * Size
+    * UnderReplicatedPartitions
 
 </details>
 
 <details>
 <summary>kafka_replica_manager</summary>
 
-* Tags
-  * jolokia_agent_url
-* Fields
-  * FailedIsrUpdatesPerSec
-  * IsrExpandsPerSec
-  * IsrShrinksPerSec
-  * LeaderCount
-  * PartitionCount
-  * UnderReplicatedPartitions
+  * Tags
+    * jolokia_agent_url
+  * Fields
+    * FailedIsrUpdatesPerSec
+    * IsrExpandsPerSec
+    * IsrShrinksPerSec
+    * LeaderCount
+    * PartitionCount
+    * UnderReplicatedPartitions
+
 </details>
 
 <details>
 <summary>kafka_requests</summary>
 
-* Tags
-  * jolokia_agent_url
-  * request
-* Fields
-  * Bytes50thPercentile
-  * Bytes75thPercentile
-  * Bytes95thPercentile
-  * Bytes98thPercentile
-  * Bytes99thPercentile
-  * Bytes999thPercentile
-  * BytesCount
-  * BytesMax
-  * BytesMean
-  * BytesMin
-  * BytesStdDev
-  * Count
-  * QueueTime50thPercentile
-  * QueueTime75thPercentile
-  * QueueTime95thPercentile
-  * QueueTime98thPercentile
-  * QueueTime99thPercentile
-  * Queuetime999thPercentile
-  * QueueTimeCount
-  * QueueTimeMax
-  * QueueTimeMean
-  * QueueTimeMin
-  * QueueTimeStdDev
+  * Tags
+    * jolokia_agent_url
+    * request
+  * Fields
+    * Bytes50thPercentile
+    * Bytes75thPercentile
+    * Bytes95thPercentile
+    * Bytes98thPercentile
+    * Bytes99thPercentile
+    * Bytes999thPercentile
+    * BytesCount
+    * BytesMax
+    * BytesMean
+    * BytesMin
+    * BytesStdDev
+    * Count
+    * QueueTime50thPercentile
+    * QueueTime75thPercentile
+    * QueueTime95thPercentile
+    * QueueTime98thPercentile
+    * QueueTime99thPercentile
+    * Queuetime999thPercentile
+    * QueueTimeCount
+    * QueueTimeMax
+    * QueueTimeMean
+    * QueueTimeMin
+    * QueueTimeStdDev
+
 </details>
 
 <details>
 <summary>kafka_topics</summary>
 
-* Tags
-  * jolokia_agent_url
-  * topic
-* Fields
-  * BytesInPerSec
-  * MessagesInPerSec
-  * ProduceMessageConversionsPerSec
-  * TotalFetchRequestsPerSec
-  * TotalProduceRequestsPerSec
-</details>
+  * Tags
+    * jolokia_agent_url
+    * topic
+  * Fields
+    * BytesInPerSec
+    * MessagesInPerSec
+    * ProduceMessageConversionsPerSec
+    * TotalFetchRequestsPerSec
+    * TotalProduceRequestsPerSec
 
-<details>
-<summary>kafka_topics</summary>
-
-* Tags
-  * jolokia_agent_url
-  * topic
-* Fields
-  * BytesInPerSec
-  * MessagesInPerSec
-  * ProduceMessageConversionsPerSec
-  * TotalFetchRequestsPerSec
-  * TotalProduceRequestsPerSec
 </details>
 
 <details>
 <summary>kafka_consumer</summary>
 
-* Tags
-  * jolokia_agent_url
-  * client-id
-  * partition
-  * topic
-* Fields
-  * bytes-consumed-rate
-  * fetch-rate_fetch-rate
-  * records-consumed-rate
-  * records-lag-avg_records-lag-avg
+  * Tags
+    * jolokia_agent_url
+    * client-id
+    * partition
+    * topic
+  * Fields
+    * bytes-consumed-rate
+    * fetch-rate_fetch-rate
+    * records-consumed-rate
+    * records-lag-avg_records-lag-avg
+
 </details>
 
 <details>
 <summary>kafka_producer</summary>
 
-* Tags
-  * jolokia_agent_url
-  * client-id
-* Fields
-  * batch-size-avg
-  * compression-rate-avg
-  * io-wait-ratio
-  * outgoing-byte-rate
-  * response-rate
-  * request-latency-avg
-  * request-rate
+  * Tags
+    * jolokia_agent_url
+    * client-id
+  * Fields
+    * batch-size-avg
+    * compression-rate-avg
+    * io-wait-ratio
+    * outgoing-byte-rate
+    * response-rate
+    * request-latency-avg
+    * request-rate
+
 </details>
 
 <details>
 <summary>zookeeper</summary>
 
-* Tags
-  * port
-  * server
-  * state
-* Fields
-  * approximate_data_size
-  * avg_latency
-  * aphemerals_count
-  * max_file_descriptor_count
-  * max_latency
-  * min_latency
-  * num_alive_connections
-  * open_file_descriptor_count
-  * outstanding_requests
-  * packets_received
-  * packets_sent
-  * version
-  * watch_count
-  * znode_count
+  * Tags
+    * port
+    * server
+    * state
+  * Fields
+    * approximate_data_size
+    * avg_latency
+    * aphemerals_count
+    * max_file_descriptor_count
+    * max_latency
+    * min_latency
+    * num_alive_connections
+    * open_file_descriptor_count
+    * outstanding_requests
+    * packets_received
+    * packets_sent
+    * version
+    * watch_count
+    * znode_count
+
 </details>
 
 <details>
 <summary>jvm_runtime</summary>
 
-* Tags
-  * jolokia_agent_url
-* Fields
-  * SpecVersion
-  * StartTime
-  * Uptime
-  * VmName
+  * Tags
+    * jolokia_agent_url
+  * Fields
+    * SpecVersion
+    * StartTime
+    * Uptime
+    * VmName
+
 </details>
 
 <details>
 <summary>jvm_os</summary>
 
-* Tags
-  * jolokia_agent_url
-* Fields
-  * AvailableProcessors
-  * CommittedVirtualMemorySize
-  * FreePhysicalMemorySize
-  * Name
-  * ProcessCpuLoad
-  * SystemCpuLoad
-  * SystemLoadAverage
-  * TotalPhysicalMemorySize
-  * Version
+  * Tags
+    * jolokia_agent_url
+  * Fields
+    * AvailableProcessors
+    * CommittedVirtualMemorySize
+    * FreePhysicalMemorySize
+    * Name
+    * ProcessCpuLoad
+    * SystemCpuLoad
+    * SystemLoadAverage
+    * TotalPhysicalMemorySize
+    * Version
+
 </details>
 
 <details>
 <summary>jvm_mem</summary>
 
-* Tags
-  * jolokia_agent_url
-* Fields
-  * HeapMemoryUsage_committed
-  * HeapMemoryUsage_init
-  * HeapMemoryUsage_max
-  * HeapMemoryUsage_used
-  * NonHeapMemoryUsage_committed
-  * NonHeapMemoryUsage_init
-  * NonHeapMemoryUsage_max
-  * NonHeapMemoryUsage_used
+  * Tags
+    * jolokia_agent_url
+  * Fields
+    * HeapMemoryUsage_committed
+    * HeapMemoryUsage_init
+    * HeapMemoryUsage_max
+    * HeapMemoryUsage_used
+    * NonHeapMemoryUsage_committed
+    * NonHeapMemoryUsage_init
+    * NonHeapMemoryUsage_max
+    * NonHeapMemoryUsage_used
+
 </details>
 
 <details>
 <summary>jvm_threading</summary>
 
-* Tags
-  * jolokia_agent_url
-* Fields
-  * DaemonThreadCount
-  * PeakThreadCount
-  * ThreadCount
-  * TotalStartedThreadCount
+  * Tags
+    * jolokia_agent_url
+  * Fields
+    * DaemonThreadCount
+    * PeakThreadCount
+    * ThreadCount
+    * TotalStartedThreadCount
+
 </details>
 
 <details>
 <summary>java_gc</summary>
 
-* Tags
-  * jolokia_agent_url
-  * name
-* Fields
-  * CollectionCount
-  * CollectionTime
+  * Tags
+    * jolokia_agent_url
+    * name
+  * Fields
+    * CollectionCount
+    * CollectionTime
+
 </details>
 
 <details>
 <summary>java_classes</summary>
 
-* Tags
-  * jolokia_agent_url
-* Fields
-  * LoadedClassCount
-  * TotalLoadedClassCount
-  * UnloadedClassCount
+  * Tags
+    * jolokia_agent_url
+  * Fields
+    * LoadedClassCount
+    * TotalLoadedClassCount
+    * UnloadedClassCount
+
 </details>
 
 <details>
 <summary>java_mem_pool</summary>
 
-* Tags
-  * jolokia_agent_url
-  * name
-* Fields
-  * Usage_Usage_committed
-  * Usage_Usage_init
-  * Usage_Usage_max
-  * Usage_Usage_used
+  * Tags
+    * jolokia_agent_url
+    * name
+  * Fields
+    * Usage_Usage_committed
+    * Usage_Usage_init
+    * Usage_Usage_max
+    * Usage_Usage_used
+
 </details>
 
 ## Contact

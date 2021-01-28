@@ -21,9 +21,9 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
 
 ## Included Resources
 
-    - 1 Dashboards: 'minio'
-    - 1 Label: 'minio'
-    - 1 Bucket: 'minio'
+  - 1 Dashboards: 'minio'
+  - 1 Label: 'minio'
+  - 1 Bucket: 'minio'
 
 ## Setup Instructions
 

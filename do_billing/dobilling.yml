@@ -1,0 +1,232 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: agitated-ptolemy-010001
+spec:
+    color: '#066fc5'
+    name: digitalocean
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: mystifying-jang-010005
+spec:
+    associations:
+      - kind: Label
+        name: agitated-ptolemy-010001
+    name: do_billing
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: sleepy-black-810000
+spec:
+    associations:
+      - kind: Label
+        name: agitated-ptolemy-010001
+    charts:
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Last Update
+        queries:
+          - query: |-
+                from(bucket: "do_billing")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_do_billing")
+                  |> filter(fn: (r) => r["_field"] == "generated_at")
+        width: 2
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Current Balance
+        note: "Negative values is when you have credit in your account. \nPositive
+            Balance is when you have debs in your account."
+        prefix: '$ '
+        queries:
+          - query: |-
+                from(bucket: "do_billing")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_do_billing")
+                  |> filter(fn: (r) => r["_field"] == "account_balance")
+                  |> toFloat()
+                  |> last()
+        width: 2
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Month to Date Consumption
+        prefix: '$ '
+        queries:
+          - query: |-
+                from(bucket: "do_billing")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_do_billing")
+                  |> filter(fn: (r) => r["_field"] == "month_to_date_usage")
+                  |> toFloat()
+                  |> last()
+        width: 2
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            label: Cost
+            name: y
+            prefix: '$ '
+            scale: linear
+        colors:
+          - hex: '#FD7A5D'
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            name: Delorean
+            type: scale
+        geom: monotoneX
+        height: 3
+        kind: Xy
+        name: Month to Date Consumption (Last 30 days)
+        note: This metrics reset every first of the month.
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: "do_billing")
+                  |> range(start: -30d)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_do_billing")
+                  |> filter(fn: (r) => r["_field"] == "month_to_date_usage")
+                  |> toFloat()
+        shade: true
+        width: 4
+        xCol: _time
+        xPos: 2
+        yCol: _value
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 3
+        kind: Single_Stat
+        name: Month to Date Balance (To Pay)
+        note: Negative values is when you have credit in your account. Positive Balance
+            is when you have debs in your account.
+        prefix: '$ '
+        queries:
+          - query: |-
+                from(bucket: "do_billing")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_do_billing")
+                  |> filter(fn: (r) => r["_field"] == "month_to_date_balance")
+                  |> toFloat()
+        width: 2
+        xPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            prefix: '$ '
+            scale: linear
+        colors:
+          - hex: '#74D495'
+            name: Atlantis
+            type: scale
+          - hex: '#3F3FBA'
+            name: Atlantis
+            type: scale
+          - hex: '#FF4D9E'
+            name: Atlantis
+            type: scale
+        geom: monotoneX
+        height: 3
+        kind: Xy
+        name: Month to Date Balance (Last 10 days)
+        note: Negative values is when you have credit in your account. Positive Balance
+            is when you have debs in your account.
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "do_billing")
+                  |> range(start: -10d)
+                  |> filter(fn: (r) => r["_measurement"] == "exec_do_billing")
+                  |> filter(fn: (r) => r["_field"] == "month_to_date_balance")
+                  |> toFloat()
+        shade: true
+        width: 4
+        xCol: _time
+        xPos: 8
+        yCol: _value
+    name: DigitalOcean Billing
+
+---
+
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: do-billing
+spec:
+    associations:
+      - kind: Label
+        name: agitated-ptolemy-010001
+    config: |
+        [[outputs.influxdb_v2]]
+          ## The URLs of the InfluxDB cluster nodes.
+          ##
+          ## Multiple URLs can be specified for a single cluster, only ONE of the
+          ## urls will be written to each interval.
+          ## urls exp: http://127.0.0.1:8086
+          urls = ["$INFLUX_HOST"]
+
+          ## Token for authentication.
+          token = "$INFLUX_TOKEN"
+
+          ## Organization is the name of the organization you wish to write to; must exist.
+          organization = "$INFLUX_ORG"
+
+          ## Destination bucket to write into.
+          bucket = "do_billing"
+
+          [agent]
+          interval = "24h"
+
+        [[inputs.exec]]
+        ## Commands array
+        commands = [
+          "sh $PWD/balance.sh"
+          ]
+
+          ## String fields is an array of keys that should be added as string fields.
+          json_string_fields = ["month_to_date_balance","account_balance","month_to_date_usage","generated_at","amount","invoice_period"]
+
+          ## Tag keys is an array of keys that should be added as tags.
+          tag_keys = []
+
+          ## Timeout for each command to complete.
+          timeout = "8s"
+
+          ## measurement name suffix (for separating different commands)
+          name_suffix = "_do_billing"
+
+          ## Data format to consume.
+          ## Each data format has its own unique set of configuration options, read
+          ## more about them here:
+          ## https://github.com/influxdata/telegraf/blob/master/docs/DATA_FORMATS_INPUT.md
+          data_format = "json"

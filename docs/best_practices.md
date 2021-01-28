@@ -18,9 +18,9 @@ Rather than duplicating graphs to show filtered views of the same data, use [Var
 
 When using Buckets in your Template, you can:
 
- - Provide a default Bucket with your Template
- - Reuse an existing Bucket by name
- - Let the user choose their Bucket
+  - Provide a default Bucket with your Template
+  - Reuse an existing Bucket by name
+  - Let the user choose their Bucket
 
 #### Provide a default Bucket with your Template
 You can include a uniquely-named [Bucket](https://v2.docs.influxdata.com/v2.0/reference/key-concepts/data-elements/#bucket) with your Template and use it as the default in Dashboards and Telegraf configurations.
@@ -135,16 +135,16 @@ To add a custom Telegraf configuration file to your template:
  1. Export your template using the command in the [submitting a template](submit_a_template.md) doc.
    
  2. Add the following to the end of the file, being sure to give a name for your Telegraf configuration:
-    ```
-    ---
-    apiVersion: influxdata.com/v2alpha1
-    kind: Telegraf
-    metadata:
-        name: unique-name-for-your-config
-    spec:
-        name: The Name Of Your Configuration
-        config: |
-    ```
+```
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: unique-name-for-your-config
+spec:
+    name: The Name Of Your Configuration
+    config: |
+```
         
  3. Copy and paste the contents of your Telegraf configuration file below what you just added, indenting it all until it is 4 spaces further indented than the `config:` line.
     
@@ -156,8 +156,7 @@ After you export your finished Template, test it to make sure that it applies cl
 To create a clean, ephemeral InfluxDB testing environment, run InfluxDB inside of a Docker container:
 
 ```
- docker run -p 8086:8086 -p 9999:9999 quay.io/influxdb/influxdb:2.0.0-beta
-
+docker run -p 8086:8086 -p 9999:9999 quay.io/influxdb/influxdb:2.0.0-beta
 ```
 
 After you create a new `Organization` and `Token` in your Docker instance (available at http://localhost:9999), follow the [instructions for using a Template](./use_a_template.md) to apply your Template.

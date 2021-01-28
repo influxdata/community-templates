@@ -1,0 +1,592 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: affectionate-jackson-9aa001
+spec:
+    color: '#ebadf8'
+    description: tasks and cardinality monitoring
+    name: operational_monitoring
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: sharp-thompson-daa003
+spec:
+    associations:
+      - kind: Label
+        name: affectionate-jackson-9aa001
+    name: cardinality
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Task
+metadata:
+    name: alerting-northcutt-daa003
+spec:
+    associations:
+      - kind: Label
+        name: affectionate-jackson-9aa001
+    every: 1h
+    name: cardinality_by_bucket
+    query: |-
+        import "influxdata/influxdb"
+
+
+
+        buckets()
+        	|> map(fn: (r) => {
+        		cardinality = influxdb.cardinality(bucket: r.name, start: -task.every)
+        			|> findRecord(idx: 0, fn: (key) =>
+        				(true))
+
+        		return {
+        			_time: now(),
+        			_measurement: "buckets",
+        			bucket: r.name,
+        			_field: "cardinality",
+        			_value: cardinality._value,
+        		}
+        	})
+        	|> to(bucket: "cardinality")
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: eager-proskuriakova-9aa003
+spec:
+    associations:
+      - kind: Label
+        name: affectionate-jackson-9aa001
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> filter(fn: (r) => r.name !~ /^_/)
+          |> rename(columns: {name: "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: relaxed-archimedes-5aa003
+spec:
+    associations:
+      - kind: Label
+        name: affectionate-jackson-9aa001
+    language: flux
+    name: measurement
+    query: |-
+        import "influxdata/influxdb/v1"
+
+        v1.measurements(bucket: v.bucket)
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: magical-brahmagupta-5aa001
+spec:
+    associations:
+      - kind: Label
+        name: affectionate-jackson-9aa001
+    charts:
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 4
+        kind: Single_Stat
+        name: Total Runs
+        queries:
+          - query: |-
+                import "strings"
+                import "regexp"
+
+                from(bucket: "_tasks")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "runs")
+                  |> filter(fn: (r) => r["_field"] == "logs")
+                  |> map(fn: (r) => {
+                     ind = regexp.findStringIndex(r: /name: \\\\\\".+?\\\\\\"/, v: r._value)
+                     finalstring = strings.trimSuffix(v: strings.trimPrefix(v: strings.substring(end: ind[1], start: ind[0], v: r._value ), prefix: "name: \\\\\\\""), suffix: "\\\\\\\"")
+                     return {r with name: finalstring }
+                  }
+                  )
+                  |> group(columns: ["_start"])
+                  |> count()
+                  |> rename(columns: {_start: "_time"})
+        width: 4
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        fieldOptions:
+          - displayName: name
+            fieldName: name
+            visible: true
+          - displayName: taskID
+            fieldName: taskID
+            visible: true
+          - displayName: success
+            fieldName: success
+            visible: true
+          - displayName: failed
+            fieldName: failed
+            visible: true
+          - displayName: errorRate
+            fieldName: errorRate
+            visible: true
+        height: 4
+        kind: Table
+        name: Error Rates Per Task
+        queries:
+          - query: |-
+                import "influxdata/influxdb/v1"
+                import "strings"
+                import "regexp"
+
+
+                from(bucket: "_tasks")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "runs")
+                  |> filter(fn: (r) => r["_field"] == "logs" or r._field == "name")
+                  |> v1.fieldsAsCols()
+                  |> group(columns: ["taskID", "name", "status"])
+                  |> count(column: "logs")
+                  |> group()
+                  |> pivot(rowKey:["taskID", "name"], columnKey: ["status"], valueColumn: "logs")
+                  |> map(fn: (r) => ({r with success: if exists r.success then r.success else 0, failed: if exists r.failed then r.failed else 0}))
+                  |> map(fn: (r)=> ({r with errorRate: float(v: r.failed)/float(v: r.success+r.failed) }))
+        tableOptions:
+            sortBy: failed
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 12
+        yPos: 4
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        fieldOptions:
+          - displayName: _time
+            fieldName: _time
+            visible: true
+          - displayName: name
+            fieldName: name
+            visible: true
+          - displayName: taskID
+            fieldName: taskID
+            visible: true
+          - displayName: runID
+            fieldName: runID
+            visible: true
+          - displayName: _value
+            fieldName: _value
+          - displayName: status
+            fieldName: status
+          - displayName: failed
+            fieldName: failed
+          - displayName: success
+            fieldName: success
+          - displayName: errorRate
+            fieldName: errorRate
+          - displayName: _measurement
+            fieldName: _measurement
+          - displayName: _start
+            fieldName: _start
+          - displayName: _stop
+            fieldName: _stop
+          - displayName: logs
+            fieldName: logs
+          - displayName: message
+            fieldName: message
+            visible: true
+        height: 3
+        kind: Table
+        name: Error List
+        queries:
+          - query: |-
+                import "influxdata/influxdb/v1"
+                import "strings"
+                import "regexp"
+
+
+                from(bucket: "_tasks")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "runs" and r.status == "failed")
+                  |> filter(fn: (r) => r["_field"] == "errorMessage" or r._field == "runID" or r._field == "name")
+                  |> v1.fieldsAsCols()
+                  |> group()
+                 // |> group(columns: ["taskID", "runID", "name", "status"])
+        tableOptions:
+            sortBy: failed
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 12
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: fcee9956-f868-405d-8f3b-863ab456067d
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 613dba11-30be-4d41-91d8-ffeac3ee9458
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 4b074fc6-f802-4b2d-aad3-fe0624970891
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Error Rates Over Time (All tasks)
+        position: overlaid
+        queries:
+          - query: |-
+                import "strings"
+                import "regexp"
+
+
+                from(bucket: "_tasks")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "runs")
+                  |> filter(fn: (r) => r["_field"] == "logs")
+                  |> map(fn: (r) => {
+                     ind = regexp.findStringIndex(r: /name: \\\\\\".+?\\\\\\"/, v: r._value)
+                     finalstring = strings.trimSuffix(v: strings.trimPrefix(v: strings.substring(end: ind[1], start: ind[0], v: r._value ), prefix: "name: \\\\\\\""), suffix: "\\\\\\\"")
+                     return {r with name: finalstring }
+                  }
+                  )
+                  |> group(columns: ["status"])
+                  |> aggregateWindow(every: 1h, fn: count)
+                  |> pivot(rowKey:["_time"], columnKey: ["status"], valueColumn: "_value")
+                  |> filter(fn: (r) => r.failed + r.success != 0)
+                  |> map(fn: (r)=> ({r with  _value:  float(v: r.failed)/float(v: r.success+r.failed) }))
+        width: 12
+        xCol: _time
+        yCol: _value
+        yPos: 11
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+          - hex: '#513CC6'
+            id: c749e60f-b9a3-436b-996a-d3eca0dc87b7
+            name: planet
+            type: text
+            value: 95
+        fieldOptions:
+          - displayName: _start
+            fieldName: _start
+          - displayName: _stop
+            fieldName: _stop
+          - displayName: name
+            fieldName: name
+            visible: true
+          - displayName: taskID
+            fieldName: taskID
+          - displayName: _time
+            fieldName: _time
+            visible: true
+          - displayName: runID
+            fieldName: runID
+          - displayName: scheduledFor
+            fieldName: scheduledFor
+            visible: true
+          - displayName: requestedAt
+            fieldName: requestedAt
+            visible: true
+          - displayName: startedAt
+            fieldName: startedAt
+            visible: true
+          - displayName: finishedAt
+            fieldName: finishedAt
+            visible: true
+        height: 4
+        kind: Table
+        name: Last Successful Run Per Task
+        queries:
+          - query: |-
+                import "influxdata/influxdb/v1"
+
+                import "strings"
+                import "regexp"
+
+
+                from(bucket: "_tasks")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "runs")
+                  |> filter(fn: (r) => r["status"] == "success")
+                  |> group(columns: ["taskID"])
+                  |> v1.fieldsAsCols()
+                  |> map(fn: (r) => {
+                     ind = regexp.findStringIndex(r: /name: \\\\\\".+?\\\\\\"/, v: r.logs)
+                     finalstring = strings.trimSuffix(v: strings.trimPrefix(v: strings.substring(end: ind[1], start: ind[0], v: r.logs ), prefix: "name: \\\\\\\""), suffix: "\\\\\\\"")
+                     return {r with name: finalstring }
+                  }
+                  )
+                  |> group(columns: ["taskID", "name"])
+                  |> rename(columns: {logs: "_value"})
+                  |> last()
+                  |> drop(columns: ["_value"])
+                  |> group()
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 12
+        yPos: 15
+      - colors:
+          - hex: '#7CE490'
+            id: base
+            name: honeydew
+            type: text
+        decimalPlaces: 2
+        height: 4
+        kind: Single_Stat
+        name: Total Succeeding
+        queries:
+          - query: |-
+                import "strings"
+                import "regexp"
+
+                from(bucket: "_tasks")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "runs")
+                  |> filter(fn: (r) => r["_field"] == "logs")
+                  |> filter(fn: (r) => r.status == "success")
+                  |> group(columns: ["_start"])
+                  |> count()
+                  |> rename(columns: {_start: "_time"})
+        width: 5
+        xPos: 4
+      - colors:
+          - hex: '#BF3D5E'
+            id: base
+            name: ruby
+            type: text
+        decimalPlaces: 2
+        height: 4
+        kind: Single_Stat
+        name: Total Failing
+        queries:
+          - query: |-
+                import "strings"
+                import "regexp"
+
+                from(bucket: "_tasks")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "runs")
+                  |> filter(fn: (r) => r["_field"] == "logs")
+                  |> filter(fn: (r) => r.status != "success")
+                  |> group(columns: ["_start"])
+                  |> count()
+                  |> rename(columns: {_start: "_time"})
+        width: 3
+        xPos: 9
+    name: Task  Summary Dashboard
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: nostalgic-kirch-1aa001
+spec:
+    associations:
+      - kind: Label
+        name: affectionate-jackson-9aa001
+    charts:
+      - height: 2
+        kind: Markdown
+        name: Name this Cell
+        note: |-
+            Explore the cardinality of the buckets in your account.
+
+            Quickly find buckets that have high cardinality then drill down by bucket measurement and tag to understand the cause of high cardinality.
+        width: 12
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 75a22a5f-96e6-41ac-8fb0-d9d628b39311
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: ec7e8c82-2aef-4682-9c64-64298feca9cf
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: d94bc95b-d1cf-4493-b0a9-c3ccb62f9b57
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        hoverDimension: auto
+        kind: Xy
+        legendOpacity: 1
+        legendOrientationThreshold: 10
+        name: Cardinality by Bucket
+        note: View trends over time of how cardinality is changing for each of your
+            buckets
+        position: overlaid
+        queries:
+          - query: |-
+                import "influxdata/influxdb"
+
+                from(bucket: "cardinality")
+                    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                    |> filter(fn: (r) => r._measurement == "buckets" and r._field == "cardinality")
+                    |> aggregateWindow(every:v.windowPeriod, fn: last)
+        width: 12
+        xCol: _time
+        yCol: _value
+        yPos: 2
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        fieldOptions:
+          - displayName: _start
+            fieldName: _start
+          - displayName: _stop
+            fieldName: _stop
+          - displayName: _time
+            fieldName: _time
+          - displayName: bucket
+            fieldName: bucket
+            visible: true
+          - displayName: cardinality
+            fieldName: _value
+            visible: true
+          - displayName: _field
+            fieldName: _field
+          - displayName: _measurement
+            fieldName: _measurement
+        height: 4
+        kind: Table
+        name: Top Buckets
+        note: View the top 10 buckets with the highest cardinality
+        queries:
+          - query: |-
+                import "influxdata/influxdb"
+
+                from(bucket: "cardinality")
+                    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                    |> filter(fn: (r) => r._measurement == "buckets" and r._field == "cardinality")
+                    |> last()
+                    |> group()
+                    |> top(n:10)
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 12
+        yPos: 6
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        fieldOptions:
+          - displayName: bucket
+            fieldName: bucket
+            visible: true
+          - displayName: measurement
+            fieldName: measurement
+            visible: true
+          - displayName: cardinality
+            fieldName: cardinality
+            visible: true
+          - displayName: tag
+            fieldName: tag
+            visible: true
+          - displayName: cardinality
+            fieldName: _value
+            visible: true
+        height: 4
+        kind: Table
+        name: Cardinality by Measurment
+        queries:
+          - query: |-
+                import "influxdata/influxdb"
+                import "influxdata/influxdb/schema"
+
+
+                schema.measurements(bucket: v.bucket)
+                  |> map(fn: (r) => {
+                      m = r._value
+                      return {
+                        bucket: v.bucket,
+                        measurement: m,
+                        _value: (influxdb.cardinality(bucket: v.bucket, start: v.timeRangeStart, predicate: (r) => r._measurement == m) |> findRecord(idx:0, fn:(key) => true))._value
+                      }
+                    })
+                  |> sort(desc:true)
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 12
+        yPos: 10
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        fieldOptions:
+          - displayName: tag
+            fieldName: tag
+            visible: true
+          - displayName: cardinality
+            fieldName: _value
+            visible: true
+          - displayName: bucket
+            fieldName: bucket
+            visible: true
+          - displayName: measurement
+            fieldName: measurement
+            visible: true
+        height: 4
+        kind: Table
+        name: Cardinality By Tag
+        queries:
+          - query: |-
+                import "influxdata/influxdb/schema"
+
+                cardinalityByTag = (bucket, measurement) => schema.tagKeys(bucket: bucket, predicate: (r) => r._measurement == measurement)
+                    |> filter(fn: (r) => r._value != "_start" and r._value != "_stop")
+                    |> map(
+                        fn: (r) => ({
+                            tag: r._value,
+                            _value: (schema.tagValues(bucket: bucket, tag: r._value)
+                                |> count()
+                                |> findRecord(fn: (key) => true, idx: 0))._value,
+                        }),
+                    )
+                    |> group(columns: ["tag"])
+                    |> sum()
+
+                cardinalityByTag(bucket: v.bucket, measurement: v.measurement)
+                    |> group()
+                    |> top(n: 10)
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 12
+        yPos: 14
+    name: Cardinality Explorer

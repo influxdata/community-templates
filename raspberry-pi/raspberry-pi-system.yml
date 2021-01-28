@@ -1,0 +1,538 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: eloquent-lovelace-776001
+spec:
+    color: '#7A65F2'
+    name: Linux System Template
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: tender-wu-ecc001
+spec:
+    color: '#E30B5D'
+    name: raspberry-pi
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: gifted-chatterjee-776004
+spec:
+    associations:
+      - kind: Label
+        name: eloquent-lovelace-776001
+      - kind: Label
+        name: tender-wu-ecc001
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> filter(fn: (r) => r.name !~ /^_/)
+          |> rename(columns: {name: "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: trusting-carson-b76004
+spec:
+    associations:
+      - kind: Label
+        name: eloquent-lovelace-776001
+      - kind: Label
+        name: tender-wu-ecc001
+    language: flux
+    name: linux_host
+    query: |-
+        import "influxdata/influxdb/v1"
+        v1.measurementTagValues(bucket: v.bucket, measurement: "cpu", tag: "host")
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: objective-booth-2cc001
+spec:
+    associations:
+      - kind: Label
+        name: tender-wu-ecc001
+    charts:
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: |
+            The Raspberry Pi dashboard gives you an overview of Raspbian system metrics with metrics from `system`, `temp`, `mem`, `diskio`, `swap` and `net` measurements. See the [Telegraf Documentation](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/system) for help configuring these plugins.
+        width: 12
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        height: 1
+        kind: Single_Stat
+        name: System Uptime
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "system")
+                  |> filter(fn: (r) => r["host"] == v.linux_host)
+                  |> filter(fn: (r) => r._field == "uptime")
+                  |> last()
+                  |> toFloat()
+                  |> map(fn: (r) => ({r with _value: r._value / 86400.0}))
+                  |> yield(name: "last")
+        suffix: ' days'
+        width: 2
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+            suffix: '%'
+          - base: "10"
+            name: y2
+            scale: linear
+        geom: line
+        height: 3
+        kind: Xy
+        name: Disk Usage
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["host"] == v.linux_host)
+                  |> filter(fn: (r) => r._measurement == "disk")
+                  |> filter(fn: (r) => r._field == "used_percent")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 3
+        xCol: _time
+        yCol: _value
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            label: Bytes
+            name: y
+            scale: linear
+          - base: "10"
+            name: y2
+            scale: linear
+        geom: line
+        height: 3
+        kind: Xy
+        name: Disk IO
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["host"] == v.linux_host)
+                  |> filter(fn: (r) => r._measurement == "diskio")
+                  |> filter(fn: (r) => r._field == "read_bytes" or r._field == "write_bytes")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> derivative(unit: 1s, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 3
+        xCol: _time
+        yCol: _value
+        yPos: 5
+      - colors:
+          - hex: '#4ED8A0'
+            name: rainforest
+            type: background
+          - hex: '#4591ED'
+            name: ocean
+            type: background
+            value: 40
+          - hex: '#4ED8A0'
+            name: rainforest
+            type: background
+            value: 60
+          - hex: '#FFD255'
+            name: thunder
+            type: background
+            value: 80
+          - hex: '#DC4E58'
+            name: fire
+            type: background
+            value: 120
+        decimalPlaces: 1
+        height: 1
+        kind: Single_Stat
+        name: CPU Temp
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "temp")
+                  |> filter(fn: (r) => r["host"] == v.linux_host)
+                  |> filter(fn: (r) => r["_field"] == "temp")
+                  |> last()
+                  |> yield(name: "last")
+        suffix: ' °C'
+        width: 1
+        xPos: 2
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: background
+          - hex: '#4591ED'
+            name: ocean
+            type: background
+            value: 40
+          - hex: '#4ED8A0'
+            name: rainforest
+            type: background
+            value: 60
+          - hex: '#FFD255'
+            name: thunder
+            type: background
+            value: 80
+          - hex: '#DC4E58'
+            name: fire
+            type: background
+            value: 120
+        decimalPlaces: 1
+        height: 1
+        kind: Single_Stat
+        name: GPU Temp
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["host"] == v.linux_host)
+                  |> filter(fn: (r) => r["_measurement"] == "gpu_temperature")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> last()
+                  |> yield(name: "last")
+        suffix: ' °C'
+        width: 1
+        xPos: 3
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+            suffix: '%'
+          - base: "10"
+            name: y2
+            scale: linear
+        geom: line
+        height: 3
+        kind: Xy
+        name: CPU Usage
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["host"] == v.linux_host)
+                  |> filter(fn: (r) => r._field == "usage_user" or r._field == "usage_system" or r._field == "usage_idle")
+                  |> filter(fn: (r) => r.cpu == "cpu-total")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            label: Bytes
+            name: y
+            scale: linear
+          - base: "10"
+            name: y2
+            scale: linear
+        geom: line
+        height: 3
+        kind: Xy
+        name: Network
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["host"] == v.linux_host)
+                  |> filter(fn: (r) => r._measurement == "net")
+                  |> filter(fn: (r) => r._field == "bytes_recv" or r._field == "bytes_sent")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> derivative(unit: 1s, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 5
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: nCPUs
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["host"] == v.linux_host)
+                  |> filter(fn: (r) => r._measurement == "system")
+                  |> filter(fn: (r) => r._field == "n_cpus")
+                  |> last()
+                  |> yield(name: "last")
+        suffix: ' '
+        width: 1
+        xPos: 4
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: System Load
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart)
+                  |> filter(fn: (r) => r["host"] == v.linux_host)
+                  |> filter(fn: (r) => r._measurement == "system")
+                  |> filter(fn: (r) => r._field == "load1")
+                 |> last()
+                  |> yield(name: "mean")
+        width: 2
+        xPos: 5
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Load
+            name: y
+            scale: linear
+          - base: "10"
+            name: y2
+            scale: linear
+        geom: line
+        height: 3
+        kind: Xy
+        name: System Load
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "system")
+                  |> filter(fn: (r) => r["host"] == v.linux_host)
+                  |> filter(fn: (r) => r._field == "load1" or r._field == "load5" or r._field == "load15")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 3
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+          - base: "10"
+            name: y2
+            scale: linear
+        geom: line
+        height: 3
+        kind: Xy
+        name: Processes
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["host"] == v.linux_host)
+                  |> filter(fn: (r) => r._measurement == "processes")
+                  |> filter(fn: (r) => r._field == "running" or r._field == "blocked" or r._field == "idle" or r._field == "unknown")
+                  |> aggregateWindow(every: v.windowPeriod, fn: max)
+                  |> yield(name: "max")
+        width: 3
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 5
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Total Memory
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["host"] == v.linux_host)
+                  |> filter(fn: (r) => r._measurement == "mem")
+                  |> filter(fn: (r) => r._field == "total")
+                  |> last()
+                  |> map(fn: (r) => ({r with _value: float(v: r._value) / 1024.0 / 1024.0 / 1024.0}))
+                  |> yield(name: "last")
+        suffix: ' GB'
+        width: 2
+        xPos: 7
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+            suffix: '%'
+          - base: "10"
+            name: y2
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#8F8AF4'
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#A51414'
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#F4CF31'
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+        decimalPlaces: 1
+        height: 4
+        kind: Single_Stat_Plus_Line
+        name: Memory Usage
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["host"] == v.linux_host)
+                  |> filter(fn: (r) => r._measurement == "mem")
+                  |> filter(fn: (r) => r._field == "used_percent")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        suffix: '%'
+        width: 3
+        xCol: _time
+        xPos: 9
+        yCol: _value
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: y
+            scale: linear
+          - base: "10"
+            name: y2
+            scale: linear
+        geom: line
+        height: 3
+        kind: Xy
+        name: Swap
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["host"] == v.linux_host)
+                  |> filter(fn: (r) => r._measurement == "swap")
+                  |> filter(fn: (r) => r._field == "total" or r._field == "used")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 3
+        xCol: _time
+        xPos: 9
+        yCol: _value
+        yPos: 5
+    description: A collection of useful visualizations for monitoring your system
+        stats
+    name: Raspberry Pi System
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: happy-wing-ecc001
+spec:
+    associations:
+      - kind: Label
+        name: tender-wu-ecc001
+    config: |
+        # Configuration for telegraf agent
+        [agent]
+          interval = "10s"
+          round_interval = true
+          metric_batch_size = 1000
+          metric_buffer_limit = 10000
+          collection_jitter = "0s"
+          flush_interval = "10s"
+          flush_jitter = "0s"
+          precision = ""
+          debug = false
+          quiet = false
+          logfile = ""
+          ## Override default hostname, if empty use os.Hostname()
+          hostname = ""
+          ## If set to true, do no set the "host" tag in the telegraf agent.
+          omit_hostname = false
+        [[outputs.influxdb_v2]]	
+          urls = ["$INFLUX_HOST"]
+          ## Token for authentication.
+          token = "$INFLUX_TOKEN"
+          ## Organization is the name of the organization you wish to write to; must exist.
+          organization = "$INFLUX_ORG"
+          ## Destination bucket to write into.
+          bucket = "$INFLUX_BUCKET"
+        [[inputs.cpu]]
+          ## Whether to report per-cpu stats or not
+          percpu = true
+          ## Whether to report total system cpu stats or not
+          totalcpu = true
+          ## If true, collect raw CPU time metrics.
+          collect_cpu_time = false
+          ## If true, compute and report the sum of all non-idle CPU states.
+          report_active = false
+        [[inputs.disk]]
+          ## By default stats will be gathered for all mount points.
+          ## Set mount_points will restrict the stats to only the specified mount points.
+          # mount_points = ["/"]
+          ## Ignore mount points by filesystem type.
+          ignore_fs = ["tmpfs", "devtmpfs", "devfs", "overlay", "aufs", "squashfs"]
+        [[inputs.diskio]]
+        [[inputs.mem]]
+        [[inputs.net]]
+        [[inputs.processes]]
+        [[inputs.swap]]
+        [[inputs.system]]
+
+        [[inputs.exec]]
+          commands = ["/opt/vc/bin/vcgencmd measure_temp"]
+          name_override = "gpu_temperature"
+          data_format = "grok"
+          grok_patterns = ["%{NUMBER:value:float}"]
+
+        [[inputs.temp]]
+    description: rpi monitoring
+    name: rpi

@@ -21,21 +21,21 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
 
 ## Included Resources
 
-    - 1 Telegraf Configuration: 'mssql-config'
-    - 1 Dashboards: 'MSSQL'
-    - 1 Label: 'mssql'
-    - 1 Bucket: 'mssql'
-    - 1 Variable: 'mssqlType'
+  - 1 Telegraf Configuration: 'mssql-config'
+  - 1 Dashboards: 'MSSQL'
+  - 1 Label: 'mssql'
+  - 1 Bucket: 'mssql'
+  - 1 Variable: 'mssqlType'
 
 ## Setup Instructions
 
 General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
 
-    Telegraf Configuration requires the following environment variables
-    - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your operator token to get started.
-    - `INFLUX_ORG` - The name of your Organization.
-    - `INFLUX_HOST` - The address of you InfluxDB
-    - `INFLUX_BUCKET` - The name of the Bucket. If you going to use the bucket included, you need to export the variable. Ex: ```INFLUX_BUCKET=mssql```
+Telegraf Configuration requires the following environment variables
+  - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your operator token to get started.
+  - `INFLUX_ORG` - The name of your Organization.
+  - `INFLUX_HOST` - The address of you InfluxDB
+  - `INFLUX_BUCKET` - The name of the Bucket. If you going to use the bucket included, you need to export the variable. Ex: ```INFLUX_BUCKET=mssql```
 
 ## Additional Instructions For Azure DB
 
