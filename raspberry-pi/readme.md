@@ -22,7 +22,7 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
 
 ## Included Resources
 
-- 1 Bucket: `telegraf`, 7d retention
+- 1 Bucket: `rasp-pi`, 7d retention
 - Labels: `raspberry-pi` + Telegraf Plugin Labels
 - 1 Telegraf Configuration
 - 1 Dashboard: `Raspberry Pi System`
