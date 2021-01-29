@@ -13,7 +13,7 @@ metadata:
 spec:
     color: '#E30B5D'
     name: raspberry-pi
----
+---      
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
@@ -50,6 +50,20 @@ spec:
         v1.measurementTagValues(bucket: v.bucket, measurement: "cpu", tag: "host")
     type: query
 ---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+  name: heuristic-sinoussi-d7d017
+spec:
+  associations:
+      associations:
+      - kind: Label
+        name: tender-wu-ecc001
+  name: rasp-pi
+  retentionRules:
+    - everySeconds: 604800
+      type: expire
+---      
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
@@ -504,7 +518,7 @@ spec:
           ## Organization is the name of the organization you wish to write to; must exist.
           organization = "$INFLUX_ORG"
           ## Destination bucket to write into.
-          bucket = "$INFLUX_BUCKET"
+          bucket = "rasp-pi"
         [[inputs.cpu]]
           ## Whether to report per-cpu stats or not
           percpu = true
