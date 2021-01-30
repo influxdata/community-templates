@@ -44,27 +44,28 @@ General instructions on using InfluxDB Templates can be found in the [use a temp
     
   You may need to logout/log back in for this to take effect.  If running Ubuntu on Raspberry Pi 400, a reboot may be necessary.
   
-- Check the location of `vcgencmd` on your Raspberry Pi using
+- You may need to modify the telegraf configuration to reflect the location of your `vcgencmd`.  Currently, the telegraf configuration is set for
+  Ubuntu (Groovy Gorilla):
+  
+    ```
+    [[inputs.exec]]
+      commands = ["/usr/bin/vcgencmd measure_temp"]
+      name_override = "temperature_gpu"
+      data_format = "grok"
+      grok_patterns = ["%{NUMBER:value:float}"]
+    ```
+  
+  You can check the location of `vcgencmd` on your Raspberry Pi using:
     
     ```sh
     which vcgencmd
     ```
-  You may need to change the telegraf configuration to reflect the location of your `vcgencmd`.  Currently, the telegraf configuration is set for
-  Ubuntu (Groovy Gorilla):
   
-  ```
-  [[inputs.exec]]
-  commands = ["/usr/bin/vcgencmd measure_temp"]
-  name_override = "temperature_gpu"
-  data_format = "grok"
-  grok_patterns = ["%{NUMBER:value:float}"]
-  ```
+  Typically on Raspberry Pi OS, the `commands` line should be :
   
-  On Raspberry Pi OS, modify the `commands` line to:
-  
-  ```
-  commands = ["/opt/vc/bin/vcgencmd measure_temp"]
-  ```  
+    ```
+    commands = ["/opt/vc/bin/vcgencmd measure_temp"]
+    ```  
   
 Telegraf configuration requires the following environment variables:
 
