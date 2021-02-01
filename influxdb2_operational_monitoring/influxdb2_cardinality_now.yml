@@ -1,19 +1,39 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: kind-spence-53b001
+    name: admiring-ardinghelli-4ae001
 spec:
     color: '#fafafc'
     name: cardinality
 ---
 apiVersion: influxdata.com/v2alpha1
-kind: Variable
+kind: Task
 metadata:
-    name: amazing-boyd-93b003
+    name: ridiculous-elion-cae001
 spec:
     associations:
       - kind: Label
-        name: kind-spence-53b001
+        name: admiring-ardinghelli-4ae001
+    every: 1d
+    name: 'Cardinality Alert '
+    offset: 20m0s
+    query: "import \"influxdata/influxdb\"\nimport \"slack\"\n\n\nalert = (givenCard)
+        => if givenCard >= 1 then \n() => slack.message(\nurl: \"https://hooks.slack.com/services/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\",\nchannel:
+        \"#team-compute\",\ntext: \"TEST: Cardinality at \\\"${string(v: givenCard)}\\\"!\",\ncolor:
+        \"danger\",\n)\nelse \n() => 0\n\nbuckets()\n    |> map(fn: (r) => {\ncards
+        = influxdb.cardinality(start: -1d, bucket: r.name)\n            |> findRecord(idx:
+        0, fn: (key) => (true))\nresult = alert(givenCard:cards._value)\n        return{\nr
+        with card:cards._value,\nsent: result()\n}\n})"
+    status: active
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: infallible-hellman-cae005
+spec:
+    associations:
+      - kind: Label
+        name: admiring-ardinghelli-4ae001
     language: flux
     name: bucket
     query: |-
@@ -26,11 +46,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: blissful-morse-53b003
+    name: victorious-hertz-cae009
 spec:
     associations:
       - kind: Label
-        name: kind-spence-53b001
+        name: admiring-ardinghelli-4ae001
     language: flux
     name: measurement
     query: |-
@@ -42,11 +62,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: nostalgic-einstein-13b001
+    name: terrifying-dubinsky-4ae001
 spec:
     associations:
       - kind: Label
-        name: kind-spence-53b001
+        name: admiring-ardinghelli-4ae001
     charts:
       - axes:
           - base: "10"
@@ -69,7 +89,7 @@ spec:
             name: Nineteen Eighty Four
             type: scale
         geom: line
-        height: 3
+        height: 4
         hoverDimension: auto
         kind: Xy
         legendOpacity: 1
@@ -155,7 +175,7 @@ spec:
             verticalTimeAxis: true
         timeFormat: YYYY-MM-DD HH:mm:ss
         width: 12
-        yPos: 3
+        yPos: 4
       - colors:
           - hex: '#ffffff'
             id: base
@@ -194,7 +214,7 @@ spec:
             verticalTimeAxis: true
         timeFormat: YYYY-MM-DD HH:mm:ss
         width: 12
-        yPos: 7
+        yPos: 8
       - colors:
           - hex: '#ffffff'
             id: base
@@ -234,5 +254,5 @@ spec:
             verticalTimeAxis: true
         timeFormat: YYYY-MM-DD HH:mm:ss
         width: 12
-        yPos: 10
+        yPos: 11
     name: Cardinality Now
