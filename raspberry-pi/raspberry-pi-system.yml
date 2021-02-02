@@ -55,7 +55,6 @@ kind: Bucket
 metadata:
   name: heuristic-sinoussi-d7d017
 spec:
-  associations:
       associations:
       - kind: Label
         name: tender-wu-ecc001
@@ -223,7 +222,7 @@ spec:
                 from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["host"] == v.linux_host)
-                  |> filter(fn: (r) => r["_measurement"] == "gpu_temperature")
+                  |> filter(fn: (r) => r["_measurement"] == "temperature_gpu")
                   |> filter(fn: (r) => r["_field"] == "value")
                   |> last()
                   |> yield(name: "last")
@@ -542,8 +541,8 @@ spec:
         [[inputs.system]]
 
         [[inputs.exec]]
-          commands = ["/opt/vc/bin/vcgencmd measure_temp"]
-          name_override = "gpu_temperature"
+          commands = ["/usr/bin/vcgencmd measure_temp"]
+          name_override = "temperature_gpu"
           data_format = "grok"
           grok_patterns = ["%{NUMBER:value:float}"]
 
