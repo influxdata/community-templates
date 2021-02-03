@@ -539,13 +539,11 @@ spec:
         [[inputs.processes]]
         [[inputs.swap]]
         [[inputs.system]]
-
         [[inputs.exec]]
           commands = ["/usr/bin/vcgencmd measure_temp"]
           name_override = "temperature_gpu"
           data_format = "grok"
           grok_patterns = ["%{NUMBER:value:float}"]
-
         [[inputs.temp]]
     description: rpi monitoring
     name: rpi
