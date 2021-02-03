@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: sad-liskov-90e001
+    name: determined-torvalds-b69001
 spec:
     color: '#fafafc'
     name: cardinality
@@ -9,11 +9,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Task
 metadata:
-    name: objective-lalande-90e001
+    name: unruffled-sinoussi-769001
 spec:
     associations:
       - kind: Label
-        name: sad-liskov-90e001
+        name: determined-torvalds-b69001
     every: 1d
     name: 'Cardinality Alert '
     offset: 20m0s
@@ -27,11 +27,11 @@ spec:
         slackChannel = "##"
         cardinalityThreshold = 1000000
         alert = (bucketCard, bucketName) =>
-        	(if givenCard >= cardinalityThreshold then () =>
+        	(if bucketCard >= cardinalityThreshold then () =>
         		(slack.message(
         			url: slackWebhook,
         			channel: slackChannel,
-        			text: "${bucketName} cardinality at ${string(v: givenCard)}!",
+        			text: "${bucketName} cardinality at ${string(v: bucketCard)}!",
         			color: "warning",
         		)) else () =>
         		(0))
@@ -50,11 +50,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: competent-lovelace-90e009
+    name: admiring-fermat-b69007
 spec:
     associations:
       - kind: Label
-        name: sad-liskov-90e001
+        name: determined-torvalds-b69001
     language: flux
     name: measurement
     query: |-
@@ -66,11 +66,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: toasty-franklin-90e005
+    name: vivid-aryabhata-b69003
 spec:
     associations:
       - kind: Label
-        name: sad-liskov-90e001
+        name: determined-torvalds-b69001
     language: flux
     name: bucket
     query: |-
@@ -83,11 +83,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: hungry-easley-10e001
+    name: elated-mirzakhani-f69001
 spec:
     associations:
       - kind: Label
-        name: sad-liskov-90e001
+        name: determined-torvalds-b69001
     charts:
       - axes:
           - base: "10"
