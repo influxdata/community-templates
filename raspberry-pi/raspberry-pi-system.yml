@@ -56,10 +56,7 @@ metadata:
     name: rasp-pi
 spec:
     name: rasp-pi
-    associations:
-      - kind: Label
-        name: tender-wu-ecc001
-  retentionRules:
+    retentionRules:
     - everySeconds: 604800
       type: expire
 ---      
