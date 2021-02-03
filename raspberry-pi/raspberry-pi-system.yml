@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: eloquent-lovelace-776001
+    name: earning-elbakyan-c9e001
 spec:
     color: '#7A65F2'
     name: Linux System Template
@@ -9,21 +9,51 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: tender-wu-ecc001
+    name: flamboyant-engelbart-c9e003
 spec:
     color: '#E30B5D'
     name: raspberry-pi
----      
+---
 apiVersion: influxdata.com/v2alpha1
-kind: Variable
+kind: Bucket
 metadata:
-    name: gifted-chatterjee-776004
+    name: realistic-shtern-c9e007
 spec:
     associations:
       - kind: Label
-        name: eloquent-lovelace-776001
+        name: flamboyant-engelbart-c9e003
+    name: rasp-pi
+    retentionRules:
+      - everySeconds: 604800
+        type: expire
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: jovial-yonath-c9e00d
+spec:
+    associations:
       - kind: Label
-        name: tender-wu-ecc001
+        name: earning-elbakyan-c9e001
+      - kind: Label
+        name: flamboyant-engelbart-c9e003
+    language: flux
+    name: linux_host
+    query: |-
+        import "influxdata/influxdb/v1"
+        v1.measurementTagValues(bucket: v.bucket, measurement: "cpu", tag: "host")
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: upbeat-euler-c9e013
+spec:
+    associations:
+      - kind: Label
+        name: earning-elbakyan-c9e001
+      - kind: Label
+        name: flamboyant-engelbart-c9e003
     language: flux
     name: bucket
     query: |-
@@ -34,40 +64,13 @@ spec:
     type: query
 ---
 apiVersion: influxdata.com/v2alpha1
-kind: Variable
-metadata:
-    name: trusting-carson-b76004
-spec:
-    associations:
-      - kind: Label
-        name: eloquent-lovelace-776001
-      - kind: Label
-        name: tender-wu-ecc001
-    language: flux
-    name: linux_host
-    query: |-
-        import "influxdata/influxdb/v1"
-        v1.measurementTagValues(bucket: v.bucket, measurement: "cpu", tag: "host")
-    type: query
----
-apiVersion: influxdata.com/v2alpha1
-kind: Bucket
-metadata:
-    name: rasp-pi
-spec:
-    name: rasp-pi
-    retentionRules:
-    - everySeconds: 604800
-      type: expire
----      
-apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: objective-booth-2cc001
+    name: admiring-lichterman-09e001
 spec:
     associations:
       - kind: Label
-        name: tender-wu-ecc001
+        name: flamboyant-engelbart-c9e003
     charts:
       - height: 1
         kind: Markdown
@@ -484,11 +487,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Telegraf
 metadata:
-    name: happy-wing-ecc001
+    name: vivid-shtern-49e003
 spec:
     associations:
       - kind: Label
-        name: tender-wu-ecc001
+        name: flamboyant-engelbart-c9e003
     config: |
         # Configuration for telegraf agent
         [agent]
@@ -536,11 +539,13 @@ spec:
         [[inputs.processes]]
         [[inputs.swap]]
         [[inputs.system]]
+
         [[inputs.exec]]
           commands = ["/usr/bin/vcgencmd measure_temp"]
           name_override = "temperature_gpu"
           data_format = "grok"
           grok_patterns = ["%{NUMBER:value:float}"]
+
         [[inputs.temp]]
     description: rpi monitoring
     name: rpi
