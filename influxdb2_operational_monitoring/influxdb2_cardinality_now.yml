@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: admiring-ardinghelli-4ae001
+    name: sad-liskov-90e001
 spec:
     color: '#fafafc'
     name: cardinality
@@ -9,31 +9,68 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Task
 metadata:
-    name: ridiculous-elion-cae001
+    name: objective-lalande-90e001
 spec:
     associations:
       - kind: Label
-        name: admiring-ardinghelli-4ae001
+        name: sad-liskov-90e001
     every: 1d
     name: 'Cardinality Alert '
     offset: 20m0s
-    query: "import \"influxdata/influxdb\"\nimport \"slack\"\n\n\nalert = (givenCard)
-        => if givenCard >= 1 then \n() => slack.message(\nurl: \"https://hooks.slack.com/services/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\",\nchannel:
-        \"#team-compute\",\ntext: \"TEST: Cardinality at \\\"${string(v: givenCard)}\\\"!\",\ncolor:
-        \"danger\",\n)\nelse \n() => 0\n\nbuckets()\n    |> map(fn: (r) => {\ncards
-        = influxdb.cardinality(start: -1d, bucket: r.name)\n            |> findRecord(idx:
-        0, fn: (key) => (true))\nresult = alert(givenCard:cards._value)\n        return{\nr
-        with card:cards._value,\nsent: result()\n}\n})"
-    status: active
+    query: |-
+        import "influxdata/influxdb"
+        import "slack"
+
+
+
+        slackWebhook = "https://hooks.slack.com/services/XXXX/XXXX/XXXXX"
+        slackChannel = "##"
+        cardinalityThreshold = 1000000
+        alert = (bucketCard, bucketName) =>
+        	(if givenCard >= cardinalityThreshold then () =>
+        		(slack.message(
+        			url: slackWebhook,
+        			channel: slackChannel,
+        			text: "${bucketName} cardinality at ${string(v: givenCard)}!",
+        			color: "warning",
+        		)) else () =>
+        		(0))
+
+        buckets()
+        	|> map(fn: (r) => {
+        		cards = influxdb.cardinality(start: -1d, bucket: r.name)
+        			|> findRecord(idx: 0, fn: (key) =>
+        				(true))
+        		result = alert(bucketCard: cards._value, bucketName: r.name)
+
+        		return {r with card: cards._value, sent: result()}
+        	})
+    status: inactive
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: infallible-hellman-cae005
+    name: competent-lovelace-90e009
 spec:
     associations:
       - kind: Label
-        name: admiring-ardinghelli-4ae001
+        name: sad-liskov-90e001
+    language: flux
+    name: measurement
+    query: |-
+        import "influxdata/influxdb/v1"
+
+        v1.measurements(bucket: v.bucket)
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: toasty-franklin-90e005
+spec:
+    associations:
+      - kind: Label
+        name: sad-liskov-90e001
     language: flux
     name: bucket
     query: |-
@@ -44,29 +81,13 @@ spec:
     type: query
 ---
 apiVersion: influxdata.com/v2alpha1
-kind: Variable
-metadata:
-    name: victorious-hertz-cae009
-spec:
-    associations:
-      - kind: Label
-        name: admiring-ardinghelli-4ae001
-    language: flux
-    name: measurement
-    query: |-
-        import "influxdata/influxdb/v1"
-
-        v1.measurements(bucket: v.bucket)
-    type: query
----
-apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: terrifying-dubinsky-4ae001
+    name: hungry-easley-10e001
 spec:
     associations:
       - kind: Label
-        name: admiring-ardinghelli-4ae001
+        name: sad-liskov-90e001
     charts:
       - axes:
           - base: "10"
