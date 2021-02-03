@@ -55,7 +55,7 @@ kind: Bucket
 metadata:
   name: heuristic-sinoussi-d7d017
 spec:
-      associations:
+    associations:
       - kind: Label
         name: tender-wu-ecc001
   name: rasp-pi
