@@ -2,9 +2,13 @@
 
 Provided by: Ignacio Van Droogenbroeck
 
-This template offer a view of your Internet connection Speed.
+This template offers you a view of the speed of your Internet connection.
 
-![Dashboard Screenshot](screenshot.jpg)
+You can view the Ping, Jitter, Download and Upload, current, and historical data. 
+
+This template was updated on 01/11/2020. 
+
+![Dashboard Screenshot](screenshot.png)
 
 ### Quick Install
 
@@ -31,11 +35,11 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
 General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
 
 Telegraf Configuration requires the following environment variables
-  - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your operator token to get started.
+  - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `speedtest` bucket. You can just use your operator token to get started.
   - `INFLUX_ORG` - The name of your Organization.
   - `INFLUX_HOST` - The address of you InfluxDB
 
-In order to use this template, you must install speedtest-cli. If you're using Debian based distributions, you need to run ```sudo apt install speedtest-cli```
+In order to use this template, you must install speedtest. Don't use the package of the repos, install according to [these instructions](https://www.speedtest.net/apps/cli).
 
 ## Contact
 
