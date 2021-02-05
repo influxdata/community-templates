@@ -29,6 +29,7 @@ function writeProcessUsage() {
   // https://nodejs.org/api/process.html#process_process_cpuusage_previousvalue
   writeAPI.writePoint(createPoint('node_cpu_usage', process.cpuUsage()))
   // https://nodejs.org/api/process.html#process_process_resourceusage
+
   // available since node v12.6
   if (process.resourceUsage) {
     writeAPI.writePoint(
