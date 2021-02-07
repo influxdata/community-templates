@@ -202,7 +202,7 @@ spec:
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "exec_speedtest")
                   |> filter(fn: (r) => r["_field"] == "download_bandwidth")
-                  |> map(fn: (r) => ({ r with _value: r._value / 100000.0 }))
+                  |> map(fn: (r) => ({ r with _value: r._value / 125000.0 }))
                   |> yield(name: "last")
         shade: true
         suffix: ' Mb/s'
@@ -236,7 +236,7 @@ spec:
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "exec_speedtest")
                   |> filter(fn: (r) => r["_field"] == "upload_bandwidth")
-                  |> map(fn: (r) => ({ r with _value: r._value / 100000.0 }))
+                  |> map(fn: (r) => ({ r with _value: r._value / 125000.0 }))
                   |> yield(name: "last")
         shade: true
         suffix: ' Mb/s'
@@ -280,7 +280,7 @@ spec:
 
           [[inputs.exec]]
           ## Commands array
-          commands = ["speedtest --format=json-pretty -u Mbps"]
+          commands = ["speedtest --format=json-pretty"]
 
           ## Timeout for each command to complete.
           timeout = "90s"
