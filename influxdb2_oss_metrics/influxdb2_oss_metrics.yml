@@ -29,28 +29,13 @@ kind: Dashboard
 metadata:
     name: influxdb-oss-metrics
 spec:
-    name: InfluxDB OSS Metrics
-    associations:
-      - kind: Label
-        name: influxdb2
-      - kind: Label
-        name: prometheus
     charts:
-      - height: 1
-        kind: Markdown
-        name: Name this Cell
-        note: This Dashboard gives you an overview of some of the metrics that are
-            available from the Local Metrics endpoint located at `/metrics`. Check
-            out our [documentation page for configuring Scrapers](https://v2.docs.influxdata.com/v2.0/collect-data/scrape-data/manage-scrapers/create-a-scraper/)
-            if you don't see any data below.
-        queries: null
-        width: 12
       - colors:
           - hex: '#00C9FF'
             name: laser
             type: text
         decimalPlaces: 2
-        height: 1
+        height: 2
         kind: Single_Stat
         name: Uptime
         note: This shows the amount of time your current InfluxDB 2 instance has been
@@ -60,38 +45,17 @@ spec:
                 from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "influxdb_uptime_seconds")
+                  |> filter(fn: (r) => r.host == v.oss_host)
                   |> filter(fn: (r) => r._field == "gauge")
                   |> last()
                   |> map(fn: (r) => ({r with _value: float(v: r._value) / 60.0 / 60.0}))
         suffix: ' hrs'
         width: 3
-        yPos: 1
       - colors:
           - hex: '#00C9FF'
             name: laser
             type: text
         decimalPlaces: 0
-        height: 1
-        kind: Single_Stat
-        name: TSM Disk Usage (MB)
-        queries:
-          - query: |-
-                from(bucket: "oss_metrics")
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "storage_tsm_files_disk_bytes")
-                  |> filter(fn: (r) => r._field == "gauge")
-                  |> last()
-                  |> group()
-                  |> sum()
-                  |> map(fn: (r) => ({ r with _value: r._value / 1024.0 / 1024.0 }))
-        suffix: ' MB'
-        width: 3
-        yPos: 2
-      - colors:
-          - hex: '#00C9FF'
-            name: laser
-            type: text
-        decimalPlaces: 2
         height: 1
         kind: Single_Stat
         name: Organizations
@@ -104,11 +68,12 @@ spec:
                 from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "influxdb_organizations_total")
+                  |> filter(fn: (r) => r.host == v.oss_host)
                   |> filter(fn: (r) => r._field == "counter")
                   |> last()
         suffix: ' Orgs'
         width: 3
-        yPos: 3
+        yPos: 2
       - colors:
           - hex: '#00C9FF'
             name: laser
@@ -126,17 +91,18 @@ spec:
                 from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "influxdb_telegrafs_total")
+                  |> filter(fn: (r) => r.host == v.oss_host)
                   |> filter(fn: (r) => r._field == "counter")
                   |> last()
         suffix: ' Telegrafs'
         width: 3
-        yPos: 4
+        yPos: 3
       - axes:
           - base: "10"
-            name: y
+            name: x
             scale: linear
           - base: "10"
-            name: x
+            name: y
             scale: linear
         geom: line
         height: 4
@@ -147,13 +113,14 @@ spec:
                 from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "boltdb_reads_total" or r._measurement == "boltdb_writes_total")
+                  |> filter(fn: (r) => r.host == v.oss_host)
                   |> filter(fn: (r) => r._field == "counter")
                   |> derivative(unit: 1s, nonNegative: true)
                   |> drop(columns: ["_field"])
         width: 12
         xCol: _time
         yCol: _value
-        yPos: 5
+        yPos: 4
       - axes:
           - base: "10"
             name: x
@@ -170,13 +137,12 @@ spec:
                 from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "http_api_requests_total")
+                  |> filter(fn: (r) => r.host == v.oss_host)
                   |> filter(fn: (r) => r.path == "/api/v2/query")
                   |> filter(fn: (r) => r._field == "counter")
                   |> derivative(unit: 1s, nonNegative: true)
         width: 12
-        xCol: _time
-        yCol: _value
-        yPos: 9
+        yPos: 8
       - axes:
           - base: "10"
             name: x
@@ -193,12 +159,13 @@ spec:
                 from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "go_memstats_alloc_bytes_total")
+                  |> filter(fn: (r) => r.host == v.oss_host)
                   |> filter(fn: (r) => r._field == "counter")
                   |> derivative(unit: 1s, nonNegative: true)
         width: 4
         xCol: _time
         yCol: _value
-        yPos: 13
+        yPos: 12
       - colors:
           - hex: '#00C9FF'
             name: laser
@@ -243,7 +210,6 @@ spec:
         timeFormat: YYYY-MM-DD HH:mm:ss
         width: 9
         xPos: 3
-        yPos: 1
       - colors:
           - hex: '#00C9FF'
             name: laser
@@ -260,12 +226,13 @@ spec:
                 from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "influxdb_users_total")
+                  |> filter(fn: (r) => r.host == v.oss_host)
                   |> filter(fn: (r) => r._field == "counter")
                   |> last()
         suffix: ' Users'
         width: 3
         xPos: 3
-        yPos: 3
+        yPos: 2
       - colors:
           - hex: '#00C9FF'
             name: laser
@@ -282,12 +249,13 @@ spec:
                 from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "influxdb_dashboards_total")
+                  |> filter(fn: (r) => r.host == v.oss_host)
                   |> filter(fn: (r) => r._field == "counter")
                   |> last()
         suffix: ' Dashboards'
         width: 3
         xPos: 3
-        yPos: 4
+        yPos: 3
       - axes:
           - base: "10"
             name: x
@@ -301,32 +269,24 @@ spec:
         kind: Xy
         name: Memory Usage (%)
         queries:
-          - query: |-
-                bytes_used = from(bucket: "oss_metrics")
-                  |> range(start: v.timeRangeStart,stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "go_memstats_alloc_bytes")
-                  |> filter(fn: (r) => r._field == "gauge")
-                  |> drop(columns:["_start", "_stop"])
-                  
-                total_bytes = from(bucket: "oss_metrics")
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn:(r) => r._measurement == "go_memstats_sys_bytes")
-                  |> filter(fn:(r) => r._field == "gauge")
-                  |> drop(columns: ["_start", "_stop"])
-
-                join(tables:{key1: bytes_used, key2: total_bytes}, on: ["_time", "_field"],method: "inner")
-                  |> map(fn: (r) => ({
-                    _time: r._time,
-                    _value: (float(v: r._value_key1) / float(v: r._value_key2)) *100.0,
-                    _field: "Memory Usage Percent"
-                  }))
-                  |> yield(name:"percentage")
-
+          - query: "bytes_used = from(bucket: \"oss_metrics\")\n  |> range(start:
+                v.timeRangeStart,stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement
+                == \"go_memstats_alloc_bytes\")\n  |> filter(fn: (r) => r.host ==
+                v.oss_host)\n  |> filter(fn: (r) => r._field == \"gauge\")\n  |> drop(columns:[\"_start\",
+                \"_stop\"])\n  \ntotal_bytes = from(bucket: \"oss_metrics\")\n  |>
+                range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn:(r)
+                => r._measurement == \"go_memstats_sys_bytes\")\n  |> filter(fn: (r)
+                => r.host == v.oss_host)\n  |> filter(fn:(r) => r._field == \"gauge\")\n
+                \ |> drop(columns: [\"_start\", \"_stop\"])\n\njoin(tables:{key1:
+                bytes_used, key2: total_bytes}, on: [\"_time\", \"_field\"],method:
+                \"inner\")\n  |> map(fn: (r) => ({\n    _time: r._time,\n    _value:
+                (float(v: r._value_key1) / float(v: r._value_key2)) *100.0,\n    _field:
+                \"Memory Usage Percent\"\n  }))\n  |> yield(name:\"percentage\")"
         width: 4
         xCol: _time
         xPos: 4
         yCol: _value
-        yPos: 13
+        yPos: 12
       - colors:
           - hex: '#00C9FF'
             name: laser
@@ -345,12 +305,13 @@ spec:
                 from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "influxdb_buckets_total")
+                  |> filter(fn: (r) => r.host == v.oss_host)
                   |> filter(fn: (r) => r._field == "counter")
                   |> last()
         suffix: ' Buckets'
         width: 3
         xPos: 6
-        yPos: 3
+        yPos: 2
       - colors:
           - hex: '#00C9FF'
             name: laser
@@ -367,13 +328,14 @@ spec:
                 from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "influxdb_scrapers_total")
+                  |> filter(fn: (r) => r.host == v.oss_host)
                   |> filter(fn: (r) => r._field == "counter")
                   |> last()
                   |> yield(name: "last")
         suffix: ' Scrapers'
         width: 3
         xPos: 6
-        yPos: 4
+        yPos: 3
       - axes:
           - base: "10"
             name: x
@@ -390,13 +352,14 @@ spec:
                 from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "go_memstats_mallocs_total" or r._measurement == "go_memstats_frees_total")
+                  |> filter(fn: (r) => r.host == v.oss_host)
                   |> filter(fn: (r) => r._field == "counter")
                   |> derivative(unit: 1s, nonNegative: false)
         width: 4
         xCol: _time
         xPos: 8
         yCol: _value
-        yPos: 13
+        yPos: 12
       - colors:
           - hex: '#00C9FF'
             name: laser
@@ -415,12 +378,13 @@ spec:
                 from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "influxdb_tokens_total")
+                  |> filter(fn: (r) => r.host == v.oss_host)
                   |> filter(fn: (r) => r._field == "counter")
                   |> last()
         suffix: ' Tokens'
         width: 3
         xPos: 9
-        yPos: 3
+        yPos: 2
       - colors:
           - hex: '#00C9FF'
             name: laser
@@ -447,6 +411,7 @@ spec:
                 new = from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "task_executor_total_runs_complete")
+                  |> filter(fn: (r) => r.host == v.oss_host)
                   |> filter(fn: (r) => r.status == "success")
                   |> filter(fn: (r) => r.task_type == "system")
                   |> filter(fn: (r) => r._field == "counter")
@@ -456,6 +421,218 @@ spec:
         suffix: ' Runs'
         width: 3
         xPos: 9
-        yPos: 4
+        yPos: 3
     description: A collection of useful visualizations for monitoring your local InfluxDB
         2.0 OSS instance.
+    name: InfluxDB OSS Metrics
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: scrape-influxdb-oss-telegraf
+spec:
+    config: |-
+        # Telegraf Configuration
+        #
+        # Telegraf is entirely plugin driven. All metrics are gathered from the
+        # declared inputs, and sent to the declared outputs.
+        #
+        # Plugins must be declared in here to be active.
+        # To deactivate a plugin, comment out the name and any variables.
+        #
+        # Use 'telegraf -config telegraf.conf -test' to see what metrics a config
+        # file would generate.
+        #
+        # Environment variables can be used anywhere in this config file, simply surround
+        # them with ${}. For strings the variable must be within quotes (ie, "${STR_VAR}"),
+        # for numbers and booleans they should be plain (ie, ${INT_VAR}, ${BOOL_VAR})
+
+
+        # Global tags can be specified here in key="value" format.
+        [global_tags]
+          # dc = "us-east-1" # will tag all metrics with dc=us-east-1
+          # rack = "1a"
+          ## Environment variables can be used as tags, and throughout the config file
+          # user = "$USER"
+
+
+        # Configuration for telegraf agent
+        [agent]
+          ## Default data collection interval for all inputs
+          interval = "10s"
+          ## Rounds collection interval to 'interval'
+          ## ie, if interval="10s" then always collect on :00, :10, :20, etc.
+          round_interval = true
+
+          ## Telegraf will send metrics to outputs in batches of at most
+          ## metric_batch_size metrics.
+          ## This controls the size of writes that Telegraf sends to output plugins.
+          metric_batch_size = 1000
+
+          ## Maximum number of unwritten metrics per output.  Increasing this value
+          ## allows for longer periods of output downtime without dropping metrics at the
+          ## cost of higher maximum memory usage.
+          metric_buffer_limit = 10000
+
+          ## Collection jitter is used to jitter the collection by a random amount.
+          ## Each plugin will sleep for a random time within jitter before collecting.
+          ## This can be used to avoid many plugins querying things like sysfs at the
+          ## same time, which can have a measurable effect on the system.
+          collection_jitter = "0s"
+
+          ## Default flushing interval for all outputs. Maximum flush_interval will be
+          ## flush_interval + flush_jitter
+          flush_interval = "10s"
+          ## Jitter the flush interval by a random amount. This is primarily to avoid
+          ## large write spikes for users running a large number of telegraf instances.
+          ## ie, a jitter of 5s and interval 10s means flushes will happen every 10-15s
+          flush_jitter = "0s"
+
+          ## By default or when set to "0s", precision will be set to the same
+          ## timestamp order as the collection interval, with the maximum being 1s.
+          ##   ie, when interval = "10s", precision will be "1s"
+          ##       when interval = "250ms", precision will be "1ms"
+          ## Precision will NOT be used for service inputs. It is up to each individual
+          ## service input to set the timestamp at the appropriate precision.
+          ## Valid time units are "ns", "us" (or "µs"), "ms", "s".
+          precision = ""
+
+          ## Log at debug level.
+          # debug = false
+          ## Log only error level messages.
+          # quiet = false
+
+          ## Log target controls the destination for logs and can be one of "file",
+          ## "stderr" or, on Windows, "eventlog".  When set to "file", the output file
+          ## is determined by the "logfile" setting.
+          # logtarget = "file"
+
+          ## Name of the file to be logged to when using the "file" logtarget.  If set to
+          ## the empty string then logs are written to stderr.
+          # logfile = ""
+
+          ## The logfile will be rotated after the time interval specified.  When set
+          ## to 0 no time based rotation is performed.  Logs are rotated only when
+          ## written to, if there is no log activity rotation may be delayed.
+          # logfile_rotation_interval = "0d"
+
+          ## The logfile will be rotated when it becomes larger than the specified
+          ## size.  When set to 0 no size based rotation is performed.
+          # logfile_rotation_max_size = "0MB"
+
+          ## Maximum number of rotated archives to keep, any older logs are deleted.
+          ## If set to -1, no archives are removed.
+          # logfile_rotation_max_archives = 5
+
+          ## Override default hostname, if empty use os.Hostname()
+          hostname = ""
+          ## If set to true, do no set the "host" tag in the telegraf agent.
+          omit_hostname = false
+
+
+        ###############################################################################
+        #                            OUTPUT PLUGINS                                   #
+        ###############################################################################
+
+        # # Configuration for sending metrics to InfluxDB
+        [[outputs.influxdb_v2]]
+          ## The URLs of the InfluxDB cluster nodes.
+          ##
+          ## Multiple URLs can be specified for a single cluster, only ONE of the
+          ## urls will be written to each interval.
+          ##   ex: urls = ["https://us-west-2-1.aws.cloud2.influxdata.com"]
+          urls = ["$INFLUX_URL"]
+
+          ## Token for authentication.
+          token = "$INFLUX_CLOUD_TOKEN"
+
+          ## Organization is the name of the organization you wish to write to; must exist.
+          organization = "$INFLUX_ORG"
+
+          ## Destination bucket to write into.
+          bucket = "oss_metrics"
+
+          ## The value of this tag will be used to determine the bucket.  If this
+          ## tag is not set the 'bucket' option is used as the default.
+          # bucket_tag = ""
+
+          ## If true, the bucket tag will not be added to the metric.
+          # exclude_bucket_tag = false
+
+          ## Timeout for HTTP messages.
+          # timeout = "5s"
+
+          ## Additional HTTP headers
+          # http_headers = {"X-Special-Header" = "Special-Value"}
+
+          ## HTTP Proxy override, if unset values the standard proxy environment
+          ## variables are consulted to determine which proxy, if any, should be used.
+          # http_proxy = "http://corporate.proxy:3128"
+
+          ## HTTP User-Agent
+          # user_agent = "telegraf"
+
+          ## Content-Encoding for write request body, can be set to "gzip" to
+          ## compress body or "identity" to apply no encoding.
+          # content_encoding = "gzip"
+
+          ## Enable or disable uint support for writing uints influxdb 2.0.
+          # influx_uint_support = false
+
+          ## Optional TLS Config for use on HTTP connections.
+          # tls_ca = "/etc/telegraf/ca.pem"
+          # tls_cert = "/etc/telegraf/cert.pem"
+          # tls_key = "/etc/telegraf/key.pem"
+          ## Use TLS but skip chain & host verification
+          # insecure_skip_verify = false
+
+
+        ###############################################################################
+        #                            INPUT PLUGINS                                    #
+        ###############################################################################
+
+        # Read metrics from one or many prometheus clients
+        [[inputs.prometheus]]
+          ## An array of urls to scrape metrics from.
+          urls = ["http://localhost:8086/metrics"]
+
+          ## Metric version controls the mapping from Prometheus metrics into
+          ## Telegraf metrics.  When using the prometheus_client output, use the same
+          ## value in both plugins to ensure metrics are round-tripped without
+          ## modification.
+          ##
+          ##   example: metric_version = 1; deprecated in 1.13
+          ##            metric_version = 2; recommended version
+          metric_version = 1
+
+          ## Url tag name (tag containing scrapped url. optional, default is "url")
+          # url_tag = "scrapeUrl"
+
+          ## HTTP Basic Authentication username and password. ('bearer_token' and
+          ## 'bearer_token_string' take priority)
+          # username = ""
+          # password = ""
+
+          ## Specify timeout duration for slower prometheus clients (default is 3s)
+          # response_timeout = "3s"
+
+          ## Optional TLS Config
+          # tls_ca = /path/to/cafile
+          # tls_cert = /path/to/certfile
+          # tls_key = /path/to/keyfile
+          ## Use TLS but skip chain & host verification
+          # insecure_skip_verify = false
+    name: Scrape InfluxDB OSS Metrics
+    description: A Telegraf config that can be used to scrape data from most InfluxDB OSS instances.
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: oss-host-variable
+spec:
+    language: flux
+    name: oss_host
+    query: |-
+        import "influxdata/influxdb/schema"
+        schema.measurementTagValues(bucket: "oss_metrics", measurement: "influxdb_info", tag: "host")
+    type: query
