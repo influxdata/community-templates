@@ -269,19 +269,28 @@ spec:
         kind: Xy
         name: Memory Usage (%)
         queries:
-          - query: "bytes_used = from(bucket: \"oss_metrics\")\n  |> range(start:
-                v.timeRangeStart,stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement
-                == \"go_memstats_alloc_bytes\")\n  |> filter(fn: (r) => r.host ==
-                v.oss_host)\n  |> filter(fn: (r) => r._field == \"gauge\")\n  |> drop(columns:[\"_start\",
-                \"_stop\"])\n  \ntotal_bytes = from(bucket: \"oss_metrics\")\n  |>
-                range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn:(r)
-                => r._measurement == \"go_memstats_sys_bytes\")\n  |> filter(fn: (r)
-                => r.host == v.oss_host)\n  |> filter(fn:(r) => r._field == \"gauge\")\n
-                \ |> drop(columns: [\"_start\", \"_stop\"])\n\njoin(tables:{key1:
-                bytes_used, key2: total_bytes}, on: [\"_time\", \"_field\"],method:
-                \"inner\")\n  |> map(fn: (r) => ({\n    _time: r._time,\n    _value:
-                (float(v: r._value_key1) / float(v: r._value_key2)) *100.0,\n    _field:
-                \"Memory Usage Percent\"\n  }))\n  |> yield(name:\"percentage\")"
+          - query: |-
+                bytes_used = from(bucket: "oss_metrics")
+                  |> range(start:v.timeRangeStart,stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "go_memstats_alloc_bytes")
+                  |> filter(fn: (r) => r.host == v.oss_host)
+                  |> filter(fn: (r) => r._field == "gauge")
+                  |> drop(columns:["_start","_stop"])
+                  
+                total_bytes = from(bucket: "oss_metrics")
+                  |>range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn:(r)=> r._measurement == "go_memstats_sys_bytes")
+                  |> filter(fn: (r)=> r.host == v.oss_host)
+                  |> filter(fn:(r) => r._field == "gauge")
+                  |> drop(columns: ["_start", "_stop"])
+
+                join(tables:{key1:bytes_used, key2: total_bytes}, on: ["_time", "_field"],method:"inner")
+                  |> map(fn: (r) => ({
+                    _time: r._time,
+                    _value:(float(v: r._value_key1) / float(v: r._value_key2)) *100.0,
+                    _field:"Memory Usage Percent"
+                  }))
+                  |> yield(name:"percentage")
         width: 4
         xCol: _time
         xPos: 4
