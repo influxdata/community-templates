@@ -1,19 +1,82 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: kind-spence-53b001
+    name: determined-torvalds-b69001
 spec:
     color: '#fafafc'
     name: cardinality
 ---
 apiVersion: influxdata.com/v2alpha1
-kind: Variable
+kind: Task
 metadata:
-    name: amazing-boyd-93b003
+    name: unruffled-sinoussi-769001
 spec:
     associations:
       - kind: Label
-        name: kind-spence-53b001
+        name: determined-torvalds-b69001
+    every: 1h
+    name: 'Cardinality Alert '
+    offset: 5m0s
+    query: |-
+        import "influxdata/influxdb"
+        import "slack"
+
+        // TODO: create a slack notification endpoint and paste link here
+        //    documentation: https://docs.influxdata.com/influxdb/v2.0/monitor-alert/notification-endpoints/create/
+        slackWebhook = "https://hooks.slack.com/services/XXXX/XXXX/XXXXX"
+
+        // TODO: specify the channel based on the webhook
+        slackChannel = "##"
+
+        // default cardinality
+        cardinalityThreshold = 1000000
+
+
+        alert = (bucketCard, bucketName) =>
+        	(if bucketCard >= cardinalityThreshold then () =>
+        		(slack.message(
+        			url: slackWebhook,
+        			channel: slackChannel,
+        			text: "${bucketName} cardinality at ${string(v: bucketCard)}!",
+        			color: "warning",
+        		)) else () =>
+        		(0))
+
+        buckets()
+        	|> map(fn: (r) => {
+        		cards = influxdb.cardinality(start: -task.every, bucket: r.name)
+        			|> findRecord(idx: 0, fn: (key) =>
+        				(true))
+        		result = alert(bucketCard: cards._value, bucketName: r.name)
+
+        		return {r with card: cards._value, sent: result()}
+        	})
+    status: inactive
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: admiring-fermat-b69007
+spec:
+    associations:
+      - kind: Label
+        name: determined-torvalds-b69001
+    language: flux
+    name: measurement
+    query: |-
+        import "influxdata/influxdb/v1"
+
+        v1.measurements(bucket: v.bucket)
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: vivid-aryabhata-b69003
+spec:
+    associations:
+      - kind: Label
+        name: determined-torvalds-b69001
     language: flux
     name: bucket
     query: |-
@@ -24,29 +87,13 @@ spec:
     type: query
 ---
 apiVersion: influxdata.com/v2alpha1
-kind: Variable
-metadata:
-    name: blissful-morse-53b003
-spec:
-    associations:
-      - kind: Label
-        name: kind-spence-53b001
-    language: flux
-    name: measurement
-    query: |-
-        import "influxdata/influxdb/v1"
-
-        v1.measurements(bucket: v.bucket)
-    type: query
----
-apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: nostalgic-einstein-13b001
+    name: elated-mirzakhani-f69001
 spec:
     associations:
       - kind: Label
-        name: kind-spence-53b001
+        name: determined-torvalds-b69001
     charts:
       - axes:
           - base: "10"
@@ -69,7 +116,7 @@ spec:
             name: Nineteen Eighty Four
             type: scale
         geom: line
-        height: 3
+        height: 4
         hoverDimension: auto
         kind: Xy
         legendOpacity: 1
@@ -155,7 +202,7 @@ spec:
             verticalTimeAxis: true
         timeFormat: YYYY-MM-DD HH:mm:ss
         width: 12
-        yPos: 3
+        yPos: 4
       - colors:
           - hex: '#ffffff'
             id: base
@@ -194,7 +241,7 @@ spec:
             verticalTimeAxis: true
         timeFormat: YYYY-MM-DD HH:mm:ss
         width: 12
-        yPos: 7
+        yPos: 8
       - colors:
           - hex: '#ffffff'
             id: base
@@ -234,5 +281,5 @@ spec:
             verticalTimeAxis: true
         timeFormat: YYYY-MM-DD HH:mm:ss
         width: 12
-        yPos: 10
+        yPos: 11
     name: Cardinality Now
