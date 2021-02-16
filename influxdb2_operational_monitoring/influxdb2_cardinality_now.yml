@@ -44,7 +44,7 @@ spec:
 
         buckets()
         	|> map(fn: (r) => {
-        		cards = influxdb.cardinality(start: -1h, bucket: r.name)
+        		cards = influxdb.cardinality(start: -task.every, bucket: r.name)
         			|> findRecord(idx: 0, fn: (key) =>
         				(true))
         		result = alert(bucketCard: cards._value, bucketName: r.name)
