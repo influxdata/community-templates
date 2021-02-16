@@ -14,18 +14,24 @@ spec:
     associations:
       - kind: Label
         name: determined-torvalds-b69001
-    every: 1d
+    every: 1h
     name: 'Cardinality Alert '
     offset: 20m0s
     query: |-
         import "influxdata/influxdb"
         import "slack"
 
-
-
+        // TODO: create a slack notification endpoint and paste link here
+        //    documentation: https://docs.influxdata.com/influxdb/v2.0/monitor-alert/notification-endpoints/create/
         slackWebhook = "https://hooks.slack.com/services/XXXX/XXXX/XXXXX"
+
+        // TODO: specify the channel based on the webhook
         slackChannel = "##"
+
+        // default cardinality
         cardinalityThreshold = 1000000
+
+
         alert = (bucketCard, bucketName) =>
         	(if bucketCard >= cardinalityThreshold then () =>
         		(slack.message(
@@ -38,7 +44,7 @@ spec:
 
         buckets()
         	|> map(fn: (r) => {
-        		cards = influxdb.cardinality(start: -1d, bucket: r.name)
+        		cards = influxdb.cardinality(start: -1h, bucket: r.name)
         			|> findRecord(idx: 0, fn: (key) =>
         				(true))
         		result = alert(bucketCard: cards._value, bucketName: r.name)
