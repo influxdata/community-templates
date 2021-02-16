@@ -16,7 +16,7 @@ spec:
         name: determined-torvalds-b69001
     every: 1h
     name: 'Cardinality Alert '
-    offset: 20m0s
+    offset: 5m0s
     query: |-
         import "influxdata/influxdb"
         import "slack"
