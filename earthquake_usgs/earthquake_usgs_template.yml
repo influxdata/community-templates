@@ -148,7 +148,7 @@ spec:
         import "dict"
 
         onedayago = strings.trimSuffix(v: string(v: date.truncate(t: experimental.subDuration(d: 1d, from: now()), unit: 1m)), suffix: ".000000000Z")
-        csv_headers_url = "https://idness.s3-us-west-1.amazonaws.com/earthquake_headers.csv"
+        csv_headers_url = "https://raw.githubusercontent.com/influxdata/community-templates/master/earthquake_usgs/earthquake_headers.csv"
         csv_headers = string(v: http.get(url: csv_headers_url).body)
         csv_data_url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=csv&starttime=" + onedayago + "&includedeleted=true&orderby=time-asc"
         csv_data = string(v: http.get(url: csv_data_url).body)

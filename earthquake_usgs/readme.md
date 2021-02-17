@@ -4,9 +4,9 @@ Provided by: Adam Silverman
 
 This InfluxDB template uses the [United States Geological Survey (USGS) web service](https://earthquake.usgs.gov/fdsnws/event/1/) to monitor earthquakes around the world. The dashboard displays earthquakes that can be filtered based on `magnitude`, `location`, `location radius` (km or miles), and `time`.
 
-Feed consumption is performed within an automated task so it is entirely serverless when run within [InfluxDB Cloud](https://www.influxdata.com/products/influxdb-cloud/). [Telegraf](https://www.influxdata.com/time-series-platform/telegraf/), [client libraries](https://docs.influxdata.com/influxdb/cloud/tools/client-libraries/) and the [CLI](https://docs.influxdata.com/influxdb/cloud/tools/clis/) are **not** required. Additional data cleansing and shaping operations are performed using Flux. [[1]](https://www.githubt.com/influxdata/community-templates/tree/master/earthquake_usgs#additional-notes)
+Feed consumption is performed within an automated task so it is entirely serverless when run within [InfluxDB Cloud](https://www.influxdata.com/products/influxdb-cloud/). [Telegraf](https://www.influxdata.com/time-series-platform/telegraf/), [client libraries](https://docs.influxdata.com/influxdb/cloud/tools/client-libraries/) and the [CLI](https://docs.influxdata.com/influxdb/cloud/tools/clis/) are **not** required. Additional data cleansing and shaping operations are performed using Flux. [[1]](https://www.github.com/influxdata/community-templates/tree/master/earthquake_usgs#additional-notes)
 
-Slacks alerts are sent via a task, with customizable options such as separate magnitude thresholds for global and regional earthquakes, time zones, and delayed triggering. Links to the associated USGS earthquake summary and Google Maps pages are listed as well. [[2]](https://www.githubt.com/influxdata/community-templates/tree/master/earthquake_usgs#tasks)
+Slacks alerts are sent via a task, with customizable options such as separate magnitude thresholds for global and regional earthquakes, time zones, and delayed triggering. Links to the associated USGS earthquake summary and Google Maps pages are listed as well. [[2]](https://www.github.com/influxdata/community-templates/tree/master/earthquake_usgs#tasks)
 
 **Dashboard**
 ![Earthquake Monitoring Dashboard](earthquake_monitoring.png)
