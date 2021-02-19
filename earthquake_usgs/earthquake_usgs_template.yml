@@ -75,9 +75,8 @@ spec:
         		(r._measurement == "earthquake_alert_log"))
         	|> group()
         	|> unique()
-        	|> tableFind(fn: (key) =>
-        		(true))
-        	|> getColumn(column: "id")
+          |> findColumn(fn: (key) =>
+            (true), column: "id")
         global = from(bucket: "apis")
         	|> range(start: -30m, stop: alert_delay)
         	|> filter(fn: (r) =>
