@@ -1,15 +1,25 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: burfect-shannon-53e001
+    name: righteous-lichterman-2ea001
 spec:
     color: '#34bb55'
     name: Node.js
 ---
 apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: priceless-jennings-6ea001
+spec:
+    name: iot_center
+    retentionRules:
+      - everySeconds: 2.592e+06
+        type: expire
+---
+apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: naughty-wiles-93e003
+    name: earnest-hugle-6ea005
 spec:
     language: flux
     name: Node_Service
@@ -20,7 +30,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: rustic-dubinsky-93e001
+    name: elastic-leavitt-6ea003
 spec:
     language: flux
     name: Node_Host
@@ -31,7 +41,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: brave-moser-13e001
+    name: heuristic-merkle-aea001
 spec:
     charts:
       - colors:
