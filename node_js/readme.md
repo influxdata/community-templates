@@ -26,10 +26,8 @@ influx apply https://github.com/influxdata/community-templates/tree/master/Node.
 
 This template includes the following:
 
-  - 0 Buckets:
+  - 1 Bucket: `iot_center`
   - 1 Label: `Node.js`
-  - 0 Telegraf Configurations:
-  - 0 Checks: 
   - 1 Dashboards: `Node.js Application Monitoring`
   - 2 Variables: `Node_Service`, and `Node_Host`
 
