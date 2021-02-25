@@ -29,13 +29,16 @@ function writeProcessUsage() {
   // https://nodejs.org/api/process.html#process_process_cpuusage_previousvalue
   writeAPI.writePoint(createPoint('node_cpu_usage', process.cpuUsage()))
   // https://nodejs.org/api/process.html#process_process_resourceusage
-  writeAPI.writePoint(
-    createPoint('node_resource_usage', process.resourceUsage())
-  )
+  // available since node v12.6
+  if (process.resourceUsage) {
+    writeAPI.writePoint(
+      createPoint('node_resource_usage', process.resourceUsage())
+    )
+  }
 }
 // write process usage now and then every 10 seconds
 writeProcessUsage()
-const nodeUsageTimer = setInterval(writeProcessUsage, 10_000).unref()
+const nodeUsageTimer = setInterval(writeProcessUsage, 10000).unref()
 
 // on shutdown
 // - clear reporting of node usage
