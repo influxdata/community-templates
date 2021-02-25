@@ -1,15 +1,25 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: spectacular-yalow-bfb001
+    name: tender-booth-bd5001
 spec:
     color: '#be2ee4'
     name: IoT
 ---
 apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: inspiring-tesla-bd5001
+spec:
+    name: iot_center
+    retentionRules:
+      - everySeconds: 2.592e+06
+        type: expire
+---
+apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: zealous-williams-ffb001
+    name: suspicious-mahavira-fd5001
 spec:
     language: flux
     name: IoT_Device
@@ -20,7 +30,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: upbeat-nightingale-ffb001
+    name: elated-wescoff-7d5001
 spec:
     charts:
       - colors:
