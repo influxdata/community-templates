@@ -25,10 +25,8 @@ influx apply https://github.com/influxdata/community-templates/tree/master/iot_c
 
 This template includes the following:
 
-  - 0 Buckets:
+  - 1 Bucket: `iot_center`
   - 1 Label: `IoT`
-  - 0 Telegraf Configurations:
-  - 0 Checks: 
   - 1 Dashboards: `IoT Center Application Monitoring`
   - 1 Variable: `IoT_Device`
 
