@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-  name: adoring-pasteur-d4d00d
+  name: inputs-net-label
 spec:
   color: '#326BBA'
   name: inputs.net
@@ -9,7 +9,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-  name: agreeing-goldberg-d4d013
+  name: inputs-kernel-label
 spec:
   color: '#326BBA'
   name: inputs.kernel
@@ -17,7 +17,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-  name: dreamy-heyrovsky-d4d011
+  name: inputs-disk-label
 spec:
   color: '#326BBA'
   name: inputs.disk
@@ -25,7 +25,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-  name: elastic-morse-d4d001
+  name: inputs-swap-label
 spec:
   color: '#326BBA'
   name: inputs.swap
@@ -33,7 +33,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-  name: elegant-yonath-d4d015
+  name: inputs-system-label
 spec:
   color: '#326BBA'
   name: inputs.system
@@ -41,7 +41,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-  name: gallant-sanderson-d4d003
+  name: inputs-processes-label
 spec:
   color: '#326BBA'
   name: inputs.processes
@@ -49,7 +49,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-  name: goofy-yalow-d4d005
+  name: inputs-diskio-label
 spec:
   color: '#326BBA'
   name: inputs.diskio
@@ -57,7 +57,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-  name: inspiring-goodall-d4d00b
+  name: inputs-docker-label
 spec:
   color: '#326BBA'
   name: inputs.docker
@@ -65,7 +65,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-  name: nice-kilby-d4d009
+  name: outputs-influxdbv2-label
 spec:
   color: '#108174'
   name: outputs.influxdb_v2
@@ -73,7 +73,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-  name: unruffled-benz-d4d007
+  name: inputs-cpu-label
 spec:
   color: '#326BBA'
   name: inputs.cpu
@@ -81,7 +81,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-  name: vigilant-chatelet-d4d00f
+  name: inputs-mem-label
 spec:
   color: '#326BBA'
   name: inputs.mem
@@ -89,7 +89,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Bucket
 metadata:
-  name: heuristic-sinoussi-d4d017
+  name: docker-bucket
 spec:
   name: docker
   retentionRules:
@@ -99,7 +99,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: CheckThreshold
 metadata:
-  name: crumbling-meitner-14d002
+  name: container-mem-usage-pct-check
 spec:
   description: Container mem usage is above 80% for 15 minutes
   every: 15m0s
@@ -128,7 +128,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: CheckThreshold
 metadata:
-  name: ecstatic-mendeleev-d4d01b
+  name: container-disk-usage-check
 spec:
   description: Container disk usage is above 80%
   every: 15m0s
@@ -156,7 +156,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: CheckThreshold
 metadata:
-  name: frosty-greider-14d004
+  name: container-non-zero-exit-check
 spec:
   description: Container exits with a non zero exit status
   every: 5m0s
@@ -180,7 +180,7 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: CheckThreshold
 metadata:
-  name: gracious-bose-14d000
+  name: container-cpu-usage-pct-check
 spec:
   description: Container cpu usage is above 80% for 15 minutes
   every: 15m0s
@@ -207,38 +207,15 @@ spec:
       value: 80
 ---
 apiVersion: influxdata.com/v2alpha1
-kind: NotificationEndpointHTTP
-metadata:
-  name: earnest-ishizaka-14d006
-spec:
-  method: POST
-  name: HTTP POST
-  status: active
-  type: none
-  url: http://localhost:25378/alert
----
-apiVersion: influxdata.com/v2alpha1
-kind: NotificationRule
-metadata:
-  name: gifted-haslett-14d008
-spec:
-  endpointName: earnest-ishizaka-14d006
-  every: 5m0s
-  name: Crit Notifier
-  statusRules:
-    - currentLevel: CRIT
-      previousLevel: OK
----
-apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-  name: earning-boyd-94d001
+  name: docker-dashboard
 spec:
   associations:
     - kind: Label
-      name: inspiring-goodall-d4d00b
+      name: inputs-docker-label
     - kind: Label
-      name: elegant-yonath-d4d015
+      name: inputs-system-label
   charts:
     - height: 1
       kind: Markdown
@@ -705,31 +682,31 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Telegraf
 metadata:
-  name: lucid-goodall-d4d017
+  name: docker-monitoring-telegraf
 spec:
   associations:
     - kind: Label
-      name: agreeing-goldberg-d4d013
+      name: inputs-kernel-label
     - kind: Label
-      name: vigilant-chatelet-d4d00f
+      name: inputs-mem-label
     - kind: Label
-      name: elastic-morse-d4d001
+      name: inputs-swap-label
     - kind: Label
-      name: gallant-sanderson-d4d003
+      name: inputs-processes-label
     - kind: Label
-      name: goofy-yalow-d4d005
+      name: inputs-diskio-label
     - kind: Label
-      name: unruffled-benz-d4d007
+      name: inputs-cpu-label
     - kind: Label
-      name: adoring-pasteur-d4d00d
+      name: inputs-net-label
     - kind: Label
-      name: dreamy-heyrovsky-d4d011
+      name: inputs-disk-label
     - kind: Label
-      name: inspiring-goodall-d4d00b
+      name: inputs-docker-label
     - kind: Label
-      name: elegant-yonath-d4d015
+      name: inputs-system-label
     - kind: Label
-      name: nice-kilby-d4d009
+      name: outputs-influxdbv2-label
   config: |
     # Global tags can be specified here in key="value" format.
     [global_tags]
