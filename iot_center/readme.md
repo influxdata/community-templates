@@ -2,7 +2,7 @@
 
 Provided by: [bonitoo.io](.)
 
-This template provides a dashboard for [IoT Center](https://github.com/bonitoo-io/iot-center-v2) demo application.
+This template provides a dashboard for [IoT Center](https://github.com/bonitoo-io/iot-center-v2) dev demo application.
   
 ### Dashboard example
 
