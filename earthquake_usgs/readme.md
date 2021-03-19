@@ -11,9 +11,12 @@ Slacks alerts are sent via a task, with customizable options such as separate ma
 **Dashboard**
 ![Earthquake Monitoring Dashboard](earthquake_monitoring.png)
 
-### Installation
+### Quick Install
+
+#### InfluxDB UI
 In the InfluxDB UI, go to Settings->Templates and enter this URL: https://raw.githubusercontent.com/influxdata/community-templates/master/earthquake_usgs/earthquake_usgs_template.yml
 
+#### Influx CLI
 Although the CLI is not required, if you have your InfluxDB credentials
 [configured in the CLI](https://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/),
 you can install this template with:
@@ -28,6 +31,15 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
   - 2 Tasks: `Earthquake Feed Ingestion`, `Earthquake Alerts`
   - 1 Dashboard: `Earthquake Command Center`
   - 4 Variables: `Magnitude_Threshold`, `Location`, `Radius`, and `Units`
+
+## Setup Instructions
+General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
+
+The `Earthquake Alerts` task is disabled by default since it requires a valid [Slack webhook](https://api.slack.com/messaging/webhooks) to send alerts.
+Edit the task to update the webhook:
+```
+slack_webhook = https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX
+```
 
 ## Customizations
 ### Dashboard
@@ -55,13 +67,7 @@ globe_dictionary = dict.fromList(pairs: [
 From [USGS FAQ](https://www.usgs.gov/faqs/why-earthquake-was-reportedrecorded-network-x-or-i-felt-not-latest-earthquakes-maplist): "earthquakes smaller than 5.0 outside the U.S. [may not be recorded] unless they have caused significant damage or are widely felt (earthquakes this small rarely cause significant damage)"
 
 ### Tasks
-The `Earthquake Alerts` task is disabled by default since it requires a valid [Slack webhook](https://api.slack.com/messaging/webhooks) to send alerts.
-Edit the task to update the webhook:
-```
-slack_webhook = https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX
-```
-
-Additional options may be configured as well:
+Task options may be configured as well:
 
 - `global_mag_threshold`
     - Default: `6`
