@@ -1,0 +1,774 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: hardcore-jemison-7aa001
+spec:
+    color: '#FFE480'
+    name: mssql
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: ridiculous-johnson-3aa001
+spec:
+    name: AzureSQLDB
+    retentionRules:
+      - everySeconds: 86400
+        type: expire
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: stubborn-nobel-3aa005
+spec:
+    associations:
+      - kind: Label
+        name: hardcore-jemison-7aa001
+    language: flux
+    name: SQL_Instance
+    query: "import \"influxdata/influxdb/v1\"\r\nv1.tagValues(bucket: \"AzureSQLDB\",
+        tag: \"sql_instance\")"
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: tasty-curie-3aa001
+spec:
+    charts:
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: DTU limit
+        queries:
+          - query: |-
+                from(bucket: "AzureSQLDB")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_azure_db_resource_stats")
+                  |> filter(fn: (r) => r["sql_instance"] == v.SQL_Instance)
+                  |> filter(fn: (r) => r["_field"] == "dtu_limit")
+                  |> last()
+        width: 2
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '# SQL Activity'
+        width: 12
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: SQL Server Activity
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "AzureSQLDB")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_performance")
+                  |> filter(fn: (r) => r["sql_instance"] == v.SQL_Instance)
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> filter(fn: (r) => r["counter"] == "SQL Compilations/sec" or r["counter"] == "SQL Re-Compilations/sec" or r["counter"] == "User Connections" or r["counter"] == "Batch Requests/sec" or r["counter"] == "Logouts/sec" or r["counter"] == "Logins/sec" or r["counter"] == "Processes blocked")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Database Activity
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "AzureSQLDB")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_performance")
+                  |> filter(fn: (r) => r["sql_instance"] == v.SQL_Instance)
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> filter(fn: (r) => r["counter"] == "Transactions/sec" or r["counter"] == "Write Transactions/sec" or r["counter"] == "Log Flush Wait Time" or r["counter"] == "Log Flushes/sec" or r["counter"] == "Lock Timeouts/sec" or r["counter"] == "Number of Deadlocks/sec" or r["counter"] == "Lock Waits/sec" or r["counter"] == "Latch Waits/sec")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Waiting Tasks
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "AzureSQLDB")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_azuredb_waitstats")
+                  |> filter(fn: (r) => r["sql_instance"] == v.SQL_Instance)
+                  |> filter(fn: (r) => r["_field"] == "waiting_tasks_count")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 7
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '# Database IO Stats'
+        width: 12
+        yPos: 9
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Wait Types (ms)
+        position: overlaid
+        queries:
+          - query: "from(bucket: \"AzureSQLDB\")\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"sqlserver_azuredb_waitstats\")\n  |> filter(fn: (r) => r[\"sql_instance\"]
+                == v.SQL_Instance)  \n  |> filter(fn: (r) => r[\"_field\"] == \"wait_time_ms\")\n
+                \ |> derivative(unit: v.windowPeriod, nonNegative: false)\n  |> yield(name:
+                \"derivative\")"
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 10
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Read Bytes
+        position: overlaid
+        queries:
+          - query: "from(bucket: \"AzureSQLDB\")\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"sqlserver_database_io\")\n  |> filter(fn: (r) => r[\"sql_instance\"]
+                == v.SQL_Instance)  \n  |> filter(fn: (r) => r[\"_field\"] == \"read_bytes\")\n
+                \ |> derivative(unit: v.windowPeriod, nonNegative: false)\n  |> yield(name:
+                \"derivative\")"
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 12
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Read latency [ms]
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "AzureSQLDB")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_database_io")
+                  |> filter(fn: (r) => r["sql_instance"] == v.SQL_Instance)
+                  |> filter(fn: (r) => r["_field"] == "read_latency_ms" or r["_field"] == "rg_read_stall_ms")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 14
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+            suffix: '%'
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#FD7A5D'
+            id: 4941f7b6-ceb3-4bc9-843c-0654fd76baed
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: aeb36b75-2583-4468-a7bc-c74976ea7e4e
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: 6e5deea9-e174-4812-8ee4-20dccfbab078
+            name: Delorean
+            type: scale
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat_Plus_Line
+        name: Total CPU % Usage
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "AzureSQLDB")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_performance")
+                  |> filter(fn: (r) => r["sql_instance"] == v.SQL_Instance)
+                  |> filter(fn: (r) => r["object"] =~ /Resource Pool Stats$/)
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> filter(fn: (r) => r["counter"] == "CPU usage %")
+                  |> group(columns: ["_time"])
+                  |> sum()
+                  |> group(columns: ["_value", "_time"], mode: "except")
+        suffix: '%'
+        width: 2
+        xCol: _time
+        xPos: 2
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+          - hex: '#FD7A5D'
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            name: Delorean
+            type: scale
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat_Plus_Line
+        name: Data File Size
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "AzureSQLDB")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_performance")
+                  |> filter(fn: (r) => r["sql_instance"] == v.SQL_Instance)
+                  |> filter(fn: (r) => r["counter"] == "Data File(s) Size (KB)")
+                  |> map(fn: (r) => ({r with _value: r._value / 100024.00}))
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        suffix: GB
+        width: 2
+        xCol: _time
+        xPos: 4
+        yCol: _value
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Target Server Memory
+        queries:
+          - query: |-
+                from(bucket: "AzureSQLDB")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_performance")
+                  |> filter(fn: (r) => r["sql_instance"] == v.SQL_Instance)
+                  |> filter(fn: (r) => r["counter"] == "Target Server Memory (KB)")
+                  |> last()
+                  |> map(fn: (r) => ({r with _value: r._value / 1024.00}))
+        suffix: ' GB'
+        width: 2
+        xPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Memory Manager
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "AzureSQLDB")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_memory_clerks")
+                  |> filter(fn: (r) => r["sql_instance"] == v.SQL_Instance)
+                  |> filter(fn: (r) => r["_field"] == "size_kb")
+                  |> filter(fn: (r) => r["database_name"] == "master")
+                  |> derivative(unit: v.windowPeriod, nonNegative: true)
+                  |> yield(name: "nonnegative derivative")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Data File(s) Size (KB)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "AzureSQLDB")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_performance")
+                  |> filter(fn: (r) => r["sql_instance"] == v.SQL_Instance)
+                  |> filter(fn: (r) => r["counter"] == "Data File(s) Size (KB)")
+                  |> filter(fn: (r) => r["instance"] == "master" or r["instance"] == "model" or r["instance"] == "msdb" or r["instance"] == "mssqlsystemresource" or r["instance"] == "tempdb")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last)
+                  |> yield(name: "last")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Log File Size (KB)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "AzureSQLDB")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_performance")
+                  |> filter(fn: (r) => r["sql_instance"] == v.SQL_Instance)
+                  |> filter(fn: (r) => r["counter"] == "Log File(s) Size (KB)")
+                  |> filter(fn: (r) => r["instance"] == "master" or r["instance"] == "model" or r["instance"] == "msdb" or r["instance"] == "mssqlsystemresource" or r["instance"] == "tempdb")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 7
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Buffer Cache - Disk
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "AzureSQLDB")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_performance")
+                  |> filter(fn: (r) => r["sql_instance"] == v.SQL_Instance)
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> filter(fn: (r) => r["counter"] == "Full Scans/sec" or r["counter"] == "Index Searches/sec" or r["counter"] == "Page Splits/sec" or r["counter"] == "Page lookups/sec" or r["counter"] == "Page reads/sec" or r["counter"] == "Page writes/sec" or r["counter"] == "Readahead pages/sec" or r["counter"] == "Lazy writes/sec" or r["counter"] == "Checkpoint pages/sec")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 10
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Write Bytes
+        position: overlaid
+        queries:
+          - query: "from(bucket: \"AzureSQLDB\")\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"sqlserver_database_io\")\n  |> filter(fn: (r) => r[\"sql_instance\"]
+                == v.SQL_Instance)  \n  |> filter(fn: (r) => r[\"_field\"] == \"write_bytes\"
+                or r[\"_field\"] == \"writes\")\n  |> derivative(unit: v.windowPeriod,
+                nonNegative: false)\n  |> yield(name: \"derivative\")"
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 12
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        kind: Xy
+        name: Write Latency (ms)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "AzureSQLDB")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_database_io")
+                  |> filter(fn: (r) => r["sql_instance"] == v.SQL_Instance)
+                  |> filter(fn: (r) => r["_field"] == "write_latency_ms" or r["_field"] == "rg_write_stall_ms")
+                  |> derivative(unit: v.windowPeriod, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 14
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Used Memory
+        queries:
+          - query: |-
+                from(bucket: "AzureSQLDB")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_performance")
+                  |> filter(fn: (r) => r["sql_instance"] == v.SQL_Instance)
+                  |> filter(fn: (r) => r["counter"] == "Used memory (KB)")
+                  |> last()
+                  |> map(fn: (r) => ({r with _value: r._value / 100024.00}))
+        suffix: ' GB'
+        width: 2
+        xPos: 8
+      - colors:
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: User Connections
+        queries:
+          - query: |-
+                from(bucket: "AzureSQLDB")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sqlserver_performance")
+                  |> filter(fn: (r) => r["sql_instance"] == v.SQL_Instance)
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> filter(fn: (r) => r["counter"] == "User Connections")
+        width: 2
+        xPos: 10
+    name: Azure SQL DB
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: determined-davinci-baa001
+spec:
+    config: |
+        # Configuration for telegraf agent
+        [agent]
+          ## Default data collection interval for all inputs
+          interval = "10s"
+          ## Rounds collection interval to 'interval'
+          ## ie, if interval="10s" then always collect on :00, :10, :20, etc.
+          round_interval = true
+
+          ## Telegraf will send metrics to outputs in batches of at most
+          ## metric_batch_size metrics.
+          ## This controls the size of writes that Telegraf sends to output plugins.
+          metric_batch_size = 1000
+
+          ## For failed writes, telegraf will cache metric_buffer_limit metrics for each
+          ## output, and will flush this buffer on a successful write. Oldest metrics
+          ## are dropped first when this buffer fills.
+          ## This buffer only fills when writes fail to output plugin(s).
+          metric_buffer_limit = 10000
+
+          ## Collection jitter is used to jitter the collection by a random amount.
+          ## Each plugin will sleep for a random time within jitter before collecting.
+          ## This can be used to avoid many plugins querying things like sysfs at the
+          ## same time, which can have a measurable effect on the system.
+          collection_jitter = "0s"
+
+          ## Default flushing interval for all outputs. Maximum flush_interval will be
+          ## flush_interval + flush_jitter
+          flush_interval = "10s"
+          ## Jitter the flush interval by a random amount. This is primarily to avoid
+          ## large write spikes for users running a large number of telegraf instances.
+          ## ie, a jitter of 5s and interval 10s means flushes will happen every 10-15s
+          flush_jitter = "0s"
+
+          ## By default or when set to "0s", precision will be set to the same
+          ## timestamp order as the collection interval, with the maximum being 1s.
+          ##   ie, when interval = "10s", precision will be "1s"
+          ##       when interval = "250ms", precision will be "1ms"
+          ## Precision will NOT be used for service inputs. It is up to each individual
+          ## service input to set the timestamp at the appropriate precision.
+          ## Valid time units are "ns", "us" (or "µs"), "ms", "s".
+          precision = ""
+
+          ## Logging configuration:
+          ## Run telegraf with debug log messages.
+          debug = false
+          ## Run telegraf in quiet mode (error log messages only).
+          quiet = false
+          ## Specify the log file name. The empty string means to log to stderr.
+          logfile = ""
+
+          ## Override default hostname, if empty use os.Hostname()
+          hostname = ""
+          ## If set to true, do no set the "host" tag in the telegraf agent.
+          omit_hostname = false
+        [[outputs.influxdb_v2]]	
+          ## The URLs of the InfluxDB cluster nodes.
+          ##
+          ## Multiple URLs can be specified for a single cluster, only ONE of the
+          ## urls will be written to each interval.
+          ## urls exp: http://127.0.0.1:9999
+          urls = ["$INFLUX_HOST"]
+
+          ## Token for authentication.
+          token = "$INFLUX_TOKEN"
+
+          ## Organization is the name of the organization you wish to write to; must exist.
+          organization = "$INFLUX_ORG"
+
+          ## Destination bucket to write into.
+          bucket = "AzureSQLDB"
+        # Read metrics from Microsoft SQL Server
+        [[inputs.sqlserver]]
+          ## Specify instances to monitor with a list of connection strings.
+          ## All connection parameters are optional.
+          ## By default, the host is localhost, listening on default port, TCP 1433.
+          ##   for Windows, the user is the currently running AD user (SSO).
+          ##   See https://github.com/denisenkom/go-mssqldb for detailed connection
+          ##   parameters, in particular, tls connections can be created like so:
+          ##   "encrypt=true;certificate=<cert>;hostNameInCertificate=<SqlServer host fqdn>"
+          servers = ["$AZURE_SQL_SERVER",]
+          ## "database_type" enables a specific set of queries depending on the database type. If specified, it replaces azuredb = true/false and query_version = 2
+          ## In the config file, the sql server plugin section should be repeated each with a set of servers for a specific database_type.
+          ## Possible values for database_type are - "AzureSQLDB" or "AzureSQLManagedInstance" or "SQLServer"
+
+          ## Queries enabled by default for database_type = "AzureSQLDB" are -
+          ## AzureSQLDBResourceStats, AzureSQLDBResourceGovernance, AzureSQLDBWaitStats, AzureSQLDBDatabaseIO, AzureSQLDBServerProperties,
+          ## AzureSQLDBOsWaitstats, AzureSQLDBMemoryClerks, AzureSQLDBPerformanceCounters, AzureSQLDBRequests, AzureSQLDBSchedulers
+
+          database_type = "AzureSQLDB"
+          include_query = ["AzureSQLDBResourceStats","AzureSQLDBWaitStats","AzureSQLDBDatabaseIO","AzureSQLDBMemoryClerks","AzureSQLDBPerformanceCounters","SQLServerPerformanceCounters"]
+
+          ## A list of queries to include. If not specified, all the above listed queries are used.
+          #include_query = ["SQLServerPerformanceCounters", "AzureSQLMIResourceStats", "AzureSQLMIResourceGovernance", "AzureSQLMIDatabaseIO", "AzureSQLMIServerProperties", "AzureSQLMIOsWaitstats", "AzureSQLMIMemoryClerks", "AzureSQLMIPerformanceCounters", "AzureSQLMIRequests", "AzureSQLMISchedulers"]
+          #include_query = ["SQLServerPerformanceCounters", "AzureSQLDBOsWaitstats", "AzureSQLDBMemoryClerks", "AzureSQLDBPerformanceCounters", "AzureSQLDBSchedulers", "AzureSQLDBDatabaseIO", "AzureSQLDBServerProperties", "AzureSQLDBWaitStats", "AzureSQLDBRequests", "AzureSQLDBResourceStats", "AzureSQLDBResourceGovernance"]
+          ## A list of queries to explicitly ignore.
+          # exclude_query = []
+
+          ## Queries enabled by default for database_type = "AzureSQLManagedInstance" are -
+          ## AzureSQLMIResourceStats, AzureSQLMIResourceGovernance, AzureSQLMIDatabaseIO, AzureSQLMIServerProperties, AzureSQLMIOsWaitstats,
+          ## AzureSQLMIMemoryClerks, AzureSQLMIPerformanceCounters, AzureSQLMIRequests, AzureSQLMISchedulers
+
+          #database_type = "AzureSQLManagedInstance"
+
+          # include_query = []
+
+          # exclude_query = []
+
+          ## Queries enabled by default for database_type = "SQLServer" are -
+          ## SQLServerPerformanceCounters, SQLServerWaitStatsCategorized, SQLServerDatabaseIO, SQLServerProperties, SQLServerMemoryClerks,
+          ## SQLServerSchedulers, SQLServerRequests, SQLServerVolumeSpace, SQLServerCpu
+
+          #database_type = "SQLServer"
+
+          #include_query = []
+
+          ## SQLServerAvailabilityReplicaStates and SQLServerDatabaseReplicaStates are optional queries and hence excluded here as default
+          #exclude_query = ["SQLServerAvailabilityReplicaStates", "SQLServerDatabaseReplicaStates"]
+
+          ## Following are old config settings, you may use them only if you are using the earlier flavor of queries, however it is recommended to use
+          ## the new mechanism of identifying the database_type there by use it's corresponding queries
+
+          ## Optional parameter, setting this to 2 will use a new version
+          ## of the collection queries that break compatibility with the original
+          ## dashboards.
+          ## Version 2 - is compatible from SQL Server 2012 and later versions and also for SQL Azure DB
+          # query_version = 2
+
+          ## If you are using AzureDB, setting this to true will gather resource utilization metrics
+          #azuredb = true
+    description: Azured SQL DB Configuration for Telegraf
+    name: azure-sql-config
