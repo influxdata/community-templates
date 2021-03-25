@@ -2,7 +2,7 @@
 
 Provided by: [bonitoo.io](.)
 
-This Dashboard offers you information about your Azure SQL Server: CPU utilization, Memory, Database Size, Active Threads, Connections, Traffic and more.
+This Dashboard offers you information about your Azure SQL Database: CPU utilization, Memory, Database Size, Active Threads, Connections, Traffic and more.
 
 ![Dashboard Screenshot](screenshot.png)
 
