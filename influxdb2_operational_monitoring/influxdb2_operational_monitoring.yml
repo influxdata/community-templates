@@ -108,11 +108,12 @@ spec:
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "runs")
                   |> filter(fn: (r) => r["_field"] == "logs")
-                  |> map(fn: (r) => {
-                     ind = regexp.findStringIndex(r: /name: \\\\\\".+?\\\\\\"/, v: r._value)
-                     finalstring = strings.trimSuffix(v: strings.trimPrefix(v: strings.substring(end: ind[1], start: ind[0], v: r._value ), prefix: "name: \\\\\\\""), suffix: "\\\\\\\"")
-                     return {r with name: finalstring }
-                  }
+                  |> map(
+                    fn: (r) => {
+                      ind = regexp.findStringIndex(r: /name: \\\\\\".+?\\\\\\"/, v: r._value)
+                      finalstring = if length(arr: ind) > 1 then strings.trimSuffix(v: strings.trimPrefix(v: strings.substring(end: ind[1], start: ind[0], v: r._value ), prefix: "name: \\\\\\\""), suffix: "\\\\\\\"") else "none"
+                      return {r with name: finalstring }
+                    }
                   )
                   |> group(columns: ["_start"])
                   |> count()
