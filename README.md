@@ -19,6 +19,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [Algorithmia](algorithmia/) | Monitor machine learning model performance metrics | [@koverholt](https://github.com/koverholt) |
 | [Apex Legends](apex_legends/) | Collect player metrics from the game Apex Legends | [@b3vis](https://github.com/b3vis) |
 | [AWS Cloudwatch Monitoring](aws_cloudwatch/) | Monitor AWS EC2 and ELB | [bonitoo.io](.) |
+| [Azure SQL DB](azure_sql_db/) | View information of Azure SQL Database: CPU utilization, Memory, Database Size, Active Threads, Connections, Traffic and more. | [bonitoo.io](.) |
 | [Ceph Cluster](ceph/) | Monitor your Ceph Cluster with Prometheus metrics | [@bonitoo.io](https://github.com/bonitoo-io) |
 | [Counter Strike: Global Offensive](csgo/) | Get stats about your game. Kills, Deaths and stats by weapon. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Covid-19 in South America](covid19-southamerica/) | Current data and graphs covering Covid-19 cases and deaths in South America | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
