@@ -1,0 +1,391 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: righteous-lichterman-2ea001
+spec:
+    color: '#34bb55'
+    name: Node.js
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: priceless-jennings-6ea001
+spec:
+    name: iot_center
+    retentionRules:
+      - everySeconds: 2.592e+06
+        type: expire
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: earnest-hugle-6ea005
+spec:
+    language: flux
+    name: Node_Service
+    query: "import \"influxdata/influxdb/v1\"\r\nv1.tagValues(bucket: \"iot_center\",
+        tag: \"service\")"
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: elastic-leavitt-6ea003
+spec:
+    language: flux
+    name: Node_Host
+    query: "import \"influxdata/influxdb/v1\"\r\nv1.tagValues(bucket: \"iot_center\",
+        tag: \"host\")"
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: heuristic-merkle-aea001
+spec:
+    charts:
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Average Response Time
+        queries:
+          - query: |-
+                from(bucket: "iot_center")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "express_http_server")
+                  |> filter(fn: (r) => r["_field"] == "response_time")
+                  |> filter(fn: (r) => r["host"] == v.Node_Host)
+                  |> filter(fn: (r) => r["service"] == v.Node_Service)
+                  |> group()
+                  |> median()
+        suffix: ' ms'
+        width: 2
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Maximal Response Time
+        queries:
+          - query: |-
+                from(bucket: "iot_center")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "express_http_server")
+                  |> filter(fn: (r) => r["_field"] == "response_time")
+                  |> filter(fn: (r) => r["host"] == v.Node_Host)
+                  |> filter(fn: (r) => r["service"] == v.Node_Service)
+                  |> group()
+                  |> max()
+        suffix: ' ms'
+        width: 2
+        yPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Current Heap Usage
+        queries:
+          - query: |-
+                from(bucket: "iot_center")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "node_memory_usage")
+                  |> filter(fn: (r) => r["_field"] == "heapUsed")
+                  |> filter(fn: (r) => r["host"] == v.Node_Host)
+                  |> filter(fn: (r) => r["service"] == v.Node_Service)
+                  |> map(fn: (r) => ({ r with _value: float(v: r._value) / 1000000.0 }))
+                  |> group()
+                  |> last()
+        suffix: ' MB'
+        width: 2
+        yPos: 2
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: background
+          - hex: '#FFB94A'
+            id: b0871652-7cd0-4c4b-b9e5-b88160c6cd6a
+            name: pineapple
+            type: background
+            value: 5000
+          - hex: '#BF3D5E'
+            id: 80195bb8-f74e-4b1c-8fef-0ff4af37aa34
+            name: ruby
+            type: background
+            value: 10000
+        decimalPlaces: 0
+        fieldOptions:
+          - displayName: time
+            fieldName: _time
+            visible: true
+          - displayName: _start
+            fieldName: _start
+          - displayName: _stop
+            fieldName: _stop
+          - displayName: _measurement
+            fieldName: _measurement
+          - displayName: host
+            fieldName: host
+          - displayName: method
+            fieldName: method
+            visible: true
+          - displayName: uri
+            fieldName: uri
+            visible: true
+          - displayName: service
+            fieldName: service
+          - displayName: response time [ms]
+            fieldName: response_time
+            visible: true
+          - displayName: status
+            fieldName: status
+            visible: true
+        height: 4
+        kind: Table
+        name: Response Time & Status
+        queries:
+          - query: |-
+                from(bucket: "iot_center")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "express_http_server")
+                  |> filter(fn: (r) => r["_field"] == "response_time")
+                  |> filter(fn: (r) => r["host"] == v.Node_Host)
+                  |> filter(fn: (r) => r["service"] == v.Node_Service)
+                  |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+                  |> group()
+        tableOptions:
+            sortBy: _time
+            verticalTimeAxis: true
+        timeFormat: MM/DD/YYYY HH:mm:ss.sss
+        width: 7
+        yPos: 3
+      - axes:
+          - name: x
+        binCount: 30
+        colors:
+          - hex: '#31C0F6'
+            id: 7ad731fa-b873-4de2-adcb-b790ef3d1bff
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: c5ff39d8-4821-408e-8faa-652026bdf23e
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: f826ced4-0a79-416d-ba90-f465a36bb42e
+            name: Nineteen Eighty Four
+            type: scale
+        fillColumns:
+          - _start
+          - _stop
+        height: 3
+        kind: Histogram
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 10
+        name: Max Response Time Histogram
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: "iot_center")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "express_http_server")
+                  |> filter(fn: (r) => r["_field"] == "response_time")
+                  |> filter(fn: (r) => r["host"] == v.Node_Host)
+                  |> filter(fn: (r) => r["service"] == v.Node_Service)
+        width: 11
+        xCol: _value
+        yPos: 7
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 25c22b67-3a3c-4a56-8772-880f04244a7a
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 9f64e524-568e-4ca1-ad35-53badeef5592
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: b5a254d5-9e9b-479d-9a2f-988961190e1f
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 10
+        name: Array Buffers
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "iot_center")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "node_memory_usage")
+                  |> filter(fn: (r) => r["_field"] == "arrayBuffers")
+                  |> filter(fn: (r) => r["host"] == v.Node_Host)
+                  |> filter(fn: (r) => r["service"] == v.Node_Service)
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        shade: true
+        width: 11
+        xCol: _time
+        yCol: _value
+        yPos: 10
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 25c22b67-3a3c-4a56-8772-880f04244a7a
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 9f64e524-568e-4ca1-ad35-53badeef5592
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: b5a254d5-9e9b-479d-9a2f-988961190e1f
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 10
+        name: CPU Usage (User and System)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "iot_center")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "node_cpu_usage")
+                  |> filter(fn: (r) => r["_field"] == "system" or r["_field"] == "user")
+                  |> filter(fn: (r) => r["host"] == v.Node_Host)
+                  |> filter(fn: (r) => r["service"] == v.Node_Service)
+                  |> difference(nonNegative: true, columns: ["_value"])
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        shade: true
+        width: 5
+        xCol: _time
+        xPos: 2
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 25c22b67-3a3c-4a56-8772-880f04244a7a
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 9f64e524-568e-4ca1-ad35-53badeef5592
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: b5a254d5-9e9b-479d-9a2f-988961190e1f
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 10
+        name: Heap Usage
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "iot_center")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "node_memory_usage")
+                  |> filter(fn: (r) => r["_field"] == "heapTotal" or r["_field"] == "heapUsed")
+                  |> filter(fn: (r) => r["host"] == v.Node_Host)
+                  |> filter(fn: (r) => r["service"] == v.Node_Service)
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        shade: true
+        width: 4
+        xCol: _time
+        xPos: 7
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 25c22b67-3a3c-4a56-8772-880f04244a7a
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 9f64e524-568e-4ca1-ad35-53badeef5592
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: b5a254d5-9e9b-479d-9a2f-988961190e1f
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 10
+        name: File System IO
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "iot_center")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "node_resource_usage")
+                  |> filter(fn: (r) => r["_field"] == "fsRead" or r["_field"] == "fsWrite")
+                  |> filter(fn: (r) => r["host"] == v.Node_Host)
+                  |> filter(fn: (r) => r["service"] == v.Node_Service)
+                  |> difference(nonNegative: true, columns: ["_value"])
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        shade: true
+        width: 4
+        xCol: _time
+        xPos: 7
+        yCol: _value
+        yPos: 3
+    description: Node.js Application Monitoring usng InfluxDB JS Client Library
+    name: Node.js Application Monitoring

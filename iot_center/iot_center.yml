@@ -1,0 +1,263 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: tender-booth-bd5001
+spec:
+    color: '#be2ee4'
+    name: IoT
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: inspiring-tesla-bd5001
+spec:
+    name: iot_center
+    retentionRules:
+      - everySeconds: 2.592e+06
+        type: expire
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: suspicious-mahavira-fd5001
+spec:
+    language: flux
+    name: IoT_Device
+    query: "import \"influxdata/influxdb/v1\"\r\nv1.tagValues(bucket: \"iot_center\",
+        tag: \"clientId\")"
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: elated-wescoff-7d5001
+spec:
+    charts:
+      - colors:
+          - hex: '#00C9FF'
+            id: "0"
+            name: laser
+            type: min
+            value: -30
+          - hex: '#BF3D5E'
+            id: "1"
+            name: ruby
+            type: max
+            value: 60
+        decimalPlaces: 2
+        height: 5
+        kind: Gauge
+        name: Actual Temperature
+        queries:
+          - query: "from(bucket: \"iot_center\")\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"environment\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Temperature\")\n
+                \ |> filter(fn: (r) => r[\"clientId\"] == v.IoT_Device)  \n  |> aggregateWindow(every:
+                v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")"
+        suffix: ' °C'
+        width: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Temperature °C
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 024cd205-6cf6-4aa2-b6da-d8d052bb1f9b
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: c5472a5f-6349-40a2-9374-d7eaca9864e8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 355ddac5-4625-49f7-aa78-00202e3e51c4
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Temperature
+        position: overlaid
+        queries:
+          - query: "from(bucket: \"iot_center\")\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"environment\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Temperature\")\n
+                \ |> filter(fn: (r) => r[\"clientId\"] == v.IoT_Device)  \n  |> aggregateWindow(every:
+                v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")"
+        shade: true
+        width: 12
+        xCol: _time
+        yCol: _value
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Humidity %
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 024cd205-6cf6-4aa2-b6da-d8d052bb1f9b
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: c5472a5f-6349-40a2-9374-d7eaca9864e8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 355ddac5-4625-49f7-aa78-00202e3e51c4
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Humidity
+        position: overlaid
+        queries:
+          - query: "from(bucket: \"iot_center\")\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"environment\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Humidity\")\n
+                \ |> filter(fn: (r) => r[\"clientId\"] == v.IoT_Device)  \n  |> aggregateWindow(every:
+                v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")"
+        width: 12
+        xCol: _time
+        yCol: _value
+        yPos: 9
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Pressure hPa
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 024cd205-6cf6-4aa2-b6da-d8d052bb1f9b
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: c5472a5f-6349-40a2-9374-d7eaca9864e8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 355ddac5-4625-49f7-aa78-00202e3e51c4
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: Pressure
+        position: overlaid
+        queries:
+          - query: "from(bucket: \"iot_center\")\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"environment\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Pressure\")\n
+                \ |> filter(fn: (r) => r[\"clientId\"] == v.IoT_Device)  \n  |> aggregateWindow(every:
+                v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")"
+        width: 12
+        xCol: _time
+        yCol: _value
+        yPos: 13
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: CO2 ppm
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 024cd205-6cf6-4aa2-b6da-d8d052bb1f9b
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: c5472a5f-6349-40a2-9374-d7eaca9864e8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 355ddac5-4625-49f7-aa78-00202e3e51c4
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: CO2
+        position: overlaid
+        queries:
+          - query: "from(bucket: \"iot_center\")\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"environment\")\n  |> filter(fn: (r) => r[\"_field\"] == \"CO2\")\n
+                \ |> filter(fn: (r) => r[\"clientId\"] == v.IoT_Device)  \n  |> aggregateWindow(every:
+                v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")"
+        width: 12
+        xCol: _time
+        yCol: _value
+        yPos: 17
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: TVOC ppb
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 024cd205-6cf6-4aa2-b6da-d8d052bb1f9b
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: c5472a5f-6349-40a2-9374-d7eaca9864e8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 355ddac5-4625-49f7-aa78-00202e3e51c4
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        kind: Xy
+        name: TVOC
+        position: overlaid
+        queries:
+          - query: "from(bucket: \"iot_center\")\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"environment\")\n  |> filter(fn: (r) => r[\"_field\"] == \"TVOC\")\n
+                \ |> filter(fn: (r) => r[\"clientId\"] == v.IoT_Device)  \n  |> aggregateWindow(every:
+                v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")"
+        width: 12
+        xCol: _time
+        yCol: _value
+        yPos: 21
+      - colors:
+          - hex: '#00C9FF'
+            id: "0"
+            name: laser
+            type: min
+          - hex: '#BF3D5E'
+            id: "1"
+            name: ruby
+            type: max
+            value: 100
+        decimalPlaces: 2
+        height: 5
+        kind: Gauge
+        name: Actual Humidity
+        queries:
+          - query: "from(bucket: \"iot_center\")\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"environment\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Humidity\")\n
+                \ |> filter(fn: (r) => r[\"clientId\"] == v.IoT_Device)  \n  |> aggregateWindow(every:
+                v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")"
+        suffix: ' %'
+        width: 5
+        xPos: 5
+    name: IoT Center
