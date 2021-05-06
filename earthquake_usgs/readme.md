@@ -97,8 +97,6 @@ Task options may be configured as well:
     - From [USGS FAQ](https://www.usgs.gov/faqs/why-do-some-earthquakes-disappear-maplist): "trade off between the speed of earthquake notifications and number of false alarms."
 
 ## Additional Notes
-The `Earthquake Feed Ingestion` task used to consume the CSV web service requires that CSV data be in [annotated CSV](https://docs.influxdata.com/influxdb/v2.0/reference/syntax/annotated-csv/) format. The annotated CSV headers are located in [earthquake_usgs_headers.csv](https://raw.githubusercontent.com/influxdata/community-templates/master/earthquake_usgs/earthquake_usgs_headers.csv). The task also prepends the required metadata to each data record, which can then be written to InfluxDB.
-
 Before ingestion, the following data cleansing and data shaping operatons are performed:
 - Data Cleansing
     - Drop fields
