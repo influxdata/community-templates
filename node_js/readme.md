@@ -2,7 +2,7 @@
 
 Provided by: [bonitoo.io](.)
 
-This template provides a simple monitoring of Node.js application. Dashboard is showing basic process metrics and response time of http requests including response code.
+This template provides a dashboard for simple monitoring of a Node.js application. The dashboard charts basic process metrics and the response time of http requests and their response status code.
 The process metrics are generated from `process.memoryUsage()))`, `process.cpuUsage()` and `process.resourceUsage()` functions.
   
 ### Dashboard example
