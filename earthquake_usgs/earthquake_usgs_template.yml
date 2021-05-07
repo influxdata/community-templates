@@ -138,69 +138,69 @@ spec:
     every: 1m
     name: Earthquake Feed Ingestion
     query: |-
-      import "experimental/http"
-      import "experimental"
-      import "csv"
-      import "strings"
-      import "regexp"
-      import "experimental/geo"
-      import "experimental/array"
-      import "date"
-      import "math"
-      import "dict"
+        import "experimental/http"
+        import "experimental"
+        import "csv"
+        import "strings"
+        import "regexp"
+        import "experimental/geo"
+        import "experimental/array"
+        import "date"
+        import "math"
+        import "dict"
 
-      onedayago = strings.trimSuffix(v: string(v: date.truncate(t: experimental.subDuration(d: 1d, from: now()), unit: 1m)), suffix: ".000000000Z")
-      csv_data_url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=csv&starttime=" + onedayago + "&includedeleted=true&orderby=time-asc"
-      csv_data = string(v: http.get(url: csv_data_url).body)
-      states = ["Alaska", "California", "CA", "Hawaii", "Idaho", "Kansas", "New Mexico", "Nevada", "North Carolina", "Oklahoma", "Oregon", "Washington", "Utah"]
-      countries_dictionary = dict.fromList(pairs: [{key: "MX", value: "Mexico"}])
+        onedayago = strings.trimSuffix(v: string(v: date.truncate(t: experimental.subDuration(d: 1d, from: now()), unit: 1m)), suffix: ".000000000Z")
+        csv_data_url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=csv&starttime=" + onedayago + "&includedeleted=true&orderby=time-asc"
+        csv_data = string(v: http.get(url: csv_data_url).body)
+        states = ["Alaska", "California", "CA", "Hawaii", "Idaho", "Kansas", "New Mexico", "Nevada", "North Carolina", "Oklahoma", "Oregon", "Washington", "Utah"]
+        countries_dictionary = dict.fromList(pairs: [{key: "MX", value: "Mexico"}])
 
-      csv.from(csv: csv_data, mode: "raw")
-        |> map(fn: (r) =>
-          ({
-            _measurement: "earthquake_stats",
-            _time: time(v: r.time),
-            lat: float(v: r.latitude),
-            lon: float(v: r.longitude),
-            depth: float(v: r.depth),
-            depthError: float(v: r.depthError),
-            mag: float(v: r.mag),
-            magType: string(v: r.magType),
-            net: string(v: r.net),
-            id: string(v: r.id),
-            updated: int(v: time(v: r.updated)) / 1000000,
-            place: string(v: r.place),
-            type: string(v: r.type),
-            magSource: string(v: r.magSource),
-            status: string(v: r.status),
-          }))
-        |> truncateTimeColumn(unit: 1s)
-        |> map(fn: (r) =>
-          ({r with place_km: regexp.replaceAllString(r: /^0\s?km /, v: r.place, t: "")}))
-        |> map(fn: (r) =>
-          ({r with s2_cell_id: geo.s2CellIDToken(point: {lon: r.lon, lat: r.lat}, level: 10)}))
-        |> map(fn: (r) =>
-          ({r with place: if strings.containsStr(v: r.place_km, substr: "km") then regexp.replaceAllString(r: /\d+\s?km/, v: r.place_km, t: "") else r.place_km, distance: if strings.containsStr(v: r.place_km, substr: "km") then float(v: regexp.replaceAllString(r: /(\d+)\s?km.*/, v: r.place_km, t: "$1")) else 0.0, country: regexp.replaceAllString(r: /^.*,\s?/, v: r.place_km, t: "")}))
-        |> map(fn: (r) =>
-          ({r with country: if contains(value: r.country, set: states) then "United States" else r.country}))
-        |> map(fn: (r) =>
-          ({r with magType: if exists r.magType then r.magType else "null"}))
-        |> map(fn: (r) =>
-          ({r with net: if exists r.net then r.net else "null"}))
-        |> map(fn: (r) =>
-          ({r with type: if exists r.type then r.type else "null"}))
-        |> map(fn: (r) =>
-          ({r with status: if exists r.status then r.status else "null"}))
-        |> map(fn: (r) =>
-          ({r with country: if exists r.country then r.country else "null"}))
-        |> map(fn: (r) =>
-          ({r with country: dict.get(dict: countries_dictionary, key: r.country, default: r.country)}))
-        |> group(columns: ["_measurement", "magSource"])
-        |> experimental.to(bucket: "apis")
-      array.from(rows: [{_time: date.truncate(t: now(), unit: 1d), id: "abc", _measurement: "earthquake_alert_log"}])
-        |> group(columns: ["id"])
-        |> to(bucket: "apis", fieldFn: (r) =>
-          ({"processed_at": string(v: now())}))
+        csv.from(csv: csv_data, mode: "raw")
+          |> map(fn: (r) =>
+            ({
+              _measurement: "earthquake_stats",
+              _time: time(v: r.time),
+              lat: float(v: r.latitude),
+              lon: float(v: r.longitude),
+              depth: float(v: r.depth),
+              depthError: float(v: r.depthError),
+              mag: float(v: r.mag),
+              magType: string(v: r.magType),
+              net: string(v: r.net),
+              id: string(v: r.id),
+              updated: int(v: time(v: r.updated)) / 1000000,
+              place: string(v: r.place),
+              type: string(v: r.type),
+              magSource: string(v: r.magSource),
+              status: string(v: r.status),
+            }))
+          |> truncateTimeColumn(unit: 1s)
+          |> map(fn: (r) =>
+            ({r with place_km: regexp.replaceAllString(r: /^0\s?km /, v: r.place, t: "")}))
+          |> map(fn: (r) =>
+            ({r with s2_cell_id: geo.s2CellIDToken(point: {lon: r.lon, lat: r.lat}, level: 10)}))
+          |> map(fn: (r) =>
+            ({r with place: if strings.containsStr(v: r.place_km, substr: "km") then regexp.replaceAllString(r: /\d+\s?km/, v: r.place_km, t: "") else r.place_km, distance: if strings.containsStr(v: r.place_km, substr: "km") then float(v: regexp.replaceAllString(r: /(\d+)\s?km.*/, v: r.place_km, t: "$1")) else 0.0, country: regexp.replaceAllString(r: /^.*,\s?/, v: r.place_km, t: "")}))
+          |> map(fn: (r) =>
+            ({r with country: if contains(value: r.country, set: states) then "United States" else r.country}))
+          |> map(fn: (r) =>
+            ({r with magType: if exists r.magType then r.magType else "null"}))
+          |> map(fn: (r) =>
+            ({r with net: if exists r.net then r.net else "null"}))
+          |> map(fn: (r) =>
+            ({r with type: if exists r.type then r.type else "null"}))
+          |> map(fn: (r) =>
+            ({r with status: if exists r.status then r.status else "null"}))
+          |> map(fn: (r) =>
+            ({r with country: if exists r.country then r.country else "null"}))
+          |> map(fn: (r) =>
+            ({r with country: dict.get(dict: countries_dictionary, key: r.country, default: r.country)}))
+          |> group(columns: ["_measurement", "magSource"])
+          |> experimental.to(bucket: "apis")
+        array.from(rows: [{_time: date.truncate(t: now(), unit: 1d), id: "abc", _measurement: "earthquake_alert_log"}])
+          |> group(columns: ["id"])
+          |> to(bucket: "apis", fieldFn: (r) =>
+            ({"processed_at": string(v: now())}))
     status: active
 ---
 apiVersion: influxdata.com/v2alpha1
