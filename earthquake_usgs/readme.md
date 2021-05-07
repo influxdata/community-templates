@@ -9,18 +9,35 @@ Feed consumption is performed within an automated task so it is entirely serverl
 Slacks alerts are sent via a task, with customizable options such as separate magnitude thresholds for global and regional earthquakes, time zones, and delayed triggering. Links to the associated USGS earthquake summary and Google Maps pages are listed as well. [[2]](https://www.github.com/influxdata/community-templates/tree/master/earthquake_usgs#tasks)
 
 **Dashboard**
-![Earthquake Monitoring Dashboard](earthquake_monitoring.png)
+![Earthquake Monitoring Dashboard](earthquake_monitoring_cloud.png)
 
 ### Quick Install
+There are two template types:
+- Map visualization dashboard cell, supported on InfluxDB Cloud
+    - [earthquake_usgs_cloud_template.yml](https://raw.githubusercontent.com/influxdata/community-templates/master/earthquake_usgs/earthquake_usgs_cloud_template.yml)
+- No map visualization, supported on OSS (or InfluxDB Cloud)
+    - [earthquake_usgs_template.yml](https://raw.githubusercontent.com/influxdata/community-templates/master/earthquake_usgs/earthquake_usgs_template.yml)
 
 #### InfluxDB UI
-In the InfluxDB UI, go to Settings->Templates and enter this URL: https://raw.githubusercontent.com/influxdata/community-templates/master/earthquake_usgs/earthquake_usgs_template.yml
+In the InfluxDB UI, go to Settings->Templates and enter this URL
+
+**InfluxDB Cloud** (with map visualization):
+https://raw.githubusercontent.com/influxdata/community-templates/master/earthquake_usgs/earthquake_usgs_cloud_template.yml
+
+**InfluxDB OSS** (without map visualization):
+https://raw.githubusercontent.com/influxdata/community-templates/master/earthquake_usgs/earthquake_usgs_template.yml
+
 
 #### Influx CLI
 Although the CLI is not required, if you have your InfluxDB credentials
 [configured in the CLI](https://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/),
-you can install this template with:
+you can install this template with
 
+**InfluxDB Cloud** (with map visualization):
+```sh
+influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/earthquake_usgs/earthquake_usgs_cloud_template.yml
+```
+**InfluxDB OSS** (without map visualization):
 ```sh
 influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/earthquake_usgs/earthquake_usgs_template.yml
 ```
