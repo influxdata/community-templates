@@ -1,0 +1,960 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: exciting-swirles-aa8001
+spec:
+    color: '#BF3D5E'
+    name: earthquake
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: alerting-tu-aa8005
+spec:
+    associations:
+      - kind: Label
+        name: exciting-swirles-aa8001
+    name: apis
+    retentionRules:
+      - everySeconds: 2.592e+06
+        type: expire
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Task
+metadata:
+    name: great-zhukovsky-6a8001
+spec:
+    associations:
+      - kind: Label
+        name: exciting-swirles-aa8001
+    every: 1m0s
+    name: Earthquake Alerts
+    offset: 20s
+    query: |-
+        import "influxdata/influxdb/schema"
+        import "strings"
+        import "experimental/geo"
+        import "slack"
+        import "date"
+        import "math"
+        import "regexp"
+        import "experimental"
+        import "dict"
+
+        global_mag_threshold = 6
+        regional_mag_threshold = 3
+        units = "mile"
+        tz = "PST"
+        city = "San Francisco:37.7576948:-122.4726194"
+        city_radius = 1000.0
+        alert_delay_min = 5
+        slack_webhook = "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"
+        sendSlackMessage = (text) =>
+        	(slack.message(
+        		url: slack_webhook,
+        		token: "",
+        		channel: "",
+        		text: text,
+        		color: "danger",
+        	))
+        distance_to_string = (distance, place) =>
+        	(if distance > 0.0 then if units == "km" then string(v: distance) + " km " + place else string(v: math.round(x: distance * 0.621371)) + " mi " + place else place)
+        depth_to_string = (n) =>
+        	(if n > 0.0 then if units == "km" then string(v: math.round(x: n)) + " km" else string(v: math.round(x: n * 0.621371)) + " mi" else "")
+        tz_dictionary = dict.fromList(pairs: [{key: "PST", value: "-8h"}, {key: "PDT", value: "-7h"}, {key: "CST", value: "-6h"}, {key: "EST", value: "-5h"}, {key: "EDT", value: "-4h"}, {key: "UTC", value: "0h"}])
+        tz_dur = duration(v: dict.get(dict: tz_dictionary, key: tz, default: "0h"))
+        city_coordinates = strings.split(v: city, t: ":")
+        city_name = city_coordinates[1]
+        city_lat = float(v: city_coordinates[1])
+        city_lon = float(v: city_coordinates[2])
+        alert_delay = duration(v: string(v: alert_delay_min * (-2)) + "m")
+        stop = experimental.addDuration(to: now(), d: task.offset)
+        alerted_ids = from(bucket: "apis")
+        	|> range(start: -2d, stop: stop)
+        	|> filter(fn: (r) =>
+        		(r._measurement == "earthquake_alert_log"))
+        	|> group()
+        	|> unique()
+        	|> findColumn(fn: (key) => 
+        		(true), column: "id")
+        global = from(bucket: "apis")
+        	|> range(start: -30m, stop: alert_delay)
+        	|> filter(fn: (r) =>
+        		(r["_measurement"] == "earthquake_stats"))
+        	|> schema.fieldsAsCols()
+        	|> filter(fn: (r) =>
+        		(r["type"] == "earthquake" and r["status"] != "deleted"))
+        	|> filter(fn: (r) =>
+        		(r["mag"] >= global_mag_threshold))
+        regional = from(bucket: "apis")
+        	|> range(start: -30m, stop: alert_delay)
+        	|> filter(fn: (r) =>
+        		(r["_measurement"] == "earthquake_stats"))
+        	|> schema.fieldsAsCols()
+        	|> filter(fn: (r) =>
+        		(r["type"] == "earthquake" and r["status"] != "deleted"))
+        	|> filter(fn: (r) =>
+        		(r["mag"] >= regional_mag_threshold))
+        	|> geo.strictFilter(region: {lat: city_lat, lon: city_lon, radius: city_radius})
+
+        union(tables: [global, regional])
+        	|> filter(fn: (r) =>
+        		(not contains(set: alerted_ids, value: r["id"])))
+        	|> group(columns: ["id"])
+        	|> last(column: "id")
+        	|> group()
+        	|> map(fn: (r) =>
+        		({r with local_time: experimental.addDuration(d: tz_dur, to: r._time)}))
+        	|> map(fn: (r) =>
+        		({r with mag: math.round(x: r.mag * 10.0) / 10.0}))
+        	|> map(fn: (r) =>
+        		({r with place: distance_to_string(distance: r.distance, place: r.place)}))
+        	|> map(fn: (r) =>
+        		({r with depth: depth_to_string(n: r.depth)}))
+          |> map(fn: (r) =>
+            ({r with newColumn: sendSlackMessage(text: "*Earthquake Alert*
+        M *${string(v: r.mag)}* — *${string(v: r.place)}*
+        *${regexp.replaceAllString(r: /:\d{2}\..*/, v: string(v: r.local_time), t: "")}* (${tz}) | *${string(v: r.depth)}* depth
+        :globe_with_meridians: <https://earthquake.usgs.gov/earthquakes/eventpage/${r.id}/executive|USGS Earthquake Summary> | <https://www.google.com/maps/@?api=1&map_action=map&center=${string(v: r.lat)},${string(v: r.lon)}&zoom=6&basemap=terrain|Google Maps>")}))
+          |> keep(columns: ["_time", "id"])
+          |> set(key: "_measurement", value: "earthquake_alert_log")
+          |> set(key: "processed_at", value: string(v: now()))
+          |> group(columns: ["id"])
+          |> to(bucket: "apis", fieldFn: (r) =>
+            ({"processed_at": r.processed_at}))
+    status: inactive
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Task
+metadata:
+    name: upbeat-hoover-2a8001
+spec:
+    associations:
+      - kind: Label
+        name: exciting-swirles-aa8001
+    every: 1m0s
+    name: Earthquake Feed Ingestion
+    query: |-
+        import "experimental/http"
+        import "experimental"
+        import "csv"
+        import "strings"
+        import "regexp"
+        import "experimental/geo"
+        import "experimental/array"
+        import "date"
+        import "math"
+        import "dict"
+
+
+
+        onedayago = strings.trimSuffix(v: string(v: date.truncate(t: experimental.subDuration(d: 1d, from: now()), unit: 1m)), suffix: ".000000000Z")
+        csv_data_url = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=csv&starttime=" + onedayago + "&includedeleted=true&orderby=time-asc"
+        csv_data = string(v: http.get(url: csv_data_url).body)
+        states = ["Alaska", "California", "CA", "Hawaii", "Idaho", "Kansas", "New Mexico", "Nevada", "North Carolina", "Oklahoma", "Oregon", "Washington", "Utah"]
+        countries_dictionary = dict.fromList(pairs: [{key: "MX", value: "Mexico"}])
+
+        csv.from(csv: csv_data, mode: "raw")
+        	|> map(fn: (r) =>
+        		({
+        			_measurement: "earthquake_stats",
+        			_time: time(v: r.time),
+        			lat: float(v: r.latitude),
+        			lon: float(v: r.longitude),
+        			depth: float(v: r.depth),
+        			depthError: float(v: r.depthError),
+        			mag: float(v: r.mag),
+        			magType: string(v: r.magType),
+        			net: string(v: r.net),
+        			id: string(v: r.id),
+        			updated: int(v: time(v: r.updated)) / 1000000,
+        			place: string(v: r.place),
+        			type: string(v: r.type),
+        			magSource: string(v: r.magSource),
+        			status: string(v: r.status),
+        		}))
+        	|> truncateTimeColumn(unit: 1s)
+        	|> map(fn: (r) =>
+        		({r with place_km: regexp.replaceAllString(r: /^0\s?km /, v: r.place, t: "")}))
+        	|> map(fn: (r) =>
+        		({r with s2_cell_id: geo.s2CellIDToken(point: {lon: r.lon, lat: r.lat}, level: 10)}))
+        	|> map(fn: (r) =>
+        		({r with place: if strings.containsStr(v: r.place_km, substr: "km") then regexp.replaceAllString(r: /\d+\s?km/, v: r.place_km, t: "") else r.place_km, distance: if strings.containsStr(v: r.place_km, substr: "km") then float(v: regexp.replaceAllString(r: /(\d+)\s?km.*/, v: r.place_km, t: "$1")) else 0.0, country: regexp.replaceAllString(r: /^.*,\s?/, v: r.place_km, t: "")}))
+        	|> map(fn: (r) =>
+        		({r with country: if contains(value: r.country, set: states) then "United States" else r.country}))
+        	|> map(fn: (r) =>
+        		({r with magType: if exists r.magType then r.magType else "null"}))
+        	|> map(fn: (r) =>
+        		({r with net: if exists r.net then r.net else "null"}))
+        	|> map(fn: (r) =>
+        		({r with type: if exists r.type then r.type else "null"}))
+        	|> map(fn: (r) =>
+        		({r with status: if exists r.status then r.status else "null"}))
+        	|> map(fn: (r) =>
+        		({r with country: if exists r.country then r.country else "null"}))
+        	|> map(fn: (r) =>
+        		({r with country: dict.get(dict: countries_dictionary, key: r.country, default: r.country)}))
+        	|> group(columns: ["_measurement", "magSource"])
+        	|> experimental.to(bucket: "apis")
+        array.from(rows: [{_time: date.truncate(t: now(), unit: 1d), id: "abc", _measurement: "earthquake_alert_log"}])
+        	|> group(columns: ["id"])
+        	|> to(bucket: "apis", fieldFn: (r) =>
+        		({"processed_at": string(v: now())}))
+    status: active
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: alerting-curie-aa800b
+spec:
+    associations:
+      - kind: Label
+        name: exciting-swirles-aa8001
+    name: Units
+    selected:
+      - mi
+    type: map
+    values:
+        km: km
+        mi: mile
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: goofy-kalam-6a8005
+spec:
+    associations:
+      - kind: Label
+        name: exciting-swirles-aa8001
+    name: Location
+    selected:
+      - San Francisco, CA
+    type: map
+    values:
+        Hilo, HI: Hilo, HI:19.6865946:-155.124954
+        Los Angeles, CA: Los Angeles, CA:34.0201613:-118.6919149
+        Oklahoma City, OK: Oklahoma City, OK:35.482567:-97.6192807
+        San Francisco, CA: San Francisco, CA:37.7576948:-122.4726194
+        Tokyo, Japan: Tokyo, Japan:35.48847:137.5263065
+        World: World:0.0:0.0
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: jovial-lewin-aa8007
+spec:
+    associations:
+      - kind: Label
+        name: exciting-swirles-aa8001
+    name: Magnitude_Threshold
+    selected:
+      - "1"
+    type: map
+    values:
+        "0": "0"
+        "1": "1"
+        "2": "2"
+        "3": "3"
+        "4": "4"
+        "5": "5"
+        "6": "6"
+        "7": "7"
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: zen-sinoussi-aa8003
+spec:
+    associations:
+      - kind: Label
+        name: exciting-swirles-aa8001
+    name: Radius
+    selected:
+      - "1000"
+    type: constant
+    values:
+      - "50"
+      - "100"
+      - "500"
+      - "1000"
+      - "2000"
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: intelligent-nobel-6a8001
+spec:
+    associations:
+      - kind: Label
+        name: exciting-swirles-aa8001
+    charts:
+      - colors:
+          - hex: '#292933'
+            id: base
+            name: castle
+            type: background
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Location
+        queries:
+          - query: |-
+                import "strings"
+                import "dict"
+                import "experimental/array"
+
+                globe_dictionary = dict.fromList(pairs: [
+                    {key: "Hilo, HI", value: "🌋"},
+                    {key: "Los Angeles, CA", value: "🏖️"},
+                    {key: "Oklahoma City, OK", value: "🌪️"},
+                    {key: "San Francisco, CA", value: "🌉"},
+                    {key: "Tokyo, Japan", value: "🗾"}
+                ])
+
+                city_name = strings.split(v: v.Location, t: ":")[0]
+                full_location = dict.get(dict: globe_dictionary, key: city_name, default: "🌐") + " " + city_name
+
+                array.from(rows: [{_value: full_location}])
+        staticLegend: {}
+        width: 3
+      - height: 3
+        kind: Markdown
+        name: Name this Cell
+        note: |-
+            # Earthquakes
+            Latest earthquake data reported by United States Geological Survey (USGS).
+            Filter by _magnitude_, _location_, _radius (km/mi)_, and _time_.
+
+            https://www.usgs.gov/natural-hazards/earthquake-hazards/earthquakes
+        staticLegend: {}
+        width: 3
+        yPos: 1
+      - allowPanAndZoom: true
+        geoLayers:
+          - colorDimension:
+                label: Value
+                name: color
+            colorField: _value
+            intensityDimension:
+                name: intensity
+            layerType: pointMap
+            radiusDimension:
+                name: radius
+            viewColors:
+              - hex: '#be2ee4'
+                type: min
+              - hex: '#be2ee4'
+                value: 50
+              - hex: '#be2ee4'
+                type: max
+        height: 5
+        kind: Geo
+        name: Recent Earthquakes Map
+        queries:
+          - query: |-
+                import "influxdata/influxdb/schema"
+                import "experimental/geo"
+                import "experimental"
+                import "strings"
+                import "math"
+                import "regexp"
+
+                option geo.units = {distance: v.Units}
+
+                city_coordinates = strings.split(v: v.Location, t: ":")
+                city_lat = float(v: city_coordinates[1])
+                city_lon = float(v: city_coordinates[2])
+
+                city_radius = if city_lat == 0.0 then 100000.0 else float(v: v.Radius)
+
+                mag_threshold = float(v: v.Magnitude_Threshold)
+
+                distance_to_string = (distance, place, country) =>
+                  if distance > 0.0 then
+                    if v.Units == "km" then
+                      string(v: distance) + " km " + place
+                    else
+                      string(v: math.round(x: distance * 0.621371)) + " mi " + place
+                  else
+                    place
+
+                from(bucket: "apis")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "earthquake_stats")
+                  |> schema.fieldsAsCols()
+                  |> filter(fn: (r) => exists r["s2_cell_id"])
+                  |> filter(fn: (r) => r["type"] == "earthquake" and r["status"] != "deleted")
+                  |> filter(fn: (r) => r["mag"] >= mag_threshold, onEmpty: "keep")
+                  |> geo.strictFilter(region: {lat: city_lat, lon: city_lon, radius: city_radius})
+                  |> group(columns: ["id"])
+                  |> last(column: "id")
+                  |> group()
+                  |> map(fn: (r) => ({ r with mag: math.round(x: r.mag * 10.0) / 10.0 }))
+                  |> map(fn: (r) => ({ r with place: distance_to_string(distance: r.distance, place: r.place, country: r.country) }))
+                  |> keep(columns: ["country", "mag", "Location", "_time", "lat", "lon"])
+                  |> rename(columns: {mag: "_value"})
+        staticLegend: {}
+        width: 7
+        yPos: 4
+        zoom: 6
+      - colors:
+          - hex: '#7CE490'
+            id: "0"
+            name: honeydew
+            type: min
+          - hex: '#FFD255'
+            id: 14bce210-963e-45a7-aa6c-022f918de120
+            name: thunder
+            type: threshold
+            value: 2
+          - hex: '#FFB94A'
+            id: 159e2f90-c190-4441-a047-34973ce4d1d0
+            name: pineapple
+            type: threshold
+            value: 3
+          - hex: '#F48D38'
+            id: fc136d13-af0d-4f9f-af0f-ab6f77253993
+            name: tiger
+            type: threshold
+            value: 4
+          - hex: '#F95F53'
+            id: 5adb5c02-73da-44ba-acce-4235febdf4c8
+            name: curacao
+            type: threshold
+            value: 5
+          - hex: '#DC4E58'
+            id: e3d3a708-d87b-4359-9d79-6c107ac051f4
+            name: fire
+            type: threshold
+            value: 6
+          - hex: '#BF3D5E'
+            id: b3ff1863-906e-4eaa-be5d-a99df2cdc665
+            name: ruby
+            type: threshold
+            value: 7
+          - hex: '#9394FF'
+            id: "1"
+            name: comet
+            type: max
+            value: 10
+        decimalPlaces: 1
+        height: 3
+        kind: Gauge
+        name: Highest Magnitude Earthquake
+        queries:
+          - query: |-
+                import "influxdata/influxdb/schema"
+                import "experimental/geo"
+                import "strings"
+
+                option geo.units = {distance: v.Units}
+
+                city_coordinates = strings.split(v: v.Location, t: ":")
+                city_lat = float(v: city_coordinates[1])
+                city_lon = float(v: city_coordinates[2])
+
+                city_radius = if city_lat == 0.0 then 100000.0 else float(v: v.Radius)
+
+                mag_threshold = float(v: v.Magnitude_Threshold)
+
+                from(bucket: "apis")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "earthquake_stats")
+                  |> schema.fieldsAsCols()
+                  |> filter(fn: (r) => r["type"] == "earthquake" and r["status"] != "deleted")
+                  |> filter(fn: (r) => r["mag"] >= mag_threshold, onEmpty: "keep")
+                  |> geo.strictFilter(region: { lat: city_lat, lon: city_lon, radius: city_radius })
+                  |> group(columns: ["id"])
+                  |> last(column: "id")
+                  |> group()
+                  |> max(column: "mag")
+                  |> keep(columns: ["mag"])
+        staticLegend: {}
+        tickPrefix: "false"
+        width: 3
+        xPos: 3
+      - colors:
+          - hex: '#22ADF6'
+            id: base
+            name: pool
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Highest Magnitude Location
+        queries:
+          - query: |-
+                import "influxdata/influxdb/schema"
+                import "experimental/geo"
+                import "experimental"
+                import "strings"
+                import "regexp"
+                import "math"
+
+                option geo.units = {distance: v.Units}
+
+                city_coordinates = strings.split(v: v.Location, t: ":")
+                city_lat = float(v: city_coordinates[1])
+                city_lon = float(v: city_coordinates[2])
+
+                city_radius = if city_lat == 0.0 then 100000.0 else float(v: v.Radius)
+
+                mag_threshold = float(v: v.Magnitude_Threshold)
+
+                distance_to_string = (distance, place, country) =>
+                  if distance > 0.0 then
+                    if v.Units == "km" then
+                      string(v: distance) + " km " + place
+                    else
+                      string(v: math.round(x: distance * 0.621371)) + " mi " + place
+                  else
+                    place
+
+                from(bucket: "apis")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "earthquake_stats")
+                  |> schema.fieldsAsCols()
+                  |> filter(fn: (r) => r["type"] == "earthquake" and r["status"] != "deleted")
+                  |> filter(fn: (r) => r["mag"] >= mag_threshold, onEmpty: "keep")
+                  |> geo.strictFilter(region: {lat: city_lat, lon: city_lon, radius: city_radius})
+                  |> group(columns: ["id"])
+                  |> last(column: "id")
+                  |> group()
+                  |> max(column: "mag")
+                  |> map(fn: (r) => ({ r with place: distance_to_string(distance: r.distance, place: r.place, country: r.country) }))
+                  |> keep(columns: ["place"])
+        staticLegend: {}
+        width: 4
+        xPos: 3
+        yPos: 3
+      - colors:
+          - hex: '#22ADF6'
+            id: base
+            name: pool
+            type: background
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: '# Quakes'
+        queries:
+          - query: |-
+                import "influxdata/influxdb/schema"
+                import "experimental/geo"
+                import "strings"
+
+                option geo.units = {distance: v.Units}
+
+                city_coordinates = strings.split(v: v.Location, t: ":")
+                city_lat = float(v: city_coordinates[1])
+                city_lon = float(v: city_coordinates[2])
+
+                city_radius = if city_lat == 0.0 then 100000.0 else float(v: v.Radius)
+
+                mag_threshold = float(v: v.Magnitude_Threshold)
+
+                from(bucket: "apis")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "earthquake_stats")
+                  |> schema.fieldsAsCols()
+                  |> filter(fn: (r) => r["type"] == "earthquake" and r["status"] != "deleted")
+                  |> filter(fn: (r) => r["mag"] >= mag_threshold, onEmpty: "keep")
+                  |> geo.strictFilter(region: {lat: city_lat, lon: city_lon, radius: city_radius})
+                  |> group(columns: ["id"])
+                  |> last(column: "id")
+                  |> group()
+                  |> count(column: "mag")
+        staticLegend: {}
+        width: 1
+        xPos: 6
+      - colors:
+          - hex: '#7CE490'
+            id: base
+            name: honeydew
+            type: text
+          - hex: '#FFD255'
+            id: 0a6448ef-3c5d-49f3-8fb1-08491c3a0e3f
+            name: thunder
+            type: text
+            value: 2
+          - hex: '#FFB94A'
+            id: f6d517be-87e7-4c6d-8eca-142adcc4ed36
+            name: pineapple
+            type: text
+            value: 3
+          - hex: '#F48D38'
+            id: 5de2478b-5b70-463c-928d-be374a1ad1b5
+            name: tiger
+            type: text
+            value: 4
+          - hex: '#F95F53'
+            id: 7b606088-50bd-4ab5-a6eb-53435f0cbbde
+            name: curacao
+            type: text
+            value: 5
+          - hex: '#DC4E58'
+            id: 6d523420-9b54-4341-8276-73b8a5ff9527
+            name: fire
+            type: text
+            value: 6
+          - hex: '#BF3D5E'
+            id: e0c31ae2-3b98-4fdc-af59-b410f9329cfd
+            name: ruby
+            type: text
+            value: 7
+        decimalPlaces: 1
+        height: 1
+        kind: Single_Stat
+        name: Avg. Magnitude
+        queries:
+          - query: |-
+                import "influxdata/influxdb/schema"
+                import "experimental/geo"
+                import "strings"
+
+                option geo.units = {distance: v.Units}
+
+                city_coordinates = strings.split(v: v.Location, t: ":")
+                city_lat = float(v: city_coordinates[1])
+                city_lon = float(v: city_coordinates[2])
+
+                city_radius = if city_lat == 0.0 then 100000.0 else float(v: v.Radius)
+
+                mag_threshold = float(v: v.Magnitude_Threshold)
+
+                from(bucket: "apis")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "earthquake_stats")
+                  |> schema.fieldsAsCols()
+                  |> filter(fn: (r) => r["type"] == "earthquake" and r["status"] != "deleted")
+                  |> filter(fn: (r) => r["mag"] >= mag_threshold, onEmpty: "keep")
+                  |> geo.strictFilter(region: {lat: city_lat, lon: city_lon, radius: city_radius})
+                  |> group(columns: ["id"])
+                  |> last(column: "id")
+                  |> group()
+                  |> mean(column: "mag")
+        staticLegend: {}
+        width: 1
+        xPos: 6
+        yPos: 1
+      - colors:
+          - hex: '#7CE490'
+            id: base
+            name: honeydew
+            type: text
+          - hex: '#FFD255'
+            id: 0a6448ef-3c5d-49f3-8fb1-08491c3a0e3f
+            name: thunder
+            type: text
+            value: 2
+          - hex: '#FFB94A'
+            id: f6d517be-87e7-4c6d-8eca-142adcc4ed36
+            name: pineapple
+            type: text
+            value: 3
+          - hex: '#F48D38'
+            id: 5de2478b-5b70-463c-928d-be374a1ad1b5
+            name: tiger
+            type: text
+            value: 4
+          - hex: '#F95F53'
+            id: 7b606088-50bd-4ab5-a6eb-53435f0cbbde
+            name: curacao
+            type: text
+            value: 5
+          - hex: '#DC4E58'
+            id: 6d523420-9b54-4341-8276-73b8a5ff9527
+            name: fire
+            type: text
+            value: 6
+          - hex: '#BF3D5E'
+            id: e0c31ae2-3b98-4fdc-af59-b410f9329cfd
+            name: ruby
+            type: text
+            value: 7
+        decimalPlaces: 1
+        height: 1
+        kind: Single_Stat
+        name: Avg. Depth
+        queries:
+          - query: |-
+                import "influxdata/influxdb/schema"
+                import "experimental/geo"
+                import "strings"
+                import "math"
+
+                option geo.units = {distance: v.Units}
+
+                city_coordinates = strings.split(v: v.Location, t: ":")
+                city_lat = float(v: city_coordinates[1])
+                city_lon = float(v: city_coordinates[2])
+
+                city_radius = if city_lat == 0.0 then 100000.0 else float(v: v.Radius)
+
+                mag_threshold = float(v: v.Magnitude_Threshold)
+
+                depth_to_string = (n) =>
+                  if n > 0.0 then
+                    if v.Units == "km" then
+                      string(v: math.round(x: n)) + " km"
+                    else
+                      string(v: math.round(x: n * 0.621371)) + " mi"
+                  else
+                    ""
+
+                from(bucket: "apis")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "earthquake_stats")
+                  |> schema.fieldsAsCols()
+                  |> filter(fn: (r) => r["type"] == "earthquake" and r["status"] != "deleted")
+                  |> filter(fn: (r) => r["mag"] >= mag_threshold, onEmpty: "keep")
+                  |> geo.strictFilter(region: {lat: city_lat, lon: city_lon, radius: city_radius})
+                  |> group(columns: ["id"])
+                  |> last(column: "id")
+                  |> group()
+                  |> mean(column: "depth")
+                  |> map(fn: (r) => ({ r with depth: depth_to_string(n: r.depth) }))
+        staticLegend: {}
+        width: 1
+        xPos: 6
+        yPos: 2
+      - colors:
+          - hex: '#7CE490'
+            id: base
+            name: honeydew
+            type: background
+          - hex: '#FFD255'
+            id: eeddc270-082c-4b6f-88e4-ae991b4c6ee4
+            name: thunder
+            type: background
+            value: 2
+          - hex: '#FFB94A'
+            id: ff426588-93d6-4280-b8c1-15f7814b70cc
+            name: pineapple
+            type: background
+            value: 3
+          - hex: '#F48D38'
+            id: 809e3435-efb7-4cb2-ac9e-a9939039b3bd
+            name: tiger
+            type: background
+            value: 4
+          - hex: '#F95F53'
+            id: b7e59a75-69b5-4c31-aa1d-09a64c76855a
+            name: curacao
+            type: background
+            value: 5
+          - hex: '#DC4E58'
+            id: 3e8ff02e-1c44-48d3-84ba-341602ff45e2
+            name: fire
+            type: background
+            value: 6
+          - hex: '#BF3D5E'
+            id: 30659068-3458-4a11-bf73-c201e5a472e9
+            name: ruby
+            type: background
+            value: 7
+        fieldOptions:
+          - displayName: Time
+            fieldName: Time
+            visible: true
+          - displayName: Magnitude
+            fieldName: Magnitude
+            visible: true
+          - displayName: Location
+            fieldName: Location
+            visible: true
+          - displayName: id
+            fieldName: id
+            visible: true
+          - displayName: updated
+            fieldName: updated
+            visible: true
+          - displayName: _measurement
+            fieldName: _measurement
+            visible: true
+          - displayName: _start
+            fieldName: _start
+            visible: true
+          - displayName: _stop
+            fieldName: _stop
+            visible: true
+          - displayName: country
+            fieldName: country
+            visible: true
+          - displayName: depth
+            fieldName: depth
+            visible: true
+          - displayName: depthError
+            fieldName: depthError
+            visible: true
+          - displayName: distance
+            fieldName: distance
+            visible: true
+          - displayName: dmin
+            fieldName: dmin
+            visible: true
+          - displayName: gap
+            fieldName: gap
+            visible: true
+          - displayName: horizontalError
+            fieldName: horizontalError
+            visible: true
+          - displayName: lat
+            fieldName: lat
+            visible: true
+          - displayName: locationSource
+            fieldName: locationSource
+            visible: true
+          - displayName: lon
+            fieldName: lon
+            visible: true
+          - displayName: magError
+            fieldName: magError
+            visible: true
+          - displayName: magNst
+            fieldName: magNst
+            visible: true
+          - displayName: magSource
+            fieldName: magSource
+            visible: true
+          - displayName: magType
+            fieldName: magType
+            visible: true
+          - displayName: net
+            fieldName: net
+            visible: true
+          - displayName: nst
+            fieldName: nst
+            visible: true
+          - displayName: place_km
+            fieldName: place_km
+            visible: true
+          - displayName: rms
+            fieldName: rms
+            visible: true
+          - displayName: s2_cell_id
+            fieldName: s2_cell_id
+            visible: true
+          - displayName: status
+            fieldName: status
+            visible: true
+          - displayName: type
+            fieldName: type
+            visible: true
+        height: 4
+        kind: Table
+        name: Recent Earthquakes
+        queries:
+          - query: |-
+                import "influxdata/influxdb/schema"
+                import "experimental/geo"
+                import "experimental"
+                import "strings"
+                import "math"
+                import "regexp"
+
+                option geo.units = {distance: v.Units}
+
+                city_coordinates = strings.split(v: v.Location, t: ":")
+                city_lat = float(v: city_coordinates[1])
+                city_lon = float(v: city_coordinates[2])
+
+                city_radius = if city_lat == 0.0 then 100000.0 else float(v: v.Radius)
+
+                mag_threshold = float(v: v.Magnitude_Threshold)
+
+                distance_to_string = (distance, place, country) =>
+                  if distance > 0.0 then
+                    if v.Units == "km" then
+                      string(v: distance) + " km " + place
+                    else
+                      string(v: math.round(x: distance * 0.621371)) + " mi " + place
+                  else
+                    place
+
+                from(bucket: "apis")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "earthquake_stats")
+                  |> schema.fieldsAsCols()
+                  |> filter(fn: (r) => exists r["s2_cell_id"])
+                  |> filter(fn: (r) => r["type"] == "earthquake" and r["status"] != "deleted")
+                  |> filter(fn: (r) => r["mag"] >= mag_threshold, onEmpty: "keep")
+                  |> geo.strictFilter(region: {lat: city_lat, lon: city_lon, radius: city_radius})
+                  |> group(columns: ["id"])
+                  |> last(column: "id")
+                  |> group()
+                  |> map(fn: (r) => ({ r with mag: math.round(x: r.mag * 10.0) / 10.0 }))
+                  |> map(fn: (r) => ({ r with place: distance_to_string(distance: r.distance, place: r.place, country: r.country) }))
+                  |> keep(columns: ["mag", "place", "_time"])
+                  |> rename(columns: {mag: "Magnitude", place: "Location", _time: "Time"})
+                  |> sort(columns: ["Time"], desc: true)
+        staticLegend: {}
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 5
+        xPos: 7
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - label: Richter Magnitude
+            name: y
+            scale: linear
+        colors:
+          - hex: '#DC4E58'
+            id: 724cfce2-7781-4589-968c-3435e90e45f0
+            name: Solid Red
+            type: scale
+          - hex: '#DC4E58'
+            id: 083e1a67-9db1-4155-a003-976e43b0de23
+            name: Solid Red
+            type: scale
+          - hex: '#DC4E58'
+            id: 67870962-fd23-4c64-b4dd-663ee83ab099
+            name: Solid Red
+            type: scale
+        geom: step
+        height: 5
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Earthquake Magnitudes
+        position: overlaid
+        queries:
+          - query: |-
+                import "influxdata/influxdb/schema"
+                import "experimental/geo"
+                import "strings"
+
+                option geo.units = {distance: v.Units}
+
+                city_coordinates = strings.split(v: v.Location, t: ":")
+                city_lat = float(v: city_coordinates[1])
+                city_lon = float(v: city_coordinates[2])
+
+                city_radius = if city_lat == 0.0 then 100000.0 else float(v: v.Radius)
+
+                mag_threshold = float(v: v.Magnitude_Threshold)
+
+                from(bucket: "apis")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "earthquake_stats")
+                  |> schema.fieldsAsCols()
+                  |> filter(fn: (r) => r["type"] == "earthquake" and r["status"] != "deleted")
+                  |> filter(fn: (r) => r["mag"] >= mag_threshold, onEmpty: "keep")
+                  |> geo.strictFilter(region: {lat: city_lat, lon: city_lon, radius: city_radius})
+                  |> group(columns: ["id"])
+                  |> last(column: "id")
+                  |> group()
+                  |> rename(columns: {mag: "_value"})
+                  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)
+        staticLegend: {}
+        width: 5
+        xCol: _time
+        xPos: 7
+        yCol: _value
+        yPos: 4
+    description: via USGS earthquake feed
+    name: Earthquake Command Center
