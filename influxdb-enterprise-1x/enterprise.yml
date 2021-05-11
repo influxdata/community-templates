@@ -58,7 +58,7 @@ spec:
         name: '# of Data Nodes'
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "system")
                   |> filter(fn: (r) => r["_field"] == "n_cpus")
@@ -66,7 +66,7 @@ spec:
                   |> count()
                   |> yield(name: "count")
 
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "system")
                   |> filter(fn: (r) => r["_field"] == "n_cpus")
@@ -151,7 +151,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "system")
                   |> filter(fn: (r) => r["_field"] == "load5")
@@ -195,7 +195,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "influxdb_hh_processor")
                   |> filter(fn: (r) => r["_field"] == "queueBytes")
@@ -238,7 +238,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "influxdb_write")
                   |> filter(fn: (r) => r["_field"] == "pointReq")
@@ -281,7 +281,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "disk")
                   |> filter(fn: (r) => r["_field"] == "used_percent")
@@ -324,7 +324,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "influxdb_queryExecutor")
                   |> filter(fn: (r) => r["_field"] == "queriesExecuted")
@@ -367,7 +367,7 @@ spec:
         noteOnEmpty: true
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "influxdb_runtime")
                   |> filter(fn: (r) => r["_field"] == "HeapInUse")
@@ -411,7 +411,7 @@ spec:
         noteOnEmpty: true
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "internal_write")
                   |> filter(fn: (r) => r["_field"] == "write_time_ns")
@@ -455,7 +455,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "diskio")
                   |> filter(fn: (r) => r["_field"] == "reads" or r["_field"] == "writes")
@@ -498,7 +498,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "diskio")
                   |> filter(fn: (r) => r["_field"] == "io_time")
@@ -541,7 +541,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "influxdb_httpd")
                   |> filter(fn: (r) => r["_field"] == "queryReq" or r["_field"] == "fluxQueryReq")
@@ -584,7 +584,7 @@ spec:
         noteOnEmpty: true
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "influxdb_queryExecutor")
                   |> filter(fn: (r) => r["_field"] == "queryDurationNs")
@@ -628,7 +628,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "disk")
                   |> filter(fn: (r) => r["_field"] == "total" or r["_field"] == "used")
@@ -671,7 +671,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "influxdb_write")
                   |> filter(fn: (r) => r["_field"] == "pointReq")
@@ -694,7 +694,7 @@ spec:
         name: Disk Allocated
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "disk")
                   |> filter(fn: (r) => r["_field"] == "total")
@@ -716,7 +716,7 @@ spec:
         name: Disk Usage
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "disk")
                   |> filter(fn: (r) => r["_field"] == "used")
@@ -756,7 +756,7 @@ spec:
         noteOnEmpty: true
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "influxdb_database")
                   |> filter(fn: (r) => r["_field"] == "numSeries")
@@ -781,7 +781,7 @@ spec:
         name: Total Cluster CPU
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "system")
                   |> filter(fn: (r) => r["_field"] == "n_cpus")
@@ -822,7 +822,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "mem")
                   |> filter(fn: (r) => r["_field"] == "used_percent")
@@ -867,7 +867,7 @@ spec:
         noteOnEmpty: true
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "influxdb_httpd")
                   |> filter(fn: (r) => r["_field"] == "queryReq")
@@ -912,7 +912,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "influxdb_shard")
                   |> filter(fn: (r) => r["_field"] == "writePointsErr")
@@ -957,7 +957,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "influxdb_cq")
                   |> derivative(unit: 1s, nonNegative: true)
@@ -1000,7 +1000,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "influxdb_httpd")
                   |> filter(fn: (r) => r["_field"] == "queryReq")
@@ -1045,7 +1045,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "disk")
                   |> filter(fn: (r) => r["_field"] == "used_percent")
@@ -1091,7 +1091,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "diskio")
                   |> filter(fn: (r) => r["_field"] == "writes")
@@ -1135,7 +1135,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "diskio")
                   |> filter(fn: (r) => r["_field"] == "io_time")
@@ -1180,7 +1180,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "diskio")
                   |> filter(fn: (r) => r["_field"] == "write_bytes" or r["_field"] == "read_bytes")
@@ -1224,7 +1224,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "influxdb_httpd")
                   |> filter(fn: (r) => r["_field"] == "fluxQueryReq")
@@ -1268,7 +1268,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "influxdb_cq")
                   |> filter(fn: (r) => r["_field"] == "queryOk")
@@ -1312,7 +1312,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "influxdb_cq")
                   |> filter(fn: (r) => r["_field"] == "queryFail")
@@ -1336,7 +1336,7 @@ spec:
         name: vCPU / Node
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "system")
                   |> filter(fn: (r) => r["_field"] == "n_cpus")
@@ -1357,7 +1357,7 @@ spec:
         name: Memory per Data Node
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "system" or r["_measurement"] == "mem")
                   |> filter(fn: (r) => r["_field"] == "total")
@@ -1391,7 +1391,7 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "telegraf")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "influxdb")
                   |> filter(fn: (r) => r["_field"] == "n_shards")
