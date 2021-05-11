@@ -1,0 +1,1465 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: gallant-spence-cc3001
+spec:
+    color: '#00a3ff'
+    name: enterprise
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: distracted-meitner-4c3001
+spec:
+    associations:
+      - kind: Label
+        name: gallant-spence-cc3001
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> filter(fn: (r) => r.name !~ /^_/)
+          |> rename(columns: {name: "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: elastic-bell-4c3005
+spec:
+    associations:
+      - kind: Label
+        name: gallant-spence-cc3001
+    language: flux
+    name: influxdb_host
+    query: |-
+        import "influxdata/influxdb/v1"
+        v1.measurementTagValues(bucket: v.bucket, measurement: "influxdb", tag: "host")
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: laughing-heisenberg-0c3001
+spec:
+    associations:
+      - kind: Label
+        name: gallant-spence-cc3001
+    charts:
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: '# of Data Nodes'
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "system")
+                  |> filter(fn: (r) => r["_field"] == "n_cpus")
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> count()
+                  |> yield(name: "count")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "system")
+                  |> filter(fn: (r) => r["_field"] == "n_cpus")
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        width: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 0d674260-448e-4ab4-859e-46a108004523
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 57457c5f-bc1b-4f58-a343-821ff5a71f34
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: b9118992-3bf4-4b72-bb41-032dffcb2cee
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: CPU Utilization
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cpu")
+                  |> filter(fn: (r) => r["_field"] == "usage_user")
+                  |> filter(fn: (r) => r["cpu"] == "cpu-total")
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)
+                  |> yield(name: "max")
+        shade: true
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#FDC44F'
+            id: 5c35ba74-dfd1-4430-a7e2-cad8be03438f
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            id: fb65c969-f18a-4777-afb6-507a04d230b1
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            id: f5bb4db8-c173-49b5-a03a-7e61c021e0b9
+            name: Cthulhu
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: System Load (load5)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "system")
+                  |> filter(fn: (r) => r["_field"] == "load5")
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)
+                  |> yield(name: "max")
+        shade: true
+        staticLegend: {}
+        width: 12
+        xCol: _time
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 89010612-cb84-4699-b1e0-179d414394e1
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: d8786ad8-fc4e-4dec-80b4-fb80d7ca85f7
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 8017eabf-bfce-46e6-846b-feb7bdd7424b
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Hinted HandOff Queue Size
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "influxdb_hh_processor")
+                  |> filter(fn: (r) => r["_field"] == "queueBytes")
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)
+                  |> yield(name: "max")
+        staticLegend: {}
+        width: 5
+        xCol: _time
+        yCol: _value
+        yPos: 7
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 0d674260-448e-4ab4-859e-46a108004523
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 57457c5f-bc1b-4f58-a343-821ff5a71f34
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: b9118992-3bf4-4b72-bb41-032dffcb2cee
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Per-Host Point Throughput/Sec
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "influxdb_write")
+                  |> filter(fn: (r) => r["_field"] == "pointReq")
+                  |> derivative(unit: 1s, nonNegative: true)
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> yield(name: "nonnegative derivative")
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 10
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: b3667260-c719-46f7-9722-ac281ec90a76
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 3b04c616-241e-4af5-baf1-4d0e2d72788f
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: bcefd129-865d-4021-bdf0-06cb0143f787
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Disk Utilization %
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "disk")
+                  |> filter(fn: (r) => r["_field"] == "used_percent")
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)
+                  |> yield(name: "max")
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 13
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#FDC44F'
+            id: 2f2df749-8bad-4a84-bdb2-c437c3e95cb3
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            id: d9b8be8a-e24d-4990-8676-0165307b0f42
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            id: 8137ab5d-553d-454d-b00a-2b24e744557e
+            name: Cthulhu
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Queries Executed / Sec
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "influxdb_queryExecutor")
+                  |> filter(fn: (r) => r["_field"] == "queriesExecuted")
+                  |> derivative(unit: 1s, nonNegative: true)
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> yield(name: "nonnegative derivative")
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 16
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#FDC44F'
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            name: Cthulhu
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Heap Size
+        note: |-
+            ---
+
+            ##### No Results?
+            Be sure to select the correct bucket and InfluxDB host using the variables at the top of the dashboard.
+
+            _This cell requires data collected by the [Telegraf `influxdb` input plugin](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/influxdb)._
+        noteOnEmpty: true
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "influxdb_runtime")
+                  |> filter(fn: (r) => r["_field"] == "HeapInUse")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> yield(name: "mean")
+        shade: true
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 19
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Write Duration
+        note: |-
+            ---
+
+            ##### No Results?
+            Be sure to select the correct bucket and InfluxDB host using the variables at the top of the dashboard.
+
+            _This cell requires data collected by the [Telegraf `influxdb` input plugin](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/influxdb)._
+        noteOnEmpty: true
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "internal_write")
+                  |> filter(fn: (r) => r["_field"] == "write_time_ns")
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        shade: true
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 22
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: d76a47ba-9183-4ed7-b6d2-ed3c76489c11
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 932a5c94-9219-4d66-803a-c02bc9078043
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: e2d8eb53-c4db-431c-91a7-3c1cc1ced4d7
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: IOPs
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "diskio")
+                  |> filter(fn: (r) => r["_field"] == "reads" or r["_field"] == "writes")
+                  |> derivative(unit: 1s, nonNegative: true)
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> yield(name: "nonnegative derivative")
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 25
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: d76a47ba-9183-4ed7-b6d2-ed3c76489c11
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 932a5c94-9219-4d66-803a-c02bc9078043
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: e2d8eb53-c4db-431c-91a7-3c1cc1ced4d7
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: iostat ala telegraf
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "diskio")
+                  |> filter(fn: (r) => r["_field"] == "io_time")
+                  |> derivative(unit: 1s, nonNegative: true)
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> yield(name: "nonnegative derivative")
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 28
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: d76a47ba-9183-4ed7-b6d2-ed3c76489c11
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 932a5c94-9219-4d66-803a-c02bc9078043
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: e2d8eb53-c4db-431c-91a7-3c1cc1ced4d7
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: HTTP Requests/Sec (InfluxQL + Flux)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "influxdb_httpd")
+                  |> filter(fn: (r) => r["_field"] == "queryReq" or r["_field"] == "fluxQueryReq")
+                  |> derivative(unit: 1s, nonNegative: true)
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> yield(name: "nonnegative derivative")
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 31
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Long Query Check
+        note: |-
+            ---
+
+            ##### No Results?
+            Be sure to select the correct bucket and InfluxDB host using the variables at the top of the dashboard.
+
+            _This cell requires data collected by the [Telegraf `influxdb` input plugin](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/influxdb)._
+        noteOnEmpty: true
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "influxdb_queryExecutor")
+                  |> filter(fn: (r) => r["_field"] == "queryDurationNs")
+                  |> derivative(unit: 1s, nonNegative: true)
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> yield(name: "nonnegative derivative")
+        shade: true
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 34
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: b3667260-c719-46f7-9722-ac281ec90a76
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 3b04c616-241e-4af5-baf1-4d0e2d72788f
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: bcefd129-865d-4021-bdf0-06cb0143f787
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Disk Storage (Total & Used per Data Node)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "disk")
+                  |> filter(fn: (r) => r["_field"] == "total" or r["_field"] == "used")
+                  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> yield(name: "max")
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 37
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: d76a47ba-9183-4ed7-b6d2-ed3c76489c11
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 932a5c94-9219-4d66-803a-c02bc9078043
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: e2d8eb53-c4db-431c-91a7-3c1cc1ced4d7
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Stuff Coming In
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "influxdb_write")
+                  |> filter(fn: (r) => r["_field"] == "pointReq")
+                  |> derivative(unit: 1s, nonNegative: true)
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> yield(name: "nonnegative derivative")
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 40
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Disk Allocated
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "disk")
+                  |> filter(fn: (r) => r["_field"] == "total")
+                  |> map(fn: (r) => ({ r with _value: r._value / 1073741824 }))
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        width: 2
+        xPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Disk Usage
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "disk")
+                  |> filter(fn: (r) => r["_field"] == "used")
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> last()
+        staticLegend: {}
+        width: 2
+        xPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: Series Cardinality by Database
+        note: |-
+            ---
+
+            ##### No Results?
+            Be sure to select the correct bucket and InfluxDB host using the variables at the top of the dashboard.
+
+            _This cell requires data collected by the [Telegraf `influxdb` input plugin](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/influxdb)._
+        noteOnEmpty: true
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "influxdb_database")
+                  |> filter(fn: (r) => r["_field"] == "numSeries")
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)
+                  |> yield(name: "max")
+        shade: true
+        staticLegend: {}
+        width: 5
+        xCol: _time
+        xPos: 5
+        yCol: _value
+        yPos: 7
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Total Cluster CPU
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "system")
+                  |> filter(fn: (r) => r["_field"] == "n_cpus")
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum, createEmpty: false)
+                  |> yield(name: "sum")
+        staticLegend: {}
+        width: 2
+        xPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#74D495'
+            id: 9853b7ce-07ba-487a-8635-cb20ccf70bec
+            name: Atlantis
+            type: scale
+          - hex: '#3F3FBA'
+            id: 545673ae-fd18-4f9e-ada1-aea723efd8cf
+            name: Atlantis
+            type: scale
+          - hex: '#FF4D9E'
+            id: edfa83f0-fd1e-48e5-9db4-5c3c18327c45
+            name: Atlantis
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Memory Usage %
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "mem")
+                  |> filter(fn: (r) => r["_field"] == "used_percent")
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)
+                  |> yield(name: "max")
+        shade: true
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        kind: Xy
+        name: HTTP Requests / Sec
+        note: |-
+            ---
+
+            ##### No Results?
+            Be sure to select the correct bucket and InfluxDB host using the variables at the top of the dashboard.
+
+            _This cell requires data collected by the [Telegraf `influxdb` input plugin](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/influxdb)._
+        noteOnEmpty: true
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "influxdb_httpd")
+                  |> filter(fn: (r) => r["_field"] == "queryReq")
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> derivative(unit: 1s, nonNegative: true)
+                  |> yield(name: "nonnegative derivative")
+        shade: true
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 10
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 89010612-cb84-4699-b1e0-179d414394e1
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: d8786ad8-fc4e-4dec-80b4-fb80d7ca85f7
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 8017eabf-bfce-46e6-846b-feb7bdd7424b
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Shard Write Errors
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "influxdb_shard")
+                  |> filter(fn: (r) => r["_field"] == "writePointsErr")
+                  |> filter(fn: (r) => r["database"] == "_internal")
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 13
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#FDC44F'
+            id: 2f2df749-8bad-4a84-bdb2-c437c3e95cb3
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            id: d9b8be8a-e24d-4990-8676-0165307b0f42
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            id: 8137ab5d-553d-454d-b00a-2b24e744557e
+            name: Cthulhu
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: CQs Executed / Min
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "influxdb_cq")
+                  |> derivative(unit: 1s, nonNegative: true)
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> yield(name: "nonnegative derivative")
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 16
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: b3667260-c719-46f7-9722-ac281ec90a76
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 3b04c616-241e-4af5-baf1-4d0e2d72788f
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: bcefd129-865d-4021-bdf0-06cb0143f787
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: HTTP Request Duration (99th %)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "influxdb_httpd")
+                  |> filter(fn: (r) => r["_field"] == "queryReq")
+                  |> derivative(unit: 1s, nonNegative: true)
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> yield(name: "nonnegative derivative")
+                  |> quantile(q: 0.99)
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 19
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#DA6FF1'
+            id: 66c46dc9-acf2-451f-bde5-3cbe0c1fa7b8
+            name: Ectoplasm
+            type: scale
+          - hex: '#00717A'
+            id: 56d6ae94-945f-47cb-83ee-6213fbcab0c3
+            name: Ectoplasm
+            type: scale
+          - hex: '#ACFF76'
+            id: cbc5bd6f-1d21-42f9-8e3e-852c0bdecb62
+            name: Ectoplasm
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Root Directory Used %
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "disk")
+                  |> filter(fn: (r) => r["_field"] == "used_percent")
+                  |> filter(fn: (r) => r["path"] == "/")
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)
+                  |> yield(name: "max")
+        shade: true
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 22
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: d76a47ba-9183-4ed7-b6d2-ed3c76489c11
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 932a5c94-9219-4d66-803a-c02bc9078043
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: e2d8eb53-c4db-431c-91a7-3c1cc1ced4d7
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: IOPs - Writes Only per minute
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "diskio")
+                  |> filter(fn: (r) => r["_field"] == "writes")
+                  |> derivative(unit: 1s, nonNegative: true)
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> yield(name: "nonnegative derivative")
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 25
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: d76a47ba-9183-4ed7-b6d2-ed3c76489c11
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 932a5c94-9219-4d66-803a-c02bc9078043
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: e2d8eb53-c4db-431c-91a7-3c1cc1ced4d7
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: iostat ala telegraf (Metas)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "diskio")
+                  |> filter(fn: (r) => r["_field"] == "io_time")
+                  |> derivative(unit: 1s, nonNegative: true)
+                  |> map(fn: (r) => ({ r with _value: r._value * 1000.0 }))
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> yield(name: "nonnegative derivative")
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 28
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: d76a47ba-9183-4ed7-b6d2-ed3c76489c11
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 932a5c94-9219-4d66-803a-c02bc9078043
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: e2d8eb53-c4db-431c-91a7-3c1cc1ced4d7
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Disk throughput | (Reads + Writes)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "diskio")
+                  |> filter(fn: (r) => r["_field"] == "write_bytes" or r["_field"] == "read_bytes")
+                  |> derivative(unit: 1s, nonNegative: true)
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> yield(name: "nonnegative derivative")
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 31
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: d76a47ba-9183-4ed7-b6d2-ed3c76489c11
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 932a5c94-9219-4d66-803a-c02bc9078043
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: e2d8eb53-c4db-431c-91a7-3c1cc1ced4d7
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: HTTP Requests/Sec (Flux)
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "influxdb_httpd")
+                  |> filter(fn: (r) => r["_field"] == "fluxQueryReq")
+                  |> derivative(unit: 1s, nonNegative: true)
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> yield(name: "nonnegative derivative")
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 34
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#FDC44F'
+            id: 2f2df749-8bad-4a84-bdb2-c437c3e95cb3
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            id: d9b8be8a-e24d-4990-8676-0165307b0f42
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            id: 8137ab5d-553d-454d-b00a-2b24e744557e
+            name: Cthulhu
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: CQs OK
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "influxdb_cq")
+                  |> filter(fn: (r) => r["_field"] == "queryOk")
+                  |> derivative(unit: 1s, nonNegative: true)
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> yield(name: "nonnegative derivative")
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 37
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#DA6FF1'
+            id: c51449ed-05c0-45b6-a036-85e602a5ed2d
+            name: Ectoplasm
+            type: scale
+          - hex: '#00717A'
+            id: fafe5658-f5b4-40f4-970f-616155dd92ba
+            name: Ectoplasm
+            type: scale
+          - hex: '#ACFF76'
+            id: 2447fe6e-e635-4d50-88b0-6a78b73c09c1
+            name: Ectoplasm
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: CQs Failures
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "influxdb_cq")
+                  |> filter(fn: (r) => r["_field"] == "queryFail")
+                  |> derivative(unit: 1s, nonNegative: true)
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> yield(name: "nonnegative derivative")
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 40
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: vCPU / Node
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "system")
+                  |> filter(fn: (r) => r["_field"] == "n_cpus")
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        width: 2
+        xPos: 8
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Memory per Data Node
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "system" or r["_measurement"] == "mem")
+                  |> filter(fn: (r) => r["_field"] == "total")
+                  |> map(fn: (r) => ({ r with _value: r._value / 1073741824 }))
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)
+                  |> yield(name: "max")
+        staticLegend: {}
+        width: 2
+        xPos: 10
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 3
+        hoverDimension: auto
+        kind: Single_Stat_Plus_Line
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Shards
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "influxdb")
+                  |> filter(fn: (r) => r["_field"] == "n_shards")
+                  |> filter(fn: (r) => r.host == v.influxdb_host)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        width: 2
+        xCol: _time
+        xPos: 10
+        yCol: _value
+        yPos: 7
+    description: A dashboard for monitoring your InfluxDB 1.x Enterprise instances.
+    name: InfluxDB 1.x Enterprise
+
+---
+
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: monitoring-enterprise-1x
+spec:
+    associations:
+      - kind: Label
+        name: gallant-spence-cc3001
+    config: |
+          [agent]
+          interval = "10s"
+          flush_interval = "10s"
+          hostname = ""
+
+          [[outputs.influxdb_v2]]
+            urls = ["$INFLUX_HOST"]
+            token = "$INFLUX_TOKEN"
+            organization = "$INFLUX_ORG"
+            bucket = "$INFLUX_BUCKET"
+
+          [[inputs.influxdb]]
+            urls = [
+              "http://localhost:8086/debug/vars"
+            ]
+
+            #username = "username"
+            #password = "supersecret"
+
+            ## Optional TLS Config
+            # tls_ca = "/etc/telegraf/ca.pem"
+            # tls_cert = "/etc/telegraf/cert.pem"
+            # tls_key = "/etc/telegraf/key.pem"
+            ## Use TLS but skip chain & host verification
+            # insecure_skip_verify = false
+
+            ## http request & header timeout
+            timeout = "5s"
+
+          [[inputs.cpu]]
+            percpu = true
+            totalcpu = true
+            collect_cpu_time = false
+            report_active = false
+
+          [[inputs.disk]]
+            ignore_fs = ["tmpfs", "devtmpfs", "devfs", "overlay", "aufs", "squashfs"]
+          [[inputs.diskio]]
+          [[inputs.mem]]
+          [[inputs.net]]
+          [[inputs.processes]]
+          [[inputs.swap]]
+          [[inputs.system]]
+          [[inputs.internal]]
+            # collect_memstats = true

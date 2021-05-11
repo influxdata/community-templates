@@ -39,6 +39,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [Github](github/) | View information about your Github Repos. Forks, Issues, Stars and more. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [HAProxy](haproxy/) | Get metrics of your HAProxy instance. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [InfluxDB 1.x Monitor](monitoring_influxdb_1.x/) | Monitor your already running InfluxDB 1.x instance. | [@russorat](https://github.com/russorat) |
+| [InfluxDB Enterprise 1.x Monitor](influxdb-enterprise-1x/) | Monitor your already running InfluxDB 1.x Enterprise instance. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [InfluxDB 2 OSS Metrics](influxdb2_oss_metrics/) | Monitor your InfluxDB 2 OSS instance using scrapers. | [@russorat](https://github.com/russorat) |
 | [InfluxDB 2 Operational Monitoring](influxdb2_operational_monitoring/) | Monitor you tasks and cardinality on your already running InfluxDB 2 instance. | [@Anaisdg](https://github.com/Anaisdg) |
 | [Island Pulse (Modbus)](modbus/) | Monitor Island Pulse energy gauge over Modbus | Ray Farias |
