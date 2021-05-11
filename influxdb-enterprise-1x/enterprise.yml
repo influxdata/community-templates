@@ -1427,7 +1427,7 @@ spec:
             urls = ["$INFLUX_HOST"]
             token = "$INFLUX_TOKEN"
             organization = "$INFLUX_ORG"
-            bucket = "telegraf"
+            bucket = "$INFLUX_BUCKET"
 
           [[inputs.influxdb]]
             urls = [

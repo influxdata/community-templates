@@ -31,9 +31,10 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
 General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
 
 Telegraf Configuration requires the following environment variables
-  - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to the `telegraf` bucket. You can just use your operator token to get started.
+  - `INFLUX_TOKEN` - The token with the permissions to read Telegraf configs and write data to your bucket. You can just use your operator token to get started.
   - `INFLUX_ORG` - The name of your Organization.
-  - `INFLUX_HOST` - The address of you InfluxDB
+  - `INFLUX_HOST` - The address of you InfluxDB.
+  - `INFLUX_BUCKET` - The name of your bucket.
 
 In order to use this template, I recommend you open a [InfluxDB Cloud account](https://www.influxdata.com/products/influxdb-cloud/).
 
