@@ -70,7 +70,7 @@ If you have your InfluxDB credentials [configured in the CLI](https://v2.docs.in
 
 #### Setup Instructions for the Cardinality Now Template 
 
- You must at least one bucket and have written data to that bucket for the `Cardinality Now` dashboard to be populated with data.  
+ You must have at least one bucket and have written data to that bucket for the `Cardinality Now` dashboard to be populated with data.  
 
 
 ## Contact
