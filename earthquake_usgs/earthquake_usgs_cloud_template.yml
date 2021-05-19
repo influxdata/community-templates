@@ -470,7 +470,6 @@ spec:
                   |> max(column: "mag")
                   |> keep(columns: ["mag"])
         staticLegend: {}
-        tickPrefix: "false"
         width: 3
         xPos: 3
       - colors:
