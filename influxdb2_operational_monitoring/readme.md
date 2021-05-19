@@ -2,7 +2,7 @@
 
 Provided by: InfluxData
 
-This directory contains two InfluxDB Templates, [Operational Monitoring Template](./influxdb2_operational_monitoring.yml) and [Cardinality Now Template](./cardinality_now.yml), that can be used to monitor your InfluxDB tasks and cardinality on your already running InfluxDB 2 instance. These templates are only compatible with the Cloud version of InfluxDB 2.
+This directory contains two InfluxDB Templates, [Operational Monitoring Template](./influxdb2_operational_monitoring.yml) and [Cardinality Now Template](./influxdb2_cardinality_now.yml), that can be used to monitor your InfluxDB tasks and cardinality on your already running InfluxDB 2 instance. These templates are only compatible with the Cloud version of InfluxDB 2.
 
 ### Operational Monitoring Template
 
