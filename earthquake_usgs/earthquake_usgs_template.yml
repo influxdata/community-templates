@@ -465,7 +465,6 @@ spec:
                   |> group()
                   |> max(column: "mag")
                   |> keep(columns: ["mag"])
-        tickPrefix: "false"
         width: 3
         xPos: 3
       - colors:
