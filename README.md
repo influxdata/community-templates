@@ -42,6 +42,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [InfluxDB Enterprise 1.x Monitor](influxdb-enterprise-1x/) | Monitor your already running InfluxDB 1.x Enterprise instance. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [InfluxDB 2 OSS Metrics](influxdb2_oss_metrics/) | Monitor your InfluxDB 2 OSS instance using scrapers. | [@russorat](https://github.com/russorat) |
 | [InfluxDB 2 Operational Monitoring](influxdb2_operational_monitoring/) | Monitor you tasks and cardinality on your already running InfluxDB 2 instance. | [@Anaisdg](https://github.com/Anaisdg) |
+| [InfluxDB Cloud Usage Dashboard](usage_dashboard/) | Monitor your InfluxDB Cloud data usage and limit events. Send Slack alert when limit event is triggered. | [John Corrigan](https://github.com/corriganjohn) |
 | [Island Pulse (Modbus)](modbus/) | Monitor Island Pulse energy gauge over Modbus | Ray Farias |
 | [IoT Center example app](iot_center/) | Simple dashboard showing measured values from IoT devices. | [@bonitoo.io](https://github.com/bonitoo-io) |
 | [Jboss Wildfly](jboss_wildfly/) | View information your Jboss Wildfly Instance using Jolokia. Uptime, Heap Memory, Non Heap Memory, Memory Pool, etc | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
@@ -66,7 +67,6 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [Speedtest Dashboard](speedtest/) | This template will show you information about the speed of your Internet connection using speedtest-cli | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Telegraf Dashboard](telegraf/) | View throughput and internal stats about your Telegraf instances | Steven Soroka |
 | [Tomcat Dashboard](tomcat/) | Monitor your Tomcat instance. Include Threads, Commit Memory, Request Count, Traffic and more | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
-| [Usage Dashboard](usage_dashboard/) | Monitor your InfluxDB Cloud data usage and limit events. Send Slack alert when limit event is triggered. | [John Corrigan](https://github.com/corriganjohn) |
 | [vSphere System Monitor](vsphere/) | View information about vSphere system. CPU, RAM, Network, Disk Latency and more | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Website Monitor (Apache/Postgresql)](apache_postgresql/) | Monitor a website that uses Apache and Postgresql | [Michael Hall](https://github.com/mhall119) |
 | [Website Monitor (NGINX/MySQL)](nginx_mysql/) | Monitor a website that uses NGINX and MySQL | Ray Farias |
