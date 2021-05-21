@@ -42,6 +42,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [InfluxDB Enterprise 1.x Monitor](influxdb-enterprise-1x/) | Monitor your already running InfluxDB 1.x Enterprise instance. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [InfluxDB 2 OSS Metrics](influxdb2_oss_metrics/) | Monitor your InfluxDB 2 OSS instance using scrapers. | [@russorat](https://github.com/russorat) |
 | [InfluxDB 2 Operational Monitoring](influxdb2_operational_monitoring/) | Monitor you tasks and cardinality on your already running InfluxDB 2 instance. | [@Anaisdg](https://github.com/Anaisdg) |
+| [InfluxDB Cloud Usage Dashboard](usage_dashboard/) | Monitor your InfluxDB Cloud data usage and limit events. Send Slack alert when limit event is triggered. | [John Corrigan](https://github.com/corriganjohn) |
 | [Island Pulse (Modbus)](modbus/) | Monitor Island Pulse energy gauge over Modbus | Ray Farias |
 | [IoT Center example app](iot_center/) | Simple dashboard showing measured values from IoT devices. | [@bonitoo.io](https://github.com/bonitoo-io) |
 | [Jboss Wildfly](jboss_wildfly/) | View information your Jboss Wildfly Instance using Jolokia. Uptime, Heap Memory, Non Heap Memory, Memory Pool, etc | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
