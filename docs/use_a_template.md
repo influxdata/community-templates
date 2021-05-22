@@ -46,4 +46,4 @@ If running InfluxDB on a remote server, provide the URL of your InfluxDB instanc
 ```
 
 
-> Need help? You can find [support](../README.md#support) information at the bottom of the main page.
+> Need help? You can find [support](../readme.md#support) information at the bottom of the main page.

@@ -28,7 +28,7 @@ You can include a uniquely-named [Bucket](https://v2.docs.influxdata.com/v2.0/re
 > **Note:** While including a bucket with your template can simplify things for the user, those using the InfluxDB Cloud free tier have a limited number of buckets and may not be able to use your template. It also makes it harder to use the template with data in an existing bucket.
 
 #### Reuse an existing Bucket by name
-It's common for Telegraf to write to a Bucket named `telegraf`. Existing users likely already have a `telegraf` Bucket your template can use. Include information about Bucket dependencies in your Template's `README.md` with instructions for creating the Bucket if it doesn't exist.
+It's common for Telegraf to write to a Bucket named `telegraf`. Existing users likely already have a `telegraf` Bucket your template can use. Include information about Bucket dependencies in your Template's `readme.md` with instructions for creating the Bucket if it doesn't exist.
 
 #### Let the user choose their Bucket
 The most flexible option is to let the user choose a Bucket instead. You can do this with a Variable that will provide them a drop-down list of their existing Buckets to choose from. Simply create a Query Variable called `bucket` with the following Flux query. Our documentation has some [common Variable queries](https://v2.docs.influxdata.com/v2.0/visualize-data/variables/common-variables/) you might find useful.
@@ -98,11 +98,11 @@ influx export all --filter=labelName=your_label_name
 
 A good Template needs to be more than just a Dashboard. It should also include ways to send data to a user's InfluxDB instance. This can be done in a number of ways, from making calls directly to the [InfluxDB API](https://v2.docs.influxdata.com/v2.0/write-data/#influxdb-api), using the [InfluxDB Client libraries](https://v2.docs.influxdata.com/v2.0/reference/api/client-libraries/), or by [using Telegraf](https://v2.docs.influxdata.com/v2.0/write-data/use-telegraf/) and it's many plugins that do the bulk of the work for you.
 
-Telegraf is a widely used data collection agent with a large community that has contributed plugins for gathering data from a variety of sources. Whatever data you're collecting, chances are there's a Telegraf plugin that can help you do it. We recommend that Templates to include a Telegraf configuration for collecting data. If you use another method of sending data to InfluxDB, include that information and instructions in your Template's `README.md`.
+Telegraf is a widely used data collection agent with a large community that has contributed plugins for gathering data from a variety of sources. Whatever data you're collecting, chances are there's a Telegraf plugin that can help you do it. We recommend that Templates to include a Telegraf configuration for collecting data. If you use another method of sending data to InfluxDB, include that information and instructions in your Template's `readme.md`.
 
 ### Use Environment Variables
 
-To make your Telegraf configurations easily usable by others, use [environment variables](https://github.com/influxdata/telegraf/blob/master/docs/CONFIGURATION.md#environment-variables) for customizable options. In your template's `README.md`, include information about what environment variables need to be set.
+To make your Telegraf configurations easily usable by others, use [environment variables](https://github.com/influxdata/telegraf/blob/master/docs/CONFIGURATION.md#environment-variables) for customizable options. In your template's `readme.md`, include information about what environment variables need to be set.
 
 The most common settings to replace with environment variables are in the `[[outputs.influxdb_v2]]` section of your Telegraf configuration:
 
@@ -122,7 +122,7 @@ bucket = "$INFLUX_BUCKET"
 
 Depending on what Telegraf input plugins you use, there may be other settings to replace with environment variables, such as host names, databases, or authentication credentials.
 
-> **Note:** Document all environment variables in your Template's `README.md` so users will know what environment variables they need to set before using Telegraf.
+> **Note:** Document all environment variables in your Template's `readme.md` so users will know what environment variables they need to set before using Telegraf.
 
 ### Telegraf Configuration Labels
 
@@ -151,7 +151,7 @@ spec:
 
 ## Test Your Template
 
-After you export your finished Template, test it to make sure that it applies cleanly, has everything you want to include, and that the instructions your provide in your `README.md` have all the necessary steps.
+After you export your finished Template, test it to make sure that it applies cleanly, has everything you want to include, and that the instructions your provide in your `readme.md` have all the necessary steps.
 
 To create a clean, ephemeral InfluxDB testing environment, run InfluxDB inside of a Docker container:
 
