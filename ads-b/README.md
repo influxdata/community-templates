@@ -2,7 +2,7 @@
 
 Provided by: Tim Yocum
 
-This dashboard will help you monitor and visualize metrics scraped from a [dump1090](https://github.com/flightaware/dump1090/) ADS-B flight tracking instance using [dump1090-exporter](https://github.com/claws/dump1090-exporter) to present a `/stats` Prometheus endpoint that can be scraped with Telegraf. While this dashboard is vendor-agnostic, it has been tested against a [PiAware](https://flightaware.com/adsb/piaware/) instance as provided by [FlightAware](https://flightware.com).
+This dashboard will help you monitor and visualize metrics scraped from a [dump1090](https://github.com/flightaware/dump1090/) ADS-B flight tracking instance using [dump1090-exporter](https://github.com/claws/dump1090-exporter) to present a Prometheus endpoint that Telegraf will scrape. While this dashboard is vendor-agnostic, it has been tested against a [PiAware](https://flightaware.com/adsb/piaware/) instance as provided by [FlightAware](https://flightware.com).
 
 ![Dashboard Screenshot](screenshot.png)
 
@@ -40,7 +40,7 @@ Telegraf Configuration requires the following environment variables
 
 Author: Tim Yocum
 
-Email: tky[at]influxdata[dot]com
+Email: tky@influxdata.com
 
 GitHub: @tkyocum
 
