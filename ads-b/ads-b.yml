@@ -1,0 +1,327 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: fervent-dijkstra-184001
+spec:
+    color: '#0b3a8d'
+    name: ADS-B
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: endangered-haslett-184005
+spec:
+    associations:
+      - kind: Label
+        name: fervent-dijkstra-184001
+    name: ads-b
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: loving-proskuriakova-984001
+spec:
+    associations:
+      - kind: Label
+        name: fervent-dijkstra-184001
+    charts:
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Recent Aircraft Total
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "dump1090_recent_aircraft_observed")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        width: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: '# of Aircraft'
+            name: y
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 5ce5deb4-b018-4aba-b270-b2cf3f3648fd
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 9bf389b2-87cd-4489-9580-d8d9d1bf64ff
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 402d2f6f-6d2c-4cec-ab68-6255f3aba755
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 6
+        hoverDimension: auto
+        kind: Xy
+        name: Aircraft
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "dump1090_recent_aircraft_observed" or r["_measurement"] == "dump1090_recent_aircraft_with_multilateration" or r["_measurement"] == "dump1090_recent_aircraft_with_position")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        width: 10
+        xCol: _time
+        yCol: _value
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - label: Distance
+            name: y
+            scale: linear
+            suffix: m
+        colors:
+          - hex: '#31C0F6'
+            id: 5ce5deb4-b018-4aba-b270-b2cf3f3648fd
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 9bf389b2-87cd-4489-9580-d8d9d1bf64ff
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 402d2f6f-6d2c-4cec-ab68-6255f3aba755
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 5
+        kind: Xy
+        name: Distance from receiver
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "dump1090_recent_aircraft_max_range")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        staticLegend: {}
+        width: 10
+        xCol: _time
+        yCol: _value
+        yPos: 8
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Aircraft with Position
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "dump1090_recent_aircraft_with_position")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        width: 2
+        xPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Max Range
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "dump1090_recent_aircraft_max_range")
+                  |> max()
+                  |> map(fn: (r) => ({
+                       r with
+                       _value: r._value / 1000.0
+                       })
+                      )
+        staticLegend: {}
+        suffix: ' km'
+        width: 2
+        xPos: 4
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Messages per Second
+        queries:
+          - query: |-
+                import "experimental/aggregate"
+                from(bucket: v.bucket)
+                  |> range(start: -1m)
+                  |> filter(fn: (r) => r["_measurement"] == "dump1090_messages_total")
+                  |> aggregate.rate(every: 5s, unit: 1s)
+        staticLegend: {}
+        width: 2
+        xPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: y
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 1
+        height: 2
+        kind: Single_Stat_Plus_Line
+        name: Signal Mean
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "dump1090_stats_local_signal_strength_dbFS")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        staticLegend: {}
+        width: 2
+        xCol: _time
+        xPos: 8
+        yCol: _value
+      - height: 13
+        kind: Markdown
+        name: Name this Cell
+        note: |-
+            #### Recent Aircraft Total
+
+            The most recent number of aircraft reported
+
+            #### Aircraft with Position
+
+            The number of recently reported aircraft with position data
+
+            #### Max Range
+
+            The farthest report received
+
+            #### Messages per Second
+
+            The current count of messages per second received and decoded
+
+            #### Signal Mean
+
+            Mean signal expressed in [dBFS](https://en.wikipedia.org/wiki/dBFS)
+
+            #### Aircraft
+
+            * Observed aircraft
+            * Observed aircraft with position data
+            * Observed aircraft with [MLAT](http://multilateration.com/ads-b.html)
+
+            #### Distance from Receiver
+
+            Aircraft distance from receiver over time
+        staticLegend: {}
+        width: 2
+        xPos: 10
+    description: Metrics gathered from dump1090exporter to visualize your ADS-B flight
+        tracking station.
+    name: ADS-B Flight Tracker
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: sloppy-sinoussi-d84001
+spec:
+    associations:
+      - kind: Label
+        name: fervent-dijkstra-184001
+    config: |-
+        # Configuration for telegraf agent
+        [agent]
+          ## Default data collection interval for all inputs
+          interval = "10s"
+          ## Rounds collection interval to 'interval'
+          ## ie, if interval="10s" then always collect on :00, :10, :20, etc.
+          round_interval = true
+
+          ## Telegraf will send metrics to outputs in batches of at most
+          ## metric_batch_size metrics.
+          ## This controls the size of writes that Telegraf sends to output plugins.
+          metric_batch_size = 1000
+
+          ## For failed writes, telegraf will cache metric_buffer_limit metrics for each
+          ## output, and will flush this buffer on a successful write. Oldest metrics
+          ## are dropped first when this buffer fills.
+          ## This buffer only fills when writes fail to output plugin(s).
+          metric_buffer_limit = 10000
+
+          ## Collection jitter is used to jitter the collection by a random amount.
+          ## Each plugin will sleep for a random time within jitter before collecting.
+          ## This can be used to avoid many plugins querying things like sysfs at the
+          ## same time, which can have a measurable effect on the system.
+          collection_jitter = "0s"
+
+          ## Default flushing interval for all outputs. Maximum flush_interval will be
+          ## flush_interval + flush_jitter
+          flush_interval = "10s"
+          ## Jitter the flush interval by a random amount. This is primarily to avoid
+          ## large write spikes for users running a large number of telegraf instances.
+          ## ie, a jitter of 5s and interval 10s means flushes will happen every 10-15s
+          flush_jitter = "0s"
+
+          ## By default or when set to "0s", precision will be set to the same
+          ## timestamp order as the collection interval, with the maximum being 1s.
+          ##   ie, when interval = "10s", precision will be "1s"
+          ##       when interval = "250ms", precision will be "1ms"
+          ## Precision will NOT be used for service inputs. It is up to each individual
+          ## service input to set the timestamp at the appropriate precision.
+          ## Valid time units are "ns", "us" (or "µs"), "ms", "s".
+          precision = ""
+
+          ## Logging configuration:
+          ## Run telegraf with debug log messages.
+          debug = false
+          ## Run telegraf in quiet mode (error log messages only).
+          quiet = false
+          ## Specify the log file name. The empty string means to log to stderr.
+          logfile = ""
+
+          ## Override default hostname, if empty use os.Hostname()
+          hostname = ""
+          ## If set to true, do no set the "host" tag in the telegraf agent.
+          omit_hostname = false
+
+        [[outputs.influxdb_v2]]
+          urls = ["$INFLUX_HOST"]
+          token = "$INFLUX_TOKEN"
+          organization = "$INFLUX_ORG"
+          bucket = "$INFLUX_BUCKET"
+
+        [[inputs.prometheus]]
+          urls = ["http://localhost:9105/metrics"]
+    description: Collect ADSB metrics from dump1090 Prometheus export
+    name: ADS-B

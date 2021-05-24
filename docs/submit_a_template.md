@@ -15,7 +15,7 @@ To contribute a new template or enhance an existing template, submit a pull requ
 2. Apply your changes to the clone repository on your local machine.
 
 
-    * To submit and entirely new template, create a new directory for your template and create a `README.md` that describes your template and how to use it. See the `Example_README.md` file in this repository. **Be sure to include a way for users to get in contact with you**.
+    * To submit and entirely new template, create a new directory for your template and create a `readme.md` that describes your template and how to use it. See the `Example_readme.md` file in this repository. **Be sure to include a way for users to get in contact with you**.
 
         Use the following command to export the template and generate a manifest file ([Influx pkg requires InfluxDB 2.0.0 beta or greater](https://portal.influxdata.com/downloads/)):
 
@@ -29,7 +29,7 @@ To contribute a new template or enhance an existing template, submit a pull requ
 
     > **Tip:** Replace any hard-coded URLs to InfluxDB in your Telegraf configurations with the `$INFLUX_HOST` environment variable so users can easily point it to their own InfluxDB instance location. For example: `urls = ["$INFLUX_HOST"]`
 
-3. If you are submitting a new Template, add it to the table of Templates in the main `README.md` file in the root of the repository.
+3. If you are submitting a new Template, add it to the table of Templates in the main `readme.md` file in the root of the repository.
 
     * The table lists templates alphabetically, so add a new row in the appropriate location
     * Use a short but descriptive name for your Template in the first column
@@ -59,9 +59,9 @@ To contribute a new template or enhance an existing template, submit a pull requ
 
 5. [Create the pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork) for your changes. InfluxData community template maintainers will review your changes and, upon approval, will merge them into this repository. Our goal is to review every submission within 5 business days.
 
-In the review process, we verify that you provide a manifest file and a README.md with instructions for using the template. We reserve the right to reject or remove a template from this repository for any reason.
+In the review process, we verify that you provide a manifest file and a readme.md with instructions for using the template. We reserve the right to reject or remove a template from this repository for any reason.
 
 Once your template has been merged, start sharing it with the community! Link to it on Twitter, Reddit, or whatever social media you use. Let people on the [InfluxDB Community Slack](https://influxdata.com/slack) know about it too!
 
 
-> Need help? You can find [support](../README.md#support) information at the bottom of the main page.
+> Need help? You can find [support](../readme.md#support) information at the bottom of the main page.
