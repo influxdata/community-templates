@@ -13,7 +13,7 @@ This InfluxDB template uses the `experimental/usage` Flux API package to help In
 
 #### InfluxDB UI
 
-In the InfluxDB UI, go to Settings->Templates and enter this URL: https://github.com/influxdata/community-templates/master/usage_dashboard/usage_dashboard.yml
+In the InfluxDB UI, go to Settings->Templates and enter this URL: https://github.com/influxdata/community-templates/blob/master/usage_dashboard/usage_dashboard.yml
 
 #### Influx CLI
 If you have your InfluxDB credentials [configured in the CLI](https://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
