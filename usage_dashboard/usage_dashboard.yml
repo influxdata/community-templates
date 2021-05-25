@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: sweet-wilson-d48001
+    name: competent-faraday-abe001
 spec:
     color: '#8e1fc3'
     description: track data usage and limit events
@@ -10,12 +10,12 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Task
 metadata:
-    name: quirky-nash-548001
+    name: alerting-wu-ebe001
 spec:
     associations:
       - kind: Label
-        name: sweet-wilson-d48001
-    every: 1h
+        name: competent-faraday-abe001
+    every: 1h0m0s
     name: Cardinality Limit Alert (usage dashboard)
     offset: 5m0s
     query: |-
@@ -53,11 +53,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: hungry-lederberg-948001
+    name: xenodochial-spence-2be001
 spec:
     associations:
       - kind: Label
-        name: sweet-wilson-d48001
+        name: competent-faraday-abe001
     charts:
       - colors:
           - hex: '#292933'
@@ -67,7 +67,7 @@ spec:
         decimalPlaces: 0
         height: 1
         kind: Single_Stat
-        name: ' '
+        name: ""
         note: |-
             Read more about data usage for your InfluxDB Cloud account here:
 
@@ -86,7 +86,7 @@ spec:
         decimalPlaces: 0
         height: 1
         kind: Single_Stat
-        name: ' '
+        name: ""
         queries:
           - query: |-
                 import "array"
@@ -202,7 +202,7 @@ spec:
         decimalPlaces: 0
         height: 1
         kind: Single_Stat
-        name: ' '
+        name: ""
         queries:
           - query: |-
                 import "array"
@@ -227,7 +227,7 @@ spec:
         decimalPlaces: 0
         height: 1
         kind: Single_Stat
-        name: ' '
+        name: ""
         queries:
           - query: |-
                 import "array"
@@ -365,7 +365,7 @@ spec:
         decimalPlaces: 0
         height: 1
         kind: Single_Stat
-        name: ' '
+        name: ""
         queries:
           - query: |-
                 import "array"
@@ -404,13 +404,21 @@ spec:
         name: Storage (By Bucket)
         position: overlaid
         queries:
-          - query: "import \"experimental/usage\"\n\n\ndata_buckets = usage.from(start:
-                v.timeRangeStart,\n    stop: v.timeRangeStop) \n    |> filter(fn:
-                (r) => r._measurement == \"storage_usage_bucket_bytes\")\n    |> keep(columns:
-                [\"_time\", \"_value\", \"bucket_id\"])\n    |> group(columns: [\"bucket_id\"])\n\ndata_all
+          - query: "import \"experimental/usage\"\n\n//Data returned from usage.from()
+                uses the ID value for the buckets. This function will remap the data
+                to use the name of the bucket\nb = buckets()\nbucketNameForID = (id)
+                => {\n    row = b \n        |> filter(fn: (r) => r.id == id) \n        |>
+                findRecord(fn: (key) => true, idx: 0)\n    return row.name\n}\n\nbucket_ids
+                = b \n    |> findColumn(fn: (key) => true, column: \"id\")\n\ndata_buckets
+                = usage.from(start: v.timeRangeStart,\n    stop: v.timeRangeStop)
+                \n    |> filter(fn: (r) => r._measurement == \"storage_usage_bucket_bytes\")\n
+                \   |> map(fn: (r) => ({ r with bucket_name: if contains(value: r.bucket_id,
+                set: bucket_ids) then bucketNameForID(id: r.bucket_id) else \"unknown
+                bucket\"}))\n    |> keep(columns: [\"_time\", \"_value\", \"bucket_id\",
+                \"bucket_name\"])\n    |> group(columns: [\"bucket_name\"])\n\ndata_all
                 = data_buckets\n    |> group(columns: [\"_time\"])\n    |> sum()\n
-                \   |> group()\n    |> set(key: \"bucket_id\", value: \"all buckets\")\n\nunion(tables:
-                [data_buckets, data_all])\n    |> group(columns: [\"bucket_id\"])"
+                \   |> group()\n    |> set(key: \"bucket_name\", value: \"all buckets\")\n\nunion(tables:
+                [data_buckets, data_all])\n    |> group(columns: [\"bucket_name\"])"
         staticLegend: {}
         width: 3
         xCol: _time
@@ -463,7 +471,7 @@ spec:
         decimalPlaces: 0
         height: 1
         kind: Single_Stat
-        name: ' '
+        name: ""
         queries:
           - query: |-
                 import "array"
@@ -676,7 +684,7 @@ spec:
         decimalPlaces: 0
         height: 1
         kind: Single_Stat
-        name: 'Cardinality limit '
+        name: Cardinality limit
         note: |-
             Read more about series cardinality here:
 
