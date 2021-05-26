@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: competent-faraday-abe001
+    name: adoring-ride-7f5001
 spec:
     color: '#8e1fc3'
     description: track data usage and limit events
@@ -10,26 +10,22 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Task
 metadata:
-    name: alerting-wu-ebe001
+    name: modest-fermat-bf5001
 spec:
     associations:
       - kind: Label
-        name: competent-faraday-abe001
+        name: adoring-ride-7f5001
     every: 1h0m0s
     name: Cardinality Limit Alert (usage dashboard)
     offset: 5m0s
     query: |-
-        import "csv"
-        import "math"
-        import "date"
-        import "strings"
-        import "experimental/json"
+        import "array"
         import "experimental/usage"
         import "slack"
 
 
 
-        slackWebhook = "https://hooks.slack.com/services/####/####/####"
+        slackWebhook = "https://hooks.slack.com/services/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"
         slackChannel = ""
         alert = (eventValue, threshold) =>
         	(if eventValue >= threshold then slack.message(
@@ -38,26 +34,31 @@ spec:
         		text: "A Cardinality Event has occured! The number of cardinality events = \"${string(v: eventValue)}\".",
         		color: "warning",
         	) else 0)
-        data = usage.from(start: -task.every, stop: now())
+        data_0 = array.from(rows: [{_value: 0}])
+        data = usage.from(start: -1h, stop: now())
         	|> filter(fn: (r) =>
         		(r._measurement == "events" and r._field == "event_type_limited_cardinality" and exists r._value))
         	|> sum()
-        	|> last()
+        events = union(tables: [data_0, data])
+        	|> group()
+        	|> sum()
         	|> findRecord(fn: (key) =>
         		(true), idx: 0)
-        event = data._value
+        eventTotal = events._value
 
-        alert(eventValue: event, threshold: 1)
-    status: inactive
+        array.from(rows: [{value: 0}])
+        	|> yield(name: "ignore")
+        alert(eventValue: eventTotal, threshold: 1)
+    status: active
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: xenodochial-spence-2be001
+    name: rusty-johnson-3f5001
 spec:
     associations:
       - kind: Label
-        name: competent-faraday-abe001
+        name: adoring-ride-7f5001
     charts:
       - colors:
           - hex: '#292933'
@@ -67,7 +68,7 @@ spec:
         decimalPlaces: 0
         height: 1
         kind: Single_Stat
-        name: ""
+        name: .
         note: |-
             Read more about data usage for your InfluxDB Cloud account here:
 
@@ -78,19 +79,10 @@ spec:
                 array.from(rows: [{_value: "Usage"}])
         staticLegend: {}
         width: 12
-      - colors:
-          - hex: '#545667'
-            id: base
-            name: graphite
-            type: text
-        decimalPlaces: 0
-        height: 1
-        kind: Single_Stat
-        name: ""
-        queries:
-          - query: |-
-                import "array"
-                array.from(rows: [{_value: "Data In"}])
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Data In'
         staticLegend: {}
         width: 3
         yPos: 1
@@ -202,7 +194,7 @@ spec:
         decimalPlaces: 0
         height: 1
         kind: Single_Stat
-        name: ""
+        name: .
         queries:
           - query: |-
                 import "array"
@@ -219,19 +211,10 @@ spec:
         staticLegend: {}
         width: 3
         yPos: 7
-      - colors:
-          - hex: '#545667'
-            id: base
-            name: graphite
-            type: text
-        decimalPlaces: 0
-        height: 1
-        kind: Single_Stat
-        name: ""
-        queries:
-          - query: |-
-                import "array"
-                array.from(rows: [{_value: "Query Count"}])
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Query Count'
         staticLegend: {}
         width: 3
         xPos: 3
@@ -357,19 +340,10 @@ spec:
         xPos: 3
         yCol: _value
         yPos: 7
-      - colors:
-          - hex: '#545667'
-            id: base
-            name: graphite
-            type: text
-        decimalPlaces: 0
-        height: 1
-        kind: Single_Stat
-        name: ""
-        queries:
-          - query: |-
-                import "array"
-                array.from(rows: [{_value: "Storage"}])
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Storage'
         staticLegend: {}
         width: 3
         xPos: 6
@@ -463,19 +437,10 @@ spec:
         width: 3
         xPos: 6
         yPos: 5
-      - colors:
-          - hex: '#545667'
-            id: base
-            name: graphite
-            type: text
-        decimalPlaces: 0
-        height: 1
-        kind: Single_Stat
-        name: ""
-        queries:
-          - query: |-
-                import "array"
-                array.from(rows: [{_value: "Data Out"}])
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Data Out'
         staticLegend: {}
         width: 3
         xPos: 9
