@@ -21,18 +21,18 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
+    - name: Check out repo
+      uses: actions/checkout@v2
+    - name: Setup InfluxDB
+      uses: russorat/influxdb-action@main
+      with:
+        influxdb_org: influxdata
+        influxdb_user: ci_user
+        influxdb_password: password
+        influxdb_bucket: dummy
     # Runs a set of commands using the runners shell
     - name: Load every template to InfluxDB nightly
-    
       run: |
-        cd /tmp
-        wget https://dl.influxdata.com/platform/nightlies/influxdb2-nightly-linux-amd64.tar.gz
-        tar xvfz influxdb2-nightly-linux-amd64.tar.gz
-        sudo cp influxdb2-nightly-linux-amd64/{influx,influxd} /usr/local/bin/
-        influxd --http-bind-address :8086 --reporting-disabled > /dev/null 2>&1 &
-        until curl -s http://localhost:8086/health; do sleep 1; done
-        influx setup --host http://localhost:8086 -f -b dummy -o influxdata -u ci_user -p password
         cd $GITHUB_WORKSPACE
         find $GITHUB_WORKSPACE \( ! -path '*/.*' \) -type f -name "*.yml" -print0 | while read -d $'\0' file
         do
