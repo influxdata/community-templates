@@ -391,7 +391,7 @@ spec:
                   |> group()
                   |> map(fn: (r) => ({ r with mag: math.round(x: r.mag * 10.0) / 10.0 }))
                   |> map(fn: (r) => ({ r with place: distance_to_string(distance: r.distance, place: r.place, country: r.country) }))
-                  |> keep(columns: ["country", "mag", "Location", "_time", "lat", "lon"])
+                  |> keep(columns: ["country", "mag", "Location", "_time", "lat", "lon", "s2_cell_id"])
                   |> rename(columns: {mag: "_value"})
         staticLegend: {}
         width: 7
