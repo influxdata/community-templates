@@ -31,124 +31,262 @@ metadata:
 spec:
     charts:
       - colors:
-          - hex: '#00C9FF'
-            name: laser
+          - hex: '#ffffff'
+            id: base
+            name: white
             type: text
-        decimalPlaces: 2
-        height: 2
-        kind: Single_Stat
+        fieldOptions:
+          - displayName: _field
+            fieldName: _field
+            visible: true
+          - displayName: _measurement
+            fieldName: _measurement
+            visible: true
+          - displayName: _start
+            fieldName: _start
+            visible: true
+          - displayName: _stop
+            fieldName: _stop
+            visible: true
+          - displayName: _time
+            fieldName: _time
+            visible: true
+          - displayName: _value
+            fieldName: _value
+            visible: true
+          - displayName: host
+            fieldName: host
+            visible: true
+          - displayName: id
+            fieldName: id
+            visible: true
+          - displayName: url
+            fieldName: url
+            visible: true
+          - displayName: Host
+            fieldName: Host
+            visible: true
+          - displayName: URL
+            fieldName: URL
+            visible: true
+          - displayName: Hours
+            fieldName: Hours
+            visible: true
+          - displayName: Instance ID
+            fieldName: Instance ID
+            visible: true
+          - displayName: Uptime Hours
+            fieldName: Uptime Hours
+            visible: true
+        height: 3
+        kind: Table
         name: Uptime
-        note: This shows the amount of time your current InfluxDB 2 instance has been
-            running, in hours. Keep it up!
         queries:
           - query: |-
+                import "math"
+ 
                 from(bucket: "oss_metrics")
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "influxdb_uptime_seconds")
-                  |> filter(fn: (r) => r.host == v.oss_host)
-                  |> filter(fn: (r) => r._field == "gauge")
-                  |> last()
-                  |> map(fn: (r) => ({r with _value: float(v: r._value) / 60.0 / 60.0}))
-        suffix: ' hrs'
-        width: 3
+                    |> range(start:v.timeRangeStart, stop: v.timeRangeStop)
+                    |> filter(fn: (r) =>r._measurement == "influxdb_uptime_seconds")
+                    |> filter(fn:(r) => r._field == "gauge")
+                    |> last()
+                    |> drop(columns:[
+                        "_start",
+                        "_stop",
+                        "_time",
+                        "_measurement",
+                        "_field",
+                        "url",
+                    ])
+                    |> map(fn: (r)=> ({r with _value: math.round(x: float(v: r._value) / 60.0 / 60.0* 100.0) / 100.0}))
+                    |> group()
+                    |> rename(columns: {host:"Host", _value: "Uptime Hours", id: "Instance ID"})
+        staticLegend: {}
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 4
       - colors:
-          - hex: '#00C9FF'
-            name: laser
+          - hex: '#ffffff'
+            id: base
+            name: white
             type: text
-        decimalPlaces: 0
-        height: 1
-        kind: Single_Stat
+        fieldOptions:
+          - displayName: _start
+            fieldName: _start
+            visible: true
+          - displayName: _stop
+            fieldName: _stop
+            visible: true
+          - displayName: _time
+            fieldName: _time
+            visible: true
+          - displayName: _value
+            fieldName: _value
+            visible: true
+          - displayName: _field
+            fieldName: _field
+            visible: true
+          - displayName: _measurement
+            fieldName: _measurement
+            visible: true
+          - displayName: host
+            fieldName: host
+            visible: true
+          - displayName: url
+            fieldName: url
+            visible: true
+          - displayName: Host
+            fieldName: Host
+            visible: true
+          - displayName: URL
+            fieldName: URL
+            visible: true
+          - displayName: '# of Orgs'
+            fieldName: '# of Orgs'
+            visible: true
+        height: 2
+        kind: Table
         name: Organizations
-        note: An Organization is a workspace where you and your team can organize
-            your data, Dashboards, Tasks, and anything else you create. You can quickly
-            switch between or create a new one from the first icon in the navigation
-            bar. You can read more about Organizations in our [documentation](https://v2.docs.influxdata.com/v2.0/organizations/).
         queries:
           - query: |-
                 from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "influxdb_organizations_total")
-                  |> filter(fn: (r) => r.host == v.oss_host)
-                  |> filter(fn: (r) => r._field == "counter")
                   |> last()
-        suffix: ' Orgs'
+                  |> drop(columns: ["_start", "_stop","_time","_measurement", "_field", "url"])
+                  |> group()
+                  |> rename(columns: {host: "Host", _value: "# of Orgs"})
+        staticLegend: {}
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
         width: 3
-        yPos: 2
+        yPos: 3
       - colors:
-          - hex: '#00C9FF'
-            name: laser
+          - hex: '#ffffff'
+            id: base
+            name: white
             type: text
-        decimalPlaces: 2
-        height: 1
-        kind: Single_Stat
+        fieldOptions:
+          - displayName: '# of Orgs'
+            fieldName: '# of Orgs'
+            visible: true
+          - displayName: Host
+            fieldName: Host
+            visible: true
+          - displayName: URL
+            fieldName: URL
+            visible: true
+          - displayName: '# of Telegraf Configs'
+            fieldName: '# of Telegraf Configs'
+            visible: true
+        height: 2
+        kind: Table
         name: Telegraf Configs
-        note: InfluxDB 2 can create and store your Telegraf agent configs. Telegraf
-            is the world's best data collection agent and is one of the easiest ways
-            to send data into InfluxDB. You can create new configurations in the Settings
-            menu. You can learn more about Telegraf in our [documentation](https://v2.docs.influxdata.com/v2.0/collect-data/use-telegraf/).
         queries:
           - query: |-
                 from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "influxdb_telegrafs_total")
-                  |> filter(fn: (r) => r.host == v.oss_host)
-                  |> filter(fn: (r) => r._field == "counter")
                   |> last()
-        suffix: ' Telegrafs'
+                  |> drop(columns: ["_start", "_stop","_time","_measurement", "_field", "url"])
+                  |> group()
+                  |> rename(columns: {host: "Host", _value: "# of Telegraf Configs"})
+        staticLegend: {}
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
         width: 3
-        yPos: 3
+        yPos: 5
       - axes:
           - base: "10"
             name: x
             scale: linear
           - base: "10"
-            name: y
+            name: "y"
             scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 2df496c5-614d-4d42-8590-0bf106d711e7
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 817fd4b1-56fd-4687-a93a-b8659677796b
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 64e7fa3e-3633-4992-8296-2f8fe8ea84c7
+            name: Nineteen Eighty Four
+            type: scale
         geom: line
-        height: 4
+        height: 5
+        hoverDimension: auto
         kind: Xy
-        name: Local Object Store IO
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Local Object Store Reads
+        position: overlaid
         queries:
           - query: |-
                 from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "boltdb_reads_total" or r._measurement == "boltdb_writes_total")
-                  |> filter(fn: (r) => r.host == v.oss_host)
-                  |> filter(fn: (r) => r._field == "counter")
+                  |> filter(fn: (r) => r._measurement == "boltdb_reads_total")
                   |> derivative(unit: 1s, nonNegative: true)
-                  |> drop(columns: ["_field"])
-        width: 12
+                  |> drop(columns: ["url", "_measurement"])
+        staticLegend: {}
+        width: 6
         xCol: _time
         yCol: _value
-        yPos: 4
+        yPos: 7
       - axes:
           - base: "10"
             name: x
             scale: linear
           - base: "10"
-            name: y
+            name: "y"
             scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 519954ff-d935-42f0-b016-f2dacd0614d9
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: a8672357-f006-4aa4-a7d3-0e30229cb218
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: e5020d9e-cbf3-47ed-b8a4-e9def5c6e9ba
+            name: Nineteen Eighty Four
+            type: scale
         geom: line
         height: 4
+        hoverDimension: auto
         kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
         name: Query Requests
+        position: overlaid
         queries:
           - query: |-
                 from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "http_api_requests_total")
-                  |> filter(fn: (r) => r.host == v.oss_host)
                   |> filter(fn: (r) => r.path == "/api/v2/query")
-                  |> filter(fn: (r) => r._field == "counter")
                   |> derivative(unit: 1s, nonNegative: true)
+        staticLegend: {}
         width: 12
-        yPos: 8
+        xCol: _time
+        yCol: _value
+        yPos: 12
       - axes:
           - base: "10"
             name: x
             scale: linear
           - base: "10"
-            name: y
+            name: "y"
             scale: linear
         geom: line
         height: 3
@@ -159,13 +297,83 @@ spec:
                 from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "go_memstats_alloc_bytes_total")
-                  |> filter(fn: (r) => r.host == v.oss_host)
-                  |> filter(fn: (r) => r._field == "counter")
                   |> derivative(unit: 1s, nonNegative: true)
+        staticLegend: {}
         width: 4
         xCol: _time
         yCol: _value
-        yPos: 12
+        yPos: 16
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        fieldOptions:
+          - displayName: Host
+            fieldName: Host
+            visible: true
+          - displayName: URL
+            fieldName: URL
+            visible: true
+          - displayName: '# of Orgs'
+            fieldName: '# of Orgs'
+            visible: true
+          - displayName: '# of Users'
+            fieldName: '# of Users'
+            visible: true
+        height: 2
+        kind: Table
+        name: Users
+        queries:
+          - query: |-
+                from(bucket: "oss_metrics")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "influxdb_users_total")
+                  |> last()
+                  |> drop(columns: ["_start", "_stop","_time","_measurement", "_field", "url"])
+                  |> group()
+                  |> rename(columns: {host: "Host", _value: "# of Users"})
+        staticLegend: {}
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 3
+        xPos: 3
+        yPos: 3
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        fieldOptions:
+          - displayName: Host
+            fieldName: Host
+            visible: true
+          - displayName: '# of Orgs'
+            fieldName: '# of Orgs'
+            visible: true
+          - displayName: '# of Dashboards'
+            fieldName: '# of Dashboards'
+            visible: true
+        height: 2
+        kind: Table
+        name: Dashboards
+        queries:
+          - query: |-
+                from(bucket: "oss_metrics")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "influxdb_dashboards_total")
+                  |> last()
+                  |> drop(columns: ["_start", "_stop","_time","_measurement", "_field", "url"])
+                  |> group()
+                  |> rename(columns: {host: "Host", _value: "# of Dashboards"})
+        staticLegend: {}
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 3
+        xPos: 3
+        yPos: 5
       - colors:
           - hex: '#00C9FF'
             name: laser
@@ -189,7 +397,61 @@ spec:
           - displayName: Version
             fieldName: Version
             visible: true
-        height: 2
+          - displayName: _start
+            fieldName: _start
+            visible: true
+          - displayName: _stop
+            fieldName: _stop
+            visible: true
+          - displayName: _time
+            fieldName: _time
+            visible: true
+          - displayName: _value
+            fieldName: _value
+            visible: true
+          - displayName: _field
+            fieldName: _field
+            visible: true
+          - displayName: _measurement
+            fieldName: _measurement
+            visible: true
+          - displayName: host
+            fieldName: host
+            visible: true
+          - displayName: url
+            fieldName: url
+            visible: true
+          - displayName: le
+            fieldName: le
+            visible: true
+          - displayName: method
+            fieldName: method
+            visible: true
+          - displayName: arch
+            fieldName: arch
+            visible: true
+          - displayName: build_date
+            fieldName: build_date
+            visible: true
+          - displayName: commit
+            fieldName: commit
+            visible: true
+          - displayName: cpus
+            fieldName: cpus
+            visible: true
+          - displayName: os
+            fieldName: os
+            visible: true
+          - displayName: version
+            fieldName: version
+            visible: true
+          - displayName: Host
+            fieldName: Host
+            visible: true
+          - displayName: URL
+            fieldName: URL
+            visible: true
+        height: 3
         kind: Table
         name: Instance Info
         note: This cell gives you information about your running instance of InfluxDB
@@ -199,238 +461,317 @@ spec:
                 from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "influxdb_info")
-                  |> group()
                   |> last()
+                  |> group()
                   |> drop(columns: ["_start", "_stop","_time","_field","_value","_measurement"])
-                  |> rename(columns: {arch: "Architecture", build_date: "Build Date", commit: "Github Commit", cpus: "CPUs", os: "OS", version: "Version"})
-                  |> yield(name: "last")
+                  |> rename(columns: {host: "Host", url: "URL", arch: "Architecture", build_date: "Build Date", commit: "Github Commit", cpus: "CPUs", os: "OS", version: "Version"})
+        staticLegend: {}
         tableOptions:
             fixFirstColumn: true
             verticalTimeAxis: true
         timeFormat: YYYY-MM-DD HH:mm:ss
-        width: 9
-        xPos: 3
-      - colors:
-          - hex: '#00C9FF'
-            name: laser
-            type: text
-        decimalPlaces: 2
-        height: 1
-        kind: Single_Stat
-        name: Users
-        note: This lets you know how many users have access to your InfluxDB 2 instance.
-            You can add new users from the command line. You can learn more about
-            Users in our [documentation](https://v2.docs.influxdata.com/v2.0/users/).
-        queries:
-          - query: |-
-                from(bucket: "oss_metrics")
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "influxdb_users_total")
-                  |> filter(fn: (r) => r.host == v.oss_host)
-                  |> filter(fn: (r) => r._field == "counter")
-                  |> last()
-        suffix: ' Users'
-        width: 3
-        xPos: 3
-        yPos: 2
-      - colors:
-          - hex: '#00C9FF'
-            name: laser
-            type: text
-        decimalPlaces: 2
-        height: 1
-        kind: Single_Stat
-        name: Dashboards
-        note: Dashboards are a great way to group together and view data in InfluxDB
-            2. You can create new ones from the Dashboards page in the navigation
-            menu. For more information on managing Dashboards, check out our [documentation](https://v2.docs.influxdata.com/v2.0/visualize-data/dashboards/).
-        queries:
-          - query: |-
-                from(bucket: "oss_metrics")
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "influxdb_dashboards_total")
-                  |> filter(fn: (r) => r.host == v.oss_host)
-                  |> filter(fn: (r) => r._field == "counter")
-                  |> last()
-        suffix: ' Dashboards'
-        width: 3
-        xPos: 3
-        yPos: 3
+        width: 8
+        xPos: 4
       - axes:
           - base: "10"
             name: x
             scale: linear
           - base: "10"
-            name: y
+            name: "y"
             scale: linear
-            suffix: '%'
+        colors:
+          - hex: '#31C0F6'
+            id: 1e40d1f8-5ef8-4de8-b6d3-8b72ef56edde
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: f0321a25-31ce-43a6-8411-b894293ace66
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: d2f7a375-d96a-444b-ab7e-f65f2ed9d57d
+            name: Nineteen Eighty Four
+            type: scale
         geom: line
         height: 3
+        hoverDimension: auto
         kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
         name: Memory Usage (%)
+        position: overlaid
         queries:
           - query: |-
                 bytes_used = from(bucket: "oss_metrics")
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "go_memstats_alloc_bytes")
-                  |> filter(fn: (r) => r.host == v.oss_host)
-                  |> filter(fn: (r) => r._field == "gauge")
-                  |> drop(columns:["_start", "_stop"])
-                  
-                total_bytes = from(bucket: "oss_metrics")
-                  |>range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "go_memstats_sys_bytes")
-                  |> filter(fn: (r) => r.host == v.oss_host)
-                  |> filter(fn: (r) => r._field == "gauge")
-                  |> drop(columns: ["_start", "_stop"])
+                    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                    |> filter(fn: (r) => r._measurement == "go_memstats_alloc_bytes")
+                    |> drop(columns: ["_start", "_stop"])
 
-                join(tables:{ key1: bytes_used, key2: total_bytes }, on: ["_time", "_field"], method: "inner")
-                  |> map(fn: (r) => ({
-                    _time: r._time,
-                    _value: (float(v: r._value_key1) / float(v: r._value_key2)) *100.0,
-                    _field: "Memory Usage Percent"
-                  }))
-                  |> yield(name:"percentage")
+                total_bytes = from(bucket: "oss_metrics")
+                    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                    |> filter(fn: (r) => r._measurement == "go_memstats_sys_bytes")
+                    |> drop(columns: ["_start", "_stop"])
+
+                join(tables: {key1: bytes_used, key2: total_bytes}, on: ["_time", "host"], method: "inner")
+                    |> map(
+                        fn: (r) => ({
+                            _time: r._time,
+                            host: r.host,
+                            _value: float(v: r._value_key1) / float(v: r._value_key2) * 100.0,
+                            _field: "Memory Usage Percent",
+                        }),
+                    )
+        staticLegend: {}
         width: 4
         xCol: _time
         xPos: 4
         yCol: _value
-        yPos: 12
+        yPos: 16
       - colors:
-          - hex: '#00C9FF'
-            name: laser
+          - hex: '#ffffff'
+            id: base
+            name: white
             type: text
-        decimalPlaces: 2
-        height: 1
-        kind: Single_Stat
-        name: Buckets
-        note: A Bucket is where you store your time series data and each one has a
-            set retention policy. You created one when you first set your instance
-            up, but you can create new ones from the Settings menu. You can learn
-            more about Buckets in our [documentation](https://v2.docs.influxdata.com/v2.0/organizations/buckets/).
-            Why not create a new one right now?
+        fieldOptions:
+          - displayName: '# of Orgs'
+            fieldName: '# of Orgs'
+            visible: true
+          - displayName: Host
+            fieldName: Host
+            visible: true
+          - displayName: URL
+            fieldName: URL
+            visible: true
+          - displayName: '# of Buckets'
+            fieldName: '# of Buckets'
+            visible: true
+        height: 2
+        kind: Table
+        name: Buckets (Including System)
         queries:
           - query: |-
                 from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "influxdb_buckets_total")
-                  |> filter(fn: (r) => r.host == v.oss_host)
-                  |> filter(fn: (r) => r._field == "counter")
                   |> last()
-        suffix: ' Buckets'
+                  |> drop(columns: ["_start", "_stop","_time","_measurement", "_field", "url"])
+                  |> group()
+                  |> rename(columns: {host: "Host", _value: "# of Buckets"})
+        staticLegend: {}
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
         width: 3
         xPos: 6
-        yPos: 2
+        yPos: 3
       - colors:
-          - hex: '#00C9FF'
-            name: laser
+          - hex: '#ffffff'
+            id: base
+            name: white
             type: text
-        decimalPlaces: 2
-        height: 1
-        kind: Single_Stat
+        fieldOptions:
+          - displayName: '# of Orgs'
+            fieldName: '# of Orgs'
+            visible: true
+          - displayName: Host
+            fieldName: Host
+            visible: true
+          - displayName: '# of Scrapers'
+            fieldName: '# of Scrapers'
+            visible: true
+        height: 2
+        kind: Table
         name: Scrapers
-        note: InfluxDB 2 can natively scrape data from Prometheus endpoints, including
-            its own metrics. For more information on setting them up, check out our
-            [documentation](https://v2.docs.influxdata.com/v2.0/collect-data/scrape-data/).
         queries:
           - query: |-
                 from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "influxdb_scrapers_total")
-                  |> filter(fn: (r) => r.host == v.oss_host)
-                  |> filter(fn: (r) => r._field == "counter")
                   |> last()
-                  |> yield(name: "last")
-        suffix: ' Scrapers'
+                  |> drop(columns: ["_start", "_stop","_time","_measurement", "_field", "url"])
+                  |> group()
+                  |> rename(columns: {host: "Host", _value: "# of Scrapers"})
+        staticLegend: {}
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
         width: 3
         xPos: 6
-        yPos: 3
+        yPos: 5
       - axes:
           - base: "10"
             name: x
             scale: linear
           - base: "10"
-            name: y
+            name: "y"
             scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 2df496c5-614d-4d42-8590-0bf106d711e7
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 817fd4b1-56fd-4687-a93a-b8659677796b
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 64e7fa3e-3633-4992-8296-2f8fe8ea84c7
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 5
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Local Object Store Writes
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "oss_metrics")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r._measurement == "boltdb_writes_total")
+                  |> derivative(unit: 1s, nonNegative: true)
+                  |> drop(columns: ["url", "_measurement"])
+        staticLegend: {}
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 7
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 1e40d1f8-5ef8-4de8-b6d3-8b72ef56edde
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: f0321a25-31ce-43a6-8411-b894293ace66
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: d2f7a375-d96a-444b-ab7e-f65f2ed9d57d
+            name: Nineteen Eighty Four
+            type: scale
         geom: line
         height: 3
+        hoverDimension: auto
         kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
         name: Memory Allocs & Frees (Bytes)
+        position: overlaid
         queries:
           - query: |-
                 from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "go_memstats_mallocs_total" or r._measurement == "go_memstats_frees_total")
-                  |> filter(fn: (r) => r.host == v.oss_host)
-                  |> filter(fn: (r) => r._field == "counter")
                   |> derivative(unit: 1s, nonNegative: false)
+        staticLegend: {}
         width: 4
         xCol: _time
         xPos: 8
         yCol: _value
-        yPos: 12
+        yPos: 16
       - colors:
-          - hex: '#00C9FF'
-            name: laser
+          - hex: '#ffffff'
+            id: base
+            name: white
             type: text
-        decimalPlaces: 2
-        height: 1
-        kind: Single_Stat
+        fieldOptions:
+          - displayName: '# of Orgs'
+            fieldName: '# of Orgs'
+            visible: true
+          - displayName: Host
+            fieldName: Host
+            visible: true
+          - displayName: URL
+            fieldName: URL
+            visible: true
+          - displayName: '# of Tokens'
+            fieldName: '# of Tokens'
+            visible: true
+        height: 2
+        kind: Table
         name: Tokens
-        note: A Token allows you to access your instance from an external client such
-            as a command line or a client library. They are also used to limit the
-            scope of automated actions like Tasks. You can manage them in the Setting
-            menu. You can learn more about Tokens in our [documentation](https://v2.docs.influxdata.com/v2.0/security/tokens/).
-            Keep your Tokens safe!
         queries:
           - query: |-
                 from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "influxdb_tokens_total")
-                  |> filter(fn: (r) => r.host == v.oss_host)
-                  |> filter(fn: (r) => r._field == "counter")
                   |> last()
-        suffix: ' Tokens'
+                  |> drop(columns: ["_start", "_stop","_time","_measurement", "_field", "url"])
+                  |> group()
+                  |> rename(columns: {host: "Host", _value: "# of Tokens"})
+        staticLegend: {}
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
         width: 3
         xPos: 9
-        yPos: 2
+        yPos: 3
       - colors:
-          - hex: '#00C9FF'
-            name: laser
+          - hex: '#ffffff'
+            id: base
+            name: white
             type: text
-        decimalPlaces: 0
-        height: 1
-        kind: Single_Stat
+        fieldOptions:
+          - displayName: _time
+            fieldName: _time
+            visible: true
+          - displayName: _value
+            fieldName: _value
+            visible: true
+          - displayName: _field
+            fieldName: _field
+            visible: true
+          - displayName: _measurement
+            fieldName: _measurement
+            visible: true
+          - displayName: status
+            fieldName: status
+            visible: true
+          - displayName: task_type
+            fieldName: task_type
+            visible: true
+          - displayName: '# of Task Runs'
+            fieldName: '# of Task Runs'
+            visible: true
+          - displayName: Host
+            fieldName: Host
+            visible: true
+        height: 2
+        kind: Table
         name: Successful Task Runs
-        note: Tasks allow you to automate Flux queries for things like data rollups
-            and enrichment. You can create a new one from the Tasks button in the
-            navigation menu. For more information about Tasks, check out our [documentation](https://v2.docs.influxdata.com/v2.0/process-data/).
         queries:
           - query: |-
                 import "csv"
 
-                dummy_data = "#group,false,false,false,false,true,true,true,true
-                #datatype,string,long,dateTime:RFC3339,double,string,string,string,string
-                #default,_result,,,,,,,
-                ,result,table,_time,_value,_field,_measurement,status,task_type
-                ,,0,2000-01-01T00:00:00.000000Z,0,counter,task_executor_total_runs_complete,success,system"
-
-                default = csv.from(csv: dummy_data)
-
-                new = from(bucket: "oss_metrics")
+                from(bucket: "oss_metrics")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r._measurement == "task_executor_total_runs_complete")
-                  |> filter(fn: (r) => r.host == v.oss_host)
                   |> filter(fn: (r) => r.status == "success")
                   |> filter(fn: (r) => r.task_type == "system")
-                  |> filter(fn: (r) => r._field == "counter")
                   |> last()
-
-                union(tables: [default, new]) |> last()
-        suffix: ' Runs'
+                  |> drop(columns: ["_start", "_stop","_time","_measurement", "_field", "url"])
+                  |> group()
+                  |> rename(columns: {host: "Host", _value: "# of Task Runs"})
+        staticLegend: {}
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
         width: 3
         xPos: 9
-        yPos: 3
+        yPos: 5
     description: A collection of useful visualizations for monitoring your local InfluxDB
         2.0 OSS instance.
     name: InfluxDB OSS Metrics
@@ -553,7 +894,7 @@ spec:
           urls = ["$INFLUX_URL"]
 
           ## Token for authentication.
-          token = "$INFLUX_CLOUD_TOKEN"
+          token = "$INFLUX_TOKEN"
 
           ## Organization is the name of the organization you wish to write to; must exist.
           organization = "$INFLUX_ORG"
@@ -635,13 +976,19 @@ spec:
     description: A Telegraf config that can be used to scrape data from most InfluxDB OSS instances.
 ---
 apiVersion: influxdata.com/v2alpha1
-kind: Variable
+kind: CheckDeadman
 metadata:
-    name: oss-host-variable
+    name: influxdb-oss-deadman-check
 spec:
-    language: flux
-    name: oss_host
+    every: 1m0s
+    level: CRIT
+    name: InfluxDB OSS Deadman
     query: |-
-        import "influxdata/influxdb/schema"
-        schema.measurementTagValues(bucket: "oss_metrics", measurement: "influxdb_info", tag: "host")
-    type: query
+        from(bucket: "oss_metrics")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r["_measurement"] == "go_info")
+          |> filter(fn: (r) => r["_field"] == "gauge")
+    staleTime: 10m0s
+    status: active
+    statusMessageTemplate: 'InfluxDB OSS Host: ${r.host} is ${r._level}. Url: ${r.url}'
+    timeSince: 1m30s
