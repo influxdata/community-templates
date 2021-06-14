@@ -726,6 +726,8 @@ spec:
       flush_interval = "10s"
       flush_jitter = "0s"
       precision = ""
+      debug = false
+      quiet = true
 
       hostname = ""
       omit_hostname = false
