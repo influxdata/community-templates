@@ -40,9 +40,6 @@ spec:
         import "regexp"
         import "experimental"
         import "dict"
-        import "planner"
-        
-        option planner.disableLogicalRules = ["MergeFiltersRule"]
 
         global_mag_threshold = 6
         regional_mag_threshold = 3
@@ -362,9 +359,7 @@ spec:
                 import "influxdata/influxdb/schema"
                 import "experimental/geo"
                 import "strings"
-                import "planner"
 
-                option planner.disableLogicalRules = ["MergeFiltersRule"]
                 option geo.units = {distance: v.Units}
 
                 city_coordinates = strings.split(v: v.Location, t: ":")
@@ -440,9 +435,7 @@ spec:
                 import "influxdata/influxdb/schema"
                 import "experimental/geo"
                 import "strings"
-                import "planner"
 
-                option planner.disableLogicalRules = ["MergeFiltersRule"]
                 option geo.units = {distance: v.Units}
 
                 city_coordinates = strings.split(v: v.Location, t: ":")
@@ -484,9 +477,7 @@ spec:
                 import "strings"
                 import "regexp"
                 import "math"
-                import "planner"
 
-                option planner.disableLogicalRules = ["MergeFiltersRule"]
                 option geo.units = {distance: v.Units}
 
                 city_coordinates = strings.split(v: v.Location, t: ":")
@@ -536,9 +527,7 @@ spec:
                 import "influxdata/influxdb/schema"
                 import "experimental/geo"
                 import "strings"
-                import "planner"
 
-                option planner.disableLogicalRules = ["MergeFiltersRule"]
                 option geo.units = {distance: v.Units}
 
                 city_coordinates = strings.split(v: v.Location, t: ":")
@@ -606,9 +595,7 @@ spec:
                 import "influxdata/influxdb/schema"
                 import "experimental/geo"
                 import "strings"
-                import "planner"
 
-                option planner.disableLogicalRules = ["MergeFiltersRule"]
                 option geo.units = {distance: v.Units}
 
                 city_coordinates = strings.split(v: v.Location, t: ":")
@@ -678,9 +665,7 @@ spec:
                 import "experimental/geo"
                 import "strings"
                 import "math"
-                import "planner"
 
-                option planner.disableLogicalRules = ["MergeFiltersRule"]
                 option geo.units = {distance: v.Units}
 
                 city_coordinates = strings.split(v: v.Location, t: ":")
@@ -849,9 +834,7 @@ spec:
                 import "strings"
                 import "math"
                 import "regexp"
-                import "planner"
 
-                option planner.disableLogicalRules = ["MergeFiltersRule"]
                 option geo.units = {distance: v.Units}
 
                 city_coordinates = strings.split(v: v.Location, t: ":")
