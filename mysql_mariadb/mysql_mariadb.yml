@@ -17,6 +17,46 @@ spec:
     name: mariadb
 ---
 apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: mysql-template
+spec:
+    name: Mysql Template
+    color: '#7A65F2'
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: bucket
+spec:
+    name: bucket
+    associations:
+      - kind: Label
+        name: mysql-template
+    language: flux
+    query: |-
+        buckets()
+          |> filter(fn: (r) => r.name !~ /^_/)
+          |> rename(columns: {name: "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name:  mysql-host
+spec:
+    name:  mysql_host
+    associations:
+      - kind: Label
+        name: mysql-template
+    language: flux
+    query: |-
+        import "influxdata/influxdb/v1"
+        v1.measurementTagValues(bucket: v.bucket, measurement: "cpu", tag: "host")
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
     name: quizzical-swartz-308001
@@ -45,14 +85,15 @@ spec:
         geom: line
         height: 2
         kind: Xy
-        name: MySQL - MariaDB Connections
+        name: MySQL Connections
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "mariadb")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "mysql")
                   |> filter(fn: (r) => r["_field"] == "connections" or r["_field"] == "max_used_connections")
+                  |> filter(fn: (r) => r.host == v.mysql_host)
                   |> derivative(unit: v.windowPeriod, nonNegative: false)
                   |> yield(name: "derivative")
         width: 4
@@ -82,10 +123,11 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "mariadb")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "mysql")
                   |> filter(fn: (r) => r["_field"] == "bytes_sent" or r["_field"] == "bytes_received")
+                  |> filter(fn: (r) => r.host == v.mysql_host)
                   |> derivative(unit: v.windowPeriod, nonNegative: false)
                   |> yield(name: "derivative")
         width: 6
@@ -117,10 +159,11 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "mariadb")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "mysql")
                   |> filter(fn: (r) => r["_field"] == "select_full_join" or r["_field"] == "select_full_range_join" or r["_field"] == "select_range" or r["_field"] == "select_range_check" or r["_field"] == "select_scan")
+                  |> filter(fn: (r) => r.host == v.mysql_host)
                   |> derivative(unit: v.windowPeriod, nonNegative: false)
                   |> yield(name: "derivative")
         width: 5
@@ -152,10 +195,11 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "mariadb")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "mysql")
                   |> filter(fn: (r) => r["_field"] == "handler_commit" or r["_field"] == "handler_delete" or r["_field"] == "handler_discover" or r["_field"] == "handler_read_key" or r["_field"] == "handler_read_rnd_next" or r["_field"] == "handler_write" or r["_field"] == "handler_update")
+                  |> filter(fn: (r) => r.host == v.mysql_host)
                   |> derivative(unit: v.windowPeriod, nonNegative: false)
                   |> yield(name: "derivative")
         width: 6
@@ -186,10 +230,11 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "mariadb")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "mysql")
                   |> filter(fn: (r) => r["_field"] == "qcache_free_memory")
+                  |> filter(fn: (r) => r.host == v.mysql_host)
         width: 6
         xCol: _time
         yCol: _value
@@ -214,14 +259,15 @@ spec:
         geom: line
         height: 2
         kind: Xy
-        name: MySQL - MariaDB Active Threads
+        name: MySQL Active Threads
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "mariadb")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "mysql")
                   |> filter(fn: (r) => r["_field"] == "threads_running" or r["_field"] == "threads_connected")
+                  |> filter(fn: (r) => r.host == v.mysql_host)
         width: 5
         xCol: _time
         xPos: 4
@@ -251,10 +297,11 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "mariadb")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "mysql")
                   |> filter(fn: (r) => r["_field"] == "created_tmp_tables" or r["_field"] == "created_tmp_disk_tables" or r["_field"] == "created_tmp_files")
+                  |> filter(fn: (r) => r.host == v.mysql_host)
                   |> derivative(unit: v.windowPeriod, nonNegative: false)
                   |> yield(name: "derivative")
         width: 5
@@ -287,10 +334,11 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "mariadb")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "mysql")
                   |> filter(fn: (r) => r["_field"] == "table_locks_waited" or r["_field"] == "table_locks_immediate")
+                  |> filter(fn: (r) => r.host == v.mysql_host)
         width: 6
         xCol: _time
         xPos: 6
@@ -321,10 +369,11 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "mariadb")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "mysql")
                   |> filter(fn: (r) => r["_field"] == "com_insert" or r["_field"] == "com_update" or r["_field"] == "com_commit" or r["_field"] == "com_begin" or r["_field"] == "com_admin_commands" or r["_field"] == "com_show_status" or r["_field"] == "com_show_variables" or r["_field"] == "com_set_option")
+                  |> filter(fn: (r) => r.host == v.mysql_host)
                   |> derivative(unit: v.windowPeriod, nonNegative: false)
                   |> yield(name: "derivative")
         width: 6
@@ -357,10 +406,11 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "mariadb")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "mysql")
                   |> filter(fn: (r) => r["_field"] == "qcache_hits" or r["_field"] == "qcache_inserts" or r["_field"] == "qcache_not_cached" or r["_field"] == "qcache_lowmem_prunes" or r["_field"] == "qcache_queries_in_cache")
+                  |> filter(fn: (r) => r.host == v.mysql_host)
         width: 6
         xCol: _time
         xPos: 6
@@ -376,10 +426,11 @@ spec:
         name: Current MySQL Uptime
         queries:
           - query: |-
-                from(bucket: "mariadb")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "mysql")
                   |> filter(fn: (r) => r["_field"] == "uptime")
+                  |> filter(fn: (r) => r.host == v.mysql_host)
                   |> skew()
                   |> yield(name: "skew")
         suffix: ' Days'
@@ -395,10 +446,11 @@ spec:
         name: Current Queries
         queries:
           - query: |-
-                from(bucket: "mariadb")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "mysql")
                   |> filter(fn: (r) => r["_field"] == "queries")
+                  |> filter(fn: (r) => r.host == v.mysql_host)
         width: 3
         xPos: 9
         yPos: 1
@@ -427,10 +479,11 @@ spec:
         position: overlaid
         queries:
           - query: |-
-                from(bucket: "mariadb")
+                from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == "mysql")
                   |> filter(fn: (r) => r["_field"] == "slow_queries")
+                  |> filter(fn: (r) => r.host == v.mysql_host)
         width: 2
         xCol: _time
         xPos: 10
@@ -446,7 +499,6 @@ metadata:
     name: mysql-mariadb
 spec:
    config: |
-
         [[outputs.influxdb_v2]]
           ## The URLs of the InfluxDB cluster nodes.
           ##
@@ -454,16 +506,12 @@ spec:
           ## urls will be written to each interval.
           ## urls exp: http://127.0.0.1:9999
           urls = ["$INFLUX_HOST"]
-
           ## Token for authentication.
           token = "$INFLUX_TOKEN"
-
           ## Organization is the name of the organization you wish to write to; must exist.
           organization = "$INLFUX_ORG"
-
           ## Destination bucket to write into.
           bucket = "$INFLUX_BUCKET"
-
         [[inputs.mysql]]
           ## specify servers via a url matching:
           ##  [username[:password]@][protocol[(address)]]/[?tls=[true|false|skip-verify|custom]]
@@ -474,7 +522,6 @@ spec:
           #
           ## If no servers are specified, then localhost is used as the host.
           servers = ["$MYSQL_CONNECTION_STRING"]
-
           ## Selects the metric output format.
           ##
           ## This option exists to maintain backwards compatibility, if you have
@@ -487,65 +534,46 @@ spec:
           ## Telegraf >=1.6: metric_version = 2
           ##           <1.6: metric_version = 1 (or unset)
           metric_version = 2
-
           ## if the list is empty, then metrics are gathered from all databasee tables
           table_schema_databases = []
-
           ## gather metrics from INFORMATION_SCHEMA.TABLES for databases provided above list
           gather_table_schema = false
-
           ## gather thread state counts from INFORMATION_SCHEMA.PROCESSLIST
           gather_process_list = false
-
           ## gather user statistics from INFORMATION_SCHEMA.USER_STATISTICS
           gather_user_statistics = false
-
           ## gather auto_increment columns and max values from information schema
           gather_info_schema_auto_inc = false
-
           ## gather metrics from INFORMATION_SCHEMA.INNODB_METRICS
           gather_innodb_metrics = false
-
           ## gather metrics from SHOW SLAVE STATUS command output
           gather_slave_status = false
-
           ## gather metrics from SHOW BINARY LOGS command output
           gather_binary_logs = false
-
           ## gather metrics from SHOW GLOBAL VARIABLES command output
           gather_global_variables = true
-
           ## gather metrics from PERFORMANCE_SCHEMA.TABLE_IO_WAITS_SUMMARY_BY_TABLE
           gather_table_io_waits = false
-
           ## gather metrics from PERFORMANCE_SCHEMA.TABLE_LOCK_WAITS
           gather_table_lock_waits = false
-
           ## gather metrics from PERFORMANCE_SCHEMA.TABLE_IO_WAITS_SUMMARY_BY_INDEX_USAGE
           gather_index_io_waits = false
-
           ## gather metrics from PERFORMANCE_SCHEMA.EVENT_WAITS
           gather_event_waits = false
-
           ## gather metrics from PERFORMANCE_SCHEMA.FILE_SUMMARY_BY_EVENT_NAME
           gather_file_events_stats = false
-
           ## gather metrics from PERFORMANCE_SCHEMA.EVENTS_STATEMENTS_SUMMARY_BY_DIGEST
           gather_perf_events_statements = false
-
           ## the limits for metrics form perf_events_statements
           perf_events_statements_digest_text_limit = 120
           perf_events_statements_limit = 250
           perf_events_statements_time_limit = 86400
-
           ## Some queries we may want to run less often (such as SHOW GLOBAL VARIABLES)
           ##   example: interval_slow = "30m"
           interval_slow = ""
-
           ## Optional TLS Config (will be used if tls=custom parameter specified in server uri)
           # tls_ca = "/etc/telegraf/ca.pem"
           # tls_cert = "/etc/telegraf/cert.pem"
           # tls_key = "/etc/telegraf/key.pem"
           ## Use TLS but skip chain & host verification
           # insecure_skip_verify = false
-
