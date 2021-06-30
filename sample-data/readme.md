@@ -1,4 +1,4 @@
-## Sample Data Template
+# Sample Data Template
 
 This InfluxDB Template can be used to quickly load sample data into your InfluxDB Instance.
 
