@@ -58,21 +58,14 @@ spec:
         name: '# of Data Nodes'
         queries:
           - query: |-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r["_measurement"] == "system")
-                  |> filter(fn: (r) => r["_field"] == "n_cpus")
-                  |> filter(fn: (r) => r.host == v.influxdb_host)
-                  |> count()
-                  |> yield(name: "count")
-
-                from(bucket: v.bucket)
-                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r["_measurement"] == "system")
-                  |> filter(fn: (r) => r["_field"] == "n_cpus")
-                  |> filter(fn: (r) => r.host == v.influxdb_host)
-                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
-                  |> yield(name: "last")
+		from(bucket: v.bucket)
+		  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+		  |> filter(fn: (r) => r["_measurement"] == "system")
+		  |> filter(fn: (r) => r["_field"] == "n_cpus")
+		  |> filter(fn: (r) => r["host"] =~ /data[0-9*]/)
+		  |> group()
+		  |> unique(column: "host")
+		  |> count(column: "host")
         staticLegend: {}
         width: 2
       - axes:
