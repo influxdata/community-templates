@@ -24,9 +24,9 @@ jobs:
     - name: Check out repo
       uses: actions/checkout@v2
     - name: Setup InfluxDB
-      uses: russorat/influxdb-action@v1
+      uses: russorat/influxdb-action@v2
       with:
-        influxdb_version: 2.0.7
+        influxdb_version: nightly
         influxdb_org: influxdata
         influxdb_user: ci_user
         influxdb_password: password
