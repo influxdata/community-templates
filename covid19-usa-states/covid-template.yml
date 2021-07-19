@@ -1,0 +1,423 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: affectionate-diffie-1a7001
+spec:
+    name: covid
+    retentionRules:
+      - everySeconds: 2.592e+06
+        type: expire
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: elated-elbakyan-1a7003
+spec:
+    name: state
+    selected:
+      - Colorado
+    type: constant
+    values:
+      - Alabama
+      - Alaska
+      - American Samoa
+      - Arizona
+      - Arkansas
+      - California
+      - Colorado
+      - Connecticut
+      - Delaware
+      - Diamond Princess
+      - District Of Columbia
+      - Florida
+      - Georgia
+      - Grand Princess
+      - Guam
+      - Hawaii
+      - Idaho
+      - Illinois
+      - Indiana
+      - Iowa
+      - Kansas
+      - Kentucky
+      - Louisiana
+      - Maine
+      - Maryland
+      - Massachusetts
+      - Michigan
+      - Minnesota
+      - Mississippi
+      - Missouri
+      - Montana
+      - Nebraska
+      - Nevada
+      - New Hampshire
+      - New Jersey
+      - New Mexico
+      - New York
+      - North Carolina
+      - North Dakota
+      - Northern Mariana Islands
+      - Ohio
+      - Oklahoma
+      - Oregon
+      - Pennsylvania
+      - Puerto Rico
+      - Rhode Island
+      - South Carolina
+      - South Dakota
+      - Tennessee
+      - Texas
+      - Utah
+      - Vermont
+      - Virgin Islands
+      - Virginia
+      - Washington
+      - West Virginia
+      - Wisconsin
+      - Wyoming
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: dangling-spence-9a7003
+spec:
+    charts:
+      - allowPanAndZoom: true
+        geoLayers:
+          - colorDimension:
+                label: Value
+                name: color
+            colorField: _value
+            intensityDimension:
+                name: intensity
+            layerType: pointMap
+            radiusDimension:
+                name: radius
+            viewColors:
+              - hex: '#BF3D5E'
+                id: "0"
+                name: ruby
+                type: min
+              - hex: '#FFD255'
+                id: a3cdfcf1-bff4-43aa-b0f7-c32827cabdf9
+                name: thunder
+                type: threshold
+                value: 40
+              - hex: '#4ED8A0'
+                id: "1"
+                name: rainforest
+                type: text
+                value: 50
+              - hex: '#7A65F2'
+                id: "2"
+                name: star
+                type: max
+                value: 100
+        height: 9
+        kind: Geo
+        name: Vaccine coverage in each state
+        queries:
+          - query: "latlong = from(bucket: \"covid\")\n  |> range(start: -1d, stop:
+                v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"states-counties-map\")\n
+                \ |> filter(fn: (r) => r[\"_field\"] == \"coordinates_longitude\"
+                or r[\"_field\"] == \"coordinates_latitude\" or r[\"_field\"] == \"province\")\n
+                \ |> keep(columns: [\"_time\", \"_field\", \"_value\", \"county\"])
+                \ \n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn:
+                \"_value\")\n  |> group(columns: [\"province\"])\n  |> bottom(n: 1)\n
+                \ |> group()\n\nstats = from(bucket: \"covid\")\n  |> range(start:
+                -1d, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"vaccine-historic\") \n  |> filter(fn: (r) => r[\"_field\"] ==
+                \"people_fully_vaccinated_per_hundred\")\n  |> keep(columns: [\"_value\",
+                \"location\"])\n  |> rename(columns: {location: \"province\"})\n  |>
+                top(n: 1)\n  |> map(fn: (r) => ({ r with _value: string(v: r._value)}))\n\ncombined
+                = join(tables: {latlong: latlong, county: stats}, on: [\"province\"])\n
+                \ |> rename(columns: {coordinates_longitude: \"lon\", coordinates_latitude:
+                \"lat\"})\n  |> keep(columns: [\"_time\", \"province\", \"_value\",
+                \"lat\", \"lon\"]) \n  |> yield(name: \"combined\")"
+        staticLegend: {}
+        width: 12
+        zoom: 6
+    name: COVID-19 Vaccine Map
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: determined-herschel-5a7001
+spec:
+    charts:
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 3
+        kind: Single_Stat
+        name: Population
+        queries:
+          - query: |-
+                from(bucket: "covid")
+                  |> range(start: -1d, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "states-current-covid")
+                  |> filter(fn: (r) => r["_field"] == "population")
+                  |> filter(fn: (r) => r["state"] == v.state)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        width: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#FD7A5D'
+            id: c2feda03-2f55-4bbe-b778-3508957f1908
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: 8d3d7000-befc-4040-b520-5e641710b342
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: a919b26e-8219-4d3f-931f-59b5e544d792
+            name: Delorean
+            type: scale
+        geom: line
+        height: 5
+        heightRatio: 0.26243093922651933
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: -1
+        name: Total number of cases in the last 30 days
+        opacity: 1
+        orientationThreshold: -1
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "covid")
+                  |> range(start: -30, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "states-covid-historic")
+                  |> filter(fn: (r) => r["state"] == v.state)
+                  |> filter(fn: (r) => r["_field"] == "cases")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> keep(columns: ["_time", "_value", "state"])
+                  |> yield(name: "last")
+        staticLegend:
+            colorizeRows: true
+            heightRatio: 0.26243093922651933
+            opacity: 1
+            orientationThreshold: -1
+            widthRatio: 1
+        width: 6
+        widthRatio: 1
+        xCol: _time
+        yCol: _value
+        yPos: 3
+      - colors:
+          - hex: '#DC4E58'
+            id: base
+            name: fire
+            type: text
+        decimalPlaces: 0
+        height: 3
+        kind: Single_Stat
+        name: Active Cases
+        queries:
+          - query: |-
+                from(bucket: "covid")
+                  |> range(start: -1d, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "states-current-covid")
+                  |> filter(fn: (r) => r["_field"] == "active")
+                  |> filter(fn: (r) => r["host"] == "ip-192-168-1-115.ec2.internal")
+                  |> filter(fn: (r) => r["state"] == v.state)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        width: 3
+        xPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+          - hex: '#BF3D5E'
+            id: cb547a39-8ac9-4930-a077-e396c16f899c
+            name: ruby
+            type: text
+            value: 10000
+        decimalPlaces: 0
+        height: 3
+        kind: Single_Stat
+        name: Total Deaths
+        queries:
+          - query: |-
+                from(bucket: "covid")
+                  |> range(start: -1d, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "states-current-covid")
+                  |> filter(fn: (r) => r["_field"] == "deaths")
+                  |> filter(fn: (r) => r["state"] == v.state)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        width: 3
+        xPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#DA6FF1'
+            id: ab9f48c5-43c7-4c4e-bda1-2f720d326af9
+            name: Ectoplasm
+            type: scale
+          - hex: '#00717A'
+            id: 3162a383-a8cc-48b9-9c1d-43618d7a540b
+            name: Ectoplasm
+            type: scale
+          - hex: '#ACFF76'
+            id: f9fa7c7f-002b-4dea-846e-ca2134b9904d
+            name: Ectoplasm
+            type: scale
+        geom: line
+        height: 5
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: -1
+        name: Percentage of fully vaccinated people in the last 30 days
+        opacity: 1
+        orientationThreshold: -1
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "covid")
+                  |> range(start: -30d, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "vaccine-historic")
+                  |> filter(fn: (r) => r["location"] == v.state)
+                  |> filter(fn: (r) => r["_field"] == "people_fully_vaccinated_per_hundred")
+                  |> keep(columns: ["_time", "_value", "location"])
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: -1
+            widthRatio: 1
+        width: 6
+        widthRatio: 1
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 3
+      - colors:
+          - hex: '#7A65F2'
+            id: base
+            name: star
+            type: text
+          - hex: '#BF3D5E'
+            id: 6203ae2a-3113-4012-8abf-32e34c71b5ee
+            name: ruby
+            type: text
+          - hex: '#FFD255'
+            id: ee4c65fa-0b03-4e8a-8be4-a9050eff27f3
+            name: thunder
+            type: text
+            value: 40
+          - hex: '#4ED8A0'
+            id: 15c2ab60-9276-489e-9a46-bb593d71aaac
+            name: rainforest
+            type: text
+            value: 50
+        decimalPlaces: 1
+        height: 3
+        kind: Single_Stat
+        name: Percentage of Fully Vaccinated People
+        queries:
+          - query: |-
+                from(bucket: "covid")
+                  |> range(start: -1d, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "vaccine-historic")
+                  |> filter(fn: (r) => r["location"] == v.state)
+                  |> filter(fn: (r) => r["_field"] == "people_fully_vaccinated_per_hundred")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        suffix: '%'
+        width: 3
+        xPos: 9
+    name: COVID-19 USA States Dashboard
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: realistic-carver-9a7001
+spec:
+    charts:
+      - allowPanAndZoom: true
+        geoLayers:
+          - colorDimension:
+                label: Value
+                name: color
+            colorField: _value
+            intensityDimension:
+                name: intensity
+            layerType: pointMap
+            radiusDimension:
+                name: radius
+            viewColors:
+              - hex: '#4ED8A0'
+                id: "0"
+                name: rainforest
+                type: min
+              - hex: '#FFB94A'
+                id: "1"
+                name: pineapple
+                type: text
+                value: 500
+              - hex: '#BF3D5E'
+                id: "2"
+                name: ruby
+                type: max
+                value: 2000
+        height: 8
+        kind: Geo
+        name: Deaths in each county
+        queries:
+          - query: |-
+                latlong = from(bucket: "covid")
+                  |> range(start: -1d, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "states-counties-map")
+                  |> filter(fn: (r) => r["_field"] == "coordinates_longitude" or r["_field"] == "coordinates_latitude")
+                  |> keep(columns: ["_time", "_field", "_value", "county"])
+                  |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+                  |> group()
+
+                stats = from(bucket: "covid")
+                  |> range(start: -1d, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "states-counties-map")
+                  |> filter(fn: (r) => r["_field"] == "stats_confirmed" or r["_field"] == "stats_deaths")
+                  |> keep(columns: ["_time", "_field", "_value", "county", "stats_confirmed", "stats_deaths"])
+                  |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+                  |> duplicate(column: "stats_deaths", as: "_value")
+                  |> group()
+
+                combined = join(tables: {latlong: latlong, county: stats}, on: ["county", "_time"])
+                  |> map(fn: (r) => ({r with "stats_confirmed": string(v: r.stats_confirmed),"stats_deaths": string(v: r.stats_deaths)}))
+                  |> group(columns: [ "stats_confirmed", "county"])
+                  |> yield(name: "combined")
+        staticLegend: {}
+        width: 12
+        zoom: 6
+    name: COVID-19 Death Stat Map
