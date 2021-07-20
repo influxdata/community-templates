@@ -39,7 +39,7 @@ jobs:
         do
           echo Trying $file
           cat $file | influx apply --force true
-          STACK_ID=$(influx stacks --json | jq -r '.[].ID')
+          STACK_ID=$(influx stacks --json | jq -r '.[] | with_entries( .key |= ascii_downcase ) | .id')
           if [ -z "$STACK_ID" ]; then
             echo FAIL: Could not load $file
             echo $RESULT
