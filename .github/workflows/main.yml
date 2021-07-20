@@ -34,6 +34,7 @@ jobs:
     # Runs a set of commands using the runners shell
     - name: Load every template to InfluxDB nightly
       run: |
+        influx version
         cd $GITHUB_WORKSPACE
         find $GITHUB_WORKSPACE \( ! -path '*/.*' \) -type f -name "*.yml" -print0 | while read -d $'\0' file
         do
