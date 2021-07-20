@@ -46,6 +46,6 @@ jobs:
             exit 1
           else
             echo SUCCESS: Loaded $file
-            yes | influx stacks rm --stack-id $STACK_ID
+            influx stacks rm --stack-id $STACK_ID --force
           fi
         done
