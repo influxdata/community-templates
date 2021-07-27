@@ -75,7 +75,7 @@ spec:
         		(r._measurement == "earthquake_alert_log"))
         	|> group()
         	|> unique()
-        	|> findColumn(fn: (key) => 
+        	|> findColumn(fn: (key) =>
         		(true), column: "id")
         global = from(bucket: "apis")
         	|> range(start: -30m, stop: alert_delay)
@@ -168,7 +168,7 @@ spec:
         			net: string(v: r.net),
         			id: string(v: r.id),
         			updated: int(v: time(v: r.updated)) / 1000000,
-        			place: string(v: r.place),
+        			place: if exists r.place then string(v: r.place) else "null",
         			type: string(v: r.type),
         			magSource: string(v: r.magSource),
         			status: string(v: r.status),
@@ -195,6 +195,7 @@ spec:
         	|> map(fn: (r) =>
         		({r with country: dict.get(dict: countries_dictionary, key: r.country, default: r.country)}))
         	|> group(columns: ["_measurement", "magSource"])
+          |> filter(fn: (r) => r.place != "null")
         	|> experimental.to(bucket: "apis")
         array.from(rows: [{_time: date.truncate(t: now(), unit: 1d), id: "abc", _measurement: "earthquake_alert_log"}])
         	|> group(columns: ["id"])
