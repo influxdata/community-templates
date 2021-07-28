@@ -398,6 +398,15 @@ spec:
         width: 7
         yPos: 4
         zoom: 6
+        useS2CellID: false
+        s2Column: ""
+        latLonColumns:
+          lat:
+            key: tag
+            column: lat
+          lon:
+            key: tag
+            column: lon
       - colors:
           - hex: '#7CE490'
             id: "0"
