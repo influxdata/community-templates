@@ -342,11 +342,11 @@ spec:
             radiusDimension:
                 name: radius
             viewColors:
-              - hex: '#be2ee4'
+              - hex: '#7A65F2'
                 type: min
-              - hex: '#be2ee4'
+              - hex: '#7A65F2'
                 value: 50
-              - hex: '#be2ee4'
+              - hex: '#7A65F2'
                 type: max
         height: 5
         kind: Geo
