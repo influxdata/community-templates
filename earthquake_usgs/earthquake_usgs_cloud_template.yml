@@ -75,7 +75,7 @@ spec:
         		(r._measurement == "earthquake_alert_log"))
         	|> group()
         	|> unique()
-        	|> findColumn(fn: (key) => 
+        	|> findColumn(fn: (key) =>
         		(true), column: "id")
         global = from(bucket: "apis")
         	|> range(start: -30m, stop: alert_delay)
@@ -168,7 +168,7 @@ spec:
         			net: string(v: r.net),
         			id: string(v: r.id),
         			updated: int(v: time(v: r.updated)) / 1000000,
-        			place: string(v: r.place),
+        			place: if exists r.place then string(v: r.place) else "null",
         			type: string(v: r.type),
         			magSource: string(v: r.magSource),
         			status: string(v: r.status),
@@ -195,6 +195,7 @@ spec:
         	|> map(fn: (r) =>
         		({r with country: dict.get(dict: countries_dictionary, key: r.country, default: r.country)}))
         	|> group(columns: ["_measurement", "magSource"])
+          |> filter(fn: (r) => r.place != "null")
         	|> experimental.to(bucket: "apis")
         array.from(rows: [{_time: date.truncate(t: now(), unit: 1d), id: "abc", _measurement: "earthquake_alert_log"}])
         	|> group(columns: ["id"])
@@ -341,14 +342,54 @@ spec:
             radiusDimension:
                 name: radius
             viewColors:
-              - hex: '#be2ee4'
+              - hex: '#7CE490'
+                id: "0"
+                name: honeydew
                 type: min
-              - hex: '#be2ee4'
-                value: 50
-              - hex: '#be2ee4'
+              - hex: '#FFB94A'
+                id: aa10d34e-4619-442a-854c-77f6c37e4717
+                name: pineapple
+                type: threshold
+                value: 2
+              - hex: '#FFD255'
+                id: 19b3fe0a-cde4-4199-bbc8-4a865e0336da
+                name: thunder
+                type: threshold
+                value: 3
+              - hex: '#F48D38'
+                id: "1"
+                name: tiger
+                type: text
+                value: 4
+              - hex: '#F95F53'
+                id: 48ff7dc4-868c-4ebb-9aa8-596030f29b7b
+                name: curacao
+                type: threshold
+                value: 5
+              - hex: '#DC4E58'
+                id: 195255b0-6d32-40fa-9287-db995eb5684b
+                name: fire
+                type: threshold
+                value: 6
+              - hex: '#BF3D5E'
+                id: 6fd79fa7-0adb-49cd-9b61-8ec04b2c41b9
+                name: ruby
+                type: threshold
+                value: 7
+              - hex: '#7A65F2'
+                id: "2"
+                name: star
                 type: max
+                value: 10
         height: 5
         kind: Geo
+        latLonColumns:
+            lat:
+                column: lat
+                key: tag
+            lon:
+                column: lon
+                key: tag
         name: Recent Earthquakes Map
         queries:
           - query: |-
@@ -393,6 +434,8 @@ spec:
                   |> map(fn: (r) => ({ r with place: distance_to_string(distance: r.distance, place: r.place, country: r.country) }))
                   |> keep(columns: ["country", "mag", "Location", "_time", "lat", "lon", "s2_cell_id"])
                   |> rename(columns: {mag: "_value"})
+                  |> group(columns: ["country"])
+        s2Column: s2_cell_id
         staticLegend: {}
         width: 7
         yPos: 4
