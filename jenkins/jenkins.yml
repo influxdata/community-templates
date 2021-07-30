@@ -525,7 +525,6 @@ spec:
                   |> group(columns: ["result"])
                   |> count()
                   |> yield(name: "count")
-        tickPrefix: "false"
         width: 3
         xPos: 4
       - axes:
