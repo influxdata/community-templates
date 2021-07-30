@@ -24,7 +24,7 @@ jobs:
     - name: Check out repo
       uses: actions/checkout@v2
     - name: Setup InfluxDB
-      uses: russorat/influxdb-action@v3
+      uses: influxdata/influxdb-action@v3
       with:
         influxdb_version: nightly
         influxdb_org: influxdata
