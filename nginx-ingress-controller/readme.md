@@ -5,7 +5,7 @@ Provided by: @bonitoo.io
 Ingress-nginx is an Ingress controller for Kubernetes using NGINX as a reverse proxy and load balancer.
 This InfluxDB template can be used to monitor your Nginx Controller setup inside your Kubernetes cluster.
 
-![Example Dashboard Screenshot](img/nginx_ingress_controller.jpg)
+![Example Dashboard Screenshot](img/nginx-ingress-controller.jpg)
 
 ### Quick Install
 
