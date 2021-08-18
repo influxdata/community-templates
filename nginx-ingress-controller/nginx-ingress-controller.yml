@@ -1,0 +1,817 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: dangerous-gates-877001
+spec:
+    color: '#009f5f'
+    name: ingress-nginx
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: beautiful-perlman-877003
+spec:
+    associations:
+      - kind: Label
+        name: dangerous-gates-877001
+    language: flux
+    name: controller_class
+    query: "import \"influxdata/influxdb/schema\"\r\n\r\nschema.tagValues(\r\n  bucket:
+        v.bucket,\r\n  tag: \"controller_class\",\r\n  predicate: (r) => true,\r\n
+        \ start: v.timeRangeStart\r\n)"
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: happy-hoover-077003
+spec:
+    associations:
+      - kind: Label
+        name: dangerous-gates-877001
+    language: flux
+    name: controller_pod
+    query: "import \"influxdata/influxdb/schema\"\r\n\r\nschema.tagValues(\r\n  bucket:
+        v.bucket,\r\n  tag: \"controller_pod\",\r\n  predicate: (r) => true,\r\n  start:
+        v.timeRangeStart\r\n)"
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: quirky-banzai-477003
+spec:
+    associations:
+      - kind: Label
+        name: dangerous-gates-877001
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> filter(fn: (r) => r.name !~ /^_/)
+          |> rename(columns: {name: "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: wonderful-brahmagupta-477007
+spec:
+    associations:
+      - kind: Label
+        name: dangerous-gates-877001
+    language: flux
+    name: controller_namespace
+    query: "import \"influxdata/influxdb/schema\"\r\n\r\nschema.tagValues(\r\n  bucket:
+        v.bucket,\r\n  tag: \"controller_namespace\",\r\n  predicate: (r) => true,\r\n
+        \ start: v.timeRangeStart\r\n)"
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: modest-colden-c77001
+spec:
+    associations:
+      - kind: Label
+        name: dangerous-gates-877001
+    charts:
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#7CE490'
+            id: base
+            name: honeydew
+            type: text
+          - hex: '#FD7A5D'
+            id: 20f72325-cbf8-4860-a208-7f5ac140a296
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: 629f73cf-1c16-4fe5-ab2d-049bcbc4bc90
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: 809a8be2-e21b-44f2-85fb-dd8868ee877e
+            name: Delorean
+            type: scale
+        decimalPlaces: 0
+        height: 2
+        hoverDimension: auto
+        kind: Single_Stat_Plus_Line
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Controller Connections
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"nginx_ingress_controller_nginx_process_connections\")\r\n
+                \ |> filter(fn: (r) => r[\"controller_namespace\"] == v.controller_namespace)\r\n
+                \ |> filter(fn: (r) => r[\"controller_class\"] == v.controller_class)\r\n
+                \ |> filter(fn: (r) => r[\"controller_pod\"] == v.controller_pod)\r\n
+                \ |> filter(fn: (r) => r[\"state\"] == \"active\")\r\n  |> timedMovingAverage(every:
+                1m, period: 1s)\r\n  |> keep(columns: [\"_time\", \"_value\"])"
+        shade: true
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 4
+        widthRatio: 1
+        xCol: _time
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#FD7A5D'
+            id: 785c1811-9854-49fc-8efb-1761df91440a
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: 930e4de3-cedc-439a-b558-d59622c75898
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: 145fb222-167a-4bba-bba3-cfe8a8c7d4c9
+            name: Delorean
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Ingress Request Volume
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                import "experimental/aggregate"
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "nginx_ingress_controller_requests")
+                  |> filter(fn: (r) => r["controller_namespace"] == v.controller_namespace)
+                  |> filter(fn: (r) => r["controller_class"] == v.controller_class)
+                  |> filter(fn: (r) => r["controller_pod"] == v.controller_pod)
+                  |> aggregateWindow(fn: last, every: v.windowPeriod)
+                  |> filter(fn: (r) => exists r._value)
+                  |> aggregate.rate(every: 1m, unit: 1s, groupColumns: ["ingress"])
+        shade: true
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 4
+        widthRatio: 1
+        xCol: _time
+        yCol: _value
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#FD7A5D'
+            id: 34f269be-ea11-4503-b762-2c68145cedb7
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: 5d65784e-70ee-422a-a808-671fde5028f6
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: f99b0db6-c7c4-4f47-8baf-4cca70273fcd
+            name: Delorean
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Network I/O pressure
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: "import \"experimental/aggregate\"\r\nrequests = from(bucket: v.bucket)\r\n
+                \ |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |>
+                filter(fn: (r) => r[\"_measurement\"] == \"prometheus\")\r\n  |> filter(fn:
+                (r) => r[\"_field\"] == \"nginx_ingress_controller_request_size_sum\")\r\n
+                \ |> filter(fn: (r) => r[\"controller_namespace\"] == v.controller_namespace)\r\n
+                \ |> filter(fn: (r) => r[\"controller_class\"] == v.controller_class)\r\n
+                \ |> filter(fn: (r) => r[\"controller_pod\"] == v.controller_pod)\r\n
+                \ |> aggregateWindow(fn: last, every: v.windowPeriod)\r\n  |> filter(fn:
+                (r) => exists r._value)\r\n  |> aggregate.rate(every: 1m, unit: 1s)\r\n
+                \ |> yield(name: \"requests\")\r\n\r\nresponses = from(bucket: v.bucket)\r\n
+                \ |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |>
+                filter(fn: (r) => r[\"_measurement\"] == \"prometheus\")\r\n  |> filter(fn:
+                (r) => r[\"_field\"] == \"nginx_ingress_controller_response_size_sum\")\r\n
+                \ |> filter(fn: (r) => r[\"controller_namespace\"] == v.controller_namespace)\r\n
+                \ |> filter(fn: (r) => r[\"controller_class\"] == v.controller_class)\r\n
+                \ |> filter(fn: (r) => r[\"controller_pod\"] == v.controller_pod)\r\n
+                \ |> aggregateWindow(fn: last, every: v.windowPeriod)\r\n  |> filter(fn:
+                (r) => exists r._value)\r\n  |> aggregate.rate(every: 1m, unit: 1s)\r\n
+                \ |> yield(name: \"responses\")"
+        shade: true
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 4
+        widthRatio: 1
+        xCol: _time
+        yCol: _value
+        yPos: 4
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        fieldOptions:
+          - displayName: _time
+            fieldName: _time
+            visible: true
+          - displayName: _value
+            fieldName: _value
+            visible: true
+          - displayName: _start
+            fieldName: _start
+            visible: true
+          - displayName: _stop
+            fieldName: _stop
+            visible: true
+          - displayName: _field
+            fieldName: _field
+            visible: true
+          - displayName: _measurement
+            fieldName: _measurement
+            visible: true
+          - displayName: address
+            fieldName: address
+            visible: true
+          - displayName: class
+            fieldName: class
+            visible: true
+          - displayName: host
+            fieldName: host
+            visible: true
+          - displayName: namespace
+            fieldName: namespace
+            visible: true
+          - displayName: url
+            fieldName: url
+            visible: true
+          - displayName: duration
+            fieldName: duration
+            visible: true
+          - displayName: now
+            fieldName: now
+            visible: true
+          - displayName: value
+            fieldName: value
+            visible: true
+          - displayName: now2
+            fieldName: now2
+            visible: true
+          - displayName: TTL
+            fieldName: TTL
+            visible: true
+        height: 2
+        kind: Table
+        name: Ingress Certificate Expiry
+        queries:
+          - query: "import \"strings\"\r\nimport \"regexp\"\r\nfrom(bucket: v.bucket)\r\n
+                \ |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |>
+                filter(fn: (r) => r[\"_measurement\"] == \"prometheus\")\r\n  |> filter(fn:
+                (r) => r[\"_field\"] == \"nginx_ingress_controller_ssl_expire_time_seconds\")\r\n
+                \ |> group(columns: [\"host\"], mode:\"by\")\r\n  |> last()\r\n  |>
+                map(fn: (r) => ({\r\n        host: r.host,\r\n        class: r.class,\r\n
+                \       namespace: r.namespace,\r\n        TTL: regexp.replaceAllString(r:
+                /m\\d+.*/, v: string(v: duration(v: uint(v: r._value) * uint(v: 1000000000)
+                - (uint(v: now())))), t: \"m\")\r\n        }))"
+        staticLegend: {}
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 12
+        yPos: 6
+      - axes:
+          - name: x
+        colors:
+          - hex: '#FD7A5D'
+            id: 992bf506-6034-4fc0-8789-36b9635f47d2
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: 7e3a0bac-f188-4da5-8e26-9cca99d72ade
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: 748483b5-1a14-4f5a-9729-1540205125dd
+            name: Delorean
+            type: scale
+        fillColumns:
+          - _field
+          - ingress
+        height: 2
+        kind: Histogram
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Ingress Percentile Response Times
+        position: stacked
+        queries:
+          - query: "doQuantile = (tables=<-, q, name) => tables\r\n  |> histogramQuantile(quantile:
+                q)\r\n  |> duplicate(as: \"_time\", column: \"_stop\")\r\n  |> window(every:
+                inf)\r\n  |> map(fn: (r) => ({r with _measurement: \"quantile\", _field:
+                name}))\r\n  |> group(columns: [\"ingress\",\"_field\"], mode:\"by\")\r\n\r\nhistograms
+                =\r\n  from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"nginx_ingress_controller_request_duration_seconds_bucket\")\r\n
+                \ |> filter(fn: (r) => r[\"controller_namespace\"] == v.controller_namespace)\r\n
+                \ |> filter(fn: (r) => r[\"controller_class\"] == v.controller_class)\r\n
+                \ |> aggregateWindow(fn: last, every: 1m)\r\n  |> difference(nonNegative:
+                true)\r\n  |> filter(fn: (r) => exists r._value)\r\n  |> window(every:
+                v.windowPeriod)\r\n  |> sum()\r\n  |> map(fn: (r) => ({ r with \r\n
+                \   le: float(v: r.le)   \r\n  }))\r\n  |> drop(columns: [\"_field\"])\r\n\r\nunion(tables:
+                [\r\n  histograms |> doQuantile(q:  0.99, name: \"P99 Latency\"),\r\n
+                \ histograms |> doQuantile(q:  0.95, name: \"P95 Latency\"),\r\n  histograms
+                |> doQuantile(q:  0.5, name: \"P50 Latency\")\r\n])"
+        staticLegend: {}
+        width: 12
+        xCol: _value
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - name: "y"
+            scale: linear
+            suffix: ' req/s'
+        colorizeRows: true
+        colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+          - hex: '#FD7A5D'
+            id: f9c52d75-b294-4ad3-9a30-095f16a13fc8
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: c44865d0-1961-450b-80a6-56b60a84b55e
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: 4e70b9d7-830f-498c-974f-0456b07478c6
+            name: Delorean
+            type: scale
+        decimalPlaces: 1
+        height: 2
+        hoverDimension: auto
+        kind: Single_Stat_Plus_Line
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Controller Request Volume
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                import "experimental/aggregate"
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "nginx_ingress_controller_requests")
+                  |> filter(fn: (r) => r["controller_namespace"] == v.controller_namespace)
+                  |> filter(fn: (r) => r["controller_class"] == v.controller_class)
+                  |> filter(fn: (r) => r["controller_pod"] == v.controller_pod)
+                  |> aggregateWindow(fn: last, every: v.windowPeriod)
+                  |> filter(fn: (r) => exists r._value)
+                  |> aggregate.rate(every: 1m, unit: 1s)
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        suffix: ' req/s'
+        width: 4
+        widthRatio: 1
+        xCol: _time
+        xPos: 4
+        yCol: _value
+      - colors:
+          - hex: '#7CE490'
+            id: base
+            name: honeydew
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Config Successfully Reloaded
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "nginx_ingress_controller_config_last_reload_successful_timestamp_seconds")
+                  |> filter(fn: (r) => r["controller_namespace"] == v.controller_namespace)
+                  |> filter(fn: (r) => r["controller_class"] == v.controller_class)
+                  |> filter(fn: (r) => r["controller_pod"] == v.controller_pod)
+                  |> aggregateWindow(fn: last, every: v.windowPeriod)
+                  |> filter(fn: (r) => exists r._value)
+                  |> group(columns: ["_host"], mode:"by")
+                  |> unique(column: "_value")
+                  |> count(column: "_value")
+        staticLegend: {}
+        suffix: ' x'
+        width: 4
+        xPos: 4
+        yPos: 2
+      - colors:
+          - hex: '#7CE490'
+            id: base
+            name: honeydew
+            type: text
+        decimalPlaces: 0
+        height: 1
+        kind: Single_Stat
+        name: Last Failed Config Time
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"nginx_ingress_controller_config_last_reload_successful\")\r\n
+                \ |> filter(fn: (r) => r[\"controller_namespace\"] == v.controller_namespace)\r\n
+                \ |> filter(fn: (r) => r[\"controller_class\"] == v.controller_class)\r\n
+                \ |> filter(fn: (r) => r[\"controller_pod\"] == v.controller_pod)\r\n
+                \ |> aggregateWindow(fn: last, every: v.windowPeriod)\r\n  |> filter(fn:
+                (r) => exists r._value)\r\n  |> group(columns: [\"host\"], mode:\"by\")\r\n
+                \ |> last()\r\n   |> map(fn: (r) => ({ r with _value: \r\n       if
+                r._value != 1\r\n       then string(v: r._time)\r\n       else\r\n
+                \      \"N/A\"\r\n       }))"
+        staticLegend: {}
+        width: 4
+        xPos: 4
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+            suffix: B
+        colorizeRows: true
+        colors:
+          - hex: '#FD7A5D'
+            id: 34f269be-ea11-4503-b762-2c68145cedb7
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: 5d65784e-70ee-422a-a808-671fde5028f6
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: f99b0db6-c7c4-4f47-8baf-4cca70273fcd
+            name: Delorean
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Average Memory Usage
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: "import \"experimental/aggregate\"\r\nfrom(bucket: v.bucket)\r\n
+                \ |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |>
+                filter(fn: (r) => r[\"_measurement\"] == \"prometheus\")\r\n  |> filter(fn:
+                (r) => r[\"_field\"] == \"nginx_ingress_controller_nginx_process_resident_memory_bytes\")\r\n
+                \ |> filter(fn: (r) => r[\"controller_namespace\"] == v.controller_namespace)\r\n
+                \ |> filter(fn: (r) => r[\"controller_class\"] == v.controller_class)\r\n
+                \ |> filter(fn: (r) => r[\"controller_pod\"] == v.controller_pod)\r\n
+                \ |> aggregateWindow(fn: last, every: v.windowPeriod)\r\n  |> filter(fn:
+                (r) => exists r._value)"
+        shade: true
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 4
+        widthRatio: 1
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - name: "y"
+            scale: linear
+            suffix: ' %'
+        colorizeRows: true
+        colors:
+          - hex: '#7CE490'
+            id: base
+            name: honeydew
+            type: text
+          - hex: '#FD7A5D'
+            id: 36c1564b-d329-443c-acbc-e0ccf228a2c9
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: dc4b610d-45d6-4189-804b-eb147d9eb8ef
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: 7e5182f6-ece0-4a34-b378-09ca4859a82c
+            name: Delorean
+            type: scale
+        decimalPlaces: 0
+        height: 2
+        hoverDimension: auto
+        kind: Single_Stat_Plus_Line
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Controller Success Rate (non-4|5xx responses)
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: "import \"experimental/aggregate\"\r\nnon45_requests = from(bucket:
+                v.bucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n
+                \ |> filter(fn: (r) => r[\"_measurement\"] == \"prometheus\")\r\n
+                \ |> filter(fn: (r) => r[\"_field\"] == \"nginx_ingress_controller_requests\")\r\n
+                \ |> filter(fn: (r) => r[\"controller_namespace\"] == v.controller_namespace)\r\n
+                \ |> filter(fn: (r) => r[\"controller_class\"] == v.controller_class)\r\n
+                \ |> filter(fn: (r) => r[\"controller_pod\"] == v.controller_pod)\r\n
+                \ |> filter(fn: (r) => r[\"status\"] !~ /[4-5].*/)\r\n  |> aggregateWindow(fn:
+                last, every: v.windowPeriod)\r\n  |> filter(fn: (r) => exists r._value)\r\n
+                \ |> aggregate.rate(every: 1m, unit: 1s)\r\n\r\nall_requests = from(bucket:
+                v.bucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n
+                \ |> filter(fn: (r) => r[\"_measurement\"] == \"prometheus\")\r\n
+                \ |> filter(fn: (r) => r[\"_field\"] == \"nginx_ingress_controller_requests\")\r\n
+                \ |> filter(fn: (r) => r[\"controller_namespace\"] == v.controller_namespace)\r\n
+                \ |> filter(fn: (r) => r[\"controller_class\"] == v.controller_class)\r\n
+                \ |> filter(fn: (r) => r[\"controller_pod\"] == v.controller_pod)\r\n
+                \ |> aggregateWindow(fn: last, every: v.windowPeriod)\r\n  |> filter(fn:
+                (r) => exists r._value)\r\n  |> aggregate.rate(every: 1m, unit: 1s)\r\n\r\n\r\n\r\njoin(tables:
+                {non45:non45_requests, all:all_requests}, on: [\"_stop\", \"_start\",
+                \"_time\"])\r\n  |> map(fn: (r) => ({\r\n      _start: r._start,\r\n
+                \     _stop: r._stop,\r\n      _time: r._time,\r\n      _value: (r._value_non45
+                / r._value_all) * 100.0\r\n    })\r\n  )"
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        suffix: ' %'
+        width: 4
+        widthRatio: 1
+        xCol: _time
+        xPos: 8
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+            suffix: ' %'
+        colorizeRows: true
+        colors:
+          - hex: '#FD7A5D'
+            id: 20f72325-cbf8-4860-a208-7f5ac140a296
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: 629f73cf-1c16-4fe5-ab2d-049bcbc4bc90
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: 809a8be2-e21b-44f2-85fb-dd8868ee877e
+            name: Delorean
+            type: scale
+        geom: step
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Ingress Success Rate (non-4|5xx responses)
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: "import \"experimental/aggregate\"\r\nnon45_requests = from(bucket:
+                v.bucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n
+                \ |> filter(fn: (r) => r[\"_measurement\"] == \"prometheus\")\r\n
+                \ |> filter(fn: (r) => r[\"_field\"] == \"nginx_ingress_controller_requests\")\r\n
+                \ |> filter(fn: (r) => r[\"controller_namespace\"] == v.controller_namespace)\r\n
+                \ |> filter(fn: (r) => r[\"controller_class\"] == v.controller_class)\r\n
+                \ |> filter(fn: (r) => r[\"controller_pod\"] == v.controller_pod)\r\n
+                \ |> filter(fn: (r) => r[\"status\"] !~ /[4-5].*/)\r\n  |> aggregateWindow(fn:
+                last, every: v.windowPeriod)\r\n  |> filter(fn: (r) => exists r._value)\r\n
+                \ |> aggregate.rate(every: 1m, unit: 1s, groupColumns: [\"ingress\"])\r\n\r\nall_requests
+                = from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart, stop:
+                v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] ==
+                \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"nginx_ingress_controller_requests\")\r\n
+                \ |> filter(fn: (r) => r[\"controller_namespace\"] == v.controller_namespace)\r\n
+                \ |> filter(fn: (r) => r[\"controller_class\"] == v.controller_class)\r\n
+                \ |> filter(fn: (r) => r[\"controller_pod\"] == v.controller_pod)\r\n
+                \ |> aggregateWindow(fn: last, every: v.windowPeriod)\r\n  |> filter(fn:
+                (r) => exists r._value)\r\n  |> aggregate.rate(every: 1m, unit: 1s,
+                groupColumns: [\"ingress\"])\r\n\r\njoin(tables: {non45:non45_requests,
+                all:all_requests}, on: [\"_stop\", \"_start\", \"_time\", \"ingress\"])\r\n
+                \ |> map(fn: (r) => ({\r\n     _start: r._start,\r\n     _stop: r._stop,\r\n
+                \    _time: r._time,\r\n     _value: (r._value_non45 / r._value_all)
+                * 100.0,\r\n     ingress: r.ingress\r\n    })\r\n  )\r\n\r\n   |>
+                group(columns: [\"ingress\"], mode:\"by\")"
+        shade: true
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 4
+        widthRatio: 1
+        xCol: _time
+        xPos: 8
+        yCol: _value
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            label: Cores
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#FD7A5D'
+            id: 34f269be-ea11-4503-b762-2c68145cedb7
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: 5d65784e-70ee-422a-a808-671fde5028f6
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: f99b0db6-c7c4-4f47-8baf-4cca70273fcd
+            name: Delorean
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Average CPU Usage
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: "import \"experimental/aggregate\"\r\nfrom(bucket: v.bucket)\r\n
+                \ |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |>
+                filter(fn: (r) => r[\"_measurement\"] == \"prometheus\")\r\n  |> filter(fn:
+                (r) => r[\"_field\"] == \"nginx_ingress_controller_nginx_process_cpu_seconds_total\")\r\n
+                \ |> filter(fn: (r) => r[\"controller_namespace\"] == v.controller_namespace)\r\n
+                \ |> filter(fn: (r) => r[\"controller_class\"] == v.controller_class)\r\n
+                \ |> filter(fn: (r) => r[\"controller_pod\"] == v.controller_pod)\r\n
+                \ |> aggregateWindow(fn: last, every: v.windowPeriod)\r\n  |> filter(fn:
+                (r) => exists r._value)\r\n  |> aggregate.rate(every: 1m, unit: 1s)"
+        shade: true
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 4
+        widthRatio: 1
+        xCol: _time
+        xPos: 8
+        yCol: _value
+        yPos: 4
+    description: Monitoring of Ingress Nginx Controller in Kubernetes providing a
+        rich collection of prometheus metrics.
+    name: Nginx Ingress Controller
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: unbridled-bardeen-877001
+spec:
+    associations:
+      - kind: Label
+        name: dangerous-gates-877001
+    config: "# Configuration for telegraf agent\n[agent]\n  ## Default data collection
+        interval for all inputs\n  interval = \"10s\"\n  ## Rounds collection interval
+        to 'interval'\n  ## ie, if interval=\"10s\" then always collect on :00, :10,
+        :20, etc.\n  round_interval = true\n\n  ## Telegraf will send metrics to outputs
+        in batches of at most\n  ## metric_batch_size metrics.\n  ## This controls
+        the size of writes that Telegraf sends to output plugins.\n  metric_batch_size
+        = 1000\n\n  ## For failed writes, telegraf will cache metric_buffer_limit
+        metrics for each\n  ## output, and will flush this buffer on a successful
+        write. Oldest metrics\n  ## are dropped first when this buffer fills.\n  ##
+        This buffer only fills when writes fail to output plugin(s).\n  metric_buffer_limit
+        = 10000\n\n  ## Collection jitter is used to jitter the collection by a random
+        amount.\n  ## Each plugin will sleep for a random time within jitter before
+        collecting.\n  ## This can be used to avoid many plugins querying things like
+        sysfs at the\n  ## same time, which can have a measurable effect on the system.\n
+        \ collection_jitter = \"0s\"\n\n  ## Default flushing interval for all outputs.
+        Maximum flush_interval will be\n  ## flush_interval + flush_jitter\n  flush_interval
+        = \"10s\"\n  ## Jitter the flush interval by a random amount. This is primarily
+        to avoid\n  ## large write spikes for users running a large number of telegraf
+        instances.\n  ## ie, a jitter of 5s and interval 10s means flushes will happen
+        every 10-15s\n  flush_jitter = \"0s\"\n\n  ## By default or when set to \"0s\",
+        precision will be set to the same\n  ## timestamp order as the collection
+        interval, with the maximum being 1s.\n  ##   ie, when interval = \"10s\",
+        precision will be \"1s\"\n  ##       when interval = \"250ms\", precision
+        will be \"1ms\"\n  ## Precision will NOT be used for service inputs. It is
+        up to each individual\n  ## service input to set the timestamp at the appropriate
+        precision.\n  ## Valid time units are \"ns\", \"us\" (or \"µs\"), \"ms\",
+        \"s\".\n  precision = \"\"\n\n  ## Logging configuration:\n  ## Run telegraf
+        with debug log messages.\n  debug = false\n  ## Run telegraf in quiet mode
+        (error log messages only).\n  quiet = false\n  ## Specify the log file name.
+        The empty string means to log to stderr.\n  logfile = \"\"\n\n  ## Override
+        default hostname, if empty use os.Hostname()\n  hostname = \"\"\n  ## If set
+        to true, do no set the \"host\" tag in the telegraf agent.\n  omit_hostname
+        = false\n[[outputs.influxdb_v2]]\n  ## The URLs of the InfluxDB cluster nodes.\n
+        \ ##\n  ## Multiple URLs can be specified for a single cluster, only ONE of
+        the\n  ## urls will be written to each interval.\n  ## urls exp: http://127.0.0.1:9999\n
+        \ urls = [\"$INFLUX_HOST\"]\n\n  ## Token for authentication.\n  token = \"$INFLUX_TOKEN\"\n\n
+        \ ## Organization is the name of the organization you wish to write to; must
+        exist.\n  organization = \"$INFLUX_ORG\"\n\n  ## Destination bucket to write
+        into.\n  bucket = \"$INFLUX_BUCKET\"\n\n# Read metrics from one or many prometheus
+        clients\n[[inputs.prometheus]]\n  ## An array of urls to scrape metrics from.\n
+        \ # urls = [\"http://localhost:9100/metrics\"]\n\n  ## Metric version controls
+        the mapping from Prometheus metrics into\n  ## Telegraf metrics.  When using
+        the prometheus_client output, use the same\n  ## value in both plugins to
+        ensure metrics are round-tripped without\n  ## modification.\n  ##\n  ##   example:
+        metric_version = 1; deprecated in 1.13\n  ##            metric_version = 2;
+        recommended version\n  metric_version = 2\n\n  ## An array of Kubernetes services
+        to scrape metrics from.\n  ## \n  kubernetes_services = [\"$CONTROLLER_SVC_URLS\"]\n\n
+        \ ## Kubernetes config file to create client from.\n  # kube_config = \"/path/to/kubernetes.config\"\n\n
+        \ ## Scrape Kubernetes pods for the following prometheus annotations:\n  ##
+        - prometheus.io/scrape: Enable scraping for this pod\n  ## - prometheus.io/scheme:
+        If the metrics endpoint is secured then you will need to\n  ##     set this
+        to `https` & most likely set the tls config.\n  ## - prometheus.io/path: If
+        the metrics path is not /metrics, define it with this annotation.\n  ## -
+        prometheus.io/port: If port is not 9102 use this annotation\n  monitor_kubernetes_pods
+        = false\n  ## Restricts Kubernetes monitoring to a single namespace\n  ##
+        \  ex: monitor_kubernetes_pods_namespace = \"default\"\n  # monitor_kubernetes_pods_namespace
+        = \"\"\n  # label selector to target pods which have the label\n  # kubernetes_label_selector
+        = \"env=dev,app=nginx\"\n  # field selector to target pods\n  # eg. To scrape
+        pods on a specific node\n  # kubernetes_field_selector = \"spec.nodeName=$HOSTNAME\"\n\n
+        \ ## Use bearer token for authorization. ('bearer_token' takes priority)\n
+        \ bearer_token = \"/run/secrets/kubernetes.io/serviceaccount/token\"\n  ##
+        OR\n  # bearer_token_string = \"abc_123\"\n\n  ## HTTP Basic Authentication
+        username and password. ('bearer_token' and\n  ## 'bearer_token_string' take
+        priority)\n  # username = \"\"\n  # password = \"\"\n\n  ## Specify timeout
+        duration for slower prometheus clients (default is 3s)\n  # response_timeout
+        = \"3s\"\n\n  ## Optional TLS Config\n  # tls_ca = /path/to/cafile\n  # tls_cert
+        = /path/to/certfile\n  # tls_key = /path/to/keyfile\n  ## Use TLS but skip
+        chain & host verification\n  # insecure_skip_verify = false\n"
+    description: Telegraf config for collecting prometheus metrics from ingress controller
+    name: nginx-ingress-controller
