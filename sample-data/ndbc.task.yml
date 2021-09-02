@@ -8,6 +8,6 @@ spec:
     query: |-
         import "experimental/csv"
 
-        csv.from(url: "https://raw.githubusercontent.com/influxdata/influxdb2-sample-data/master/noaa-ndbc-data/latest-observations-annotated.csv")
+        csv.from(url: "https://influx-testdata.s3.amazonaws.com/noaa-ndbc-latest-observations-annotated.csv")
         |> to(bucket: "sample_data")
     status: active
