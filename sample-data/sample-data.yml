@@ -8,16 +8,16 @@ spec:
     query: |-
         import "experimental/csv"
 
-        csv.from(url: "https://raw.githubusercontent.com/russorat/influxdb-data-examples/master/com/coindesk/bitcoin/currentprice-annotated.csv")
+        csv.from(url: "https://influx-testdata.s3.amazonaws.com/bitcoin-historical-annotated.csv")
         |> to(bucket: "sample_data")
 
-        csv.from(url: "https://raw.githubusercontent.com/influxdata/influxdb2-sample-data/master/usgs-earthquake-data/all_week-annotated.csv")
+        csv.from(url: "https://influx-testdata.s3.amazonaws.com/usgs-earthquake-all-week-annotated.csv")
         |> to(bucket: "sample_data")
 
-        csv.from(url: "https://raw.githubusercontent.com/influxdata/influxdb2-sample-data/master/noaa-ndbc-data/latest-observations-annotated.csv")
+        csv.from(url: "https://influx-testdata.s3.amazonaws.com/noaa-ndbc-latest-observations-annotated.csv")
         |> to(bucket: "sample_data")
 
-        csv.from(url: "https://raw.githubusercontent.com/influxdata/influxdb2-sample-data/master/air-sensor-data/air-sensor-data-annotated.csv")
+        csv.from(url: "https://influx-testdata.s3.amazonaws.com/air-sensor-data-annotated.csv")
         |> to(bucket: "sample_data")
     status: active
 ---

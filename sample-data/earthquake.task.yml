@@ -8,6 +8,6 @@ spec:
     query: |-
         import "experimental/csv"
 
-        csv.from(url: "https://raw.githubusercontent.com/influxdata/influxdb2-sample-data/master/usgs-earthquake-data/all_week-annotated.csv")
+        csv.from(url: "https://influx-testdata.s3.amazonaws.com/usgs-earthquake-all-week-annotated.csv")
         |> to(bucket: "sample_data")
     status: active

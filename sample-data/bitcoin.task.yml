@@ -8,6 +8,6 @@ spec:
     query: |-
         import "experimental/csv"
 
-        csv.from(url: "https://raw.githubusercontent.com/russorat/influxdb-data-examples/master/com/coindesk/bitcoin/currentprice-annotated.csv")
+        csv.from(url: "https://influx-testdata.s3.amazonaws.com/bitcoin-historical-annotated.csv")
         |> to(bucket: "sample_data")
     status: active
