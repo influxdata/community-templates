@@ -1,0 +1,1431 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: exciting-herschel-339003
+spec:
+    language: flux
+    name: node
+    query: |-
+        import "influxdata/influxdb/schema"
+
+        schema.tagValues(
+          bucket: "telegraf",
+          tag: "host",
+          predicate: (r) => r["_measurement"] == "prometheus",
+          start: -30d
+        )
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: optimistic-bhaskara-339005
+spec:
+    name: step
+    selected:
+      - 30s
+    type: map
+    values:
+        15s: 15s
+        20s: 20s
+        30s: 30s
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: unruffled-chaplygin-339001
+spec:
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> rename(columns: {"name": "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: compassionate-margulis-b39001
+spec:
+    charts:
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: b1a0723b-034d-471b-b2b3-d32001b4826e
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 3f1d3f11-6192-45a3-a3d5-3dbb5fa539f3
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 20659eb0-cc67-4869-8322-2b3d47848841
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Samples Appended
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                import "experimental/aggregate"
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "prometheus_tsdb_head_samples_appended_total")
+                  |> filter(fn: (r) => r["host"] == v.node)
+                  |> aggregate.rate(every: duration(v: v.step))
+                  |> filter(fn: (r) => exists r._value)
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+        width: 3
+        xCol: _time
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: b1a0723b-034d-471b-b2b3-d32001b4826e
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 3f1d3f11-6192-45a3-a3d5-3dbb5fa539f3
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 20659eb0-cc67-4869-8322-2b3d47848841
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Active Appenders
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "prometheus_tsdb_head_active_appenders")
+                  |> filter(fn: (r) => r["host"] == v.node)
+                  |> aggregateWindow(every: duration(v : v.step), createEmpty: false,
+                      fn: (tables=<-, column) => tables
+                        |> last(column: column)
+                        |> group(columns: ["_start", "_stop"])
+                        |> sum()
+                    )
+                  |> yield(name: "active appenders")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "process_open_fds")
+                  |> filter(fn: (r) => r["host"] == v.node)
+                  |> aggregateWindow(every: duration(v : v.step), createEmpty: false,
+                      fn: (tables=<-, column) => tables
+                        |> last(column: column)
+                        |> group(columns: ["_start", "_stop"])
+                        |> sum()
+                    )
+                  |> yield(name: "process open fds")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+        width: 3
+        xCol: _time
+        yCol: _value
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: b1a0723b-034d-471b-b2b3-d32001b4826e
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 3f1d3f11-6192-45a3-a3d5-3dbb5fa539f3
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 20659eb0-cc67-4869-8322-2b3d47848841
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Compaction Activity
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                import "experimental/aggregate"
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "prometheus_tsdb_compaction_duration_bucket")
+                  |> filter(fn: (r) => r["host"] == v.node)
+                  |> aggregate.rate(every: duration(v : v.step))
+                  |> histogramQuantile(quantile: 0.99)
+                  |> yield(name: "duration-p99")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "prometheus_tsdb_compactions_total")
+                  |> filter(fn: (r) => r["host"] == v.node)
+                  |> aggregate.rate(every: duration(v : v.step))
+                  |> yield(name: "compactions")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "prometheus_tsdb_compactions_failed_total")
+                  |> filter(fn: (r) => r["host"] == v.node)
+                  |> aggregate.rate(every: duration(v : v.step))
+                  |> yield(name: "failed")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "prometheus_tsdb_compactions_triggered_total")
+                  |> filter(fn: (r) => r["host"] == v.node)
+                  |> aggregate.rate(every: duration(v : v.step))
+                  |> yield(name: "triggered")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+        width: 4
+        xCol: _time
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+            suffix: ' ms'
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: b1a0723b-034d-471b-b2b3-d32001b4826e
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 3f1d3f11-6192-45a3-a3d5-3dbb5fa539f3
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 20659eb0-cc67-4869-8322-2b3d47848841
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Rule Group Eval Duration
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "prometheus_rule_group_duration_seconds")
+                  |> filter(fn: (r) => r["host"] == v.node)
+                  |> aggregateWindow(every: duration(v : v.step), createEmpty: true,
+                      fn: (tables=<-, column) => tables
+                        |> group(columns: ["_start", "_stop", "quantile"])
+                        |> max()
+                    )
+                    |> fill(usePrevious: true)
+                  |> map(fn: (r) => ({ r with _value: 1000.0 * r._value})) // to ms
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+        width: 6
+        xCol: _time
+        yCol: _value
+        yPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+            suffix: ' ms'
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: b1a0723b-034d-471b-b2b3-d32001b4826e
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 3f1d3f11-6192-45a3-a3d5-3dbb5fa539f3
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 20659eb0-cc67-4869-8322-2b3d47848841
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Scrape Duration
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "scrape_duration_seconds")
+                  |> filter(fn: (r) => r["host"] == v.node)
+                  |> map(fn: (r) => ({ r with _value: r._value * 1000.0}))
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: b1a0723b-034d-471b-b2b3-d32001b4826e
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 3f1d3f11-6192-45a3-a3d5-3dbb5fa539f3
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 20659eb0-cc67-4869-8322-2b3d47848841
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Block Loaded
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "prometheus_tsdb_blocks_loaded")
+                  |> filter(fn: (r) => r["host"] == v.node)
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: b1a0723b-034d-471b-b2b3-d32001b4826e
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 3f1d3f11-6192-45a3-a3d5-3dbb5fa539f3
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 20659eb0-cc67-4869-8322-2b3d47848841
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Reload Count
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                import "experimental/aggregate"
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "prometheus_tsdb_reloads_total")
+                  |> filter(fn: (r) => r["host"] == v.node)
+                  |> aggregate.rate(every: duration(v : v.step))
+                  |> yield(name: "reloads")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "prometheus_tsdb_reloads_failures_total")
+                  |> filter(fn: (r) => r["host"] == v.node)
+                  |> aggregate.rate(every: duration(v : v.step))
+                  |> yield(name: "failures")
+        shade: true
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+        width: 4
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: b1a0723b-034d-471b-b2b3-d32001b4826e
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 3f1d3f11-6192-45a3-a3d5-3dbb5fa539f3
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 20659eb0-cc67-4869-8322-2b3d47848841
+            name: Nineteen Eighty Four
+            type: scale
+        geom: step
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Memory Profile
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "process_resident_memory_bytes")
+                  |> filter(fn: (r) => r["host"] == v.node)
+                  |> aggregateWindow(every: duration(v : v.step), createEmpty: false,
+                      fn: (tables=<-, column) => tables
+                        |> last(column: column)
+                        |> group(columns: ["_start", "_stop"])
+                        |> sum()
+                    )
+                  |> yield(name: "p8s resident memory")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "process_virtual_memory_bytes")
+                  |> filter(fn: (r) => r["host"] == v.node)
+                  |> yield(name: "virtual memory")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+        width: 3
+        xCol: _time
+        xPos: 6
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: b1a0723b-034d-471b-b2b3-d32001b4826e
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 3f1d3f11-6192-45a3-a3d5-3dbb5fa539f3
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 20659eb0-cc67-4869-8322-2b3d47848841
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Head Chunks
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "prometheus_tsdb_head_chunks")
+                  |> filter(fn: (r) => r["host"] == v.node)
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+        width: 3
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: b1a0723b-034d-471b-b2b3-d32001b4826e
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 3f1d3f11-6192-45a3-a3d5-3dbb5fa539f3
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 20659eb0-cc67-4869-8322-2b3d47848841
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Rule Group Eval Activity
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                import "experimental/aggregate"
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "prometheus_rule_group_iterations_missed_total")
+                  |> filter(fn: (r) => r["host"] == v.node)
+                  |> aggregate.rate(every: duration(v : v.step))
+                  |> fill(usePrevious: true)
+                  |> yield(name: "missed")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "prometheus_rule_group_iterations_total")
+                  |> filter(fn: (r) => r["host"] == v.node)
+                  |> aggregate.rate(every: duration(v : v.step))
+                  |> fill(usePrevious: true)
+                  |> yield(name: "iterations")
+        shade: true
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+        width: 6
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: b1a0723b-034d-471b-b2b3-d32001b4826e
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 3f1d3f11-6192-45a3-a3d5-3dbb5fa539f3
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 20659eb0-cc67-4869-8322-2b3d47848841
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Query Durations
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                import "experimental/aggregate"
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "prometheus_engine_query_duration_seconds")
+                  |> filter(fn: (r) => r["host"] == v.node)
+                  |> filter(fn: (r) => r["quantile"] == "0.99")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+        width: 4
+        xCol: _time
+        xPos: 8
+        yCol: _value
+        yPos: 4
+      - colors:
+          - hex: '#32B08C'
+            id: base
+            name: viridian
+            type: text
+          - hex: '#00C9FF'
+            id: 054c6142-dccd-4bb9-8273-08134284f294
+            name: laser
+            type: text
+            value: 1
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: WAL Corruptions
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "prometheus_tsdb_wal_corruptions_total")
+                  |> filter(fn: (r) => r["host"] == v.node)
+                  |> last()
+                  |> group()
+                  |> sum()
+        staticLegend: {}
+        width: 3
+        xPos: 9
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: b1a0723b-034d-471b-b2b3-d32001b4826e
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 3f1d3f11-6192-45a3-a3d5-3dbb5fa539f3
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 20659eb0-cc67-4869-8322-2b3d47848841
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Head Block GC Activity
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                import "experimental/aggregate"
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "prometheus_tsdb_head_gc_duration_seconds")
+                  |> filter(fn: (r) => r["host"] == v.node)
+                  |> filter(fn: (r) => r["quantile"] == "0.99")
+                  |> yield(name: "duration-p99")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "prometheus_tsdb_head_gc_duration_seconds_count")
+                  |> aggregate.rate(every: duration(v: v.step))
+                  |> filter(fn: (r) => exists r._value)
+                  |> yield(name: "collections")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+        width: 3
+        xCol: _time
+        xPos: 9
+        yCol: _value
+        yPos: 2
+    name: Prometheus 2.0 Stats
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: inspiring-stonebraker-739001
+spec:
+    charts:
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Uptime
+        queries:
+          - query: |-
+                import "math"
+
+                nowi = math.round(x: float(v: (int(v: now()) / 1000000000)))
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "process_start_time_seconds")
+                  |> filter(fn: (r) => r["host"] == v.node)
+                  |> last()
+                //  |> map(fn: (r) => ({ r with
+                //    _value: string(v: duration(v: int(v: nowi -  r._value) * 1000000000)),
+                //  }))
+                  |> map(fn: (r) => ({ r with
+                      uptime: int(v: nowi -  r._value),
+                  }))
+                  |> map(fn: (r) => ({ r with
+                      rup:
+                        if r.uptime > 86400 then (r.uptime / 3600) * 3600
+                        else if r.uptime > 3600 then (r.uptime / 60) * 60
+                        else r.uptime
+                  }))
+                  |> map(fn: (r) => ({ r with
+                    _value: string(v: duration(v: r.rup * 1000000000)),
+                  }))
+        staticLegend: {}
+        width: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#FD7A5D'
+            id: b3c6c600-2b9d-4698-b677-0a3754ba6624
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: 88d76950-817d-4121-ae8d-acb032dab2cf
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: 8a3de864-5933-4c44-a662-e98254fe37ec
+            name: Delorean
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Samples ingested
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                import "experimental/aggregate"
+
+                rate = (tables=<-, interval, step = duration(v: v.step)) => tables
+                  |> derivative(unit: 1s, nonNegative: true)
+                  |> timedMovingAverage(every: step, period: interval)
+
+                from(bucket: "telegraf")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "prometheus_local_storage_ingested_samples_total")
+                  |> filter(fn: (r) => r["host"] == v.node)
+                  //|> rate(interval: 5m)
+                  |> aggregate.rate(every: duration(v: v.step))
+        shade: true
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+        width: 9
+        xCol: _time
+        yCol: _value
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#FDC44F'
+            id: 5b3e5afc-6784-49c0-a11e-2657a516b4d0
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            id: da05c5a1-7da8-4dc7-ab9b-b289a69e63db
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            id: 2c3ad084-7e21-42e8-a928-4e207ec8890d
+            name: Cthulhu
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Target Scrapes
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                import "experimental/aggregate"
+
+                rate = (tables=<-, interval, step = duration(v: v.step)) => tables
+                  |> derivative(unit: 1s, nonNegative: true)
+                  |> timedMovingAverage(every: step, period: interval)
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "prometheus_target_interval_length_seconds_count")
+                  |> filter(fn: (r) => r["host"] == v.node)
+                  //|> rate(interval: 5m)
+                  |> aggregate.rate(every: duration(v: v.step))
+        shade: true
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+        width: 5
+        xCol: _time
+        yCol: _value
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+            suffix: '%'
+        colorizeRows: true
+        colors:
+          - hex: '#FDC44F'
+            id: 5b3e5afc-6784-49c0-a11e-2657a516b4d0
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            id: da05c5a1-7da8-4dc7-ab9b-b289a69e63db
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            id: 2c3ad084-7e21-42e8-a928-4e207ec8890d
+            name: Cthulhu
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Rule Evaluation
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "prometheus_evaluator_duration_seconds")
+                  |> filter(fn: (r) => r["host"] == v.node)
+                  |> filter(fn: (r) => r["quantile"] != "0.01" and r["quantile"] != "0.05")
+                  |> map(fn: (r) => ({ r with _value: r._value * float(v: 100)})) // unit: percent (0.0 -1.0)
+        shade: true
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+        width: 9
+        xCol: _time
+        yCol: _value
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        hoverDimension: auto
+        kind: Single_Stat_Plus_Line
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Local Storage Memory Series
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "prometheus_local_storage_memory_series")
+                  |> filter(fn: (r) => r["host"] == v.node)
+        shade: true
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#FDC44F'
+            id: 5b3e5afc-6784-49c0-a11e-2657a516b4d0
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            id: da05c5a1-7da8-4dc7-ab9b-b289a69e63db
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            id: 2c3ad084-7e21-42e8-a928-4e207ec8890d
+            name: Cthulhu
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Scrape Duration
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "prometheus_target_interval_length_seconds")
+                  |> filter(fn: (r) => r["host"] == v.node)
+                  |> filter(fn: (r) => r["quantile"] != "0.01" and r["quantile"] != "0.05")
+        shade: true
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+        width: 4
+        xCol: _time
+        xPos: 5
+        yCol: _value
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        hoverDimension: auto
+        kind: Single_Stat_Plus_Line
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Internal Storage Queue Length
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "prometheus")
+                  |> filter(fn: (r) => r["_field"] == "prometheus_local_storage_indexing_queue_length")
+                  |> filter(fn: (r) => r["host"] == v.node)
+        shade: true
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+        width: 3
+        xCol: _time
+        xPos: 6
+        yCol: _value
+      - height: 2
+        kind: Markdown
+        name: Name this Cell
+        note: "#### Prometheus  \nYou're using Prometheus, an open-source systems
+            monitoring and alerting toolkit originally built at SoundCloud. For more
+            information, check out the [Grafana](https://grafana.com/) and [Prometheus](https://prometheus.io/)
+            projects."
+        staticLegend: {}
+        width: 3
+        xPos: 9
+      - height: 3
+        kind: Markdown
+        name: Name this Cell
+        note: "#### Samples Ingested\nThis graph displays the count of samples ingested
+            by the Prometheus server, as measured over the last 5 minutes, per time
+            series in the range vector. When troubleshooting an issue on IRC or GitHub,
+            this is often the first stat requested by the Prometheus team. "
+        staticLegend: {}
+        width: 3
+        xPos: 9
+        yPos: 2
+      - height: 3
+        kind: Markdown
+        name: Name this Cell
+        note: "#### Scrapes\nPrometheus scrapes metrics from instrumented jobs, either
+            directly or via an intermediary push gateway for short-lived jobs. Target
+            scrapes will show how frequently targets are scraped, as measured over
+            the last 5 minutes, per time series in the range vector. Scrape Duration
+            will show how long the scrapes are taking, with percentiles available
+            as series. "
+        staticLegend: {}
+        width: 3
+        xPos: 9
+        yPos: 5
+      - height: 3
+        kind: Markdown
+        name: Name this Cell
+        note: |-
+            #### Rule Evaluation Duration
+            This graph panel plots the duration for all evaluations to execute. The 50th percentile, 90th percentile and 99th percentile are shown as three separate series to help identify outliers that may be skewing the data.
+        staticLegend: {}
+        width: 3
+        xPos: 9
+        yPos: 8
+    name: Prometheus Stats
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: beautiful-chaplygin-739003
+spec:
+    config: |
+        # Global tags can be specified here in key="value" format.
+        [global_tags]
+          # dc = "us-east-1" # will tag all metrics with dc=us-east-1
+          # rack = "1a"
+          ## Environment variables can be used as tags, and throughout the config file
+          # user = "$USER"
+
+
+        # Configuration for telegraf agent
+        [agent]
+          ## Default data collection interval for all inputs
+          interval = "10s"
+          ## Rounds collection interval to 'interval'
+          ## ie, if interval="10s" then always collect on :00, :10, :20, etc.
+          round_interval = true
+
+          ## Telegraf will send metrics to outputs in batches of at most
+          ## metric_batch_size metrics.
+          ## This controls the size of writes that Telegraf sends to output plugins.
+          metric_batch_size = 1000
+
+          ## Maximum number of unwritten metrics per output.  Increasing this value
+          ## allows for longer periods of output downtime without dropping metrics at the
+          ## cost of higher maximum memory usage.
+          metric_buffer_limit = 10000
+
+          ## Collection jitter is used to jitter the collection by a random amount.
+          ## Each plugin will sleep for a random time within jitter before collecting.
+          ## This can be used to avoid many plugins querying things like sysfs at the
+          ## same time, which can have a measurable effect on the system.
+          collection_jitter = "0s"
+
+          ## Default flushing interval for all outputs. Maximum flush_interval will be
+          ## flush_interval + flush_jitter
+          flush_interval = "10s"
+          ## Jitter the flush interval by a random amount. This is primarily to avoid
+          ## large write spikes for users running a large number of telegraf instances.
+          ## ie, a jitter of 5s and interval 10s means flushes will happen every 10-15s
+          flush_jitter = "0s"
+
+          ## By default or when set to "0s", precision will be set to the same
+          ## timestamp order as the collection interval, with the maximum being 1s.
+          ##   ie, when interval = "10s", precision will be "1s"
+          ##       when interval = "250ms", precision will be "1ms"
+          ## Precision will NOT be used for service inputs. It is up to each individual
+          ## service input to set the timestamp at the appropriate precision.
+          ## Valid time units are "ns", "us" (or "µs"), "ms", "s".
+          precision = ""
+
+          ## Log at debug level.
+          # debug = false
+          ## Log only error level messages.
+          # quiet = false
+
+          ## Log target controls the destination for logs and can be one of "file",
+          ## "stderr" or, on Windows, "eventlog".  When set to "file", the output file
+          ## is determined by the "logfile" setting.
+          # logtarget = "file"
+
+          ## Name of the file to be logged to when using the "file" logtarget.  If set to
+          ## the empty string then logs are written to stderr.
+          # logfile = ""
+
+          ## The logfile will be rotated after the time interval specified.  When set
+          ## to 0 no time based rotation is performed.  Logs are rotated only when
+          ## written to, if there is no log activity rotation may be delayed.
+          # logfile_rotation_interval = "0d"
+
+          ## The logfile will be rotated when it becomes larger than the specified
+          ## size.  When set to 0 no size based rotation is performed.
+          # logfile_rotation_max_size = "0MB"
+
+          ## Maximum number of rotated archives to keep, any older logs are deleted.
+          ## If set to -1, no archives are removed.
+          # logfile_rotation_max_archives = 5
+
+          ## Override default hostname, if empty use os.Hostname()
+          hostname = ""
+          ## If set to true, do no set the "host" tag in the telegraf agent.
+          omit_hostname = false
+
+
+        ###############################################################################
+        #                            OUTPUT PLUGINS                                   #
+        ###############################################################################
+
+
+        # Configuration for sending metrics to InfluxDB
+        [[outputs.influxdb_v2]]
+           ## The URLs of the InfluxDB cluster nodes.
+           ##
+           ## Multiple URLs can be specified for a single cluster, only ONE of the
+           ## urls will be written to each interval.
+           ##   ex: urls = ["https://us-west-2-1.aws.cloud2.influxdata.com"]
+           urls = ["$INFLUX_HOST"]
+
+           ## Token for authentication.
+           token = "$INFLUX_TOKEN"
+
+           ## Organization is the name of the organization you wish to write to; must exist.
+           organization = "$INFLUX_ORG"
+
+           ## Destination bucket to write into.
+           bucket = "telegraf"
+
+           ## The value of this tag will be used to determine the bucket.  If this
+           ## tag is not set the 'bucket' option is used as the default.
+           # bucket_tag = ""
+
+           ## If true, the bucket tag will not be added to the metric.
+           # exclude_bucket_tag = false
+
+           ## Timeout for HTTP messages.
+           # timeout = "5s"
+
+           ## Additional HTTP headers
+           # http_headers = {"X-Special-Header" = "Special-Value"}
+
+           ## HTTP Proxy override, if unset values the standard proxy environment
+           ## variables are consulted to determine which proxy, if any, should be used.
+           # http_proxy = "http://corporate.proxy:3128"
+
+           ## HTTP User-Agent
+           # user_agent = "telegraf"
+
+           ## Content-Encoding for write request body, can be set to "gzip" to
+           ## compress body or "identity" to apply no encoding.
+           # content_encoding = "gzip"
+
+           ## Enable or disable uint support for writing uints influxdb 2.0.
+           # influx_uint_support = false
+
+           ## Optional TLS Config for use on HTTP connections.
+           # tls_ca = "/etc/telegraf/ca.pem"
+           # tls_cert = "/etc/telegraf/cert.pem"
+           # tls_key = "/etc/telegraf/key.pem"
+           ## Use TLS but skip chain & host verification
+           # insecure_skip_verify = false
+
+
+        ###############################################################################
+        #                            INPUT PLUGINS                                    #
+        ###############################################################################
+
+
+        # Read metrics from one or many prometheus clients
+        [[inputs.prometheus]]
+           ## An array of urls to scrape metrics from.
+           urls = ["http://localhost:9090/metrics"]
+
+           ## Metric version controls the mapping from Prometheus metrics into
+           ## Telegraf metrics.  When using the prometheus_client output, use the same
+           ## value in both plugins to ensure metrics are round-tripped without
+           ## modification.
+           ##
+           ##   example: metric_version = 1; deprecated in 1.13
+           ##            metric_version = 2; recommended version
+           metric_version = 2
+
+           ## Url tag name (tag containing scrapped url. optional, default is "url")
+           # url_tag = "url"
+
+           ## An array of Kubernetes services to scrape metrics from.
+           # kubernetes_services = ["http://my-service-dns.my-namespace:9100/metrics"]
+
+           ## Kubernetes config file to create client from.
+           # kube_config = "/path/to/kubernetes.config"
+
+           ## Scrape Kubernetes pods for the following prometheus annotations:
+           ## - prometheus.io/scrape: Enable scraping for this pod
+           ## - prometheus.io/scheme: If the metrics endpoint is secured then you will need to
+           ##     set this to 'https' & most likely set the tls config.
+           ## - prometheus.io/path: If the metrics path is not /metrics, define it with this annotation.
+           ## - prometheus.io/port: If port is not 9102 use this annotation
+           # monitor_kubernetes_pods = true
+           ## Restricts Kubernetes monitoring to a single namespace
+           ##   ex: monitor_kubernetes_pods_namespace = "default"
+           # monitor_kubernetes_pods_namespace = ""
+           # label selector to target pods which have the label
+           # kubernetes_label_selector = "env=dev,app=nginx"
+           # field selector to target pods
+           # eg. To scrape pods on a specific node
+           # kubernetes_field_selector = "spec.nodeName=$HOSTNAME"
+
+           ## Use bearer token for authorization. ('bearer_token' takes priority)
+           # bearer_token = "/path/to/bearer/token"
+           ## OR
+           # bearer_token_string = "abc_123"
+
+           ## HTTP Basic Authentication username and password. ('bearer_token' and
+           ## 'bearer_token_string' take priority)
+           # username = ""
+           # password = ""
+
+           ## Specify timeout duration for slower prometheus clients (default is 3s)
+           # response_timeout = "3s"
+
+           ## Optional TLS Config
+           # tls_ca = /path/to/cafile
+           # tls_cert = /path/to/certfile
+           # tls_key = /path/to/keyfile
+           ## Use TLS but skip chain & host verification
+           # insecure_skip_verify = false
+
+
+        # Read formatted metrics from one or more HTTP endpoints
+        [[inputs.http]]
+          ## One or more URLs from which to read formatted metrics
+          urls = [
+            "http://localhost:9090/api/v1/query?query=scrape_duration_seconds"
+          ]
+
+          ## HTTP method
+          # method = "GET"
+
+          ## Optional HTTP headers
+          # headers = {"X-Special-Header" = "Special-Value"}
+
+          ## Optional HTTP Basic Auth Credentials
+          # username = "username"
+          # password = "pa$$word"
+
+          ## HTTP entity-body to send with POST/PUT requests.
+          # body = ""
+
+          ## HTTP Content-Encoding for write request body, can be set to "gzip" to
+          ## compress body or "identity" to apply no encoding.
+          # content_encoding = "identity"
+
+          ## Optional TLS Config
+          # tls_ca = "/etc/telegraf/ca.pem"
+          # tls_cert = "/etc/telegraf/cert.pem"
+          # tls_key = "/etc/telegraf/key.pem"
+          ## Use TLS but skip chain & host verification
+          # insecure_skip_verify = false
+
+          ## Amount of time allowed to complete the HTTP request
+          # timeout = "5s"
+
+          ## List of success status codes
+          success_status_codes = [200]
+
+          ## Data format to consume.
+          ## Each data format has its own unique set of configuration options, read
+          ## more about them here:
+          ## https://github.com/influxdata/telegraf/blob/master/docs/DATA_FORMATS_INPUT.md
+          data_format = "json_v2"
+
+          # response body sample: {"status":"success","data":{"resultType":"vector","result":[{"metric":{"__name__":"scrape_duration_seconds","instance":"localhost:9100","job":"prometheus"},"value":[1631873102.229,"0.032568342"]}]}}
+          [[inputs.http.json_v2]]
+            measurement_name = "prometheus" # A string that will become the new measurement name
+            measurement_name_path = "" # A string with valid GJSON path syntax, will override measurement_name
+            timestamp_path = "data.result.0.value.0" # A string with valid GJSON path syntax to a valid timestamp (single value)
+            timestamp_format = "unix" # A string with a valid timestamp format (see below for possible values)
+            [[inputs.http.json_v2.field]]
+              path = "data.result.0.value.1"
+              rename = "scrape_duration_seconds"
+              type = "float"
+
+
+        ###############################################################################
+        #                            PROCESSOR PLUGINS                                #
+        ###############################################################################
+
+
+        # Transforms tag and field values with regex pattern
+        [[processors.regex]]
+          namepass = ["prometheus"]
+
+          [[processors.regex.tags]]
+            key = "url"
+            pattern = '(http[s]?://\w+:[0-9]*)/api/v1/query.*'
+            replacement = "${1}/metrics"
+    description: Sample Telegraf configuration for Prometheus monitoring
+    name: Prometheus Telegraf Config
