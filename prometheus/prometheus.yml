@@ -1257,7 +1257,7 @@ spec:
            organization = "$INFLUX_ORG"
 
            ## Destination bucket to write into.
-           bucket = "telegraf"
+           bucket = "$INFLUX_BUCKET"
 
            ## The value of this tag will be used to determine the bucket.  If this
            ## tag is not set the 'bucket' option is used as the default.
