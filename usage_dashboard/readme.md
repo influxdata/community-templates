@@ -1,4 +1,4 @@
-# Cloud 2 Usage Dashboard
+# InfluxDb Cloud Usage Dashboard
 
 Provided by: InfluxData
 
