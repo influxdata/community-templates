@@ -1,0 +1,511 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: quizzical-tesla-b8c001
+spec:
+    color: '#006f49'
+    name: Jetson
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: nervous-fermi-b8c005
+spec:
+    associations:
+      - kind: Label
+        name: quizzical-tesla-b8c001
+    name: Jetson
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: tasty-curie-f8c003
+spec:
+    associations:
+      - kind: Label
+        name: quizzical-tesla-b8c001
+    language: flux
+    name: measurments
+    query: |-
+        import "influxdata/influxdb/schema"
+        schema.measurements(bucket: v.bucket)
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: wizardly-jones-f8c007
+spec:
+    associations:
+      - kind: Label
+        name: quizzical-tesla-b8c001
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> filter(fn: (r) => r.name !~ /^_/)
+          |> rename(columns: {name: "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: bold-kowalevski-78c001
+spec:
+    associations:
+      - kind: Label
+        name: quizzical-tesla-b8c001
+    charts:
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Power/mW
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 3
+        hoverDimension: auto
+        kind: Single_Stat_Plus_Line
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Averge Power Consumption
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == v.measurments)
+                  |> filter(fn: (r) => r["_field"] == "jetson_power avg")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        staticLegend: {}
+        suffix: mW
+        width: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Usage
+            name: "y"
+            scale: linear
+            suffix: '%'
+        colors:
+          - hex: '#FDC44F'
+            id: 9a07eefe-2253-4b50-905e-561e526b6889
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            id: 8e6ab1ed-41ce-402d-b65f-e1ad828ce7ea
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            id: 9bfaafbc-7abd-4096-969e-791c32cb2cd9
+            name: Cthulhu
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: CPU Core Usage
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == v.measurments)
+                  |> filter(fn: (r) => r["_field"] == "jetson_CPU1" or r["_field"] == "jetson_CPU2" or r["_field"] == "jetson_CPU3" or r["_field"] == "jetson_CPU4")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        staticLegend: {}
+        width: 12
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Temperature
+            name: "y"
+            scale: linear
+            suffix: °C
+        colors:
+          - hex: '#31C0F6'
+            id: 415b3108-1d81-45f0-b8ab-348759ab5730
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 91944267-6f29-4d0e-92cb-6ed98e49c4d8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 33140a65-9405-4f61-ab88-6e8bf4dfafd2
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: GPU Temperature
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == v.measurments)
+                  |> filter(fn: (r) => r["_field"] == "jetson_Temp AO" or r["_field"] == "jetson_Temp CPU" or r["_field"] == "jetson_Temp GPU" or r["_field"] == "jetson_Temp PLL" or r["_field"] == "jetson_Temp thermal")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        width: 12
+        yPos: 5
+      - colors:
+          - hex: '#7CE490'
+            id: base
+            name: honeydew
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: NVDEC
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == v.measurments)
+                  |> filter(fn: (r) => r["_field"] == "jetson_NVDEC")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        width: 1
+        xPos: 3
+      - colors:
+          - hex: '#FFD255'
+            id: base
+            name: thunder
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: NVENC
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == v.measurments)
+                  |> filter(fn: (r) => r["_field"] == "jetson_NVENC")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        width: 1
+        xPos: 3
+        yPos: 1
+      - colors:
+          - hex: '#F95F53'
+            id: base
+            name: curacao
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: NVJPG
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == v.measurments)
+                  |> filter(fn: (r) => r["_field"] == "jetson_NVJPG")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        width: 1
+        xPos: 3
+        yPos: 2
+      - colors:
+          - hex: '#32B08C'
+            id: base
+            name: viridian
+            type: background
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: NVP Model
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == v.measurments)
+                  |> filter(fn: (r) => r["_field"] == "jetson_nvp model")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        width: 3
+        xPos: 4
+      - colors:
+          - hex: '#383846'
+            id: base
+            name: pepper
+            type: background
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Up Time
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == v.measurments)
+                  |> filter(fn: (r) => r["_field"] == "jetson_uptime")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        width: 3
+        xPos: 4
+        yPos: 1
+      - colors:
+          - hex: '#7CE490'
+            id: "0"
+            name: honeydew
+            type: min
+          - hex: '#FFB94A'
+            id: b25aecba-8e01-42b2-af1f-566d9cc11402
+            name: pineapple
+            type: threshold
+            value: 30
+          - hex: '#DC4E58'
+            id: 7a958848-37e8-443d-88c8-4c4051793c48
+            name: fire
+            type: threshold
+            value: 75
+          - hex: '#BF3D5E'
+            id: "1"
+            name: ruby
+            type: max
+            value: 100
+        decimalPlaces: 2
+        height: 3
+        kind: Gauge
+        name: Fan Speed
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == v.measurments)
+                  |> filter(fn: (r) => r["_field"] == "jetson_fan")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        suffix: '%'
+        width: 5
+        xPos: 7
+    description: A collection of useful visualizations for monitoring your Jetson
+        device. Data is provided by Jetson-Stats
+    name: Jetson Stats
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: nvidia-jetson-stats
+spec:
+    name: jetson-stats
+    config: |
+        # Telegraf Configuration
+        #
+        # Telegraf is entirely plugin driven. All metrics are gathered from the
+        # declared inputs, and sent to the declared outputs.
+        #
+        # Plugins must be declared in here to be active.
+        # To deactivate a plugin, comment out the name and any variables.
+        #
+        # Use 'telegraf -config telegraf.conf -test' to see what metrics a config
+        # file would generate.
+        #
+        # Environment variables can be used anywhere in this config file, simply surround
+        # them with ${}. For strings the variable must be within quotes (ie, "${STR_VAR}"),
+        # for numbers and booleans they should be plain (ie, ${INT_VAR}, ${BOOL_VAR})
+
+
+        # Global tags can be specified here in key="value" format.
+        [global_tags]
+          # dc = "us-east-1" # will tag all metrics with dc=us-east-1
+          # rack = "1a"
+          ## Environment variables can be used as tags, and throughout the config file
+          # user = "$USER"
+
+
+        # Configuration for telegraf agent
+        [agent]
+          ## Default data collection interval for all inputs
+          interval = "120s"
+          ## Rounds collection interval to 'interval'
+          ## ie, if interval="10s" then always collect on :00, :10, :20, etc.
+          round_interval = true
+
+          ## Telegraf will send metrics to outputs in batches of at most
+          ## metric_batch_size metrics.
+          ## This controls the size of writes that Telegraf sends to output plugins.
+          metric_batch_size = 1000
+
+          ## Maximum number of unwritten metrics per output.  Increasing this value
+          ## allows for longer periods of output downtime without dropping metrics at the
+          ## cost of higher maximum memory usage.
+          metric_buffer_limit = 10000
+
+          ## Collection jitter is used to jitter the collection by a random amount.
+          ## Each plugin will sleep for a random time within jitter before collecting.
+          ## This can be used to avoid many plugins querying things like sysfs at the
+          ## same time, which can have a measurable effect on the system.
+          collection_jitter = "0s"
+
+          ## Default flushing interval for all outputs. Maximum flush_interval will be
+          ## flush_interval + flush_jitter
+          flush_interval = "10s"
+          ## Jitter the flush interval by a random amount. This is primarily to avoid
+          ## large write spikes for users running a large number of telegraf instances.
+          ## ie, a jitter of 5s and interval 10s means flushes will happen every 10-15s
+          flush_jitter = "0s"
+
+          ## By default or when set to "0s", precision will be set to the same
+          ## timestamp order as the collection interval, with the maximum being 1s.
+          ##   ie, when interval = "10s", precision will be "1s"
+          ##       when interval = "250ms", precision will be "1ms"
+          ## Precision will NOT be used for service inputs. It is up to each individual
+          ## service input to set the timestamp at the appropriate precision.
+          ## Valid time units are "ns", "us" (or "µs"), "ms", "s".
+          precision = ""
+
+          ## Log at debug level.
+          # debug = false
+          ## Log only error level messages.
+          # quiet = false
+
+          ## Log target controls the destination for logs and can be one of "file",
+          ## "stderr" or, on Windows, "eventlog".  When set to "file", the output file
+          ## is determined by the "logfile" setting.
+          # logtarget = "file"
+
+          ## Name of the file to be logged to when using the "file" logtarget.  If set to
+          ## the empty string then logs are written to stderr.
+          # logfile = ""
+
+          ## The logfile will be rotated after the time interval specified.  When set
+          ## to 0 no time based rotation is performed.  Logs are rotated only when
+          ## written to, if there is no log activity rotation may be delayed.
+          # logfile_rotation_interval = "0d"
+
+          ## The logfile will be rotated when it becomes larger than the specified
+          ## size.  When set to 0 no size based rotation is performed.
+          # logfile_rotation_max_size = "0MB"
+
+          ## Maximum number of rotated archives to keep, any older logs are deleted.
+          ## If set to -1, no archives are removed.
+          # logfile_rotation_max_archives = 5
+
+          ## Pick a timezone to use when logging or type 'local' for local time.
+          ## Example: America/Chicago
+          # log_with_timezone = ""
+
+          ## Override default hostname, if empty use os.Hostname()
+          hostname = ""
+          ## If set to true, do no set the "host" tag in the telegraf agent.
+          omit_hostname = false
+
+        ###############################################################################
+        #                            OUTPUT PLUGINS                                   #
+        ###############################################################################
+
+        # Configuration for sending metrics to InfluxDB 2.0
+        [[outputs.influxdb_v2]]
+          ## The URLs of the InfluxDB cluster nodes.
+          ##
+          ## Multiple URLs can be specified for a single cluster, only ONE of the
+          ## urls will be written to each interval.
+          ##   ex: urls = ["https://us-west-2-1.aws.cloud2.influxdata.com"]
+          urls = ["$INFLUX_HOST"]
+
+          ## Token for authentication.
+          token = "<$INFLUX_TOKEN>"
+
+          ## Organization is the name of the organization you wish to write to.
+          organization = "<$INFLUX_ORG>"
+
+          ## Destination bucket to write into.
+          bucket = "$INFLUX_BUCKET"
+
+
+
+
+          ## The value of this tag will be used to determine the bucket.  If this
+          ## tag is not set the 'bucket' option is used as the default.
+          # bucket_tag = ""
+
+          ## If true, the bucket tag will not be added to the metric.
+          # exclude_bucket_tag = false
+
+          ## Timeout for HTTP messages.
+          # timeout = "5s"
+
+          ## Additional HTTP headers
+          # http_headers = {"X-Special-Header" = "Special-Value"}
+
+          ## HTTP Proxy override, if unset values the standard proxy environment
+          ## variables are consulted to determine which proxy, if any, should be used.
+          # http_proxy = "http://corporate.proxy:3128"
+
+          ## HTTP User-Agent
+          # user_agent = "telegraf"
+
+          ## Content-Encoding for write request body, can be set to "gzip" to
+          ## compress body or "identity" to apply no encoding.
+          # content_encoding = "gzip"
+
+          ## Enable or disable uint support for writing uints influxdb 2.0.
+          # influx_uint_support = false
+
+          ## Optional TLS Config for use on HTTP connections.
+          # tls_ca = "/etc/telegraf/ca.pem"
+          # tls_cert = "/etc/telegraf/cert.pem"
+          # tls_key = "/etc/telegraf/key.pem"
+          ## Use TLS but skip chain & host verification
+          # insecure_skip_verify = false
+
+
+        ###############################################################################
+        #                            INPUT PLUGINS                                    #
+        ###############################################################################
+
+
+        [[inputs.exec]]
+          ## Commands array
+          commands = [
+            "python3 /usr/local/bin/jetson_stats.py"
+          ]
+
+          ## Timeout for each command to complete.
+          timeout = "5s"
+
+          ## measurement name suffix (for separating different commands)
+          name_suffix = "_jetson_stats"
+
+          ## Data format to consume.
+          ## Each data format has its own unique set of configuration options, read
+          ## more about them here:
+          ## https://github.com/influxdata/telegraf/blob/master/docs/DATA_FORMATS_INPUT.md
+          data_format = "json"
+              ## Array of glob pattern strings or booleans keys that should be added as string fields.
+          json_string_fields = ["jetson_uptime", "jetson_nvp model", "jetson_NVENC",  "jetson_NVDEC",  "jetson_NVJPG"]
