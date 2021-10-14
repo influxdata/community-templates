@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: quizzical-tesla-b8c001
+    name: righteous-keldysh-008001
 spec:
     color: '#006f49'
     name: Jetson
@@ -9,36 +9,21 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Bucket
 metadata:
-    name: nervous-fermi-b8c005
+    name: busy-lewin-408003
 spec:
     associations:
       - kind: Label
-        name: quizzical-tesla-b8c001
+        name: righteous-keldysh-008001
     name: Jetson
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: tasty-curie-f8c003
+    name: cranky-shtern-808005
 spec:
     associations:
       - kind: Label
-        name: quizzical-tesla-b8c001
-    language: flux
-    name: measurments
-    query: |-
-        import "influxdata/influxdb/schema"
-        schema.measurements(bucket: v.bucket)
-    type: query
----
-apiVersion: influxdata.com/v2alpha1
-kind: Variable
-metadata:
-    name: wizardly-jones-f8c007
-spec:
-    associations:
-      - kind: Label
-        name: quizzical-tesla-b8c001
+        name: righteous-keldysh-008001
     language: flux
     name: bucket
     query: |-
@@ -49,13 +34,28 @@ spec:
     type: query
 ---
 apiVersion: influxdata.com/v2alpha1
-kind: Dashboard
+kind: Variable
 metadata:
-    name: bold-kowalevski-78c001
+    name: sweet-sutherland-808001
 spec:
     associations:
       - kind: Label
-        name: quizzical-tesla-b8c001
+        name: righteous-keldysh-008001
+    language: flux
+    name: measurments
+    query: |-
+        import "influxdata/influxdb/schema"
+        schema.measurements(bucket: v.bucket)
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: strange-allen-c08001
+spec:
+    associations:
+      - kind: Label
+        name: righteous-keldysh-008001
     charts:
       - axes:
           - base: "10"
@@ -113,7 +113,7 @@ spec:
             name: Cthulhu
             type: scale
         geom: line
-        height: 2
+        height: 3
         hoverDimension: auto
         kind: Xy
         legendColorizeRows: true
@@ -137,43 +137,79 @@ spec:
             name: x
             scale: linear
           - base: "10"
-            label: Temperature
             name: "y"
             scale: linear
-            suffix: °C
+            suffix: '%'
+        colorizeRows: true
         colors:
           - hex: '#31C0F6'
-            id: 415b3108-1d81-45f0-b8ab-348759ab5730
+            id: 97df1910-4b75-4751-990d-37c2f8872f53
             name: Nineteen Eighty Four
             type: scale
           - hex: '#A500A5'
-            id: 91944267-6f29-4d0e-92cb-6ed98e49c4d8
+            id: affe1992-5dbf-46b7-8f4d-ec48b6a5c90b
             name: Nineteen Eighty Four
             type: scale
           - hex: '#FF7E27'
-            id: 33140a65-9405-4f61-ab88-6e8bf4dfafd2
+            id: 2ad95b67-e1f5-4eb1-9f94-e07ca3d1a282
             name: Nineteen Eighty Four
             type: scale
-        geom: line
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+          - hex: '#4ED8A0'
+            id: cd383cb5-976b-4773-8342-a2d37ca319b0
+            name: rainforest
+            type: text
+          - hex: '#FFD255'
+            id: 11bced12-3ab7-46d2-ba2b-0cee44df5d87
+            name: thunder
+            type: text
+            value: 40
+          - hex: '#F48D38'
+            id: 9c89db43-5f34-4aef-abaa-190150e70024
+            name: tiger
+            type: text
+            value: 60
+          - hex: '#BF3D5E'
+            id: 219c1066-cdad-4151-ace6-61caadbaba2d
+            name: ruby
+            type: text
+            value: 75
+        decimalPlaces: 2
         height: 3
+        heightRatio: 0.124
         hoverDimension: auto
-        kind: Xy
+        kind: Single_Stat_Plus_Line
         legendColorizeRows: true
         legendOpacity: 1
         legendOrientationThreshold: 1e+08
-        name: GPU Temperature
+        name: GPU Utilization
+        opacity: 1
+        orientationThreshold: 1e+08
         position: overlaid
         queries:
           - query: |-
                 from(bucket: v.bucket)
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
                   |> filter(fn: (r) => r["_measurement"] == v.measurments)
-                  |> filter(fn: (r) => r["_field"] == "jetson_Temp AO" or r["_field"] == "jetson_Temp CPU" or r["_field"] == "jetson_Temp GPU" or r["_field"] == "jetson_Temp PLL" or r["_field"] == "jetson_Temp thermal")
-                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
-                  |> yield(name: "last")
-        staticLegend: {}
-        width: 12
-        yPos: 5
+                  |> filter(fn: (r) => r["_field"] == "jetson_GPU")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        shade: true
+        staticLegend:
+            colorizeRows: true
+            heightRatio: 0.124
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        suffix: '%'
+        width: 4
+        widthRatio: 1
+        xCol: _time
+        yCol: _value
+        yPos: 6
       - colors:
           - hex: '#7CE490'
             id: base
@@ -277,6 +313,57 @@ spec:
         width: 3
         xPos: 4
         yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Temperature
+            name: "y"
+            scale: linear
+            suffix: °C
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 415b3108-1d81-45f0-b8ab-348759ab5730
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 91944267-6f29-4d0e-92cb-6ed98e49c4d8
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 33140a65-9405-4f61-ab88-6e8bf4dfafd2
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Jetson Temperature
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == v.measurments)
+                  |> filter(fn: (r) => r["_field"] == "jetson_Temp AO" or r["_field"] == "jetson_Temp CPU" or r["_field"] == "jetson_Temp GPU" or r["_field"] == "jetson_Temp PLL" or r["_field"] == "jetson_Temp thermal")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+        width: 8
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 6
       - colors:
           - hex: '#7CE490'
             id: "0"
