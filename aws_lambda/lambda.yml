@@ -1,0 +1,475 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: intelligent-swartz-4bf001
+spec:
+    name: kubernetes
+    retentionRules:
+      - everySeconds: 172800
+        type: expire
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: lucid-kepler-8bf001
+spec:
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> filter(fn: (r) => r.name !~ /^_/)
+          |> rename(columns: {name: "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: serene-cohen-cbf001
+spec:
+    charts:
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: dba71c09-6cd9-4e54-8eb0-57a718f039ce
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: bbe4ca25-7b3b-45f1-993c-10efc53049db
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 31f89fcb-c645-4194-87e5-e0c2cb5266d4
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Total Invocations
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cloudwatch_aws_lambda")
+                  |> filter(fn: (r) => r["_field"] == "invocations_sum")
+                  |> filter(fn: (r) => exists r["resource"] )
+                  |> group(columns: ["_measurement"])
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 10
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Error rate
+            name: "y"
+            scale: linear
+            suffix: '%'
+        colors:
+          - hex: '#DC4E58'
+            id: 8fca67de-414d-43fe-af0d-c30807e5fd81
+            name: Solid Red
+            type: scale
+          - hex: '#DC4E58'
+            id: 3f2a82b7-a070-4611-be9d-1937105fa319
+            name: Solid Red
+            type: scale
+          - hex: '#DC4E58'
+            id: aec4cb57-eb2a-460a-ad96-f7755a94408e
+            name: Solid Red
+            type: scale
+        geom: line
+        height: 4
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Total error rate
+        position: overlaid
+        queries:
+          - query: |-
+                period = 10s
+
+                invocations =
+                  from(bucket: v.bucket)
+                    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                    |> filter(fn: (r) => r["_measurement"] == "cloudwatch_aws_lambda")
+                    |> filter(fn: (r) => r["_field"] == "invocations_sum")
+                    |> group(columns: ["_measurement", "_field"])
+                    |> aggregateWindow(every: period, fn: sum, createEmpty: false)
+
+                errors =
+                  from(bucket: v.bucket)
+                    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                    |> filter(fn: (r) => r["_measurement"] == "cloudwatch_aws_lambda")
+                    |> filter(fn: (r) => r["_field"] == "errors_sum")
+                    |> group(columns: ["_measurement", "_field"])
+                    |> aggregateWindow(every: period, fn: sum, createEmpty: false)
+
+                join(tables: {invocations: invocations, errors: errors}, on: ["_time"])
+                  |> map(fn: (r) => ({_time: r._time, _value: r._value_errors / r._value_invocations * 100.}))
+                  |> yield(name: "val")
+        width: 10
+        xCol: _time
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Throttle rate
+            name: "y"
+            scale: linear
+            suffix: '%'
+        colors:
+          - hex: '#31C0F6'
+            id: 721ec2e2-4e60-48cc-8792-c0872a3bb676
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 216533e1-615f-4690-b0bd-06c3f4f3f5f0
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 660b453b-149f-4c78-9f1d-6b788017e115
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Total throttle rate
+        position: overlaid
+        queries:
+          - query: |-
+                invocations =
+                  from(bucket: v.bucket)
+                    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                    |> filter(fn: (r) => r["_measurement"] == "cloudwatch_aws_lambda")
+                    |> filter(fn: (r) => r["_field"] == "invocations_sum")
+                    |> group(columns: ["_measurement", "_field"])
+                    |> aggregateWindow(every: v.windowPeriod, fn: sum, createEmpty: false)
+
+                throttles =
+                  from(bucket: v.bucket)
+                    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                    |> filter(fn: (r) => r["_measurement"] == "cloudwatch_aws_lambda")
+                    |> filter(fn: (r) => r["_field"] == "throttles_sum")
+                    |> group(columns: ["_measurement", "_field"])
+                    |> aggregateWindow(every: v.windowPeriod, fn: sum, createEmpty: false)
+
+                join(tables: {invocations: invocations, throttles: throttles}, on: ["_time"])
+                  |> map(fn: (r) => ({_time: r._time, _value: r._value_throttles / r._value_invocations * 100.}))
+                  |> yield(name: "value")
+        width: 10
+        xCol: _time
+        yCol: _value
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: dba71c09-6cd9-4e54-8eb0-57a718f039ce
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: bbe4ca25-7b3b-45f1-993c-10efc53049db
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 31f89fcb-c645-4194-87e5-e0c2cb5266d4
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Invocations per function
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cloudwatch_aws_lambda")
+                  |> filter(fn: (r) => r["_field"] == "invocations_sum")
+                  |> filter(fn: (r) => exists r["resource"])
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> keep(columns: ["_time", "_value", "resource", "function_name"])
+                  |> yield(name: "mean")
+        width: 8
+        xCol: _time
+        yCol: _value
+        yPos: 12
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Duration
+            name: "y"
+            scale: linear
+            suffix: ms
+        colors:
+          - hex: '#31C0F6'
+            id: 721ec2e2-4e60-48cc-8792-c0872a3bb676
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 216533e1-615f-4690-b0bd-06c3f4f3f5f0
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 660b453b-149f-4c78-9f1d-6b788017e115
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Duration per function
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cloudwatch_aws_lambda")
+                  |> filter(fn: (r) => exists r["resource"])
+                  |> filter(fn: (r) => r["_field"] == "duration_average")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> keep(columns: ["_time", "_value", "resource", "function_name"])
+                  |> yield(name: "mean")
+        width: 8
+        xCol: _time
+        yCol: _value
+        yPos: 16
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Error rate
+            name: "y"
+            scale: linear
+            suffix: '%'
+        colors:
+          - hex: '#31C0F6'
+            id: 721ec2e2-4e60-48cc-8792-c0872a3bb676
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 216533e1-615f-4690-b0bd-06c3f4f3f5f0
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 660b453b-149f-4c78-9f1d-6b788017e115
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Errors per function
+        position: overlaid
+        queries:
+          - query: |-
+                period = 10s
+
+                invocations =
+                  from(bucket: v.bucket)
+                    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                    |> filter(fn: (r) => r["_measurement"] == "cloudwatch_aws_lambda")
+                    |> filter(fn: (r) => r["_field"] == "invocations_sum")
+                    |> filter(fn: (r) => exists r["resource"])
+                    |> group(columns: ["_measurement", "_field", "resource"])
+                    |> aggregateWindow(every: period, fn: sum, createEmpty: false)
+
+                errors =
+                  from(bucket: v.bucket)
+                    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                    |> filter(fn: (r) => r["_measurement"] == "cloudwatch_aws_lambda")
+                    |> filter(fn: (r) => r["_field"] == "errors_sum")
+                    |> filter(fn: (r) => exists r["resource"])
+                    |> group(columns: ["_measurement", "_field", "resource"])
+                    |> aggregateWindow(every: period, fn: sum, createEmpty: false)
+
+                join(tables: {invocations: invocations, errors: errors}, on: ["_time", "resource"])
+                  |> map(fn: (r) => ({r with _time: r._time, _value: r._value_errors / r._value_invocations * 100.}))
+                  |> keep(columns: ["_time", "_value", "resource"])
+                  |> yield(name: "val")
+        width: 10
+        xCol: _time
+        yCol: _value
+        yPos: 20
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Throttle rate
+            name: "y"
+            scale: linear
+            suffix: '%'
+        colors:
+          - hex: '#31C0F6'
+            id: 721ec2e2-4e60-48cc-8792-c0872a3bb676
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 216533e1-615f-4690-b0bd-06c3f4f3f5f0
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 660b453b-149f-4c78-9f1d-6b788017e115
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Throttles per function
+        position: overlaid
+        queries:
+          - query: |-
+                period = 10s
+
+                invocations =
+                  from(bucket: v.bucket)
+                    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                    |> filter(fn: (r) => r["_measurement"] == "cloudwatch_aws_lambda")
+                    |> filter(fn: (r) => r["_field"] == "invocations_sum")
+                    |> filter(fn: (r) => exists r["resource"])
+                    |> group(columns: ["_measurement", "_field", "resource"])
+                    |> aggregateWindow(every: period, fn: sum, createEmpty: false)
+
+                throttles =
+                  from(bucket: v.bucket)
+                    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                    |> filter(fn: (r) => r["_measurement"] == "cloudwatch_aws_lambda")
+                    |> filter(fn: (r) => r["_field"] == "throttles_sum")
+                    |> filter(fn: (r) => exists r["resource"])
+                    |> group(columns: ["_measurement", "_field", "resource"])
+                    |> aggregateWindow(every: period, fn: sum, createEmpty: false)
+
+                join(tables: {invocations: invocations, throttles: throttles}, on: ["_time", "resource"])
+                  |> map(fn: (r) => ({r with _time: r._time, _value: r._value_throttles / r._value_invocations * 100.}))
+                  |> keep(columns: ["_time", "_value", "resource"])
+                  |> yield(name: "val")
+        width: 10
+        xCol: _time
+        yCol: _value
+        yPos: 24
+      - axes:
+          - name: x
+        binCount: 30
+        colors:
+          - hex: '#31C0F6'
+            id: 721ec2e2-4e60-48cc-8792-c0872a3bb676
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 216533e1-615f-4690-b0bd-06c3f4f3f5f0
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 660b453b-149f-4c78-9f1d-6b788017e115
+            name: Nineteen Eighty Four
+            type: scale
+        fillColumns:
+          - function_name
+          - resource
+        height: 4
+        kind: Histogram
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Invocations per function
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cloudwatch_aws_lambda")
+                  |> filter(fn: (r) => r["_field"] == "invocations_sum")
+                  |> filter(fn: (r) => exists r["resource"])
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> keep(columns: ["_time", "_value", "resource", "function_name"])
+                  |> yield(name: "mean")
+        width: 2
+        xCol: _value
+        xPos: 8
+        yPos: 12
+      - axes:
+          - name: x
+        binCount: 30
+        colors:
+          - hex: '#31C0F6'
+            id: 721ec2e2-4e60-48cc-8792-c0872a3bb676
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 216533e1-615f-4690-b0bd-06c3f4f3f5f0
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 660b453b-149f-4c78-9f1d-6b788017e115
+            name: Nineteen Eighty Four
+            type: scale
+        fillColumns:
+          - function_name
+          - resource
+        height: 4
+        kind: Histogram
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Duration per function
+        position: stacked
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "cloudwatch_aws_lambda")
+                  |> filter(fn: (r) => exists r["resource"])
+                  |> filter(fn: (r) => r["_field"] == "duration_average")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> keep(columns: ["_time", "_value", "resource", "function_name"])
+                  |> yield(name: "mean")
+        width: 2
+        xCol: _value
+        xPos: 8
+        yPos: 16
+    name: AWS Lambda
