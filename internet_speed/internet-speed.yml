@@ -1,0 +1,189 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: great-galois-510001
+spec:
+    color: '#066fc5'
+    name: internet-speed
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: exciting-cori-910003
+spec:
+    associations:
+      - kind: Label
+        name: great-galois-510001
+    name: internet
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: jolly-montalcini-910003
+spec:
+    associations:
+      - kind: Label
+        name: great-galois-510001
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> filter(fn: (r) => r.name !~ /^_/)
+          |> rename(columns: {name: "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: spectacular-engelbart-510003
+spec:
+    associations:
+      - kind: Label
+        name: great-galois-510001
+    charts:
+      - colors:
+          - hex: '#BF3D5E'
+            id: base
+            name: ruby
+            type: text
+          - hex: '#7CE490'
+            id: 821879ee-4d58-4dee-8732-38e6b3f5d0c9
+            name: honeydew
+            type: text
+            value: 50
+        decimalPlaces: 1
+        height: 2
+        kind: Single_Stat
+        name: Download Speed
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "internet_speed")
+                  |> filter(fn: (r) => r["_field"] == "download")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        suffix: ' Mbps'
+        width: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 4e948b98-6f60-43f9-a9b3-c7c9aebbbf05
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 7dd0a2bf-7aa1-49db-92be-f8b631c2e2be
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: a5628510-1a45-4961-a9a1-87bd76e706d3
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        heightRatio: 0.23
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Speed
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "internet_speed")
+                  |> filter(fn: (r) => r["_field"] == "download" or r["_field"] == "upload")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        shade: true
+        staticLegend:
+            colorizeRows: true
+            heightRatio: 0.23
+            opacity: 1
+            orientationThreshold: 1e+08
+            valueAxis: "y"
+            widthRatio: 1
+        valueAxis: "y"
+        width: 12
+        widthRatio: 1
+        xCol: _time
+        yCol: _value
+        yPos: 2
+      - colors:
+          - hex: '#BF3D5E'
+            id: base
+            name: ruby
+            type: text
+          - hex: '#7CE490'
+            id: 0c82bcd0-c280-4434-afb8-1a4110206eb0
+            name: honeydew
+            type: text
+            value: 5
+        decimalPlaces: 1
+        height: 2
+        kind: Single_Stat
+        name: Upload Speed
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "internet_speed")
+                  |> filter(fn: (r) => r["_field"] == "upload")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        suffix: ' Mbps'
+        width: 6
+        xPos: 6
+    name: Internet Speed
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: confident-goodall-910001
+spec:
+    associations:
+      - kind: Label
+        name: great-galois-510001
+    config: |
+        # Configuration for telegraf agent
+        [agent]
+          ## Default data collection interval for all inputs
+          interval = "1m"
+          
+        [[outputs.influxdb_v2]]
+          ## The URLs of the InfluxDB cluster nodes.
+          ##
+          ## Multiple URLs can be specified for a single cluster, only ONE of the
+          ## urls will be written to each interval.
+          ##   ex: urls = ["https://us-west-2-1.aws.cloud2.influxdata.com"]
+          urls = ["$INFLUX_HOST"]
+
+          ## Token for authentication.
+          token = "$INFLUX_TOKEN"
+
+          ## Organization is the name of the organization you wish to write to; must exist.
+          organization = "$INFLUX_ORG"
+
+          ## Destination bucket to write into.
+          bucket = "internet"
+
+        # Monitors internet speed using speedtest.net service
+        [[inputs.internet_speed]]
+          ## Sets if runs file download test
+          ## Default: false
+          enable_file_download = true
+    name: internet
