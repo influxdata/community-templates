@@ -5,7 +5,7 @@ Provided by: Samantha Wang
 Collect and monitor your internet data speeds. 
 
 
-![Example Dashboard Screenshot](Example_Screenshot.png)
+![Internet Speed Monitoring Dashboard Screenshot](https://github.com/sjwang90/community-templates/blob/internet-speed/internet_speed/internet-speed-dashboard.png)
 
 ### Quick Install
 
@@ -26,9 +26,9 @@ List what resources your template provides in this section. That will allow user
 
 **Example:**
 
-  - 1 Bucket: `internet`, 7d retention
+  - 1 Bucket: `internet`
   - 1 Label: `internet-speed`
-  - 1 Telegraf Configuration: `Internet
+  - 1 Telegraf Configuration: `Internet`
   - 1 Dashboards: `Internet Speed`
   - 1 Variables: `bucket`
 
