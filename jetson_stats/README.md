@@ -3,7 +3,6 @@
 Provided by: Jay Clifford
 
 This InfluxDB Template can be used to gather system metrics from a Jetson Stats instance. 
-![Jetson Stats Dashboard Screenshot](img/jetson-stats-dashboard.png)
 
 The goal of this template is to provide system stats from a Jetson Nano and other devices within the Jetson family. Jetson devices do not have access to NVIDIA SMI meaning gathering useful GPU statistics is difficult. This template monitors the following system assets:
 - Power Consumption
@@ -14,6 +13,11 @@ The goal of this template is to provide system stats from a Jetson Nano and othe
 - Up Time
 - Core System Flags
 
+##### Dashboard examples
+![Jetson Stats Dashboard Screenshot](img/jetson-stats-dashboard.png)
+
+
+
 
 This template makes use of [Jetson_Stats](https://github.com/rbonghi/jetson_stats) make sure you install this package on your Jetson device. 
 
@@ -21,13 +25,13 @@ This template makes use of [Jetson_Stats](https://github.com/rbonghi/jetson_stat
 
 #### InfluxDB UI
 
-In the InfluxDB UI, go to Settings->Templates and enter this URL: https://raw.githubusercontent.com/influxdata/community-templates/master/jetson-stats/jetson-stats.yml
+In the InfluxDB UI, go to Settings->Templates and enter this URL: https://raw.githubusercontent.com/influxdata/community-templates/master/jetson_stats/jetson-stats.yml
 
 #### Influx CLI
 If you have your InfluxDB credentials [configured in the CLI](https://v2.docs.influxdata.com/v2.0/reference/cli/influx/config/), you can install this template with:
 
 ```
-influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/jetson-stats/jetson-stats.yml
+influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/jetson_stats/jetson-stats.yml
 ```
 
 ## Included Resources
