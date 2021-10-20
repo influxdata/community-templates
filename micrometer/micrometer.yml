@@ -1,0 +1,1415 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: stubborn-archimedes-84e003
+spec:
+    color: '#009f5f'
+    name: ingress-nginx
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: realistic-dirac-84e001
+spec:
+    name: jvm_micrometer
+    retentionRules:
+      - everySeconds: 2.592e+06
+        type: expire
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: hungry-murdock-84e005
+spec:
+    associations:
+      - kind: Label
+        name: stubborn-archimedes-84e003
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> filter(fn: (r) => r.name !~ /^_/)
+          |> rename(columns: {name: "_value"})
+          |> keep(columns: ["_value"])
+    selected:
+      - demo
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: cool-meninsky-44e001
+spec:
+    charts:
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Quick facts'
+        staticLegend: {}
+        width: 9
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Start time
+        queries:
+          - query: "import \"date\"\nimport \"math\"\n\nfrom(bucket: v.bucket)\n  |>
+                range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn:
+                (r) => r[\"_measurement\"] == \"process_start_time\")\n  |> filter(fn:
+                (r) => r[\"_field\"] == \"value\")\n  |> last()\n  |> toInt()\n  |>
+                map(fn: (r) => ({r with _value: time(v: r._value * 1000000)}))\n  |>
+                map(fn: (r) => ({\n                      r with\n                      _value:
+                \n                        if \n                          date.year(t:
+                now()) != date.year(t: r._value) or\n                          date.month(t:
+                now()) != date.month(t: r._value) or\n                          date.monthDay(t:
+                now()) != date.monthDay(t: r._value)\n                        then\n
+                \                         string(v: date.year(t: r._value)) + \"/\"
+                +\n                          string(v: date.month(t: r._value)) +
+                \"/\" +\n                          string(v: date.monthDay(t: r._value))
+                + \" \" +\n                          string(v: date.hour(t: r._value))
+                + \":\" +\n                          string(v: date.minute(t: r._value))
+                + \":\" +\n                          string(v: date.second(t: r._value))
+                + \" GMT\"\n                        else\n                          string(v:
+                date.hour(t: r._value)) + \":\" +\n                          string(v:
+                date.minute(t: r._value)) + \":\" +\n                          string(v:
+                date.second(t: r._value)) + \" GMT\"  \n                    })\n    )\n
+                \ |> yield(name: \"Start time\")"
+        staticLegend: {}
+        width: 3
+        yPos: 1
+      - height: 1
+        kind: Markdown
+        name: Name this Cell (Clone)
+        note: '## IO Overview'
+        staticLegend: {}
+        width: 9
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: b14edd3e-51ff-4f71-b4fe-c8df83ce7449
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 4ae7e4a0-37de-44f1-a81e-0003018379d5
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: ca1a2d73-538e-43c2-b2f8-f180df58450e
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Rate
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "http_server_requests")
+                  |> filter(fn: (r) => r["_field"] == "count")
+                  |> group()
+                  |> aggregateWindow(every: 1m, fn: sum, createEmpty: false)
+                  |> yield(name: "Rate")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 3
+        widthRatio: 1
+        xCol: _time
+        yCol: _value
+        yPos: 4
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## JVM Memory'
+        staticLegend: {}
+        width: 9
+        yPos: 7
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+            suffix: ' MiB'
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 1c994235-580a-4299-97aa-2786b705bd63
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: ac034c11-c1e8-4b9f-992b-fd2153ead0c3
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 818b066c-bc5b-4552-83cc-a4f6e152ea99
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: JVM Heap
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_memory_used")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> filter(fn: (r) => r["area"] == "heap")
+                  |> aggregateWindow(every: 5s, fn: mean, createEmpty: false)
+                  |> group(columns: ["_time", "_measurement"])
+                  |> sum()
+                  |> map(fn: (r) => ({ _time: r._time, _value: r._value / 1024. / 1024. }))
+                  |> group()
+                  |> yield(name: "memory_used")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_memory_max")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> filter(fn: (r) => r["area"] == "heap")
+                  |> aggregateWindow(every: 5s, fn: mean, createEmpty: false)
+                  |> group(columns: ["_time", "_measurement"])
+                  |> sum()
+                  |> map(fn: (r) => ({ _time: r._time, _value: r._value / 1024. / 1024. }))
+                  |> group()
+                  |> yield(name: "memory_max")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_memory_committed")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> filter(fn: (r) => r["area"] == "heap")
+                  |> aggregateWindow(every: 5s, fn: mean, createEmpty: false)
+                  |> group(columns: ["_time", "_measurement"])
+                  |> sum()
+                  |> map(fn: (r) => ({ _time: r._time, _value: r._value / 1024. / 1024. }))
+                  |> group()
+                  |> yield(name: "memory_committed")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 3
+        widthRatio: 1
+        xCol: _time
+        yCol: _value
+        yPos: 8
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## JVM Misc'
+        staticLegend: {}
+        width: 9
+        yPos: 11
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+            suffix: '%'
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: b14edd3e-51ff-4f71-b4fe-c8df83ce7449
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 4ae7e4a0-37de-44f1-a81e-0003018379d5
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: ca1a2d73-538e-43c2-b2f8-f180df58450e
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: CPU
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                windowSize = 5s
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "system_cpu_usage")
+                  |> aggregateWindow(every: windowSize, fn: last, createEmpty: false)
+                  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 100.}))
+                  |> yield(name: "System CPU")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "process_cpu_usage")
+                  |> aggregateWindow(every: windowSize, fn: last, createEmpty: false)
+                  |> map(fn: (r) => ({ _time: r._time, _value: r._value * 100.}))
+                  |> yield(name: "Process CPU")
+
+                // from(bucket: v.bucket)
+                //   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                //   |> filter(fn: (r) => r["_measurement"] == "process_cpu_usage")
+                //   |> aggregateWindow(every: 1h, fn: mean, createEmpty: false)
+                //   |> map(fn: (r) => ({ _time: r._time, _value: r._value * 100.}))
+                //   |> yield(name: "Process-1h CPU")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 3
+        widthRatio: 1
+        xCol: _time
+        yCol: _value
+        yPos: 12
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: b14edd3e-51ff-4f71-b4fe-c8df83ce7449
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 4ae7e4a0-37de-44f1-a81e-0003018379d5
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: ca1a2d73-538e-43c2-b2f8-f180df58450e
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Thread States
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_threads_states")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 3
+        widthRatio: 1
+        xCol: _time
+        yCol: _value
+        yPos: 15
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 37d4d61c-0426-4951-bed6-b71d4a0813ae
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 065947f8-05d9-4622-9039-de1a2d47c6b7
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: ea69d63a-49fe-44d4-a54a-5d7d860bb262
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: File Descriptors
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "process_files_open")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)
+                  |> yield(name: "Open")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "process_files_max")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)
+                  |> yield(name: "Max")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 3
+        widthRatio: 1
+        xCol: _time
+        yCol: _value
+        yPos: 18
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Garbage Collection'
+        staticLegend: {}
+        width: 9
+        yPos: 21
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 56803234-b421-44f0-8402-b9c46c8a4b8f
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 169c0d68-f74e-455e-9f40-b73ea2ca7a4d
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 355fa36e-fcb5-4c4b-962c-dd57a34a84df
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Collections
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_gc_pause")
+                  |> filter(fn: (r) => r["_field"] == "count")
+                  |> group(columns: ["_measurement", "action"])
+                  |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 3
+        widthRatio: 1
+        xCol: _time
+        yCol: _value
+        yPos: 22
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Classloading'
+        staticLegend: {}
+        width: 9
+        yPos: 25
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 56803234-b421-44f0-8402-b9c46c8a4b8f
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 169c0d68-f74e-455e-9f40-b73ea2ca7a4d
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 355fa36e-fcb5-4c4b-962c-dd57a34a84df
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Classes loaded
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_classes_loaded")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 5
+        widthRatio: 1
+        xCol: _time
+        yCol: _value
+        yPos: 26
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '## Buffer Pools'
+        staticLegend: {}
+        width: 9
+        yPos: 29
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: KiB
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 56803234-b421-44f0-8402-b9c46c8a4b8f
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 169c0d68-f74e-455e-9f40-b73ea2ca7a4d
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 355fa36e-fcb5-4c4b-962c-dd57a34a84df
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Direct Buffers
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_buffer_memory_used")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> filter(fn: (r) => r["id"] == "direct")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> map(fn: (r) => ({r with _value: r._value / 1024. }))
+                  |> yield(name: "Used")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_buffer_total_capacity")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> filter(fn: (r) => r["id"] == "direct")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> map(fn: (r) => ({r with _value: r._value / 1024. }))
+                  |> yield(name: "Capacity")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 4
+        widthRatio: 1
+        xCol: _time
+        yCol: _value
+        yPos: 30
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: KiB
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 56803234-b421-44f0-8402-b9c46c8a4b8f
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 169c0d68-f74e-455e-9f40-b73ea2ca7a4d
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 355fa36e-fcb5-4c4b-962c-dd57a34a84df
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Mapped Buffers
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_buffer_memory_used")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> filter(fn: (r) => r["id"] == "mapped")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> map(fn: (r) => ({r with _value: r._value / 1024. }))
+                  |> yield(name: "Used")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_buffer_total_capacity")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> filter(fn: (r) => r["id"] == "mapped")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> map(fn: (r) => ({r with _value: r._value / 1024. }))
+                  |> yield(name: "Capacity")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 4
+        widthRatio: 1
+        xCol: _time
+        yCol: _value
+        yPos: 33
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Uptime
+        queries:
+          - query: "import \"math\"\n\nfrom(bucket: v.bucket)\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"process_uptime\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n
+                \ |> last()\n  |> map(fn: (r) => ({_value: r._value / 1000.}))\n  |>
+                map(fn: (r) => \n    ({\n      _value: \n        if r._value < 60.
+                then string(v: r._value) + \" sec\"\n        else if r._value < (60
+                * 60) then string(v: math.ceil(x: r._value / 60.)) + \" min.\"\n        else
+                if r._value < (60 * 60 * 24) then string(v: math.ceil(x: r._value
+                / 60. / 60.)) + \" hour(s)\"\n        else string(v: math.ceil(x:
+                r._value / 60. / 60. / 24.)) + \" day(s)\"\n    })\n  )\n  |> yield(name:
+                \"Uptime\")"
+        staticLegend: {}
+        width: 2
+        xPos: 3
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#DC4E58'
+            id: 75c2a64d-3ac9-4882-b057-dc1ce18e676c
+            name: Solid Red
+            type: scale
+          - hex: '#DC4E58'
+            id: 019e7113-007a-4c60-a7fa-cf3c84157487
+            name: Solid Red
+            type: scale
+          - hex: '#DC4E58'
+            id: 1e0bf4df-e3d0-4180-ad2d-87417c2eceb5
+            name: Solid Red
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Errors
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "http_server_requests")
+                  |> filter(fn: (r) => r["status"] =~ /5../)
+                  |> filter(fn: (r) => r["_field"] == "count")
+                  |> aggregateWindow(every: 1m, fn: sum, createEmpty: false)
+                  |> yield(name: "HTTP Errors")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 3
+        widthRatio: 1
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+            suffix: ' MiB'
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 1c994235-580a-4299-97aa-2786b705bd63
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: ac034c11-c1e8-4b9f-992b-fd2153ead0c3
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 818b066c-bc5b-4552-83cc-a4f6e152ea99
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        heightRatio: 0.14599236641221375
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: JVM Non-Heap
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_memory_used")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> filter(fn: (r) => r["area"] == "nonheap")
+                  |> aggregateWindow(every: 5s, fn: mean, createEmpty: false)
+                  |> group(columns: ["_time", "_measurement"])
+                  |> sum()
+                  |> map(fn: (r) => ({ _time: r._time, _value: r._value / 1024. / 1024. }))
+                  |> group()
+                  |> yield(name: "memory_used")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_memory_max")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> filter(fn: (r) => r["area"] == "nonheap")
+                  |> aggregateWindow(every: 5s, fn: mean, createEmpty: false)
+                  |> group(columns: ["_time", "_measurement"])
+                  |> sum()
+                  |> map(fn: (r) => ({ _time: r._time, _value: r._value / 1024. / 1024. }))
+                  |> group()
+                  |> yield(name: "memory_max")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_memory_committed")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> filter(fn: (r) => r["area"] == "nonheap")
+                  |> aggregateWindow(every: 5s, fn: mean, createEmpty: false)
+                  |> group(columns: ["_time", "_measurement"])
+                  |> sum()
+                  |> map(fn: (r) => ({ _time: r._time, _value: r._value / 1024. / 1024. }))
+                  |> group()
+                  |> yield(name: "memory_committed")
+        staticLegend:
+            colorizeRows: true
+            heightRatio: 0.14599236641221375
+            opacity: 1
+            orientationThreshold: 1e+08
+            valueAxis: "y"
+            widthRatio: 1
+        valueAxis: "y"
+        width: 3
+        widthRatio: 1
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: b14edd3e-51ff-4f71-b4fe-c8df83ce7449
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 4ae7e4a0-37de-44f1-a81e-0003018379d5
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: ca1a2d73-538e-43c2-b2f8-f180df58450e
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Load
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                windowSize = 5s
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "system_load_average_1m")
+                  |> aggregateWindow(every: windowSize, fn: mean, createEmpty: false)
+                  |> yield(name: "System-1m")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "system_cpu_count")
+                  |> aggregateWindow(every: windowSize, fn: mean, createEmpty: false)
+                  |> yield(name: "CPU")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 3
+        widthRatio: 1
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 12
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 37d4d61c-0426-4951-bed6-b71d4a0813ae
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 065947f8-05d9-4622-9039-de1a2d47c6b7
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: ea69d63a-49fe-44d4-a54a-5d7d860bb262
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Log events (1m)
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "logback_events")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> group(columns: ["level"])
+                  |> aggregateWindow(every: 1m, fn: sum, createEmpty: false)
+                  |> yield(name: "sum")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 6
+        widthRatio: 1
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 15
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 56803234-b421-44f0-8402-b9c46c8a4b8f
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 169c0d68-f74e-455e-9f40-b73ea2ca7a4d
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 355fa36e-fcb5-4c4b-962c-dd57a34a84df
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Allocated/Promoted
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_gc_memory_allocated")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)
+                  |> map(fn: (r) => ({r with _value: r._value / 1024. / 1024.}))
+                  |> yield(name: "Allocated")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_gc_memory_promoted")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)
+                  |> map(fn: (r) => ({r with _value: r._value / 1024. / 1024.}))
+                  |> yield(name: "Promoted")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 3
+        widthRatio: 1
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 22
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 56803234-b421-44f0-8402-b9c46c8a4b8f
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 169c0d68-f74e-455e-9f40-b73ea2ca7a4d
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 355fa36e-fcb5-4c4b-962c-dd57a34a84df
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Direct Buffers
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_buffer_count")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> filter(fn: (r) => r["id"] == "direct")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 5
+        widthRatio: 1
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 30
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 56803234-b421-44f0-8402-b9c46c8a4b8f
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 169c0d68-f74e-455e-9f40-b73ea2ca7a4d
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 355fa36e-fcb5-4c4b-962c-dd57a34a84df
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Mapped Buffers
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_buffer_count")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> filter(fn: (r) => r["id"] == "mapped")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 5
+        widthRatio: 1
+        xCol: _time
+        xPos: 4
+        yCol: _value
+        yPos: 33
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Heap Used
+        queries:
+          - query: "memoryUsed = \n  from(bucket: v.bucket)\n    |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\n    |> filter(fn: (r) => r[\"_measurement\"]
+                == \"jvm_memory_used\")\n    |> filter(fn: (r) => r[\"_field\"] ==
+                \"value\")\n    |> filter(fn: (r) => r[\"area\"] == \"heap\")\n    |>
+                aggregateWindow(every: 5s, fn: mean, createEmpty: false)\n    |> group(columns:
+                [\"_time\", \"_measurement\"])\n    |> sum()\n    |> map(fn: (r) =>
+                ({ _time: r._time, _value: r._value / 1024. / 1024. }))\n    |> group()\n
+                \   |> last()\n\nmemoryMax = \n  from(bucket: v.bucket)\n    |> range(start:
+                v.timeRangeStart, stop: v.timeRangeStop)\n    |> filter(fn: (r) =>
+                r[\"_measurement\"] == \"jvm_memory_max\")\n    |> filter(fn: (r)
+                => r[\"_field\"] == \"value\")\n    |> filter(fn: (r) => r[\"area\"]
+                == \"heap\")\n    |> aggregateWindow(every: 5s, fn: mean, createEmpty:
+                false)\n    |> group(columns: [\"_time\", \"_measurement\"])\n    |>
+                sum()\n    |> map(fn: (r) => ({ _time: r._time, _value: r._value /
+                1024. / 1024. }))\n    |> group()\n    |> last()\n\njoin(tables: {memoryUsed:
+                memoryUsed, memoryMax: memoryMax}, on: [\"_time\"])\n  |> map(fn:
+                (r) => ({ _value: r._value_memoryUsed / r._value_memoryMax * 100.
+                }))"
+        staticLegend: {}
+        suffix: ' %'
+        width: 2
+        xPos: 5
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 56803234-b421-44f0-8402-b9c46c8a4b8f
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 169c0d68-f74e-455e-9f40-b73ea2ca7a4d
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 355fa36e-fcb5-4c4b-962c-dd57a34a84df
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Class delta
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_classes_loaded")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                //   |> aggregateWindow(every: 1m, fn: difference, createEmpty: false)
+                  |> difference()
+                  |> yield(name: "difference")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 4
+        widthRatio: 1
+        xCol: _time
+        xPos: 5
+        yCol: _value
+        yPos: 26
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 37d4d61c-0426-4951-bed6-b71d4a0813ae
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 065947f8-05d9-4622-9039-de1a2d47c6b7
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: ea69d63a-49fe-44d4-a54a-5d7d860bb262
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Utilization
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "tomcat_threads_busy")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> map(fn: (r) => ({_time: r._time, _value: r._value}))
+                  |> yield(name: "Tomcat - Busy")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "tomcat_threads_current")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> map(fn: (r) => ({_time: r._time, _value: r._value}))
+                  |> yield(name: "Tomcat - Current")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "tomcat_threads_config_max")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> map(fn: (r) => ({_time: r._time, _value: r._value}))
+                  |> yield(name: "Tomcat - Max")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 3
+        widthRatio: 1
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+            suffix: ' MiB'
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 1c994235-580a-4299-97aa-2786b705bd63
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: ac034c11-c1e8-4b9f-992b-fd2153ead0c3
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 818b066c-bc5b-4552-83cc-a4f6e152ea99
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        heightRatio: 0.14599236641221375
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: JVM Memory Total
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_memory_used")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> aggregateWindow(every: 5s, fn: mean, createEmpty: false)
+                  |> group(columns: ["_time", "_measurement"])
+                  |> sum()
+                  |> map(fn: (r) => ({ _time: r._time, _value: r._value / 1024. / 1024. }))
+                  |> group()
+                  |> yield(name: "memory_used")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_memory_max")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> aggregateWindow(every: 5s, fn: mean, createEmpty: false)
+                  |> group(columns: ["_time", "_measurement"])
+                  |> sum()
+                  |> map(fn: (r) => ({ _time: r._time, _value: r._value / 1024. / 1024. }))
+                  |> group()
+                  |> yield(name: "memory_max")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "jvm_memory_committed")
+                  |> filter(fn: (r) => r["_field"] == "value")
+                  |> aggregateWindow(every: 5s, fn: mean, createEmpty: false)
+                  |> group(columns: ["_time", "_measurement"])
+                  |> sum()
+                  |> map(fn: (r) => ({ _time: r._time, _value: r._value / 1024. / 1024. }))
+                  |> group()
+                  |> yield(name: "memory_committed")
+        staticLegend:
+            colorizeRows: true
+            heightRatio: 0.14599236641221375
+            opacity: 1
+            orientationThreshold: 1e+08
+            valueAxis: "y"
+            widthRatio: 1
+        valueAxis: "y"
+        width: 3
+        widthRatio: 1
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: b14edd3e-51ff-4f71-b4fe-c8df83ce7449
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 4ae7e4a0-37de-44f1-a81e-0003018379d5
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: ca1a2d73-538e-43c2-b2f8-f180df58450e
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Threads
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: "windowSize = 5s\n\nfrom(bucket: v.bucket)\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"jvm_threads_live\")\n  |> aggregateWindow(every: windowSize,
+                fn: mean, createEmpty: false)\n  |> yield(name: \"Live\")\n  \nfrom(bucket:
+                v.bucket)\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n
+                \ |> filter(fn: (r) => r[\"_measurement\"] == \"jvm_threads_daemon\")\n
+                \ |> aggregateWindow(every: windowSize, fn: mean, createEmpty: false)\n
+                \ |> yield(name: \"Daemon\")\n\nfrom(bucket: v.bucket)\n  |> range(start:
+                v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"jvm_threads_peak\")\n  |> aggregateWindow(every: windowSize,
+                fn: mean, createEmpty: false)\n  |> yield(name: \"Peak\")"
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 3
+        widthRatio: 1
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 12
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Non-Heap Used
+        queries:
+          - query: "memoryUsed = \n  from(bucket: v.bucket)\n    |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\n    |> filter(fn: (r) => r[\"_measurement\"]
+                == \"jvm_memory_used\")\n    |> filter(fn: (r) => r[\"_field\"] ==
+                \"value\")\n    |> filter(fn: (r) => r[\"area\"] == \"nonheap\")\n
+                \   |> aggregateWindow(every: 5s, fn: mean, createEmpty: false)\n
+                \   |> group(columns: [\"_time\", \"_measurement\"])\n    |> sum()\n
+                \   |> map(fn: (r) => ({ _time: r._time, _value: r._value / 1024.
+                / 1024. }))\n    |> group()\n    |> last()\n\nmemoryMax = \n  from(bucket:
+                v.bucket)\n    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n
+                \   |> filter(fn: (r) => r[\"_measurement\"] == \"jvm_memory_max\")\n
+                \   |> filter(fn: (r) => r[\"_field\"] == \"value\")\n    |> filter(fn:
+                (r) => r[\"area\"] == \"nonheap\")\n    |> aggregateWindow(every:
+                5s, fn: mean, createEmpty: false)\n    |> group(columns: [\"_time\",
+                \"_measurement\"])\n    |> sum()\n    |> map(fn: (r) => ({ _time:
+                r._time, _value: r._value / 1024. / 1024. }))\n    |> group()\n    |>
+                last()\n\njoin(tables: {memoryUsed: memoryUsed, memoryMax: memoryMax},
+                on: [\"_time\"])\n  |> map(fn: (r) => ({ _value: r._value_memoryUsed
+                / r._value_memoryMax * 100. }))"
+        staticLegend: {}
+        suffix: ' %'
+        width: 2
+        xPos: 7
+        yPos: 1
+    name: JVM Micrometer
