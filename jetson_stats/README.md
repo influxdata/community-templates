@@ -56,8 +56,8 @@ Provide a way for users to get in touch with you if they have questions or need 
 
 Author: Jay Clifford
 
-Email: jclifford@influxdata.com
+Email: [jclifford@influxdata.com](mailto:jclifford@influxdata.com)
 
-Github: @Jayclifford345
+Github: [@Jayclifford345](https://github.com/Jayclifford345)
 
-Influx Slack: @Jay Clifford
+Influx Slack: [Jay Clifford](https://influxcommunity.slack.com/team/U02E8MP82SW)
