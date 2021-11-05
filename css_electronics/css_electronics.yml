@@ -1,0 +1,413 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: confident-moore-99d001
+spec:
+    name: test-bucket-new
+    retentionRules:
+      - everySeconds: 7.776e+06
+        type: expire
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: admiring-elbakyan-d9d001
+spec:
+    language: flux
+    name: bucket
+    query: "buckets()\r\n  |> rename(columns: {\"name\": \"_value\"})\r\n  |> keep(columns:
+        [\"_value\"])"
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: romantic-moser-d9d003
+spec:
+    language: flux
+    name: _measurement
+    query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n
+        \ |> drop(columns: [\"_value\"])\r\n  |> rename(columns: {\"_measurement\":
+        \"_value\"})\r\n  |> keep(columns: [\"_value\"])\r\n  |> unique(column: \"_value\")"
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: trusting-noether-59d001
+spec:
+    charts:
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: RPM
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 3e85d9df-9b54-42a7-b444-a186d6da1e51
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: e9db8bd1-5320-4aa5-9347-bfc4508ebb14
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 3dd24c54-fe6d-461c-98fd-87c8414cc09e
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 0.86
+        legendOrientationThreshold: 1e+08
+        name: Engine Speed
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == v._measurement)
+                  |> filter(fn: (r) => r["_field"] == "EngineSpeed")
+                  |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        shade: true
+        staticLegend: {}
+        width: 3
+        xCol: _time
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Km/h
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#34BB55'
+            id: f11c3788-67b7-4433-ace8-20ab6dc4b215
+            name: Solid Green
+            type: scale
+          - hex: '#34BB55'
+            id: f4ca68af-7d7b-43e1-966c-e1f8bacb3f9c
+            name: Solid Green
+            type: scale
+          - hex: '#34BB55'
+            id: 1e3e978f-c468-4994-93db-5381cb7a4b04
+            name: Solid Green
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 0.86
+        legendOrientationThreshold: 1e+08
+        name: Engine Fuel Rate
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == v._measurement)
+                  |> filter(fn: (r) => r["_field"] == "EngineFuelRate")
+                  |> aggregateWindow(every: 30s, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        shade: true
+        staticLegend: {}
+        width: 3
+        xCol: _time
+        yCol: _value
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Km/h
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#FFD255'
+            id: 31ee1d68-0c5e-4ade-aacb-e3e775a0e9cb
+            name: Solid Yellow
+            type: scale
+          - hex: '#FFD255'
+            id: c66bb0a9-f40d-4ce5-8bc2-723ad5f4f826
+            name: Solid Yellow
+            type: scale
+          - hex: '#FFD255'
+            id: 9f666fc3-faa6-4984-94c9-2ef3d3f53f66
+            name: Solid Yellow
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 0.86
+        legendOrientationThreshold: 1e+08
+        name: Vehicle Speed
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == v._measurement)
+                  |> filter(fn: (r) => r["_field"] == "WheelBasedVehicleSpeed")
+                  |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        shade: true
+        staticLegend: {}
+        width: 3
+        xCol: _time
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#BE2EE4'
+            id: 9443fdc9-61a0-469a-a476-9a4a7711c4d4
+            name: Solid Purple
+            type: scale
+          - hex: '#BE2EE4'
+            id: e6c76db9-4880-4d95-b9f5-70a8661e5dd1
+            name: Solid Purple
+            type: scale
+          - hex: '#BE2EE4'
+            id: e259de97-f827-46d0-9bf6-2944351f6a03
+            name: Solid Purple
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 0.86
+        legendOrientationThreshold: 1e+08
+        name: Brake pressure
+        opacity: 0.86
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == v._measurement)
+                  |> filter(fn: (r) => r["_field"] == "BrakePrimaryPressure")
+                  |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        shade: true
+        staticLegend:
+            colorizeRows: true
+            opacity: 0.86
+            orientationThreshold: 1e+08
+        width: 3
+        xCol: _time
+        yCol: _value
+        yPos: 6
+      - colors:
+          - hex: '#545667'
+            id: "0"
+            name: graphite
+            type: min
+          - hex: '#4ED8A0'
+            id: 969ab520-47a0-4dbd-a8a1-7c2c16898ff1
+            name: rainforest
+            type: threshold
+            value: 20
+          - hex: '#FFD255'
+            id: bdb1cc4c-ff65-4a2e-b0e3-a9831f9a5034
+            name: thunder
+            type: threshold
+            value: 70
+          - hex: '#DC4E58'
+            id: 6639060e-93e9-43ba-9459-a7d6ca8148d4
+            name: fire
+            type: threshold
+            value: 100
+          - hex: '#BF3D5E'
+            id: "1"
+            name: ruby
+            type: max
+            value: 120
+        decimalPlaces: 0
+        height: 3
+        kind: Gauge
+        name: Oil Temperature
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == v._measurement)
+                  |> filter(fn: (r) => r["_field"] == "EngineOilTemperature1")
+                  |> aggregateWindow(every: 30s, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        staticLegend: {}
+        width: 2
+        xPos: 3
+      - colors:
+          - hex: '#545667'
+            id: "0"
+            name: graphite
+            type: min
+          - hex: '#4ED8A0'
+            id: 969ab520-47a0-4dbd-a8a1-7c2c16898ff1
+            name: rainforest
+            type: threshold
+            value: 30
+          - hex: '#FFD255'
+            id: bdb1cc4c-ff65-4a2e-b0e3-a9831f9a5034
+            name: thunder
+            type: threshold
+            value: 50
+          - hex: '#DC4E58'
+            id: 6639060e-93e9-43ba-9459-a7d6ca8148d4
+            name: fire
+            type: threshold
+            value: 90
+          - hex: '#BF3D5E'
+            id: "1"
+            name: ruby
+            type: max
+            value: 120
+        decimalPlaces: 0
+        height: 3
+        kind: Gauge
+        name: Fuel Temperature
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == v._measurement)
+                  |> filter(fn: (r) => r["_field"] == "EngineFuel1Temperature1")
+                  |> aggregateWindow(every: 30s, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        staticLegend: {}
+        width: 2
+        xPos: 3
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Engine total hours
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == v._measurement)\r\n  |> filter(fn: (r) => r[\"_field\"] == \"EngineTotalHoursofOperation\")\r\n
+                \ |> last()"
+        staticLegend: {}
+        width: 2
+        xPos: 3
+        yPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#FDC44F'
+            id: b18b4f00-94c3-4344-996b-9079c57c8afd
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            id: 60f13f55-d9f5-4071-b080-49c6fc3394f6
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            id: a6e5cd77-30e2-41a2-8b91-f48c5c41c74a
+            name: Cthulhu
+            type: scale
+        geom: line
+        height: 5
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Intake Air Pressure vs Oil Pressure
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == v._measurement)
+                  |> filter(fn: (r) => r["_field"] == "EngineOilPressure1" or r["_field"] == "EngineIntakeAirPressure")
+                  |> aggregateWindow(every: 15s, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        shade: true
+        staticLegend: {}
+        width: 7
+        xCol: _time
+        xPos: 5
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 96db5033-ed44-4537-b7d4-fbd5f9fda344
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: e3fc2eee-78a2-4297-ae16-1a7bf21e3836
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: a5418365-7535-4de1-b404-4ad0956311c2
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Coolant and engine temperature
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == v._measurement)
+                  |> filter(fn: (r) => r["_field"] == "EngineExhaustTemperature" or r["_field"] == "EngineCoolantTemperature")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 7
+        widthRatio: 1
+        xCol: _time
+        xPos: 5
+        yCol: _value
+        yPos: 5
+    name: Truck dashboard with variables
