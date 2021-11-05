@@ -1,0 +1,632 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+  name: noshing-mendeleev-c04001
+spec:
+  color: "#009f5f"
+  name: ingress-nginx
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+  name: gifted-lehmann-804001
+spec:
+  name: elasticsearch
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+  name: fervent-wescoff-c04003
+spec:
+  associations:
+    - kind: Label
+      name: noshing-mendeleev-c04001
+  language: flux
+  name: bucket
+  query: |-
+    buckets()
+      |> filter(fn: (r) => r.name !~ /^_/)
+      |> rename(columns: {name: "_value"})
+      |> keep(columns: ["_value"])
+  selected:
+    - demo
+  type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+  name: earning-nash-c04001
+spec:
+  charts:
+    - colors:
+        - hex: "#ffffff"
+          id: base
+          name: white
+          type: text
+      decimalPlaces: 2
+      height: 2
+      kind: Single_Stat
+      name: Cluster status
+      queries:
+        - query: |-
+            from(bucket: v.bucket)
+              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+              |> filter(fn: (r) => r["_field"] == "status")
+              |> last()
+      staticLegend: {}
+      width: 2
+    - axes:
+        - base: "10"
+          name: x
+          scale: linear
+        - base: "10"
+          name: "y"
+          scale: linear
+          suffix: "%"
+      colorizeRows: true
+      colors:
+        - hex: "#7CE490"
+          id: base
+          name: honeydew
+          type: text
+        - hex: "#F95F53"
+          id: 54393d70-9bd3-4207-bd87-fb622cfe29ff
+          name: curacao
+          type: text
+          value: 70
+        - hex: "#F48D38"
+          id: e396e781-814c-4d22-bfc5-3f0d10416937
+          name: tiger
+          type: text
+          value: 50
+      decimalPlaces: 1
+      height: 3
+      hoverDimension: auto
+      kind: Single_Stat_Plus_Line
+      legendColorizeRows: true
+      legendOpacity: 1
+      legendOrientationThreshold: 1e+08
+      name: Load
+      opacity: 1
+      orientationThreshold: 1e+08
+      position: overlaid
+      queries:
+        - query: |-
+            from(bucket: v.bucket)
+              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+              |> filter(fn: (r) => r["_field"] == "cpu_load_average_1m")
+              |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+              |> map(fn: (r) => ({_time: r._time, _value: r._value * 100.}))
+              |> yield(name: "mean")
+      staticLegend:
+        colorizeRows: true
+        opacity: 1
+        orientationThreshold: 1e+08
+        widthRatio: 1
+      suffix: "%"
+      width: 2
+      widthRatio: 1
+      xCol: _time
+      yCol: _value
+      yPos: 2
+    - axes:
+        - base: "10"
+          name: x
+          scale: linear
+        - base: "10"
+          name: "y"
+          scale: linear
+          suffix: GB
+      colorizeRows: true
+      colors:
+        - hex: "#31C0F6"
+          id: 1a96615c-6a66-493b-9ac9-b58a0f752c4b
+          name: Nineteen Eighty Four
+          type: scale
+        - hex: "#A500A5"
+          id: d4560be9-806e-4c0d-9741-0e5e11e8bd5d
+          name: Nineteen Eighty Four
+          type: scale
+        - hex: "#FF7E27"
+          id: 8f1f4a89-0389-4324-a2ef-840cc59e5a26
+          name: Nineteen Eighty Four
+          type: scale
+      geom: line
+      height: 3
+      hoverDimension: auto
+      kind: Xy
+      legendColorizeRows: true
+      legendOpacity: 1
+      legendOrientationThreshold: 1e+08
+      name: Disk usage
+      opacity: 1
+      orientationThreshold: 1e+08
+      position: overlaid
+      queries:
+        - query: |-
+            from(bucket: v.bucket)
+                |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                |> filter(fn: (r) => r["_measurement"] == "elasticsearch_fs")
+                |> filter(fn: (r) => r["_field"] == "total_total_in_bytes")
+                |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                |> map(fn: (r) => ({_time: r._time, _value: r._value / 1024. / 1024. / 1024.}))
+                |> yield(name: "total")
+
+            from(bucket: v.bucket)
+                |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                |> filter(fn: (r) => r["_measurement"] == "elasticsearch_fs")
+                |> filter(fn: (r) => r["_field"] == "total_available_in_bytes")
+                |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                |> map(fn: (r) => ({_time: r._time, _value: r._value / 1024. / 1024. / 1024.}))
+                |> yield(name: "available")
+      staticLegend:
+        colorizeRows: true
+        opacity: 1
+        orientationThreshold: 1e+08
+        widthRatio: 1
+      width: 4
+      widthRatio: 1
+      yPos: 5
+    - colors:
+        - hex: "#7CE490"
+          id: "0"
+          name: honeydew
+          type: min
+        - hex: "#DC4E58"
+          id: "1"
+          name: fire
+          type: max
+          value: 100
+      decimalPlaces: 0
+      height: 3
+      kind: Gauge
+      name: Heap
+      queries:
+        - query: |-
+            from(bucket: v.bucket)
+              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+              |> filter(fn: (r) => r["_measurement"] == "elasticsearch_jvm")
+              |> filter(fn: (r) => r["_field"] == "mem_heap_used_percent")
+              |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+              |> yield(name: "mean")
+      staticLegend: {}
+      suffix: "%"
+      tickSuffix: "%"
+      width: 2
+      yPos: 8
+    - colors:
+        - hex: "#00C9FF"
+          id: base
+          name: laser
+          type: text
+      decimalPlaces: 0
+      height: 2
+      kind: Single_Stat
+      name: Nodes
+      queries:
+        - query: |-
+            from(bucket: v.bucket)
+              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+              |> filter(fn: (r) => r["_measurement"] == "elasticsearch_clusterstats_nodes")
+              |> filter(fn: (r) => r["_field"] == "count_total")
+              |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+              |> yield(name: "mean")
+      staticLegend: {}
+      width: 2
+      xPos: 2
+    - colors:
+        - hex: "#00C9FF"
+          id: base
+          name: laser
+          type: text
+      decimalPlaces: 2
+      height: 3
+      kind: Single_Stat
+      name: Memory
+      queries:
+        - query: |-
+            from(bucket: v.bucket)
+              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+              |> filter(fn: (r) => r["_measurement"] == "elasticsearch_os")
+              |> filter(fn: (r) => r["_field"] == "mem_total_in_bytes")
+              |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+              |> map(fn: (r) => ({ _time: r._time, _value: r._value / 1024. / 1024. / 1024.}))
+      staticLegend: {}
+      suffix: " GB"
+      width: 2
+      xPos: 2
+      yPos: 2
+    - axes:
+        - base: "10"
+          name: x
+          scale: linear
+        - base: "10"
+          name: "y"
+          scale: linear
+          suffix: MB
+      colorizeRows: true
+      colors:
+        - hex: "#31C0F6"
+          id: 1a96615c-6a66-493b-9ac9-b58a0f752c4b
+          name: Nineteen Eighty Four
+          type: scale
+        - hex: "#A500A5"
+          id: d4560be9-806e-4c0d-9741-0e5e11e8bd5d
+          name: Nineteen Eighty Four
+          type: scale
+        - hex: "#FF7E27"
+          id: 8f1f4a89-0389-4324-a2ef-840cc59e5a26
+          name: Nineteen Eighty Four
+          type: scale
+      geom: line
+      height: 3
+      hoverDimension: auto
+      kind: Xy
+      legendColorizeRows: true
+      legendOpacity: 1
+      legendOrientationThreshold: 1e+08
+      name: Heap
+      opacity: 1
+      orientationThreshold: 1e+08
+      position: overlaid
+      queries:
+        - query: |-
+            from(bucket: v.bucket)
+              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+              |> filter(fn: (r) => r["_measurement"] == "elasticsearch_jvm")
+              |> filter(fn: (r) => r["_field"] == "mem_heap_max_in_bytes")
+              |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+              |> map(fn: (r) => ({_time: r._time, _value: r._value / 1024. / 1024. }))
+              |> yield(name: "max")
+
+            from(bucket: v.bucket)
+              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+              |> filter(fn: (r) => r["_measurement"] == "elasticsearch_jvm")
+              |> filter(fn: (r) => r["_field"] == "mem_heap_used_in_bytes")
+              |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+              |> map(fn: (r) => ({_time: r._time, _value: r._value / 1024. / 1024. }))
+              |> yield(name: "used")
+      staticLegend:
+        colorizeRows: true
+        opacity: 1
+        orientationThreshold: 1e+08
+        widthRatio: 1
+      width: 4
+      widthRatio: 1
+      xPos: 2
+      yPos: 8
+    - colors:
+        - hex: "#00C9FF"
+          id: base
+          name: laser
+          type: text
+      decimalPlaces: 0
+      height: 2
+      kind: Single_Stat
+      name: Active shards
+      queries:
+        - query: |-
+            from(bucket: v.bucket)
+              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+              |> filter(fn: (r) => r["_measurement"] == "elasticsearch_indices_stats_shards_total")
+              |> filter(fn: (r) => r["_field"] == "total")
+              |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+              |> yield(name: "mean")
+      staticLegend: {}
+      width: 2
+      xPos: 4
+    - colors:
+        - hex: "#7CE490"
+          id: "0"
+          name: honeydew
+          type: min
+        - hex: "#FFB94A"
+          id: 0a80ba4b-ca3b-43b7-a4c1-ffa83bfa4843
+          name: pineapple
+          type: threshold
+          value: 65
+        - hex: "#DC4E58"
+          id: cb2acccf-a0bc-45af-9f95-76e716bcbe84
+          name: fire
+          type: threshold
+          value: 85
+        - hex: "#DC4E58"
+          id: "1"
+          name: fire
+          type: max
+          value: 100
+      decimalPlaces: 2
+      height: 3
+      kind: Gauge
+      name: Memory
+      queries:
+        - query: |-
+            used =
+              from(bucket: v.bucket)
+                |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                |> filter(fn: (r) => r["_measurement"] == "elasticsearch_os")
+                |> filter(fn: (r) => r["_field"] == "mem_used_in_bytes")
+
+            total =
+              from(bucket: v.bucket)
+                |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                |> filter(fn: (r) => r["_measurement"] == "elasticsearch_os")
+                |> filter(fn: (r) => r["_field"] == "mem_total_in_bytes")
+
+            join(tables: {used: used, total: total}, on:["_time"])
+              |> map(fn: (r) => ({_time: r._time, _value: r._value_used / r._value_total * 100.}))
+              |> yield(name: "value")
+      staticLegend: {}
+      suffix: "%"
+      tickSuffix: "%"
+      width: 2
+      xPos: 4
+      yPos: 2
+    - axes:
+        - base: "10"
+          name: x
+          scale: linear
+        - base: "10"
+          name: "y"
+          scale: linear
+          suffix: GB
+      colorizeRows: true
+      colors:
+        - hex: "#31C0F6"
+          id: 1a96615c-6a66-493b-9ac9-b58a0f752c4b
+          name: Nineteen Eighty Four
+          type: scale
+        - hex: "#A500A5"
+          id: d4560be9-806e-4c0d-9741-0e5e11e8bd5d
+          name: Nineteen Eighty Four
+          type: scale
+        - hex: "#FF7E27"
+          id: 8f1f4a89-0389-4324-a2ef-840cc59e5a26
+          name: Nineteen Eighty Four
+          type: scale
+      geom: line
+      height: 3
+      hoverDimension: auto
+      kind: Xy
+      legendColorizeRows: true
+      legendOpacity: 1
+      legendOrientationThreshold: 1e+08
+      name: Swap
+      opacity: 1
+      orientationThreshold: 1e+08
+      position: overlaid
+      queries:
+        - query: |-
+            from(bucket: v.bucket)
+              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+              |> filter(fn: (r) => r["_measurement"] == "elasticsearch_os")
+              |> filter(fn: (r) => r["_field"] == "swap_total_in_bytes")
+              |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+              |> map(fn: (r) => ({_time: r._time, _value: r._value / 1024. / 1024. / 1024.}))
+              |> yield(name: "total")
+
+            from(bucket: v.bucket)
+              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+              |> filter(fn: (r) => r["_measurement"] == "elasticsearch_os")
+              |> filter(fn: (r) => r["_field"] == "swap_used_in_bytes")
+              |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+              |> map(fn: (r) => ({_time: r._time, _value: r._value / 1024. / 1024. / 1024.}))
+              |> yield(name: "used")
+      staticLegend:
+        colorizeRows: true
+        opacity: 1
+        orientationThreshold: 1e+08
+        widthRatio: 1
+      width: 4
+      widthRatio: 1
+      xPos: 4
+      yPos: 5
+    - colors:
+        - hex: "#00C9FF"
+          id: base
+          name: laser
+          type: text
+      decimalPlaces: 0
+      height: 2
+      kind: Single_Stat
+      name: Indices
+      queries:
+        - query: |-
+            from(bucket: v.bucket)
+              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+              |> filter(fn: (r) => r["_measurement"] == "elasticsearch_clusterstats_indices")
+              |> filter(fn: (r) => r["_field"] == "count")
+              |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)
+              |> yield(name: "mean")
+      staticLegend: {}
+      width: 2
+      xPos: 6
+    - axes:
+        - base: "10"
+          name: x
+          scale: linear
+        - base: "10"
+          name: "y"
+          scale: linear
+          suffix: GB
+      colorizeRows: true
+      colors:
+        - hex: "#31C0F6"
+          id: 1a96615c-6a66-493b-9ac9-b58a0f752c4b
+          name: Nineteen Eighty Four
+          type: scale
+        - hex: "#A500A5"
+          id: d4560be9-806e-4c0d-9741-0e5e11e8bd5d
+          name: Nineteen Eighty Four
+          type: scale
+        - hex: "#FF7E27"
+          id: 8f1f4a89-0389-4324-a2ef-840cc59e5a26
+          name: Nineteen Eighty Four
+          type: scale
+      geom: line
+      height: 3
+      hoverDimension: auto
+      kind: Xy
+      legendColorizeRows: true
+      legendOpacity: 1
+      legendOrientationThreshold: 1e+08
+      name: Memory
+      opacity: 1
+      orientationThreshold: 1e+08
+      position: overlaid
+      queries:
+        - query: |-
+            from(bucket: v.bucket)
+              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+              |> filter(fn: (r) => r["_measurement"] == "elasticsearch_os")
+              |> filter(fn: (r) => r["_field"] == "mem_total_in_bytes")
+              |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+              |> map(fn: (r) => ({_time: r._time, _value: r._value / 1024. / 1024./ 1024.}))
+              |> yield(name: "total")
+
+            from(bucket: v.bucket)
+              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+              |> filter(fn: (r) => r["_measurement"] == "elasticsearch_os")
+              |> filter(fn: (r) => r["_field"] == "mem_used_in_bytes")
+              |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+              |> map(fn: (r) => ({_time: r._time, _value: r._value / 1024. / 1024./ 1024.}))
+              |> yield(name: "used")
+      staticLegend:
+        colorizeRows: true
+        opacity: 1
+        orientationThreshold: 1e+08
+        widthRatio: 1
+      width: 4
+      widthRatio: 1
+      xPos: 6
+      yPos: 2
+    - axes:
+        - base: "10"
+          name: x
+          scale: linear
+        - base: "10"
+          name: "y"
+          scale: linear
+      colorizeRows: true
+      colors:
+        - hex: "#31C0F6"
+          id: 1a96615c-6a66-493b-9ac9-b58a0f752c4b
+          name: Nineteen Eighty Four
+          type: scale
+        - hex: "#A500A5"
+          id: d4560be9-806e-4c0d-9741-0e5e11e8bd5d
+          name: Nineteen Eighty Four
+          type: scale
+        - hex: "#FF7E27"
+          id: 8f1f4a89-0389-4324-a2ef-840cc59e5a26
+          name: Nineteen Eighty Four
+          type: scale
+      geom: line
+      height: 3
+      hoverDimension: auto
+      kind: Xy
+      legendColorizeRows: true
+      legendOpacity: 1
+      legendOrientationThreshold: 1e+08
+      name: " Threads"
+      opacity: 1
+      orientationThreshold: 1e+08
+      position: overlaid
+      queries:
+        - query: |-
+            from(bucket: v.bucket)
+              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+              |> filter(fn: (r) => r["_measurement"] == "elasticsearch_jvm")
+              |> filter(fn: (r) => r["_field"] == "threads_count")
+              |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+              |> map(fn: (r) => ({_time: r._time, _value: r._value}))
+              |> yield(name: "count")
+
+            from(bucket: v.bucket)
+              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+              |> filter(fn: (r) => r["_measurement"] == "elasticsearch_jvm")
+              |> filter(fn: (r) => r["_field"] == "threads_peak_count")
+              |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+              |> map(fn: (r) => ({_time: r._time, _value: r._value}))
+              |> yield(name: "peak_count")
+      staticLegend:
+        colorizeRows: true
+        opacity: 1
+        orientationThreshold: 1e+08
+        widthRatio: 1
+      width: 4
+      widthRatio: 1
+      xPos: 6
+      yPos: 8
+    - colors:
+        - hex: "#00C9FF"
+          id: base
+          name: laser
+          type: text
+      decimalPlaces: 0
+      height: 2
+      kind: Single_Stat
+      name: Docs count
+      queries:
+        - query: |-
+            from(bucket: v.bucket)
+              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+              |> filter(fn: (r) => r["_measurement"] == "elasticsearch_indices")
+              |> filter(fn: (r) => r["_field"] == "docs_count")
+              |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+              |> yield(name: "mean")
+      staticLegend: {}
+      width: 2
+      xPos: 8
+    - axes:
+        - base: "10"
+          name: x
+          scale: linear
+        - base: "10"
+          name: "y"
+          scale: linear
+          suffix: MBps
+      colorizeRows: true
+      colors:
+        - hex: "#31C0F6"
+          id: 61bc7676-8b1a-4bbf-818b-d5cf21178296
+          name: Nineteen Eighty Four
+          type: scale
+        - hex: "#A500A5"
+          id: c618b436-ca1e-4d08-9195-75ff66a83c40
+          name: Nineteen Eighty Four
+          type: scale
+        - hex: "#FF7E27"
+          id: f4b892a4-447f-43ea-ae23-653dde164bd9
+          name: Nineteen Eighty Four
+          type: scale
+      geom: line
+      height: 3
+      hoverDimension: auto
+      kind: Xy
+      legendColorizeRows: true
+      legendOpacity: 1
+      legendOrientationThreshold: 1e+08
+      name: Network
+      opacity: 1
+      orientationThreshold: 1e+08
+      position: overlaid
+      queries:
+        - query: |-
+            from(bucket: v.bucket)
+              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+              |> filter(fn: (r) => r["_measurement"] == "elasticsearch_transport")
+              |> filter(fn: (r) => r["_field"] == "tx_size_in_bytes" or r["_field"] == "rx_size_in_bytes")
+              |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+              |> map(fn: (r) => ({_time: r._time, _value: r._value / 1024. / 1024.}))
+              |> yield(name: "mean")
+      staticLegend:
+        colorizeRows: true
+        opacity: 1
+        orientationThreshold: 1e+08
+        widthRatio: 1
+      width: 2
+      widthRatio: 1
+      xPos: 8
+      yPos: 5
+  name: Elasticsearch

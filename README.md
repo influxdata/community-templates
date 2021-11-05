@@ -33,6 +33,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [Docker Hub](dockerhub/) | Track the stats of your Docker Hub Images | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Downsampling](downsampling/) | Downsample common Telegraf metrics. | [@russorat](https://github.com/russorat) |
 | [Earthquake Monitoring](earthquake_usgs/) | Monitor earthquakes via USGS web service. | [@abalone23](https://github.com/abalone23) |
+| [Elasticsearch](elasticsearch/) | Monitor Elasticsearch. | [bonitoo.io](.) |
 | [Endpoint Security State](endpoint-security-state/) | Watch endpoint authentication availability and certificate status | [Darin Fisher](https://github.com/darinfisher) |
 | [Enviro+](enviro_plus/) | View the air quality readings from a Pimoroni Enviro+ particulate matter sensor. | Russ Savage |
 | [Fail2Ban](fail2ban/) | Monitor your Fail2Ban instance on multiple hosts and services. | [bonitoo.io](.) |
