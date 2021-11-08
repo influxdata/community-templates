@@ -431,8 +431,7 @@ spec:
                   |> filter(fn: (r) => r["_measurement"] == "mysql")
                   |> filter(fn: (r) => r["_field"] == "uptime")
                   |> filter(fn: (r) => r.host == v.mysql_host)
-                  |> skew()
-                  |> yield(name: "skew")
+                  |> map(fn: (r) => ({ _time: r._time, _value: float(v: r._value) / 86400.00, _field: r._field, _measurement: r._measurement, host: r.host }))
         suffix: ' Days'
         width: 3
         xPos: 9
