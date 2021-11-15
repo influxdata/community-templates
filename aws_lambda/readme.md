@@ -1,4 +1,4 @@
-# Micrometer Template
+# AWS Lambda Template
 
 Provided by: [bonitoo.io](.)
 
