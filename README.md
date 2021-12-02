@@ -55,6 +55,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [Kubernetes Dashboards](k8s/) | Monitor your Kubernetes cluster. | [bonitoo.io](.) |
 | [Linux System Monitor](linux_system/) | Monitor system resources on one or more Linux hosts. | [@russorat](https://github.com/russorat) |
 | [Jenkins](jenkins/) | Monitor your Jenkins node and jobs. | Ray Farias |
+| [Jetson Stats](jetson_stats/) | Monitor your Jetson device with Jetson Stats. | [@Jayclifford345](https://github.com/Jayclifford345)|
 | [Micrometer](micrometer/) | Monitor your Java application using Micrometer. | [bonitoo.io](.) |
 | [Microsoft SQL Server](mssql/) | View information of SQL Server Instance. Uptime, Databases Activities, Read and Write times and more. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [MinIO](minio/) | Monitor MinIO instance. Uptime, CPU process time, Memory allocated, s3 total and current request, Storage used and available and more. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
