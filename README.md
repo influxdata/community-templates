@@ -65,6 +65,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [Nextcloud](nextcloud/) | Show stats about your Nextcloud Instance. | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Nginx Ingress Controller](nginx-ingress-controller/) | Monitor NGINX Ingress Controller with Prometheus metrics | [@bonitoo.io](https://github.com/bonitoo-io) |
 | [Node.js](node_js/) | Monitor Node.js application. CPU, Memory, HTTP response time and more | [@bonitoo.io](https://github.com/bonitoo-io) |
+| [Particle](particle/) | Sample dashboard displaying data published by Particle IoT devices | [bonitoo.io](.) |
 | [Postgres Monitor](postgresql/) | Monitor Postgres Server. CPU, Deadlocks, Data and more | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Prometheus Monitor](prometheus/) | Monitor Prometheus | [bonitoo.io](.) |
 | [Raspberry Pi System Monitor](raspberry-pi/) | System overview monitoring for your Raspberry Pi with Raspbian. | [@bonitoo.io](https://github.com/bonitoo-io) |

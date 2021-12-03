@@ -1,0 +1,230 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+  name: elastic-albattani-2d7001
+spec:
+  color: '#00a3ff'
+  name: Particle
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+  name: hardcore-nobel-2d7005
+spec:
+  associations:
+    - kind: Label
+      name: elastic-albattani-2d7001
+  language: flux
+  name: particle_Room
+  query: |-
+    import "influxdata/influxdb/v1"
+    v1.measurementTagValues(bucket: "telegraf", measurement: "particle", tag: "room")
+  type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+  name: silly-wiles-6d7001
+spec:
+  associations:
+    - kind: Label
+      name: elastic-albattani-2d7001
+  charts:
+    - colors:
+        - hex: '#22ADF6'
+          id: "0"
+          name: pool
+          type: min
+          value: 15
+        - hex: '#DC4E58'
+          id: "1"
+          name: fire
+          type: max
+          value: 40
+      decimalPlaces: 1
+      height: 3
+      kind: Gauge
+      name: Room Temperature
+      queries:
+        - query: |-
+            from(bucket: "telegraf")
+              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+              |> filter(fn: (r) => r["_measurement"] == "particle")
+              |> filter(fn: (r) => r["_field"] == "temp_c")
+              |> filter(fn: (r) => r["room"] == v.particle_Room)
+              |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+              |> yield(name: "last")
+      staticLegend: {}
+      suffix: ' °C'
+      width: 3
+    - axes:
+        - name: x
+          scale: linear
+        - name: "y"
+          scale: linear
+          suffix: ' °C'
+      colorizeRows: true
+      colors:
+        - hex: '#FD7A5D'
+          id: 2abee602-93be-44c6-82ab-685a82e34e2f
+          name: Delorean
+          type: scale
+        - hex: '#5F1CF2'
+          id: 0bf53022-27c2-4cae-b514-f001be94e2b0
+          name: Delorean
+          type: scale
+        - hex: '#4CE09A'
+          id: aa2ffaf3-e65e-413d-bf51-ac3b042faf3d
+          name: Delorean
+          type: scale
+      geom: line
+      height: 3
+      hoverDimension: auto
+      kind: Band
+      legendColorizeRows: true
+      legendOpacity: 1
+      legendOrientationThreshold: 1e+08
+      mainColumn: last
+      name: Room Temperature
+      opacity: 1
+      orientationThreshold: 1e+08
+      queries:
+        - query: |-
+            from(bucket: "telegraf")
+              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+              |> filter(fn: (r) => r["_measurement"] == "particle")
+              |> filter(fn: (r) => r["_field"] == "temp_c")
+              |> filter(fn: (r) => r["room"] == v.particle_Room)
+              |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+              |> yield(name: "last")
+      staticLegend:
+        colorizeRows: true
+        opacity: 1
+        orientationThreshold: 1e+08
+        widthRatio: 1
+      width: 2
+      widthRatio: 1
+      xCol: _time
+      xPos: 3
+      yCol: _value
+    - colors:
+        - hex: '#545667'
+          id: "0"
+          name: graphite
+          type: min
+        - hex: '#4591ED'
+          id: "1"
+          name: ocean
+          type: max
+          value: 100
+      decimalPlaces: 0
+      height: 3
+      kind: Gauge
+      name: Relative Humidity
+      queries:
+        - query: |-
+            from(bucket: "telegraf")
+              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+              |> filter(fn: (r) => r["_measurement"] == "particle")
+              |> filter(fn: (r) => r["_field"] == "humidity")
+              |> filter(fn: (r) => r["room"] == v.particle_Room)
+              |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+              |> yield(name: "last")
+      staticLegend: {}
+      suffix: ' %'
+      width: 3
+      xPos: 5
+    - axes:
+        - name: x
+          scale: linear
+        - name: "y"
+          scale: linear
+          suffix: ' %'
+      colorizeRows: true
+      colors:
+        - hex: '#31C0F6'
+          id: 72120251-3bff-4e4c-a7af-7f3346e63a0d
+          name: Nineteen Eighty Four
+          type: scale
+        - hex: '#A500A5'
+          id: b9d8e028-7a5c-4047-8eb3-45943cf5e5dd
+          name: Nineteen Eighty Four
+          type: scale
+        - hex: '#FF7E27'
+          id: 1377d0b3-ed70-4862-9b5d-7aaa6672e824
+          name: Nineteen Eighty Four
+          type: scale
+      geom: line
+      height: 3
+      hoverDimension: auto
+      kind: Band
+      legendColorizeRows: true
+      legendOpacity: 1
+      legendOrientationThreshold: 1e+08
+      mainColumn: last
+      name: Relative Humidity
+      opacity: 1
+      orientationThreshold: 1e+08
+      queries:
+        - query: |-
+            from(bucket: "telegraf")
+              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+              |> filter(fn: (r) => r["_measurement"] == "particle")
+              |> filter(fn: (r) => r["_field"] == "humidity")
+              |> filter(fn: (r) => r["room"] == v.particle_Room)
+              |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+              |> yield(name: "last")
+      staticLegend:
+        colorizeRows: true
+        opacity: 1
+        orientationThreshold: 1e+08
+        widthRatio: 1
+      width: 2
+      widthRatio: 1
+      xCol: _time
+      xPos: 8
+      yCol: _value
+  name: Particle - Room Sensors
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+  name: ridiculous-lehmann-ad7001
+spec:
+  associations:
+    - kind: Label
+      name: elastic-albattani-2d7001
+  config: |
+    [agent]
+    interval = "10s"
+    round_interval = true
+    metric_batch_size = 1000
+    metric_buffer_limit = 10000
+    collection_jitter = "0s"
+    flush_interval = "10s"
+    flush_jitter = "0s"
+    precision = ""
+    hostname = ""
+    # do no set the "host" tag in the telegraf agent
+    omit_hostname = true
+
+    ###############################################################################
+    #                            OUTPUT PLUGINS                                   #
+    ###############################################################################
+
+    [[outputs.influxdb_v2]]
+    urls = ["$INFLUX_HOST"]
+    token = "$INFLUX_TOKEN"
+    organization = "$INFLUX_ORG"
+    bucket = "telegraf"
+
+    ###############################################################################
+    #                            INPUT PLUGINS                                    #
+    ###############################################################################
+
+    [[inputs.webhooks]]
+    service_address = ":1619"
+    [inputs.webhooks.particle]
+    path = "/particle"
+  name: Particle
+
