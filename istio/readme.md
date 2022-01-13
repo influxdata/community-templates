@@ -6,10 +6,19 @@ Istio is a service mesh—a modernized service networking layer that provides a 
 
 This Istio template can be used to monitor your Istio deployment with following dashboards:
 
+Istio Control Plane Dashboard:
 ![Istio Control Plane Dashboard](img/istio_control_plane.jpg)
+
+Istio Mesh Dashboard:
 ![Istio Mesh Dashboard](img/istio_mesh.jpg)
+
+Istio Workload Dashboard:
 ![Istio Workload Dashboard](img/istio_workload.jpg)
+
+Istio Service Dashboard:
 ![Istio Service Dashboard](img/istio_service.jpg)
+
+Istio Performance Dashboard:
 ![Istio Performance Dashboard](img/istio_performance.jpg)
 
 ### Quick Install
