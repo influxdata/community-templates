@@ -49,6 +49,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [InfluxDB Cloud Usage Dashboard](usage_dashboard/) | Monitor your InfluxDB Cloud data usage and limit events. Send Slack alert when limit event is triggered. | [John Corrigan](https://github.com/corriganjohn) |
 | [Island Pulse (Modbus)](modbus/) | Monitor Island Pulse energy gauge over Modbus | Ray Farias |
 | [IoT Center example app](iot_center/) | Simple dashboard showing measured values from IoT devices. | [@bonitoo.io](https://github.com/bonitoo-io) |
+| [Istio Service Mesh](istio/) | Istio is an open source service mesh that layers transparently onto existing distributed applications. Istio's powerful features provide a uniform and more efficient way to secure, connect, and monitor services. | [@bonitoo.io](https://github.com/bonitoo-io) |
 | [Jboss Wildfly](jboss_wildfly/) | View information your Jboss Wildfly Instance using Jolokia. Uptime, Heap Memory, Non Heap Memory, Memory Pool, etc | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [JMeter](apache_jmeter/) | This template provides Apache JMeter dashboard | [bonitoo.io](.) |
 | [Kafka](kafka/) | Monitor Kafka via Jolokia agent | [@samhld](https:/github.com/samhld)
