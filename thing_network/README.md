@@ -4,7 +4,7 @@ Provided by: Jay Clifford
 
 This InfluxDB Template can be used to monitor device and network metrics from the Thing Network community edition. 
 
-The goal of this template is to provide  connectivity and network stats from LoRaWAN devices connecting to the Thing Network. This template monitors the following assets:
+The goal of this template is to provide connectivity and network stats from LoRaWAN devices connecting to the Thing Network. This template monitors the following assets:
 - LoRaWAN server location
 - Device Bandwidth
 - ID: application, cluster, NET, Band, session
