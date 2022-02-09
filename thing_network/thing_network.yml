@@ -734,24 +734,34 @@ spec:
             ###############################################################################
             #THING NETWORK META DATA#
             [[inputs.mqtt_consumer]]
-            alias = "thing_network_consumer"
-            name_override = "thing_network"
-
-
-
+              alias = "thing_network_consumer"
+              name_override = "thing_network"
               servers = ["tcp://eu1.cloud.thethings.network:1883"]
               topics = ["#"]
+              max_undelivered_messages = 1
 
 
-              username = "${THING_USERNAME}"
-              password = "${THING_API_KEY}" 
-              data_format = "json_v2"
+                username = "${THING_USERNAME}"
+                password = "${THING_API_KEY}" 
+                data_format = "json_v2"
 
 
-            [[inputs.mqtt_consumer.json_v2]]
-              [[inputs.mqtt_consumer.json_v2.tag]]
-              path = "@this.end_device_ids.device_id"
+              [[inputs.mqtt_consumer.json_v2]]
+                [[inputs.mqtt_consumer.json_v2.tag]]
+                path = "@this.end_device_ids.device_id"
 
-            [[inputs.mqtt_consumer.json_v2.object]]
-              path = "uplink_message.rx_metadata"
-              disable_prepend_keys = false
+              [[inputs.mqtt_consumer.json_v2.object]]
+                path = "end_device_ids"
+                disable_prepend_keys = true
+
+
+
+              [[inputs.mqtt_consumer.json_v2.object]]
+                path = "uplink_message"
+                disable_prepend_keys = true
+                excluded_keys = ["time", "timestamp"]
+
+              [[inputs.mqtt_consumer.json_v2.object]]
+                path = "uplink_message.rx_metadata"
+                disable_prepend_keys = true
+                excluded_keys = ["time", "timestamp"]
