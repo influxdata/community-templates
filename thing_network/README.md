@@ -21,7 +21,7 @@ The goal of this template is to provide connectivity and network stats from LoRa
 
 
 
-This template requires an account with Thing Network Community. Make one [here](https://eu1.cloud.thethings.network/console/).
+This template requires an account with the Thing Network Community. Make one [here](https://eu1.cloud.thethings.network/console/).
 
 ### Quick Install
 
