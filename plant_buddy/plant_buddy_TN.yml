@@ -1,0 +1,630 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: fasting-kilby-d00001
+spec:
+    color: '#BF3D5E'
+    name: plant_buddy_TN
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: nostalgic-borg-d00005
+spec:
+    associations:
+      - kind: Label
+        name: fasting-kilby-d00001
+    name: downsampled
+    retentionRules:
+      - everySeconds: 2.592e+06
+        type: expire
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: priceless-volhard-100003
+spec:
+    associations:
+      - kind: Label
+        name: fasting-kilby-d00001
+    name: plantbuddy
+    retentionRules:
+      - everySeconds: 172800
+        type: expire
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Task
+metadata:
+    name: realistic-lehmann-500001
+spec:
+    associations:
+      - kind: Label
+        name: fasting-kilby-d00001
+    every: 1h
+    name: PB_downsample
+    offset: 10s
+    query: |-
+        import "influxdata/influxdb/tasks"
+
+
+
+        from(bucket: "plantbuddy")
+            |> range(start: tasks.lastSuccess(orTime: -task.every))
+            |> filter(fn: (r) => r["_measurement"] == "sensor_data")
+            |> aggregateWindow(every: 10m, fn: last, createEmpty: false)
+            |> yield(name: "last")
+            |> to(bucket: "downsampled")
+    status: active
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: burfect-mcnulty-d00003
+spec:
+    associations:
+      - kind: Label
+        name: fasting-kilby-d00001
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> filter(fn: (r) => r.name !~ /^_/)
+          |> rename(columns: {name: "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: earning-curie-900003
+spec:
+    associations:
+      - kind: Label
+        name: fasting-kilby-d00001
+    language: flux
+    name: PB_device
+    query: |-
+        import "influxdata/influxdb/schema"
+
+        schema.tagValues(
+          bucket: "plantbuddy",
+          tag: "device_id",
+        )
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: rainy-burnell-900001
+spec:
+    associations:
+      - kind: Label
+        name: fasting-kilby-d00001
+    charts:
+      - colors:
+          - hex: '#BF3D5E'
+            id: "0"
+            name: ruby
+            type: min
+          - hex: '#F48D38'
+            id: faff2998-6e82-4d79-9bc9-eb5bcd75198c
+            name: tiger
+            type: threshold
+            value: 35
+          - hex: '#7CE490'
+            id: bef1f795-a3c9-4bfb-9ead-09263bb6594d
+            name: honeydew
+            type: threshold
+            value: 70
+          - hex: '#32B08C'
+            id: "1"
+            name: viridian
+            type: max
+            value: 100
+        decimalPlaces: 2
+        height: 3
+        kind: Gauge
+        name: Soil Moisture
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sensor_data")
+                  |> filter(fn: (r) => r["_field"] == "soil_moisture")
+                  |> filter(fn: (r) => r["device_id"] == v.PB_device)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "mean")
+        staticLegend: {}
+        suffix: '%'
+        tickSuffix: '%'
+        width: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Temperature
+            name: "y"
+            scale: linear
+            suffix: ° C
+        colorizeRows: true
+        colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+          - hex: '#FD7A5D'
+            id: 37f3e844-fb2a-4515-a12b-7d140bd12be9
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: 91c4a515-9a1d-43d3-a78c-674d116a8a25
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: 00d98ba2-96d8-4a6d-b948-70b41c1bd8c7
+            name: Delorean
+            type: scale
+        decimalPlaces: 2
+        height: 3
+        hoverDimension: auto
+        kind: Single_Stat_Plus_Line
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Air Temperature
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sensor_data")
+                  |> filter(fn: (r) => r["_field"] == "air_temperature")
+                  |> filter(fn: (r) => r["device_id"] == v.PB_device)
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 3
+        widthRatio: 1
+        xCol: _time
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorMapping: {}
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 1dbd64e6-b888-4c1c-a912-05a156fdac4f
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 970f85b8-ab53-4fb9-8118-1b8dd1373a53
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: d2ab10e4-7166-4a9e-904d-d95b19ce8908
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Light
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sensor_data")
+                  |> filter(fn: (r) => r["_field"] == "light")
+                  |> filter(fn: (r) => r["device_id"] == v.PB_device)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 3
+        widthRatio: 1
+        xCol: _time
+        yCol: _value
+        yPos: 6
+      - axes:
+          - domain:
+              - 0
+              - 100
+            name: x
+          - name: "y"
+        binSize: 10
+        colors:
+          - hex: '#000004'
+          - hex: '#110a30'
+          - hex: '#320a5e'
+          - hex: '#57106e'
+          - hex: '#781c6d'
+          - hex: '#9a2865'
+          - hex: '#bc3754'
+          - hex: '#d84c3e'
+          - hex: '#ed6925'
+          - hex: '#f98e09'
+          - hex: '#fbb61a'
+          - hex: '#f4df53'
+        height: 3
+        kind: Heatmap
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: 'Correlation: Soil Temperatue to Soil Moisture'
+        queries:
+          - query: |-
+                soil_temperature = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sensor_data")
+                  |> filter(fn: (r) => r["_field"] == "soil_temperature")
+                  |> filter(fn: (r) => r["device_id"] == v.PB_device)
+
+
+
+                soil_moisture = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sensor_data")
+                  |> filter(fn: (r) => r["_field"] == "soil_moisture")
+                  |> filter(fn: (r) => r["device_id"] == v.PB_device)
+
+
+                  join(tables: {soil_temperature: soil_temperature, soil_moisture: soil_moisture}, on: ["_time"], method: "inner")
+                  |> yield(name: "combined")
+        staticLegend: {}
+        width: 12
+        xCol: _value_soil_moisture
+        yCol: _value_soil_temperature
+        yPos: 9
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            label: Percentage
+            name: "y"
+            scale: linear
+            suffix: '%'
+        colorMapping: {}
+        colorizeRows: true
+        colors:
+          - hex: '#FD7A5D'
+            id: ae1f9261-9318-4eec-bd67-7890e3e235af
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: bc90270c-bdc9-4cda-9d1e-61c09b054a01
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: 0f02ae9b-1d32-4e94-8fb6-6ed5662fa0ca
+            name: Delorean
+            type: scale
+        geom: line
+        height: 4
+        heightRatio: 0.13098591549295774
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Histogram (Soil Moisture)
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sensor_data")
+                  |> filter(fn: (r) => r["_field"] == "soil_moisture")
+                  |> filter(fn: (r) => r["device_id"] == v.PB_device)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "mean")
+        shade: true
+        show: true
+        staticLegend:
+            colorizeRows: true
+            heightRatio: 0.13098591549295774
+            opacity: 1
+            orientationThreshold: 1e+08
+            show: true
+            widthRatio: 1
+        width: 9
+        widthRatio: 1
+        xCol: _time
+        xPos: 3
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorMapping: {}
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 1dbd64e6-b888-4c1c-a912-05a156fdac4f
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 970f85b8-ab53-4fb9-8118-1b8dd1373a53
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: d2ab10e4-7166-4a9e-904d-d95b19ce8908
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Air Humidity
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sensor_data")
+                  |> filter(fn: (r) => r["_field"] == "humidity")
+                  |> filter(fn: (r) => r["device_id"] == v.PB_device)
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 9
+        widthRatio: 1
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            label: Temperature
+            name: "y"
+            scale: linear
+            suffix: ° C
+        colorizeRows: true
+        colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+          - hex: '#8F8AF4'
+            id: c19eb07a-d6ce-490b-9d3f-6c2831a782a8
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#A51414'
+            id: 7c2ca5c4-778d-48bd-85b9-e6a6c484e5b4
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#F4CF31'
+            id: 7ed5b876-06f1-4104-990f-3f787c99f011
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+        decimalPlaces: 2
+        height: 2
+        hoverDimension: auto
+        kind: Single_Stat_Plus_Line
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: 'Soil Temperature '
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "sensor_data")
+                  |> filter(fn: (r) => r["_field"] == "soil_temperature")
+                  |> filter(fn: (r) => r["device_id"] == v.PB_device)
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        shade: true
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 9
+        widthRatio: 1
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 7
+    description: Sensor measurments monitoring a house plant.
+    name: Plant Buddy
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: plany-buddy-TN
+spec:
+    name: plany-buddy-TN
+    config: |
+      # Telegraf Configuration
+      #
+      # Telegraf is entirely plugin driven. All metrics are gathered from the
+      # declared inputs, and sent to the declared outputs.
+      #
+      # Plugins must be declared in here to be active.
+      # To deactivate a plugin, comment out the name and any variables.
+      #
+      # Use 'telegraf -config telegraf.conf -test' to see what metrics a config
+      # file would generate.
+      #
+      # Environment variables can be used anywhere in this config file, simply surround
+      # them with ${}. For strings the variable must be within quotes (ie, "${STR_VAR}"),
+      # for numbers and booleans they should be plain (ie, ${INT_VAR}, ${BOOL_VAR})
+
+
+      # Global tags can be specified here in key="value" format.
+      [global_tags]
+        # dc = "us-east-1" # will tag all metrics with dc=us-east-1
+        # rack = "1a"
+        ## Environment variables can be used as tags, and throughout the config file
+        # user = "$USER"
+
+
+      # Configuration for telegraf agent
+      [agent]
+        ## Default data collection interval for all inputs
+        interval = "5s"
+        ## Rounds collection interval to 'interval'
+        ## ie, if interval="10s" then always collect on :00, :10, :20, etc.
+        round_interval = true
+
+        ## Telegraf will send metrics to outputs in batches of at most
+        ## metric_batch_size metrics.
+        ## This controls the size of writes that Telegraf sends to output plugins.
+        metric_batch_size = 1000
+
+        ## Maximum number of unwritten metrics per output.  Increasing this value
+        ## allows for longer periods of output downtime without dropping metrics at the
+        ## cost of higher maximum memory usage.
+        metric_buffer_limit = 10000
+
+        ## Collection jitter is used to jitter the collection by a random amount.
+        ## Each plugin will sleep for a random time within jitter before collecting.
+        ## This can be used to avoid many plugins querying things like sysfs at the
+        ## same time, which can have a measurable effect on the system.
+        collection_jitter = "5s"
+
+        ## Default flushing interval for all outputs. Maximum flush_interval will be
+        ## flush_interval + flush_jitter
+        flush_interval = "10s"
+        ## Jitter the flush interval by a random amount. This is primarily to avoid
+        ## large write spikes for users running a large number of telegraf instances.
+        ## ie, a jitter of 5s and interval 10s means flushes will happen every 10-15s
+        flush_jitter = "5s"
+
+        ## By default or when set to "0s", precision will be set to the same
+        ## timestamp order as the collection interval, with the maximum being 1s.
+        ##   ie, when interval = "10s", precision will be "1s"
+        ##       when interval = "250ms", precision will be "1ms"
+        ## Precision will NOT be used for service inputs. It is up to each individual
+        ## service input to set the timestamp at the appropriate precision.
+        ## Valid time units are "ns", "us" (or "µs"), "ms", "s".
+        precision = ""
+
+
+        ## Override default hostname, if empty use os.Hostname()
+        hostname = ""
+        ## If set to true, do no set the "host" tag in the telegraf agent.
+        omit_hostname = false
+
+        debug = true
+
+        quiet = false
+
+
+      ###############################################################################
+      #                            OUTPUT PLUGINS                                   #
+      ###############################################################################
+
+      # Configuration for sending metrics to InfluxDB 2.0
+      [[outputs.influxdb_v2]]
+      alias = "plantbuddy_bucket"
+      namepass = ["sensor_data"]
+        ## The URLs of the InfluxDB cluster nodes.
+        ##
+        ## Multiple URLs can be specified for a single cluster, only ONE of the
+        ## urls will be written to each interval.
+        ##   ex: urls = ["https://us-west-2-1.aws.cloud2.influxdata.com"]
+        urls = ["${INFLUX_HOST}"]
+
+        ## Token for authentication.
+        token = "${INFLUX_TOKEN}"
+
+        ## Organization is the name of the organization you wish to write to.
+        organization = "${INFLUX_ORG}"
+
+        ## Destination bucket to write into.
+        bucket = "plantbuddy"
+
+      # Configuration for sending metrics to InfluxDB 2.0
+
+      [[outputs.influxdb_v2]]
+      alias = "thing_network_stats_bucket"
+      namepass = ["thing_network"]
+        ## The URLs of the InfluxDB cluster nodes.
+        ##
+        ## Multiple URLs can be specified for a single cluster, only ONE of the
+        ## urls will be written to each interval.
+        ##   ex: urls = ["https://us-west-2-1.aws.cloud2.influxdata.com"]
+        urls = ["${INFLUX_HOST}"]
+
+        ## Token for authentication.
+        token = "${INFLUX_TOKEN}"
+
+        ## Organization is the name of the organization you wish to write to.
+        organization = "${INFLUX_ORG}"
+
+        ## Destination bucket to write into.
+        bucket = "thing_network_stats"
+
+      ###############################################################################
+      #                            INPUT PLUGINS                                    #
+      ###############################################################################
+
+      #PLANT BUDDY DATA#
+      [[inputs.mqtt_consumer]]
+      alias = "thing_network_consumer"
+      name_override = "sensor_data"
+        max_undelivered_messages = 1
+
+
+        servers = ["tcp://eu1.cloud.thethings.network:1883"]
+        topics = ["#"]
+
+
+        username = "${THING_USERNAME}"
+        password = "${THING_API_KEY}" 
+        data_format = "json_v2"
+
+
+
+      [[inputs.mqtt_consumer.json_v2]]
+      [[inputs.mqtt_consumer.json_v2.object]]
+        path = "@this.uplink_message.decoded_payload.payload"
+        disable_prepend_keys = true
+
+
+        [[inputs.mqtt_consumer.json_v2.tag]]
+        path = "@this.end_device_ids.device_id"
