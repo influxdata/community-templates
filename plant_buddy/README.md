@@ -16,7 +16,7 @@ Plant Buddy has been ported to several embedded controllers. In most cases the t
 
 
 ##### Dashboard examples
-![Plant Buddy Dashboard Screenshot](/img/plant-buddy-dashboard.png)
+![Plant Buddy Dashboard Screenshot](img/plant-buddy-dashboard.png)
 
 
 ### Quick Install
