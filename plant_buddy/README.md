@@ -11,9 +11,6 @@ The goal of this template is to provide health stats on your chosen plant. This 
 - Soil Moisture
 - Light
 
-Plant Buddy has been ported to several embedded controllers. In most cases the templates are equivlent it seemed it fit to provide each device its own template.
-
-
 
 ##### Dashboard examples
 ![Plant Buddy Dashboard Screenshot](img/plant-buddy-dashboard.png)
@@ -49,7 +46,7 @@ General instructions on using InfluxDB Templates can be found in the [use a temp
 For information about the Plant Buddy project, check out this repo [here](https://github.com/InfluxCommunity/plant_buddy)
 
 ## Customizations
-Plant Buddy has been ported to several embedded controllers. In most cases the templates are equivlent it seemed it fit to provide each device its own template. It is worth noting that the templates could be modified with extended meta data like: user ID, location and plant type. 
+Plant Buddy has been ported to several embedded controllers. In most cases the templates are equivlent but it seemed it fit to provide each device its own template. It is worth noting that the templates could be modified with extended metadata like: user ID, location and plant type. 
 
 
 ## Contact
