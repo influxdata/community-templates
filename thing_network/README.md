@@ -1,10 +1,10 @@
-# The Thing Network
+# The Things Network
 
 Provided by: Jay Clifford
 
-This InfluxDB Template can be used to monitor device and network metrics from the Thing Network community edition. 
+This InfluxDB Template can be used to monitor device and network metrics from the Things Network community edition. 
 
-The goal of this template is to provide connectivity and network stats from LoRaWAN devices connecting to the Thing Network. This template monitors the following assets:
+The goal of this template is to provide connectivity and network stats from LoRaWAN devices connecting to the Things Network. This template monitors the following assets:
 - LoRaWAN server location
 - Device Bandwidth
 - ID: application, cluster, NET, Band, session
@@ -16,12 +16,12 @@ The goal of this template is to provide connectivity and network stats from LoRa
 - Connectivity cycles
 
 ##### Dashboard examples
-![Thing Network Dashboard Screenshot](img/thing-network-dashboard.png)
+![Things Network Dashboard Screenshot](img/thing-network-dashboard.png)
 
 
 
 
-This template requires an account with the Thing Network Community. Make one [here](https://eu1.cloud.thethings.network/console/).
+This template requires an account with the Things Network Community. Make one [here](https://eu1.cloud.thethings.network/console/).
 
 ### Quick Install
 
@@ -46,7 +46,7 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
 
 General instructions on using InfluxDB Templates can be found in the [use a template](../docs/use_a_template.md) document.
 
-For instructions on how to connect the Thing Network to InfluxDB [here]()
+For instructions on how to connect the Things Network to InfluxDB [here]()
 
 ## Customizations
 
