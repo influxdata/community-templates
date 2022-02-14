@@ -77,6 +77,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [SNMP Monitoring](snmp/) | Dashboards showing metrics provided via SNMP protocol | [bonitoo.io](.) |
 | [Speedtest Dashboard](speedtest/) | This template will show you information about the speed of your Internet connection using speedtest-cli | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Telegraf Dashboard](telegraf/) | View throughput and internal stats about your Telegraf instances | Steven Soroka |
+| [The Things Network](thing_network/) | Monitor your Things Network devices and network. | [@Jayclifford345](https://github.com/Jayclifford345)|
 | [Tomcat Dashboard](tomcat/) | Monitor your Tomcat instance. Include Threads, Commit Memory, Request Count, Traffic and more | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [vSphere System Monitor](vsphere/) | View information about vSphere system. CPU, RAM, Network, Disk Latency and more | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [Website Monitor (Apache/Postgresql)](apache_postgresql/) | Monitor a website that uses Apache and Postgresql | [Michael Hall](https://github.com/mhall119) |

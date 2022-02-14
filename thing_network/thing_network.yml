@@ -1,0 +1,767 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: vigorous-dhawan-8d9001
+spec:
+    color: '#0b3a8d'
+    name: thing_network
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: terrifying-booth-8d9005
+spec:
+    associations:
+      - kind: Label
+        name: vigorous-dhawan-8d9001
+    name: thing_network_stats
+    retentionRules:
+      - everySeconds: 2.592e+06
+        type: expire
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: lucid-khayyam-0d9003
+spec:
+    associations:
+      - kind: Label
+        name: vigorous-dhawan-8d9001
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> filter(fn: (r) => r.name !~ /^_/)
+          |> rename(columns: {name: "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: fasting-chatterjee-cd9001
+spec:
+    associations:
+      - kind: Label
+        name: vigorous-dhawan-8d9001
+    charts:
+      - allowPanAndZoom: true
+        geoLayers:
+          - colorDimension:
+                label: Value
+                name: color
+            colorField: _value
+            intensityDimension:
+                name: intensity
+            layerType: pointMap
+            radiusDimension:
+                name: radius
+            viewColors:
+              - hex: '#7A65F2'
+                id: "0"
+                name: star
+                type: min
+              - hex: '#7A65F2'
+                id: "1"
+                name: star
+                type: text
+                value: 50
+              - hex: '#7A65F2'
+                id: "2"
+                name: star
+                type: max
+                value: 100
+        height: 4
+        kind: Geo
+        latLonColumns:
+            lat:
+                column: latitude
+                key: tag
+            lon:
+                column: longitude
+                key: tag
+        name: LoRaWAN Server
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "thing_network")
+                  |> filter(fn: (r) => r["_field"] == "latitude" or r["_field"] == "longitude")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+                  |> map(fn: (r) => ({ r with _value: r.tenant_id }))
+                  |> yield(name: "last")
+        s2Column: s2_cell_id
+        staticLegend: {}
+        width: 7
+        zoom: 6
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: background
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: APPLICATION ID
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "thing_network")
+                  |> filter(fn: (r) => r["_field"] == "application_id")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        width: 1
+        yPos: 4
+      - axes:
+          - domain:
+              - -140
+              - -90
+            name: x
+          - name: "y"
+        binSize: 20
+        colors:
+          - hex: '#000004'
+          - hex: '#110a30'
+          - hex: '#320a5e'
+          - hex: '#57106e'
+          - hex: '#781c6d'
+          - hex: '#9a2865'
+          - hex: '#bc3754'
+          - hex: '#d84c3e'
+          - hex: '#ed6925'
+          - hex: '#f98e09'
+          - hex: '#fbb61a'
+          - hex: '#f4df53'
+        height: 3
+        kind: Heatmap
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: 'Correlation: RSSI and Airtime'
+        queries:
+          - query: |-
+                import "strings"
+
+
+                ca = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "thing_network")
+                  |> filter(fn: (r) => r["_field"] == "consumed_airtime")
+                  |> map(fn: (r) => ({
+                      r with
+                      _value: strings.trim(v: r._value, cutset: "s")
+                    })
+                  )
+                  |>toFloat()
+
+
+                rssi = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "thing_network")
+                  |> filter(fn: (r) => r["_field"] == "rssi")
+
+
+                  join(tables: {consumed_airtime: ca, rssi: rssi}, on: ["_time"], method: "inner")
+                  |> yield(name: "combined")
+        staticLegend: {}
+        width: 2
+        xCol: _value_rssi
+        yCol: _value_consumed_airtime
+        yPos: 8
+      - axes:
+          - name: x
+        binCount: 30
+        colors:
+          - hex: '#31C0F6'
+            id: PmJkOyIgcFZfNbz7V4HVr
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: IL4xnv1_DlsvaG0LHUznR
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: N9gc5P0ma9OruCHLfpzHL
+            name: Nineteen Eighty Four
+            type: scale
+        fillColumns:
+          - _start
+          - _stop
+          - device_id
+        height: 1
+        kind: Histogram
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Connectivity Cycle
+        position: stacked
+        queries:
+          - query: |-
+                import "contrib/tomhollingworth/events"
+                import "experimental"
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "thing_network")
+                  |> filter(fn: (r) => r["_field"] == "confirmed")
+                  |> group(columns: ["device_id"], mode:"by")
+                  |> aggregateWindow(every: 1m, fn: last, createEmpty: false)
+                    |> events.duration(
+                    unit: 1m,
+                    //stop: 2020-01-02T00:00:00Z
+                  )
+        staticLegend: {}
+        width: 12
+        xCol: _time
+        yPos: 11
+      - colors:
+          - hex: '#F48D38'
+            id: base
+            name: tiger
+            type: background
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: CLUSTER ID
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "thing_network")
+                  |> filter(fn: (r) => r["_field"] == "cluster_id")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        width: 1
+        xPos: 1
+        yPos: 4
+      - colors:
+          - hex: '#BF3D5E'
+            id: base
+            name: ruby
+            type: background
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: NET ID
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "thing_network")
+                  |> filter(fn: (r) => r["_field"] == "net_id")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        width: 1
+        xPos: 2
+        yPos: 4
+      - axes:
+          - domain:
+              - -20
+              - 10
+            name: x
+          - name: "y"
+        binSize: 20
+        colors:
+          - hex: '#000004'
+          - hex: '#110a30'
+          - hex: '#320a5e'
+          - hex: '#57106e'
+          - hex: '#781c6d'
+          - hex: '#9a2865'
+          - hex: '#bc3754'
+          - hex: '#d84c3e'
+          - hex: '#ed6925'
+          - hex: '#f98e09'
+          - hex: '#fbb61a'
+          - hex: '#f4df53'
+        height: 3
+        kind: Heatmap
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: 'Correlation: SNR and Airtime'
+        queries:
+          - query: |-
+                import "strings"
+
+
+                ca = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "thing_network")
+                  |> filter(fn: (r) => r["_field"] == "consumed_airtime")
+                  |> map(fn: (r) => ({
+                      r with
+                      _value: strings.trim(v: r._value, cutset: "s")
+                    })
+                  )
+                  |>toFloat()
+
+
+                snr = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "thing_network")
+                  |> filter(fn: (r) => r["_field"] == "snr")
+
+
+                  join(tables: {consumed_airtime: ca, snr: snr}, on: ["_time"], method: "inner")
+                  |> yield(name: "combined")
+        staticLegend: {}
+        width: 2
+        xCol: _value_snr
+        xPos: 2
+        yCol: _value_consumed_airtime
+        yPos: 8
+      - colors:
+          - hex: '#32B08C'
+            id: base
+            name: viridian
+            type: background
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: BAND ID
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "thing_network")
+                  |> filter(fn: (r) => r["_field"] == "band_id")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        width: 2
+        xPos: 3
+        yPos: 4
+      - axes:
+          - domain:
+              - -140
+              - -90
+            name: x
+          - name: "y"
+        binSize: 20
+        colors:
+          - hex: '#000004'
+          - hex: '#110a30'
+          - hex: '#320a5e'
+          - hex: '#57106e'
+          - hex: '#781c6d'
+          - hex: '#9a2865'
+          - hex: '#bc3754'
+          - hex: '#d84c3e'
+          - hex: '#ed6925'
+          - hex: '#f98e09'
+          - hex: '#fbb61a'
+          - hex: '#f4df53'
+        height: 3
+        kind: Heatmap
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: 'Correlation: SNR and RSSI'
+        queries:
+          - query: |-
+                import "strings"
+
+
+                rssi = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "thing_network")
+                  |> filter(fn: (r) => r["_field"] == "rssi")
+
+
+
+                snr = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "thing_network")
+                  |> filter(fn: (r) => r["_field"] == "snr")
+
+
+                  join(tables: {rssi: rssi, snr: snr}, on: ["_time"], method: "inner")
+                  |> yield(name: "combined")
+        staticLegend: {}
+        width: 3
+        xCol: _value_rssi
+        xPos: 4
+        yCol: _value_snr
+        yPos: 8
+      - colors:
+          - hex: '#4591ED'
+            id: base
+            name: ocean
+            type: background
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: SESSION KEY ID
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "thing_network")
+                  |> filter(fn: (r) => r["_field"] == "session_key_id")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        width: 2
+        xPos: 5
+        yPos: 4
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        hoverDimension: auto
+        kind: Single_Stat_Plus_Line
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Device Bandwidth
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "thing_network")
+                  |> filter(fn: (r) => r["_field"] == "bandwidth")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 5
+        widthRatio: 1
+        xCol: _time
+        xPos: 7
+        yCol: _value
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorMapping: {}
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 48b90174-24fb-4664-abcc-db3ba9d3f9b0
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: c820f98e-ea64-4f0d-9524-6ce635894fcf
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 9a6fef4c-ce7b-49dd-a485-0748a148b88b
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Consumed Airtime
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                import "strings"
+
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "thing_network")
+                  |> filter(fn: (r) => r["_field"] == "consumed_airtime")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> map(fn: (r) => ({
+                      r with
+                      _value: strings.trim(v: r._value, cutset: "s")
+                    })
+                  )
+                  |>toFloat()
+                  |> yield(name: "last")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 5
+        widthRatio: 1
+        xCol: _time
+        xPos: 7
+        yCol: _value
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorMapping: {}
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: sP9o_lGb_Rd7sLdR0T4H1
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: X4yIEmwF7P6LG6sMSuB3g
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: usz4K7dpl-9TMridYLUsg
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Channel RSSI
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "thing_network")
+                  |> filter(fn: (r) => r["_field"] == "rssi")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        shade: true
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 5
+        widthRatio: 1
+        xCol: _time
+        xPos: 7
+        yCol: _value
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorMapping: {}
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: sP9o_lGb_Rd7sLdR0T4H1
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: X4yIEmwF7P6LG6sMSuB3g
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: usz4K7dpl-9TMridYLUsg
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Channel SNR
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "thing_network")
+                  |> filter(fn: (r) => r["_field"] == "snr")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        shade: true
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 5
+        widthRatio: 1
+        xCol: _time
+        xPos: 7
+        yCol: _value
+        yPos: 8
+    description: Thing Network device stats. Based on MQTT output from community addition.
+    name: Thing Network
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: thing-network
+spec:
+    name: thing-network
+    config: |
+            # Telegraf Configuration
+            #
+            # Telegraf is entirely plugin driven. All metrics are gathered from the
+            # declared inputs, and sent to the declared outputs.
+            #
+            # Plugins must be declared in here to be active.
+            # To deactivate a plugin, comment out the name and any variables.
+            #
+            # Use 'telegraf -config telegraf.conf -test' to see what metrics a config
+            # file would generate.
+            #
+            # Environment variables can be used anywhere in this config file, simply surround
+            # them with ${}. For strings the variable must be within quotes (ie, "${STR_VAR}"),
+            # for numbers and booleans they should be plain (ie, ${INT_VAR}, ${BOOL_VAR})
+
+
+            # Global tags can be specified here in key="value" format.
+            [global_tags]
+              # dc = "us-east-1" # will tag all metrics with dc=us-east-1
+              # rack = "1a"
+              ## Environment variables can be used as tags, and throughout the config file
+              # user = "$USER"
+
+
+            # Configuration for telegraf agent
+            [agent]
+              ## Default data collection interval for all inputs
+              interval = "5s"
+              ## Rounds collection interval to 'interval'
+              ## ie, if interval="10s" then always collect on :00, :10, :20, etc.
+              round_interval = true
+
+              ## Telegraf will send metrics to outputs in batches of at most
+              ## metric_batch_size metrics.
+              ## This controls the size of writes that Telegraf sends to output plugins.
+              metric_batch_size = 1000
+
+              ## Maximum number of unwritten metrics per output.  Increasing this value
+              ## allows for longer periods of output downtime without dropping metrics at the
+              ## cost of higher maximum memory usage.
+              metric_buffer_limit = 10000
+
+              ## Collection jitter is used to jitter the collection by a random amount.
+              ## Each plugin will sleep for a random time within jitter before collecting.
+              ## This can be used to avoid many plugins querying things like sysfs at the
+              ## same time, which can have a measurable effect on the system.
+              collection_jitter = "5s"
+
+              ## Default flushing interval for all outputs. Maximum flush_interval will be
+              ## flush_interval + flush_jitter
+              flush_interval = "10s"
+              ## Jitter the flush interval by a random amount. This is primarily to avoid
+              ## large write spikes for users running a large number of telegraf instances.
+              ## ie, a jitter of 5s and interval 10s means flushes will happen every 10-15s
+              flush_jitter = "5s"
+
+              ## By default or when set to "0s", precision will be set to the same
+              ## timestamp order as the collection interval, with the maximum being 1s.
+              ##   ie, when interval = "10s", precision will be "1s"
+              ##       when interval = "250ms", precision will be "1ms"
+              ## Precision will NOT be used for service inputs. It is up to each individual
+              ## service input to set the timestamp at the appropriate precision.
+              ## Valid time units are "ns", "us" (or "µs"), "ms", "s".
+              precision = ""
+
+
+              ## Override default hostname, if empty use os.Hostname()
+              hostname = ""
+              ## If set to true, do no set the "host" tag in the telegraf agent.
+              omit_hostname = false
+
+              debug = true
+
+              quiet = false
+
+
+            ###############################################################################
+            #                            OUTPUT PLUGINS                                   #
+            ###############################################################################
+
+            # Configuration for sending metrics to InfluxDB 2.0
+
+            [[outputs.influxdb_v2]]
+            alias = "thing_network_stats_bucket"
+            namepass = ["thing_network"]
+              ## The URLs of the InfluxDB cluster nodes.
+              ##
+              ## Multiple URLs can be specified for a single cluster, only ONE of the
+              ## urls will be written to each interval.
+              ##   ex: urls = ["https://us-west-2-1.aws.cloud2.influxdata.com"]
+              urls = ["${INFLUX_HOST}"]
+
+              ## Token for authentication.
+              token = "${INFLUX_TOKEN}"
+
+              ## Organization is the name of the organization you wish to write to.
+              organization = "${INFLUX_ORG}"
+
+              ## Destination bucket to write into.
+              bucket = "${INFLUX_BUCKET}"
+
+            ###############################################################################
+            #                            INPUT PLUGINS                                    #
+            ###############################################################################
+            #THING NETWORK META DATA#
+            [[inputs.mqtt_consumer]]
+              alias = "thing_network_consumer"
+              name_override = "thing_network"
+              servers = ["tcp://eu1.cloud.thethings.network:1883"]
+              topics = ["#"]
+              max_undelivered_messages = 1
+
+
+                username = "${THING_USERNAME}"
+                password = "${THING_API_KEY}" 
+                data_format = "json_v2"
+
+
+              [[inputs.mqtt_consumer.json_v2]]
+                [[inputs.mqtt_consumer.json_v2.tag]]
+                path = "@this.end_device_ids.device_id"
+
+              [[inputs.mqtt_consumer.json_v2.object]]
+                path = "end_device_ids"
+                disable_prepend_keys = true
+
+
+
+              [[inputs.mqtt_consumer.json_v2.object]]
+                path = "uplink_message"
+                disable_prepend_keys = true
+                excluded_keys = ["time", "timestamp"]
+
+              [[inputs.mqtt_consumer.json_v2.object]]
+                path = "uplink_message.rx_metadata"
+                disable_prepend_keys = true
+                excluded_keys = ["time", "timestamp"]
