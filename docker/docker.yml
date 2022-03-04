@@ -87,14 +87,18 @@ spec:
   name: inputs.mem
 ---
 apiVersion: influxdata.com/v2alpha1
-kind: Bucket
+kind: Variable
 metadata:
-  name: heuristic-sinoussi-d4d017
+  name: docker-template-bucket-variable
 spec:
-  name: docker
-  retentionRules:
-    - everySeconds: 604800
-      type: expire
+  language: flux
+  name: bucket
+  query: |-
+      buckets()
+        |> filter(fn: (r) => r.name !~ /^_/)
+        |> rename(columns: {name: "_value"})
+        |> keep(columns: ["_value"])
+  type: query
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: CheckThreshold
@@ -105,7 +109,7 @@ spec:
   every: 15m0s
   name: Container Mem Usage Pct
   query: |-
-    from(bucket: "docker")
+    from(bucket: v.bucket)
       |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
       |> filter(fn: (r) => r["_measurement"] == "docker_container_mem")
       |> filter(fn: (r) => r["_field"] == "usage_percent")
@@ -134,7 +138,7 @@ spec:
   every: 15m0s
   name: Container Disk Usage
   query: |-
-    from(bucket: "docker")
+    from(bucket: v.bucket)
       |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
       |> filter(fn: (r) => r["_measurement"] == "docker_container_blkio")
       |> filter(fn: (r) => r["_field"] == "usage_percent")
@@ -162,7 +166,7 @@ spec:
   every: 5m0s
   name: Container Non Zero Exit Code
   query: |-
-    from(bucket: "docker")
+    from(bucket: v.bucket)
       |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
       |> filter(fn: (r) => r["_measurement"] == "docker_container_status")
       |> filter(fn: (r) => r["_field"] == "exitcode")
@@ -186,7 +190,7 @@ spec:
   every: 15m0s
   name: Container CPU Usage Pct
   query: |-
-    from(bucket: "docker")
+    from(bucket: v.bucket)
       |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
       |> filter(fn: (r) => r["_measurement"] == "docker_container_cpu")
       |> filter(fn: (r) => r["_field"] == "usage_percent")
@@ -263,7 +267,7 @@ spec:
       name: Num Images
       queries:
         - query: |-
-            from(bucket: "docker")
+            from(bucket: v.bucket)
               |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
               |> filter(fn: (r) => r["_measurement"] == "docker")
               |> filter(fn: (r) => r["_field"] == "n_images")
@@ -284,7 +288,7 @@ spec:
       name: System Uptime
       queries:
         - query: |-
-            from(bucket: "docker")
+            from(bucket: v.bucket)
               |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
               |> filter(fn: (r) => r["_measurement"] == "system")
               |> filter(fn: (r) => r["_field"] == "uptime")
@@ -308,7 +312,7 @@ spec:
       name: Swap
       queries:
         - query: |-
-            from(bucket: "docker")
+            from(bucket: v.bucket)
               |> range(start: v.timeRangeStart)
               |> filter(fn: (r) => r._measurement == "swap")
               |> filter(fn: (r) => r._field == "total" or r._field == "used")
@@ -335,7 +339,7 @@ spec:
       name: Network TX trafic per container / sec
       queries:
         - query: |-
-            from(bucket: "docker")
+            from(bucket: v.bucket)
               |> range(start: v.timeRangeStart, stop:v.timeRangeStop)
               |> filter(fn: (r) => r._measurement == "docker_container_net")
               |> filter(fn: (r) => r._field == "tx_bytes")
@@ -371,7 +375,7 @@ spec:
       name: Disk Usage
       queries:
         - query: |-
-            from(bucket: "docker")
+            from(bucket: v.bucket)
               |> range(start: v.timeRangeStart)
               |> filter(fn: (r) => r._measurement == "disk")
               |> filter(fn: (r) => r._field == "used_percent")
@@ -391,7 +395,7 @@ spec:
       name: Total Num Containers
       queries:
         - query: |-
-            from(bucket: "docker")
+            from(bucket: v.bucket)
               |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
               |> filter(fn: (r) => r["_measurement"] == "docker")
               |> filter(fn: (r) => r["_field"] == "n_containers")
@@ -408,7 +412,7 @@ spec:
       name: System Load
       queries:
         - query: |-
-            from(bucket: "docker")
+            from(bucket: v.bucket)
               |> range(start: v.timeRangeStart)
               |> filter(fn: (r) => r._measurement == "system")
               |> filter(fn: (r) => r._field == "load1")
@@ -436,7 +440,7 @@ spec:
       name: System Load
       queries:
         - query: |-
-            from(bucket: "docker")
+            from(bucket: v.bucket)
               |> range(start: v.timeRangeStart)
               |> filter(fn: (r) => r._measurement == "system")
               |> filter(fn: (r) => r._field == "load1" or r._field == "load5" or r._field == "load15")
@@ -460,7 +464,7 @@ spec:
       name: Memory usage % per container
       queries:
         - query: |-
-            from(bucket: "docker")
+            from(bucket: v.bucket)
               |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
               |> filter(fn: (r) => r._measurement == "docker_container_mem")
               |> filter(fn: (r) => r._field == "usage_percent")
@@ -482,7 +486,7 @@ spec:
       name: Number of Runnng Docker containers
       queries:
         - query: |-
-            from(bucket: "docker")
+            from(bucket: v.bucket)
               |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
               |> filter(fn: (r) => r["_measurement"] == "docker")
               |> filter(fn: (r) => r["_field"] == "n_containers_running")
@@ -500,7 +504,7 @@ spec:
       name: Docker Daemon nCPUs
       queries:
         - query: |-
-            from(bucket: "docker")
+            from(bucket: v.bucket)
               |> range(start: v.timeRangeStart)
               |> filter(fn: (r) => r._measurement == "docker")
               |> filter(fn: (r) => r._field == "n_cpus")
@@ -529,7 +533,7 @@ spec:
       name: CPU Usage
       queries:
         - query: |-
-            from(bucket: "docker")
+            from(bucket: v.bucket)
               |> range(start: v.timeRangeStart)
               |> filter(fn: (r) => r._measurement == "cpu")
               |> filter(fn: (r) => r._field == "usage_user" or r._field == "usage_system" or r._field == "usage_idle")
@@ -568,7 +572,7 @@ spec:
       name: Network RX trafic per container / sec
       queries:
         - query: |-
-            from(bucket: "docker")
+            from(bucket: v.bucket)
               |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
               |> filter(fn: (r) => r._measurement == "docker_container_net")
               |> filter(fn: (r) => r._field == "rx_bytes" )
@@ -595,7 +599,7 @@ spec:
       name: Memory usage per container
       queries:
         - query: |-
-            from(bucket: "docker")
+            from(bucket: v.bucket)
               |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
               |> filter(fn: (r) => r._measurement == "docker_container_mem")
               |> filter(fn: (r) => r._field == "usage")
@@ -617,7 +621,7 @@ spec:
       name: Docker Daemon Total Mem
       queries:
         - query: |-
-            from(bucket: "docker")
+            from(bucket: v.bucket)
               |> range(start: v.timeRangeStart)
               |> filter(fn: (r) => r._measurement == "docker")
               |> filter(fn: (r) => r._field == "memory_total")
@@ -660,7 +664,7 @@ spec:
       name: System Memory Usage
       queries:
         - query: |-
-            from(bucket: "docker")
+            from(bucket: v.bucket)
               |> range(start: v.timeRangeStart)
               |> filter(fn: (r) => r._measurement == "mem")
               |> filter(fn: (r) => r._field == "used_percent")
@@ -687,7 +691,7 @@ spec:
       name: CPU usage per container
       queries:
         - query: |-
-            from(bucket: "docker")
+            from(bucket: v.bucket)
               |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
               |> filter(fn: (r) => r._measurement == "cpu" or r._measurement == "docker_container_cpu")
               |> filter(fn: (r) => r._field == "usage_percent")
@@ -763,7 +767,7 @@ spec:
       urls = ["$INFLUX_HOST"]
       token = "$INFLUX_TOKEN"
       organization = "$INFLUX_ORG" ## Destination bucket to write into.
-      bucket = "docker"
+      bucket = v.bucket
 
 
     ###############################################################################
