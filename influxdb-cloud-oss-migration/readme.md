@@ -5,7 +5,7 @@ Provided by: [Scott Anderson](https://github.com/sanderson/)
 Use this InfluxDB Cloud to OSS Migration template to run and monitor data
 migrations from [InfluxDB Cloud]() to [InfluxDB OSS]().
 
-![InfluxDB Cloud to OSS Migration Dashboard Screenshot](img/...)
+![InfluxDB Cloud to OSS Migration Dashboard Screenshot](img/migration-dashboard.png)
 
 **Imporant:** Install this template on the **InfluxDB OSS** instance you would
 like to migrate data to.
