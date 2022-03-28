@@ -4,7 +4,7 @@ metadata:
     name: vigilant-goldwasser-524001
 spec:
     color: '#00a3ff'
-    name: Cloud to OSS migration
+    name: Cloud migration
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Bucket
@@ -32,32 +32,33 @@ spec:
         import "influxdata/influxdb/secrets"
 
         // Configure the task
-
+        option task = {every: 5m, name: "Migrate data from InfluxDB Cloud"}
 
         // Configure the migration
         migration = {
             start: 2022-01-01T00:00:00Z,
-            stop: 2022-01-02T00:00:00Z,
+            stop: 2022-02-01T00:00:00Z,
             batchInterval: 1h,
             batchBucket: "migration",
-            cloudHost: "https://cloud2.influxdata.com",
-            cloudOrg: "example-cloud-org",
-            cloudToken: secrets.get(key: "INFLUXDB_CLOUD_TOKEN"),
-            cloudBucket: "example-cloud-bucket",
-            ossBucket: "example-oss-bucket",
+            sourceHost: "https://cloud2.influxdata.com",
+            sourceOrg: "example-cloud-org",
+            sourceToken: secrets.get(key: "INFLUXDB_CLOUD_TOKEN"),
+            sourceBucket: "example-cloud-bucket",
+            destinationBucket: "example-oss-bucket",
         }
 
         // batchRange dynamically returns a record with start and stop properties for
-        // the current batch based on the stop time of the previous batch stored in the
-        // migration.batchBucket for the specific migration.cloudOrg and
-        // migration.cloudBucket.
+        // the current batch. It queries migration metadata stored in the
+        // `migration.batchBucket` to determine the stop time of the previous batch.
+        // It uses the previous stop time as the new start time for the current batch
+        // and adds the `migration.batchInterval` to determine the current batch stop time.
         batchRange = () => {
             _lastBatchStop =
                 (from(bucket: migration.batchBucket)
                     |> range(start: migration.start)
                     |> filter(fn: (r) => r._field == "batch_stop")
-                    |> filter(fn: (r) => r.srcOrg == migration.cloudOrg)
-                    |> filter(fn: (r) => r.srcBucket == migration.cloudBucket)
+                    |> filter(fn: (r) => r.srcOrg == migration.sourceOrg)
+                    |> filter(fn: (r) => r.srcBucket == migration.sourceBucket)
                     |> last()
                     |> findRecord(fn: (key) => true, idx: 0))._value
             _batchStart =
@@ -80,12 +81,11 @@ spec:
             else
                 "Migration in progress"
 
-        // Query all data from the from the specified InfluxDB Cloud bucket within the
-        // batch-defined time range. To limit migrated data by measurement, tag, or
-        // field, add a `filter()` function after `range()` with the appropriate
-        // predicate fn.
+        // Query all data from the specified source bucket within the batch-defined time
+        // range. To limit migrated data by measurement, tag, or field, add a `filter()`
+        // function after `range()` with the appropriate predicate fn.
         data = () =>
-            from(host: migration.cloudHost, org: migration.cloudOrg, token: migration.cloudToken, bucket: migration.cloudBucket)
+            from(host: migration.sourceHost, org: migration.sourceOrg, token: migration.sourceToken, bucket: migration.sourceBucket)
                 |> range(start: batch.start, stop: batch.stop)
 
         // rowCount is a stream of tables that contains the number of rows returned in
@@ -96,7 +96,7 @@ spec:
                 |> count()
 
         // emptyRange is a stream of tables that acts as filler data if the batch is
-        // emtpy. This is used to generate batch metadata for empty batches and is
+        // empty. This is used to generate batch metadata for empty batches and is
         // necessary to correctly increment the time range for the next batch.
         emptyRange = array.from(rows: [{_start: batch.start, _stop: batch.stop, _value: 0}])
 
@@ -115,9 +115,9 @@ spec:
                             ({
                                 _time: now(),
                                 _measurement: "batches",
-                                srcOrg: migration.cloudOrg,
-                                srcBucket: migration.cloudBucket,
-                                dstBucket: migration.ossBucket,
+                                srcOrg: migration.sourceOrg,
+                                srcBucket: migration.sourceBucket,
+                                dstBucket: migration.destinationBucket,
                                 batch_start: string(v: batch.start),
                                 batch_stop: string(v: batch.stop),
                                 rows: r._value,
@@ -132,7 +132,7 @@ spec:
 
         // Write the queried data to the specified InfluxDB OSS bucket.
         data()
-            |> to(bucket: migration.ossBucket)
+            |> to(bucket: migration.destinationBucket)
 
         // Generate and store batch metadata in the migration.batchBucket.
         metadata()
@@ -379,6 +379,5 @@ spec:
         suffix: '%'
         width: 4
         xPos: 8
-    description: Monitor the progress of data migrations from InfluxDB Cloud to InfluxDB
-        OSS
-    name: InfluxDB Cloud to OSS Migration Progress
+    description: Monitor the progress of data migrations from InfluxDB Cloud
+    name: InfluxDB Cloud Migration Progress
