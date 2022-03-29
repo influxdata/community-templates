@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Label
 metadata:
-    name: vigilant-goldwasser-524001
+    name: romantic-colden-124001
 spec:
     color: '#00a3ff'
     name: Cloud migration
@@ -9,21 +9,21 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Bucket
 metadata:
-    name: strange-matsumoto-924003
+    name: lucid-bohr-124005
 spec:
     associations:
       - kind: Label
-        name: vigilant-goldwasser-524001
+        name: romantic-colden-124001
     name: migration
 ---
 apiVersion: influxdata.com/v2alpha1
 kind: Task
 metadata:
-    name: dreamy-tharp-924007
+    name: tender-buck-124009
 spec:
     associations:
       - kind: Label
-        name: vigilant-goldwasser-524001
+        name: romantic-colden-124001
     every: 5m
     name: Migrate data from InfluxDB Cloud
     query: |-
@@ -32,7 +32,7 @@ spec:
         import "influxdata/influxdb/secrets"
 
         // Configure the task
-        option task = {every: 5m, name: "Migrate data from InfluxDB Cloud"}
+
 
         // Configure the migration
         migration = {
@@ -85,7 +85,12 @@ spec:
         // range. To limit migrated data by measurement, tag, or field, add a `filter()`
         // function after `range()` with the appropriate predicate fn.
         data = () =>
-            from(host: migration.sourceHost, org: migration.sourceOrg, token: migration.sourceToken, bucket: migration.sourceBucket)
+            from(
+                host: migration.sourceHost,
+                org: migration.sourceOrg,
+                token: migration.sourceToken,
+                bucket: migration.sourceBucket,
+            )
                 |> range(start: batch.start, stop: batch.stop)
 
         // rowCount is a stream of tables that contains the number of rows returned in
@@ -141,11 +146,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: earnest-yalow-92400b
+    name: earnest-poincare-12400d
 spec:
     associations:
       - kind: Label
-        name: vigilant-goldwasser-524001
+        name: romantic-colden-124001
     language: flux
     name: migrationTaskID
     query: |-
@@ -157,27 +162,11 @@ spec:
 apiVersion: influxdata.com/v2alpha1
 kind: Variable
 metadata:
-    name: hopeful-mendeleev-924013
+    name: earning-haslett-124011
 spec:
     associations:
       - kind: Label
-        name: vigilant-goldwasser-524001
-    language: flux
-    name: source_org
-    query: |-
-        import "influxdata/influxdb/schema"
-
-        schema.tagValues(bucket: "migration", tag: "srcOrg")
-    type: query
----
-apiVersion: influxdata.com/v2alpha1
-kind: Variable
-metadata:
-    name: recursing-mendeleev-92400f
-spec:
-    associations:
-      - kind: Label
-        name: vigilant-goldwasser-524001
+        name: romantic-colden-124001
     language: flux
     name: source_bucket
     query: |-
@@ -189,13 +178,29 @@ spec:
     type: query
 ---
 apiVersion: influxdata.com/v2alpha1
-kind: Dashboard
+kind: Variable
 metadata:
-    name: nice-shockley-d24001
+    name: zealous-cartwright-124015
 spec:
     associations:
       - kind: Label
-        name: vigilant-goldwasser-524001
+        name: romantic-colden-124001
+    language: flux
+    name: source_org
+    query: |-
+        import "influxdata/influxdb/schema"
+
+        schema.tagValues(bucket: "migration", tag: "srcOrg")
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: angry-panini-924001
+spec:
+    associations:
+      - kind: Label
+        name: romantic-colden-124001
     charts:
       - axes:
           - base: "10"
