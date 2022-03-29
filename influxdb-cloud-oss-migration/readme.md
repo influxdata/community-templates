@@ -1,14 +1,15 @@
-## InfluxDB Cloud to OSS Migration Template
+## InfluxDB Cloud Migration Template
 
 Provided by: [Scott Anderson](https://github.com/sanderson/)
 
-Use this InfluxDB Cloud to OSS Migration template to run and monitor data
-migrations from [InfluxDB Cloud]() to [InfluxDB OSS]().
+Use this InfluxDB Cloud Migration template to run and monitor data migrations
+from [InfluxDB Cloud](https://cloud2.influxdata.com) to [InfluxDB OSS](https://www.influxdata.com/)
+or another InfluxDB Cloud organization.
 
-![InfluxDB Cloud to OSS Migration Dashboard Screenshot](img/migration-dashboard.png)
+![InfluxDB Cloud Migration Dashboard Screenshot](img/migration-dashboard.png)
 
-**Imporant:** Install this template on the **InfluxDB OSS** instance you would
-like to migrate data to.
+**Important:** Install this template on the **InfluxDB OSS** or **InfluxDB Cloud**
+instance you want to migrate data to.
 
 ## Quick Install
 
@@ -31,13 +32,13 @@ influx apply -u https://raw.githubusercontent.com/influxdata/community-templates
 ## Included Resources
 
 - 1 Bucket: `migration`
-- 1 Dashboard: `InfluxDB Cloud to OSS Migration Progress`
+- 1 Dashboard: `InfluxDB Cloud Migration Progress`
 - 3 Dashboard Variables:
   - `source_org`
   - `source_bucket`
   - `migrationTaskID`
 - 1 Task: `Migrate data from InfluxDB Cloud`
-- 1 Label: `Clout to OSS migration`
+- 1 Label: `Cloud migration`
 
 ## Setup Instructions
 
@@ -45,12 +46,13 @@ General instructions on using InfluxDB Templates can be found in [Use a template
 
 ### Set up the migration
 
-1.  **In InfluxDB Cloud**, [create an API token](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/)
-        with **read access** to the bucket you want to migrate.
+1.  **In the InfluxDB Cloud instance you want to migrate data from**,
+    [create an API token](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/)
+    with **read access** to the bucket you want to migrate.
 
-2.  **In InfluxDB OSS**:
-    1.  Add your **InfluxDB Cloud API token** as a secret using the key,
-        `INFLUXDB_CLOUD_TOKEN`.
+2.  **In the InfluxDB Cloud or OSS instance you want to migrate data to**:
+    1.  Add the **InfluxDB Cloud API token from the source organization** as a
+        secret using the key, `INFLUXDB_CLOUD_TOKEN`.
         _See [Add secrets](https://docs.influxdata.com/influxdb/latest/security/secrets/add/) for more information._
     2.  [Create a bucket](https://docs.influxdata.com/influxdb/latest/organizations/buckets/create-bucket/)
         **to migrate data to**.
@@ -65,14 +67,14 @@ General instructions on using InfluxDB Templates can be found in [Use a template
         - **stop**: Latest time to include in the migration.
         - **batchInterval**: Duration of each time-based batch.
           _See [Determine your batch interval](https://docs.influxdata.com/influxdb/latest/write-data/migrate-cloud-to-oss/#determine-your-batch-interval)._
-        - **batchBucket**: InfluxDB OSS bucket to store migration batch metadata in.
-        - **cloudHost**: [InfluxDB Cloud region URL](https://docs.influxdata.com/influxdb/cloud/reference/regions)
+        - **batchBucket**: InfluxDB bucket to store migration batch metadata in.
+        - **sourceHost**: [InfluxDB Cloud region URL](https://docs.influxdata.com/influxdb/cloud/reference/regions)
           to migrate data from.
-        - **cloudOrg**: InfluxDB Cloud organization to migrated data from.
-        - **cloudToken**: InfluxDB Cloud API token. To keep the API token secure, store
+        - **sourceOrg**: InfluxDB Cloud organization to migrate data from.
+        - **sourceToken**: InfluxDB Cloud API token. To keep the API token secure, store
           it as a secret in InfluxDB OSS.
-        - **cloudBucket**: InfluxDB Cloud bucket to migrate data from.
-        - **ossBucket**: InfluxDB OSS bucket to migrate data to.
+        - **sourceBucket**: InfluxDB Cloud bucket to migrate data from.
+        - **destinationBucket**: InfluxDB bucket to migrate data to.
     
     5. Save and enable the task to begin the migration.
 
@@ -84,8 +86,10 @@ error exhausting result iterator: error calling function "die" @41:9-41:86:
 Batch range is beyond the migration range. Migration is complete.
 ```
 
-For detailed information about this data migration process, see
-[Migrate data from InfluxDB Cloud to InfluxDB OSS](https://docs.influxdata.com/influxdb/latest/write-data/migrate-cloud-to-oss/).
+For detailed information about this data migration process, see one of the following:
+
+- [Migrate data from InfluxDB Cloud to InfluxDB OSS](https://docs.influxdata.com/influxdb/latest/migrate-data/migrate-cloud-to-oss/).
+- [Migrate data between InfluxDB Cloud organizations](https://docs.influxdata.com/influxdb/cloud/migrate-data/migrate-cloud-to-cloud/).
 
 ## Contact
 
