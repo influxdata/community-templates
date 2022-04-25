@@ -1,0 +1,626 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: amusing-mendel-c76001
+spec:
+    color: '#BF3D5E'
+    name: Influxdata
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: earning-turing-c76003
+spec:
+    color: '#be2ee4'
+    name: IoT
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: exciting-mendel-076001
+spec:
+    associations:
+      - kind: Label
+        name: amusing-mendel-c76001
+      - kind: Label
+        name: earning-turing-c76003
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> filter(fn: (r) => r.name !~ /^_/)
+          |> rename(columns: {name: "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: stubborn-dewdney-076007
+spec:
+    associations:
+      - kind: Label
+        name: amusing-mendel-c76001
+      - kind: Label
+        name: earning-turing-c76003
+    language: flux
+    name: weatherStation
+    query: |-
+        import "influxdata/influxdb/v1"
+
+        v1.tagValues(
+          bucket: v.bucket,
+          tag: "clientId",
+          predicate: (r) => true,
+        )
+    selected:
+      - virtual_device
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: victorious-wilson-c76001
+spec:
+    associations:
+      - kind: Label
+        name: amusing-mendel-c76001
+      - kind: Label
+        name: earning-turing-c76003
+    charts:
+      - colors:
+          - hex: '#4591ED'
+            id: "0"
+            name: ocean
+            type: min
+            value: 10
+          - hex: '#32B08C'
+            id: 9n37j1onaK5AeiB5UBr2r
+            name: viridian
+            type: threshold
+            value: 20
+          - hex: '#FFB94A'
+            id: YnrvMstwOQGOj6MI80Mie
+            name: pineapple
+            type: threshold
+            value: 24
+          - hex: '#F95F53'
+            id: "1"
+            name: curacao
+            type: max
+            value: 30
+        decimalPlaces: 1
+        height: 3
+        kind: Gauge
+        name: Current Temperature
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "environment")
+                  |> filter(fn: (r) => r["_field"] == "Temperature")
+                  |> filter(fn: (r) => r["clientId"] == v.weatherStation)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        suffix: ' °C'
+        tickSuffix: ' °C'
+        width: 3
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Uptime
+        queries:
+          - query: |-
+                import "math"
+                import "date"
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "device_status")
+                  |> filter(fn: (r) => r["clientId"] == v.weatherStation)
+                  |> filter(fn: (r) => r["_field"] == "uptime")
+                  |> last()
+                  |> map(fn: (r) => ({ r with _value: math.round(x: r._value / 3600.) * 3600. * 1000000000. }))
+                  |> toUInt()
+                  |> map(fn:(r) => ({ r with _value: if r._value != 0 then string(v: duration(v: r._value)) else "0hr" }))
+        staticLegend: {}
+        width: 1
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: Last Reset Reason
+        queries:
+          - query: "from(bucket: v.bucket)\n  |> range(start: v.timeRangeStart, stop:
+                v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"device_status\")\n
+                \ |> filter(fn: (r) => r[\"reset_reason\"] != \"\")\n  |> filter(fn:
+                (r) => r[\"clientId\"] == v.weatherStation)\n  |> group()\n  |> last()
+                \n  |> keep(columns: [\"reset_reason\"])"
+        staticLegend: {}
+        width: 3
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorMapping:
+            WS-ESP8266-SHTC3-Prague,CZ-SHTC3-C-1.10-Bonitoo-ng-Temperature-environment-WS-E8DB84AD4497-temperature-: '#007C76'
+        colors:
+          - hex: '#DA6FF1'
+            id: EFmzeV_WxvD0Mblh2EbRy
+            name: Ectoplasm
+            type: scale
+          - hex: '#00717A'
+            id: LHTrE1tzHjmS66bbsqDqm
+            name: Ectoplasm
+            type: scale
+          - hex: '#ACFF76'
+            id: EWNkJeep7De69XLvYuujQ
+            name: Ectoplasm
+            type: scale
+        geom: monotoneX
+        height: 3
+        heightRatio: 0.2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Temperature
+        position: overlaid
+        queries:
+          - query: |-
+                all = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "environment")
+                  |> filter(fn: (r) => r["clientId"] == v.weatherStation)
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+
+                t = all
+                  |> filter(fn: (r) => r["_field"] == "Temperature")
+                  |> yield(name: "temperature")
+        staticLegend:
+            heightRatio: 0.2
+            widthRatio: 1
+        width: 6
+        widthRatio: 1
+        xCol: _time
+        yCol: _value
+        yPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorMapping:
+            WS-ESP8266-SHTC3-Prague,CZ-SHTC3-C-1.10-Bonitoo-ng-Humidity-environment-WS-E8DB84AD4497-humidity-: '#FDC44F'
+        colors:
+          - hex: '#DA6FF1'
+            id: EFmzeV_WxvD0Mblh2EbRy
+            name: Ectoplasm
+            type: scale
+          - hex: '#00717A'
+            id: LHTrE1tzHjmS66bbsqDqm
+            name: Ectoplasm
+            type: scale
+          - hex: '#ACFF76'
+            id: EWNkJeep7De69XLvYuujQ
+            name: Ectoplasm
+            type: scale
+        geom: monotoneX
+        height: 3
+        heightRatio: 0.2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Humidity
+        position: overlaid
+        queries:
+          - query: |-
+                all = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "environment")
+                  |> filter(fn: (r) => r["clientId"] == v.weatherStation)
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+
+                rh = all
+                  |> filter(fn: (r) => r["_field"] == "Humidity")
+                  |> yield(name: "humidity")
+        staticLegend:
+            heightRatio: 0.2
+            widthRatio: 1
+        width: 6
+        widthRatio: 1
+        xCol: _time
+        yCol: _value
+        yPos: 9
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorMapping:
+            WS-ESP8266-Prague,CZ-1.10-Bonitoo-ng-heap_fragmentation-device_status-WS-E8DB84AD4497-mem-: '#DA6FF1'
+        colors:
+          - hex: '#DA6FF1'
+            id: EFmzeV_WxvD0Mblh2EbRy
+            name: Ectoplasm
+            type: scale
+          - hex: '#00717A'
+            id: LHTrE1tzHjmS66bbsqDqm
+            name: Ectoplasm
+            type: scale
+          - hex: '#ACFF76'
+            id: EWNkJeep7De69XLvYuujQ
+            name: Ectoplasm
+            type: scale
+        geom: monotoneX
+        height: 3
+        heightRatio: 0.2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Heap Fragmentation
+        position: overlaid
+        queries:
+          - query: |-
+                all = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "device_status")
+                  |> filter(fn: (r) => r["clientId"] == v.weatherStation)
+
+                mem = all
+                  |> filter(fn: (r) => r["_field"] == "heap_fragmentation")
+                  |> filter(fn: (r) => not exists r["reset_reason"])
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mem")
+        staticLegend:
+            heightRatio: 0.2
+            widthRatio: 1
+        width: 6
+        widthRatio: 1
+        xCol: _time
+        yCol: _value
+        yPos: 12
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Device Resets
+        queries:
+          - query: "from(bucket: v.bucket)\n  |> range(start: v.timeRangeStart, stop:
+                v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"device_status\")\n
+                \ |> filter(fn: (r) => r[\"reset_reason\"] != \"\")\n  |> filter(fn:
+                (r) => r[\"clientId\"] == v.weatherStation)\n  |> drop(columns: [\"_measurement\",\"_start\",\"_stop\",
+                \"Device\", \"Location\",\"clientId\"]) \n  |> pivot(rowKey:[\"_time\"],
+                columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> group()\n
+                \ |> count(column: \"reset_reason\")"
+        staticLegend: {}
+        suffix: x
+        width: 1
+        xPos: 1
+        yPos: 3
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: WiFi Disconnects
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "device_status")
+                  |> filter(fn: (r) => r["_field"] == "wifi_disconnects")
+                  |> filter(fn: (r) => r["clientId"] == v.weatherStation)
+                  |> filter(fn: (r) => not exists r["reset_reason"])
+                  |> sum(column: "_value")
+        staticLegend: {}
+        suffix: x
+        width: 1
+        xPos: 2
+        yPos: 3
+      - colors:
+          - hex: '#FFB94A'
+            id: "0"
+            name: pineapple
+            type: min
+          - hex: '#32B08C'
+            id: fGQj5on3GcEZ5KWvBJnAn
+            name: viridian
+            type: threshold
+            value: 30
+          - hex: '#FFB94A'
+            id: p6FU_TM4oYcsJghawmMNO
+            name: pineapple
+            type: threshold
+            value: 60
+          - hex: '#DC4E58'
+            id: YR-ZRW3rK2j1qbkAZy4ow
+            name: fire
+            type: threshold
+            value: 80
+          - hex: '#9394FF'
+            id: "1"
+            name: comet
+            type: max
+            value: 100
+        decimalPlaces: 1
+        height: 3
+        kind: Gauge
+        name: Current Humidity
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "environment")
+                  |> filter(fn: (r) => r["_field"] == "Humidity")
+                  |> filter(fn: (r) => r["clientId"] == v.weatherStation)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> yield(name: "last")
+        staticLegend: {}
+        suffix: ' %'
+        tickSuffix: ' %'
+        width: 3
+        xPos: 3
+      - colors:
+          - hex: '#BF3D5E'
+            id: "0"
+            name: ruby
+            type: min
+          - hex: '#32B08C'
+            id: "1"
+            name: viridian
+            type: max
+            value: 100
+        decimalPlaces: 0
+        height: 3
+        kind: Gauge
+        name: Free Memory
+        queries:
+          - query: |-
+                max = 52472.
+                free = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "device_status")
+                  |> filter(fn: (r) => r["clientId"] == v.weatherStation)
+                  |> filter(fn: (r) => not exists r["reset_reason"])
+                  |> filter(fn: (r) => r["_field"] == "free_heap")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> map(fn: (r) => ({ r with _value: r._value / max * 100.}))
+                  |> yield(name: "free")
+        staticLegend: {}
+        suffix: ' %'
+        tickSuffix: ' %'
+        width: 3
+        xPos: 3
+        yPos: 3
+      - colors:
+          - hex: '#4591ED'
+            id: base
+            name: ocean
+            type: background
+        fieldOptions:
+          - displayName: Device
+            fieldName: Device
+            visible: true
+          - displayName: HumiditySensor
+            fieldName: HumiditySensor
+            visible: true
+          - displayName: TemperatureSensor
+            fieldName: TemperatureSensor
+            visible: true
+          - displayName: Version
+            fieldName: Version
+            visible: true
+          - displayName: WiFi
+            fieldName: WiFi
+            visible: true
+        height: 2
+        kind: Table
+        name: Device Info
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "environment")
+                  |> filter(fn: (r) => r["_field"] == "Temperature")
+                  |> filter(fn: (r) => r["clientId"] == v.weatherStation)
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> last()
+                  |> keep(columns: ["Device", "HumiditySensor", "TemperatureSensor", "Version", "WiFi"])
+                  |> yield(name: "last")
+        staticLegend: {}
+        tableOptions:
+            verticalTimeAxis: true
+        timeFormat: YYYY-MM-DD HH:mm:ss
+        width: 6
+        xPos: 6
+      - allowPanAndZoom: true
+        geoLayers:
+          - colorDimension:
+                label: Value
+                name: color
+            colorField: _value
+            intensityDimension:
+                name: intensity
+            layerType: pointMap
+            radiusDimension:
+                name: radius
+            viewColors:
+              - hex: '#7A65F2'
+                id: "0"
+                name: star
+                type: min
+              - hex: '#7A65F2'
+                id: "1"
+                name: star
+                type: text
+                value: 50
+              - hex: '#7A65F2'
+                id: "2"
+                name: star
+                type: max
+                value: 100
+        height: 7
+        kind: Geo
+        latLonColumns:
+            lat:
+                column: Lat
+                key: field
+            lon:
+                column: Lon
+                key: field
+        name: IP Geo Location
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "environment")
+                  |> filter(fn: (r) => r["_field"] == "Lat" or r["_field"] == "Lon")
+                  |> filter(fn: (r) => r["clientId"] == v.weatherStation )
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> last()
+        s2Column: Location
+        staticLegend: {}
+        width: 6
+        xPos: 6
+        yPos: 2
+        zoom: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorMapping:
+            WS-ESP8266-Prague,CZ-1.10-Bonitoo-ng-free_heap-device_status-WS-E8DB84AD4497-mem-: '#DA6FF1'
+        colors:
+          - hex: '#DA6FF1'
+            id: EFmzeV_WxvD0Mblh2EbRy
+            name: Ectoplasm
+            type: scale
+          - hex: '#00717A'
+            id: LHTrE1tzHjmS66bbsqDqm
+            name: Ectoplasm
+            type: scale
+          - hex: '#ACFF76'
+            id: EWNkJeep7De69XLvYuujQ
+            name: Ectoplasm
+            type: scale
+        geom: monotoneX
+        height: 3
+        heightRatio: 0.2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Free Memory
+        position: overlaid
+        queries:
+          - query: |-
+                all = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "device_status")
+                  |> filter(fn: (r) => r["clientId"] == v.weatherStation)
+
+                mem = all
+                  |> filter(fn: (r) => r["_field"] == "free_heap")
+                  |> filter(fn: (r) => not exists r["reset_reason"])
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mem")
+        staticLegend:
+            heightRatio: 0.2
+            widthRatio: 1
+        width: 6
+        widthRatio: 1
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 9
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorMapping:
+            WS-ESP8266-Prague,CZ-1.10-Bonitoo-ng-max_alloc_heap-device_status-WS-E8DB84AD4497-mem-: '#DA6FF1'
+        colors:
+          - hex: '#DA6FF1'
+            id: EFmzeV_WxvD0Mblh2EbRy
+            name: Ectoplasm
+            type: scale
+          - hex: '#00717A'
+            id: LHTrE1tzHjmS66bbsqDqm
+            name: Ectoplasm
+            type: scale
+          - hex: '#ACFF76'
+            id: EWNkJeep7De69XLvYuujQ
+            name: Ectoplasm
+            type: scale
+        geom: monotoneX
+        height: 3
+        heightRatio: 0.2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Max Memory Allocation
+        position: overlaid
+        queries:
+          - query: |-
+                all = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "device_status")
+                  |> filter(fn: (r) => r["clientId"] == v.weatherStation)
+
+                mem = all
+                  |> filter(fn: (r) => r["_field"] == "max_alloc_heap")
+                  |> filter(fn: (r) => not exists r["reset_reason"])
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mem")
+        staticLegend:
+            heightRatio: 0.2
+            widthRatio: 1
+        width: 6
+        widthRatio: 1
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 12
+    description: Weather station is a smart IoT device that shows various information
+        on the embedded OLED display. Created for Influxdata company by Bonitoo.io
+    name: Influxdata Weather Station
