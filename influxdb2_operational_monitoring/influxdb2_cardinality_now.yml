@@ -227,7 +227,7 @@ spec:
                 import "influxdata/influxdb/schema"
 
 
-                schema.measurements(bucket: v.bucket)
+                schema.measurements(bucket: v.bucket, start: v.timeRangeStart)
                   |> map(fn: (r) => {
                       m = r._value
                       return {
