@@ -202,7 +202,7 @@ spec:
           ## Organization is the name of the organization you wish to write to; must exist.
           organization = "$INFLUX_ORG"         
           ## Destination bucket to write into.  Default should be set to 'airquality'
-          bucket = "$INFLUX_BUCKET"   
+          bucket = "airquality"   
           # interval at which the API is called.  air quality is only updated 1-2 times per day
           [agent]
           interval = "12h"

@@ -1,0 +1,1167 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: suspicious-bouman-293001
+spec:
+    color: '#0b3a8d'
+    name: Elasticsearch
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: brave-euclid-293009
+spec:
+    associations:
+      - kind: Label
+        name: suspicious-bouman-293001
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> filter(fn: (r) => r.name !~ /^_/)
+          |> rename(columns: {name: "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: wizardly-swartz-293005
+spec:
+    associations:
+      - kind: Label
+        name: suspicious-bouman-293001
+    language: flux
+    name: elasticsearch_cluster_name
+    query: "import \"influxdata/influxdb/schema\"\r\n\r\nschema.tagValues(\r\n  bucket:
+        v.bucket,\r\n  tag: \"name\",\r\n  predicate: (r) => r._measurement == \"elasticsearch_cluster_health\",\r\n
+        \ start: v.timeRangeStart\r\n)"
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: nostalgic-hopper-e93001
+spec:
+    associations:
+      - kind: Label
+        name: suspicious-bouman-293001
+    charts:
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Cluster Status
+        queries:
+          - query: "from(bucket: v.bucket)\n  |> range(start: v.timeRangeStart, stop:
+                v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"elasticsearch_cluster_health\")\n
+                \ |> filter(fn: (r) => r[\"_field\"] == \"status\")  \n  |> filter(fn:
+                (r) => r[\"name\"] == v.elasticsearch_cluster_name)\n  |> last()"
+        staticLegend: {}
+        width: 1
+      - colors:
+          - hex: '#32B08C'
+            id: "0"
+            name: viridian
+            type: min
+          - hex: '#FFB94A'
+            id: 0a80ba4b-ca3b-43b7-a4c1-ffa83bfa4843
+            name: pineapple
+            type: threshold
+            value: 65
+          - hex: '#BF3D5E'
+            id: cb2acccf-a0bc-45af-9f95-76e716bcbe84
+            name: ruby
+            type: threshold
+            value: 85
+          - hex: '#BF3D5E'
+            id: "1"
+            name: ruby
+            type: max
+            value: 100
+        decimalPlaces: 0
+        height: 3
+        kind: Gauge
+        name: Cluster CPU Load
+        queries:
+          - query: "all = from(bucket: v.bucket)\n    |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\n    |> filter(fn: (r) => r[\"_measurement\"]
+                == \"elasticsearch_os\")\n\nused = all\n    |> filter(fn: (r) => r[\"_field\"]
+                == \"cpu_percent\")\n    |> filter(fn: (r) => r[\"cluster_name\"]
+                == v.elasticsearch_cluster_name)\n    |> aggregateWindow(every: v.windowPeriod,
+                fn: mean)\n    |> group(columns: [\"_time\"], mode:\"by\")\n    |>
+                filter(fn: (r) => exists r._value) \n    |> last()\n    |> yield(name:
+                \"used\")"
+        staticLegend: {}
+        suffix: '%'
+        tickSuffix: '%'
+        width: 3
+        yPos: 2
+      - colors:
+          - hex: '#32B08C'
+            id: "0"
+            name: viridian
+            type: min
+          - hex: '#FFB94A'
+            id: 0a80ba4b-ca3b-43b7-a4c1-ffa83bfa4843
+            name: pineapple
+            type: threshold
+            value: 65
+          - hex: '#BF3D5E'
+            id: cb2acccf-a0bc-45af-9f95-76e716bcbe84
+            name: ruby
+            type: threshold
+            value: 85
+          - hex: '#BF3D5E'
+            id: "1"
+            name: ruby
+            type: max
+            value: 100
+        decimalPlaces: 0
+        height: 3
+        kind: Gauge
+        name: Cluster Memory
+        queries:
+          - query: |-
+                all = from(bucket: v.bucket)
+                    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                    |> filter(fn: (r) => r["_measurement"] == "elasticsearch_os")
+
+                used = all
+                    |> filter(fn: (r) => r["_field"] == "mem_used_percent")
+                    |> filter(fn: (r) => r["cluster_name"] == v.elasticsearch_cluster_name)
+                    |> group()
+                    |> aggregateWindow(every: v.windowPeriod, fn: mean)
+                    |> filter(fn: (r) => exists r._value)
+                    |> last()
+                    |> yield(name: "used")
+        staticLegend: {}
+        suffix: '%'
+        tickSuffix: '%'
+        width: 3
+        yPos: 5
+      - colors:
+          - hex: '#32B08C'
+            id: "0"
+            name: viridian
+            type: min
+          - hex: '#BF3D5E'
+            id: "1"
+            name: ruby
+            type: max
+            value: 100
+        decimalPlaces: 0
+        height: 3
+        kind: Gauge
+        name: Cluster Heap
+        queries:
+          - query: |-
+                all = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "elasticsearch_jvm")
+
+                used = all
+                    |> filter(fn: (r) => r["_field"] == "mem_heap_used_percent")
+                    |> filter(fn: (r) => r["cluster_name"] == v.elasticsearch_cluster_name)
+                    |> group()
+                    |> aggregateWindow(every: v.windowPeriod, fn: mean)
+                    |> filter(fn: (r) => exists r._value)
+                    |> last()
+                    |> yield(name: "used")
+        staticLegend: {}
+        suffix: '%'
+        tickSuffix: '%'
+        width: 3
+        yPos: 8
+      - colors:
+          - hex: '#DC4E58'
+            id: "0"
+            name: fire
+            type: min
+          - hex: '#DC4E58'
+            id: BhBTsrMTvrhlkAY7qGnjs
+            name: fire
+            type: threshold
+          - hex: '#FFB94A'
+            id: pboHzvy4useJfQlS2DES7
+            name: pineapple
+            type: threshold
+            value: 15
+          - hex: '#32B08C'
+            id: cdIKip-yhM8N8CqYVnYy5
+            name: viridian
+            type: threshold
+            value: 35
+          - hex: '#32B08C'
+            id: "1"
+            name: viridian
+            type: max
+            value: 100
+        decimalPlaces: 0
+        height: 3
+        kind: Gauge
+        name: Cluster Disk Available
+        queries:
+          - query: |-
+                all = from(bucket: v.bucket)
+                    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                    |> filter(fn: (r) => r["_measurement"] == "elasticsearch_fs")
+
+                total = all
+                    |> filter(fn: (r) => r["_field"] == "total_total_in_bytes")
+                    |> filter(fn: (r) => r["cluster_name"] == v.elasticsearch_cluster_name)
+                    |> group()
+                    |> aggregateWindow(every: v.windowPeriod, fn: sum)
+                    |> filter(fn: (r) => exists r._value)
+                    |> last()
+
+                available = all
+                    |> filter(fn: (r) => r["_field"] == "total_available_in_bytes")
+                    |> filter(fn: (r) => r["cluster_name"] == v.elasticsearch_cluster_name)
+                    |> group()
+                    |> aggregateWindow(every: v.windowPeriod, fn: sum)
+                    |> filter(fn: (r) => exists r._value)
+                    |> last()
+
+                join(tables: {av: available, total: total}, on:["_time"])
+                    |> map(fn: (r) => ({_time: r._time, _value: r._value_av / r._value_total * 100.}))
+                    |> mean(column: "_value")
+                    |> yield(name: "value")
+        staticLegend: {}
+        suffix: ' %'
+        tickSuffix: '%'
+        width: 3
+        yPos: 11
+      - colors:
+          - hex: '#32B08C'
+            id: "0"
+            name: viridian
+            type: min
+          - hex: '#FFB94A'
+            id: 5pFWhZU_iw2C5xUBdSj6r
+            name: pineapple
+            type: threshold
+            value: 65
+          - hex: '#BF3D5E'
+            id: l8Gpoc6lVxdtshSiAJLpT
+            name: ruby
+            type: threshold
+            value: 85
+          - hex: '#BF3D5E'
+            id: "1"
+            name: ruby
+            type: max
+            value: 100
+        decimalPlaces: 0
+        height: 3
+        kind: Gauge
+        name: Cluster Swap
+        queries:
+          - query: |-
+                all = from(bucket: v.bucket)
+                    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                    |> filter(fn: (r) => r["_measurement"] == "elasticsearch_os")
+
+                total = all
+                    |> filter(fn: (r) => r["_field"] == "swap_total_in_bytes")
+                    |> filter(fn: (r) => r["cluster_name"] == v.elasticsearch_cluster_name)
+                    |> group()
+                    |> aggregateWindow(every: v.windowPeriod, fn: sum)
+                    |> filter(fn: (r) => exists r._value)
+                    |> last()
+
+                available = all
+                    |> filter(fn: (r) => r["_field"] == "swap_used_in_bytes")
+                    |> filter(fn: (r) => r["cluster_name"] == v.elasticsearch_cluster_name)
+                    |> group()
+                    |> aggregateWindow(every: v.windowPeriod, fn: sum)
+                    |> filter(fn: (r) => exists r._value)
+                    |> last()
+
+                join(tables: {av: available, total: total}, on:["_time"])
+                    |> map(fn: (r) => ({_time: r._time, _value: if r._value_total != 0. then r._value_av / r._value_total * 100. else 0.}))
+                    |> mean(column: "_value")
+                    |> yield(name: "value")
+        staticLegend: {}
+        suffix: ' %'
+        tickSuffix: '%'
+        width: 3
+        yPos: 14
+      - colors:
+          - hex: '#00C9FF'
+            id: "0"
+            name: laser
+            type: min
+          - hex: '#7A65F2'
+            id: "1"
+            name: star
+            type: max
+            value: 100000
+        decimalPlaces: 0
+        height: 3
+        kind: Gauge
+        name: Cluster Transmit Rate
+        queries:
+          - query: |-
+                import "experimental/aggregate"
+                all = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "elasticsearch_transport")
+
+                tx = all
+                  |> filter(fn: (r) => r["_field"] == "tx_size_in_bytes")
+                  |> filter(fn: (r) => r["cluster_name"] == v.elasticsearch_cluster_name)
+                  |> increase(columns: ["_value"])
+                  |> aggregate.rate(every: v.windowPeriod, unit: 1s, groupColumns: ["_time"])
+                  |> filter(fn: (r) => exists r._value)
+                  |> last()
+                  |> map(fn: (r) => ({ r with _value: r._value / 1000.  }))
+                  |> yield(name: "tx")
+        staticLegend: {}
+        suffix: ' KBps'
+        tickSuffix: ' KBps'
+        width: 3
+        yPos: 17
+      - colors:
+          - hex: '#00C9FF'
+            id: "0"
+            name: laser
+            type: min
+          - hex: '#7A65F2'
+            id: "1"
+            name: star
+            type: max
+            value: 100000
+        decimalPlaces: 0
+        height: 3
+        kind: Gauge
+        name: Cluster Receive Rate
+        queries:
+          - query: |-
+                import "experimental/aggregate"
+                all = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "elasticsearch_transport")
+
+                tx = all
+                  |> filter(fn: (r) => r["_field"] == "rx_size_in_bytes")
+                  |> filter(fn: (r) => r["cluster_name"] == v.elasticsearch_cluster_name)
+                  |> increase(columns: ["_value"])
+                  |> aggregate.rate(every: v.windowPeriod, unit: 1s, groupColumns: ["_time"])
+                  |> filter(fn: (r) => exists r._value)
+                  |> last()
+                  |> map(fn: (r) => ({ r with _value: r._value / 1000.  }))
+                  |> yield(name: "tx")
+        staticLegend: {}
+        suffix: ' KBps'
+        tickSuffix: ' KBps'
+        width: 3
+        yPos: 20
+      - colors:
+          - hex: '#32B08C'
+            id: "0"
+            name: viridian
+            type: min
+          - hex: '#32B08C'
+            id: "1"
+            name: viridian
+            type: max
+            value: 1000
+        decimalPlaces: 0
+        height: 3
+        kind: Gauge
+        name: Cluster Threads
+        queries:
+          - query: "import \"experimental\"\nimport \"experimental/aggregate\"\nall
+                = from(bucket: v.bucket)\n  |> range(start: v.timeRangeStart, stop:
+                v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"elasticsearch_jvm\")\n\ncount
+                = all\n  |> filter(fn: (r) => r[\"_field\"] == \"threads_count\")
+                \ \n  |> filter(fn: (r) => r[\"cluster_name\"] == v.elasticsearch_cluster_name)\n
+                \ |> group(columns: [\"_time\"], mode:\"by\")\n  |> aggregateWindow(every:
+                v.windowPeriod, fn: sum)\n  |> filter(fn: (r) => exists r._value)\n
+                \ |> last()\n  |> yield(name: \"count\")"
+        staticLegend: {}
+        width: 3
+        yPos: 23
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Nodes
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "elasticsearch_clusterstats_nodes")
+                  |> filter(fn: (r) => r["_field"] == "count_total")
+                  |> filter(fn: (r) => r["cluster_name"] == v.elasticsearch_cluster_name)
+                  |> group(columns: ["_time"], mode:"by")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> last()
+                  |> fill(column: "_value", usePrevious: true)
+        staticLegend: {}
+        width: 1
+        xPos: 1
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Memory
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "elasticsearch_os")
+                  |> filter(fn: (r) => r["_field"] == "mem_total_in_bytes")
+                  |> filter(fn: (r) => r["cluster_name"] == v.elasticsearch_cluster_name)
+                  |> group(columns: ["_time"], mode:"by")
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum, createEmpty: false)
+                  |> last()
+                  |> map(fn: (r) => ({ _time: r._time, _value: r._value / 1024. / 1024. / 1024.}))
+        staticLegend: {}
+        suffix: ' GB'
+        width: 1
+        xPos: 2
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Active shards
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "elasticsearch_indices_stats_shards_total")
+                  |> filter(fn: (r) => r["_field"] == "total")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> fill(column: "_value", usePrevious: true)
+        staticLegend: {}
+        width: 1
+        xPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - name: "y"
+            scale: linear
+            suffix: ' %'
+        colorMapping:
+            elasticsearch-172.30.2.50-ygClN9fUS26jfKWSY1I7mw-elasticsearch-master-1-_result-: '#A500A5'
+            elasticsearch-172.30.2.218-079kaNB4RqKiEFhOPtdViQ-elasticsearch-master-0-_result-: '#31C0F6'
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: bHuTGmRmu1kNMDgUR9aqu
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: lI7j2aciw6gA4pewe2YHm
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: cxkpCZq0MN_Tte7bHken5
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Node CPU Load
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_field"] == "cpu_load_average_1m")
+                  |> filter(fn: (r) => r["cluster_name"] == v.elasticsearch_cluster_name)
+                  |> group(columns: ["node_host","node_name", "node_id", "cluster_name"], mode:"by")
+                  |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)
+                  |> filter(fn: (r) => exists r._value)
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 6
+        widthRatio: 1
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 2
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+            suffix: B
+        colorMapping:
+            elasticsearch-172.30.2.50-ygClN9fUS26jfKWSY1I7mw-elasticsearch-master-1-total-: rgb(125,
+                80, 190)
+            elasticsearch-172.30.2.50-ygClN9fUS26jfKWSY1I7mw-elasticsearch-master-1-used-: rgb(255,
+                126, 39)
+            elasticsearch-172.30.2.218-079kaNB4RqKiEFhOPtdViQ-elasticsearch-master-0-total-: rgb(49,
+                192, 246)
+            elasticsearch-172.30.2.218-079kaNB4RqKiEFhOPtdViQ-elasticsearch-master-0-used-: rgb(194,
+                58, 121)
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 1a96615c-6a66-493b-9ac9-b58a0f752c4b
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: d4560be9-806e-4c0d-9741-0e5e11e8bd5d
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 8f1f4a89-0389-4324-a2ef-840cc59e5a26
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Node Memory
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                all = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "elasticsearch_os")
+
+                total = all
+                  |> filter(fn: (r) => r["_field"] == "mem_total_in_bytes")
+                  |> filter(fn: (r) => r["cluster_name"] == v.elasticsearch_cluster_name)
+                  |> group(columns: ["node_host","node_name", "node_id", "cluster_name"], mode:"by")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean)
+                  |> filter(fn: (r) => exists r._value)
+                  |> yield(name: "total")
+
+                used = all
+                  |> filter(fn: (r) => r["_field"] == "mem_used_in_bytes")
+                  |> filter(fn: (r) => r["cluster_name"] == v.elasticsearch_cluster_name)
+                  |> group(columns: ["node_host","node_name", "node_id", "cluster_name"], mode:"by")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean)
+                  |> filter(fn: (r) => exists r._value)
+                  |> yield(name: "used")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 6
+        widthRatio: 1
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+            suffix: B
+        colorMapping:
+            elasticsearch-172.30.2.50-ygClN9fUS26jfKWSY1I7mw-elasticsearch-master-1-used-: '#A500A5'
+            elasticsearch-172.30.2.218-079kaNB4RqKiEFhOPtdViQ-elasticsearch-master-0-used-: '#31C0F6'
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: bHuTGmRmu1kNMDgUR9aqu
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: lI7j2aciw6gA4pewe2YHm
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: cxkpCZq0MN_Tte7bHken5
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Node Heap Usage
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                used =
+                  from(bucket: v.bucket)
+                    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                    |> filter(fn: (r) => r["_measurement"] == "elasticsearch_jvm")
+                    |> filter(fn: (r) => r["_field"] == "mem_heap_used_in_bytes")
+                    |> filter(fn: (r) => r["cluster_name"] == v.elasticsearch_cluster_name)
+                    |> group(columns: ["node_host","node_name", "node_id", "cluster_name"], mode:"by")
+                    |> aggregateWindow(every: v.windowPeriod, fn: mean)
+                    |> filter(fn: (r) => exists r._value)
+                    |> yield(name: "used")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 6
+        widthRatio: 1
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 8
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorMapping:
+            elasticsearch-172.30.2.50-ygClN9fUS26jfKWSY1I7mw-elasticsearch-master-1-available-: rgb(255,
+                126, 39)
+            elasticsearch-172.30.2.50-ygClN9fUS26jfKWSY1I7mw-elasticsearch-master-1-total-: rgb(125,
+                80, 190)
+            elasticsearch-172.30.2.218-079kaNB4RqKiEFhOPtdViQ-elasticsearch-master-0-available-: rgb(194,
+                58, 121)
+            elasticsearch-172.30.2.218-079kaNB4RqKiEFhOPtdViQ-elasticsearch-master-0-total-: rgb(49,
+                192, 246)
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: bHuTGmRmu1kNMDgUR9aqu
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: lI7j2aciw6gA4pewe2YHm
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: cxkpCZq0MN_Tte7bHken5
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Node Disk
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: "total =\n  from(bucket: v.bucket)\n    |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\n    |> filter(fn: (r) => r[\"_measurement\"]
+                == \"elasticsearch_fs\")\n    |> filter(fn: (r) => r[\"_field\"] ==
+                \"total_total_in_bytes\")\n    |> filter(fn: (r) => r[\"cluster_name\"]
+                == v.elasticsearch_cluster_name)\n    |> group(columns: [\"node_host\",\"node_name\",
+                \"node_id\", \"cluster_name\"], mode:\"by\")\n    |> aggregateWindow(every:
+                v.windowPeriod, fn: mean)\n    |> filter(fn: (r) => exists r._value)
+                \ \n    |> yield(name: \"total\")\n\navailable =\n  from(bucket: v.bucket)\n
+                \   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n    |>
+                filter(fn: (r) => r[\"_measurement\"] == \"elasticsearch_fs\")\n    |>
+                filter(fn: (r) => r[\"_field\"] == \"total_available_in_bytes\")\n
+                \   |> filter(fn: (r) => r[\"cluster_name\"] == v.elasticsearch_cluster_name)\n
+                \   |> group(columns: [\"node_host\",\"node_name\", \"node_id\", \"cluster_name\"],
+                mode:\"by\")\n    |> aggregateWindow(every: v.windowPeriod, fn: mean)\n
+                \   |> filter(fn: (r) => exists r._value)\n    |> yield(name: \"available\")"
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 6
+        widthRatio: 1
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 11
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+            suffix: GB
+        colorMapping:
+            elasticsearch-172.30.2.50-ygClN9fUS26jfKWSY1I7mw-elasticsearch-master-1-total-: rgb(255,
+                126, 39)
+            elasticsearch-172.30.2.50-ygClN9fUS26jfKWSY1I7mw-elasticsearch-master-1-used-: rgb(125,
+                80, 190)
+            elasticsearch-172.30.2.218-079kaNB4RqKiEFhOPtdViQ-elasticsearch-master-0-total-: rgb(194,
+                58, 121)
+            elasticsearch-172.30.2.218-079kaNB4RqKiEFhOPtdViQ-elasticsearch-master-0-used-: rgb(49,
+                192, 246)
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 1a96615c-6a66-493b-9ac9-b58a0f752c4b
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: d4560be9-806e-4c0d-9741-0e5e11e8bd5d
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 8f1f4a89-0389-4324-a2ef-840cc59e5a26
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Node Swap
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                all = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "elasticsearch_os")
+
+                total = all
+                  |> filter(fn: (r) => r["_field"] == "swap_total_in_bytes")
+                  |> filter(fn: (r) => r["cluster_name"] == v.elasticsearch_cluster_name)
+                  |> group(columns: ["node_host","node_name", "node_id", "cluster_name"], mode:"by")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean)
+                  |> filter(fn: (r) => exists r._value)
+                  |> yield(name: "total")
+
+                used = all
+                  |> filter(fn: (r) => r["_field"] == "swap_used_in_bytes")
+                  |> filter(fn: (r) => r["cluster_name"] == v.elasticsearch_cluster_name)
+                  |> group(columns: ["node_host","node_name", "node_id", "cluster_name"], mode:"by")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean)
+                  |> filter(fn: (r) => exists r._value)
+                  |> yield(name: "used")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 6
+        widthRatio: 1
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 14
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+            suffix: Bps
+        colorMapping:
+            elasticsearch-172.30.2.50-ygClN9fUS26jfKWSY1I7mw-elasticsearch-master-1-tx-: rgb(125,
+                80, 190)
+            elasticsearch-172.30.2.218-079kaNB4RqKiEFhOPtdViQ-elasticsearch-master-0-tx-: rgb(49,
+                192, 246)
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 61bc7676-8b1a-4bbf-818b-d5cf21178296
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: c618b436-ca1e-4d08-9195-75ff66a83c40
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: f4b892a4-447f-43ea-ae23-653dde164bd9
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Node Transmit Rate
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                import "experimental/aggregate"
+                all = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "elasticsearch_transport")
+
+                tx = all
+                  |> filter(fn: (r) => r["_field"] == "tx_size_in_bytes")
+                  |> filter(fn: (r) => r["cluster_name"] == v.elasticsearch_cluster_name)
+                  |> increase(columns: ["_value"])
+                  |> aggregate.rate(every: v.windowPeriod, unit: 1s, groupColumns: ["node_host","node_name", "node_id", "cluster_name"])
+                  |> filter(fn: (r) => exists r._value)
+                  |> yield(name: "tx")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 6
+        widthRatio: 1
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 17
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+            suffix: Bps
+        colorMapping:
+            elasticsearch-172.30.2.50-ygClN9fUS26jfKWSY1I7mw-elasticsearch-master-1-rx-: rgb(255,
+                126, 39)
+            elasticsearch-172.30.2.218-079kaNB4RqKiEFhOPtdViQ-elasticsearch-master-0-rx-: rgb(194,
+                58, 121)
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 61bc7676-8b1a-4bbf-818b-d5cf21178296
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: c618b436-ca1e-4d08-9195-75ff66a83c40
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: f4b892a4-447f-43ea-ae23-653dde164bd9
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Node Receive Rate
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                import "experimental/aggregate"
+                all = from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "elasticsearch_transport")
+
+                rx = all
+                  |> filter(fn: (r) => r["_field"] == "rx_size_in_bytes")
+                  |> filter(fn: (r) => r["cluster_name"] == v.elasticsearch_cluster_name)
+                  |> increase(columns: ["_value"])
+                  |> aggregate.rate(every: v.windowPeriod, unit: 1s, groupColumns: ["node_host","node_name", "node_id", "cluster_name"])
+                  |> filter(fn: (r) => exists r._value)
+                  |> yield(name: "rx")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 6
+        widthRatio: 1
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 20
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorMapping:
+            elasticsearch-172.30.2.50-ygClN9fUS26jfKWSY1I7mw-elasticsearch-master-1-count-: rgb(255,
+                126, 39)
+            elasticsearch-172.30.2.50-ygClN9fUS26jfKWSY1I7mw-elasticsearch-master-1-peak_count-: rgb(125,
+                80, 190)
+            elasticsearch-172.30.2.218-079kaNB4RqKiEFhOPtdViQ-elasticsearch-master-0-count-: rgb(194,
+                58, 121)
+            elasticsearch-172.30.2.218-079kaNB4RqKiEFhOPtdViQ-elasticsearch-master-0-peak_count-: rgb(49,
+                192, 246)
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 1a96615c-6a66-493b-9ac9-b58a0f752c4b
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: d4560be9-806e-4c0d-9741-0e5e11e8bd5d
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 8f1f4a89-0389-4324-a2ef-840cc59e5a26
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 3
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: ' Node Threads'
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "elasticsearch_jvm")
+                  |> filter(fn: (r) => r["_field"] == "threads_count")
+                  |> filter(fn: (r) => r["cluster_name"] == v.elasticsearch_cluster_name)
+                  |> group(columns: ["node_host","node_name", "node_id", "cluster_name"], mode:"by")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "count")
+
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "elasticsearch_jvm")
+                  |> filter(fn: (r) => r["_field"] == "threads_peak_count")
+                  |> filter(fn: (r) => r["cluster_name"] == v.elasticsearch_cluster_name)
+                  |> group(columns: ["node_host","node_name", "node_id", "cluster_name"], mode:"by")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "peak_count")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 6
+        widthRatio: 1
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 23
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Indices
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "elasticsearch_clusterstats_indices")
+                  |> filter(fn: (r) => r["_field"] == "count")
+                  |> filter(fn: (r) => r["cluster_name"] == v.elasticsearch_cluster_name)
+                  |> group(columns: ["_time"], mode:"by")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> last()
+                  |> fill(column: "_value", usePrevious: true)
+        staticLegend: {}
+        width: 1
+        xPos: 4
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Docs count
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "elasticsearch_indices")
+                  |> filter(fn: (r) => r["_field"] == "docs_count")
+                  |> filter(fn: (r) => r["cluster_name"] == v.elasticsearch_cluster_name)
+                  |> group(columns: ["_time"], mode:"by")
+                  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)
+                  |> last()
+                  |> fill(column: "_value", usePrevious: true)
+        staticLegend: {}
+        width: 2
+        xPos: 5
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Outbound Connections
+        queries:
+          - query: |-
+                from(bucket: v.bucket)
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "elasticsearch_transport")
+                  |> filter(fn: (r) => r["_field"] == "total_outbound_connections")
+                  |> filter(fn: (r) => r["cluster_name"] == v.elasticsearch_cluster_name)
+                  |> group(columns: ["_time"], mode:"by")
+                  |> aggregateWindow(every: v.windowPeriod, fn: sum, createEmpty: false)
+                  |> last()
+        staticLegend: {}
+        width: 2
+        xPos: 7
+    description: Monitor the Elasticsearch Cluster and its nodes with Telegraf and
+        InfluxDB. Based on Elasticsearch input plugin metrics.
+    name: Elasticsearch Dashboard
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: goofy-ardinghelli-a93001
+spec:
+    associations:
+      - kind: Label
+        name: suspicious-bouman-293001
+    config: "# Configuration for telegraf agent\r\n[agent]\r\n  ## Default data collection
+        interval for all inputs\r\n  interval = \"20s\"\r\n  ## Rounds collection
+        interval to 'interval'\r\n  ## ie, if interval=\"10s\" then always collect
+        on :00, :10, :20, etc.\r\n  round_interval = true\r\n\r\n  ## Telegraf will
+        send metrics to outputs in batches of at most\r\n  ## metric_batch_size metrics.\r\n
+        \ ## This controls the size of writes that Telegraf sends to output plugins.\r\n
+        \ metric_batch_size = 1000\r\n\r\n  ## Maximum number of unwritten metrics
+        per output.  Increasing this value\r\n  ## allows for longer periods of output
+        downtime without dropping metrics at the\r\n  ## cost of higher maximum memory
+        usage.\r\n  metric_buffer_limit = 10000\r\n\r\n  ## Collection jitter is used
+        to jitter the collection by a random amount.\r\n  ## Each plugin will sleep
+        for a random time within jitter before collecting.\r\n  ## This can be used
+        to avoid many plugins querying things like sysfs at the\r\n  ## same time,
+        which can have a measurable effect on the system.\r\n  collection_jitter =
+        \"0s\"\r\n\r\n  ## Default flushing interval for all outputs. Maximum flush_interval
+        will be\r\n  ## flush_interval + flush_jitter\r\n  flush_interval = \"10s\"\r\n
+        \ ## Jitter the flush interval by a random amount. This is primarily to avoid\r\n
+        \ ## large write spikes for users running a large number of telegraf instances.\r\n
+        \ ## ie, a jitter of 5s and interval 10s means flushes will happen every 10-15s\r\n
+        \ flush_jitter = \"0s\"\r\n\r\n  ## By default or when set to \"0s\", precision
+        will be set to the same\r\n  ## timestamp order as the collection interval,
+        with the maximum being 1s.\r\n  ##   ie, when interval = \"10s\", precision
+        will be \"1s\"\r\n  ##       when interval = \"250ms\", precision will be
+        \"1ms\"\r\n  ## Precision will NOT be used for service inputs. It is up to
+        each individual\r\n  ## service input to set the timestamp at the appropriate
+        precision.\r\n  ## Valid time units are \"ns\", \"us\" (or \"µs\"), \"ms\",
+        \"s\".\r\n  precision = \"\"\r\n\r\n  ## Log at debug level.\r\n  # debug
+        = false\r\n  ## Log only error level messages.\r\n  # quiet = false\r\n\r\n
+        \ ## Log target controls the destination for logs and can be one of \"file\",\r\n
+        \ ## \"stderr\" or, on Windows, \"eventlog\".  When set to \"file\", the output
+        file\r\n  ## is determined by the \"logfile\" setting.\r\n  # logtarget =
+        \"file\"\r\n\r\n  ## Name of the file to be logged to when using the \"file\"
+        logtarget.  If set to\r\n  ## the empty string then logs are written to stderr.\r\n
+        \ # logfile = \"\"\r\n\r\n  ## The logfile will be rotated after the time
+        interval specified.  When set\r\n  ## to 0 no time based rotation is performed.
+        \ Logs are rotated only when\r\n  ## written to, if there is no log activity
+        rotation may be delayed.\r\n  # logfile_rotation_interval = \"0d\"\r\n\r\n
+        \ ## The logfile will be rotated when it becomes larger than the specified\r\n
+        \ ## size.  When set to 0 no size based rotation is performed.\r\n  # logfile_rotation_max_size
+        = \"0MB\"\r\n\r\n  ## Maximum number of rotated archives to keep, any older
+        logs are deleted.\r\n  ## If set to -1, no archives are removed.\r\n  # logfile_rotation_max_archives
+        = 5\r\n\r\n  ## Pick a timezone to use when logging or type 'local' for local
+        time.\r\n  ## Example: America/Chicago\r\n  # log_with_timezone = \"\"\r\n\r\n
+        \ ## Override default hostname, if empty use os.Hostname()\r\n  hostname =
+        \"\"\r\n  ## If set to true, do no set the \"host\" tag in the telegraf agent.\r\n
+        \ omit_hostname = false\r\n[[outputs.influxdb_v2]]\r\n  ## The URLs of the
+        InfluxDB cluster nodes.\r\n  ##\r\n  ## Multiple URLs can be specified for
+        a single cluster, only ONE of the\r\n  ## urls will be written to each interval.\r\n
+        \ ##   ex: urls = [\"https://us-west-2-1.aws.cloud2.influxdata.com\"]\r\n
+        \ urls = [\"$INFLUX_HOST\"]\r\n\r\n  ## Token for authentication.\r\n  token
+        = \"$INFLUX_TOKEN\"\r\n\r\n  ## Organization is the name of the organization
+        you wish to write to; must exist.\r\n  organization = \"$INFLUX_ORG\"\r\n\r\n
+        \ ## Destination bucket to write into.\r\n  bucket = \"$INFLUX_BUCKET\"\r\n\r\n
+        \ ## The value of this tag will be used to determine the bucket.  If this\r\n
+        \ ## tag is not set the 'bucket' option is used as the default.\r\n  # bucket_tag
+        = \"\"\r\n\r\n  ## If true, the bucket tag will not be added to the metric.\r\n
+        \ # exclude_bucket_tag = false\r\n\r\n  ## Timeout for HTTP messages.\r\n
+        \ # timeout = \"5s\"\r\n\r\n  ## Additional HTTP headers\r\n  # http_headers
+        = {\"X-Special-Header\" = \"Special-Value\"}\r\n\r\n  ## HTTP Proxy override,
+        if unset values the standard proxy environment\r\n  ## variables are consulted
+        to determine which proxy, if any, should be used.\r\n  # http_proxy = \"http://corporate.proxy:3128\"\r\n\r\n
+        \ ## HTTP User-Agent\r\n  # user_agent = \"telegraf\"\r\n\r\n  ## Content-Encoding
+        for write request body, can be set to \"gzip\" to\r\n  ## compress body or
+        \"identity\" to apply no encoding.\r\n  # content_encoding = \"gzip\"\r\n\r\n
+        \ ## Enable or disable uint support for writing uints influxdb 2.0.\r\n  #
+        influx_uint_support = false\r\n\r\n  ## Optional TLS Config for use on HTTP
+        connections.\r\n  # tls_ca = \"/etc/telegraf/ca.pem\"\r\n  # tls_cert = \"/etc/telegraf/cert.pem\"\r\n
+        \ # tls_key = \"/etc/telegraf/key.pem\"\r\n  ## Use TLS but skip chain & host
+        verification\r\n  # insecure_skip_verify = false\r\n# Read stats from one
+        or more Elasticsearch servers or clusters\r\n[[inputs.elasticsearch]]\r\n
+        \ ## specify a list of one or more Elasticsearch servers\r\n  # you can add
+        username and password to your url to use basic authentication:\r\n  # servers
+        = [\"http://user:pass@localhost:9200\"]\r\n  servers = [\"$ES_URLS\"]\r\n\r\n
+        \ ## Timeout for HTTP requests to the elastic search server(s)\r\n  http_timeout
+        = \"5s\"\r\n\r\n  ## When local is true (the default), the node will read
+        only its own stats.\r\n  ## Set local to false when you want to read the node
+        stats from all nodes\r\n  ## of the cluster.\r\n  local = false\r\n\r\n  ##
+        Set cluster_health to true when you want to also obtain cluster health stats\r\n
+        \ cluster_health = true\r\n\r\n  ## Adjust cluster_health_level when you want
+        to also obtain detailed health stats\r\n  ## The options are\r\n  ##  - indices
+        (default)\r\n  ##  - cluster\r\n  # cluster_health_level = \"indices\"\r\n\r\n
+        \ ## Set cluster_stats to true when you want to also obtain cluster stats.\r\n
+        \ cluster_stats = true\r\n\r\n  ## Only gather cluster_stats from the master
+        node. To work this require local = true\r\n  cluster_stats_only_from_master
+        = false\r\n\r\n  ## Indices to collect; can be one or more indices names or
+        _all\r\n  ## Use of wildcards is allowed. Use a wildcard at the end to retrieve
+        index names that end with a changing value, like a date.\r\n  indices_include
+        = [\"_all\"]\r\n\r\n  ## One of \"shards\", \"cluster\", \"indices\"\r\n  indices_level
+        = \"shards\"\r\n\r\n  ## node_stats is a list of sub-stats that you want to
+        have gathered. Valid options\r\n  ## are \"indices\", \"os\", \"process\",
+        \"jvm\", \"thread_pool\", \"fs\", \"transport\", \"http\",\r\n  ## \"breaker\".
+        Per default, all stats are gathered.\r\n  # node_stats = [\"jvm\", \"http\"]\r\n\r\n
+        \ ## HTTP Basic Authentication username and password.\r\n  # username = \"\"\r\n
+        \ # password = \"\"\r\n\r\n  ## Optional TLS Config\r\n  # tls_ca = \"/etc/telegraf/ca.pem\"\r\n
+        \ # tls_cert = \"/etc/telegraf/cert.pem\"\r\n  # tls_key = \"/etc/telegraf/key.pem\"\r\n
+        \ ## Use TLS but skip chain & host verification\r\n  # insecure_skip_verify
+        = false\r\n\r\n  ## Sets the number of most recent indices to return for indices
+        that are configured with a date-stamped suffix.\r\n  ## Each 'indices_include'
+        entry ending with a wildcard (*) or glob matching pattern will group together
+        all indices that match it, and sort them\r\n  ## by the date or number after
+        the wildcard. Metrics then are gathered for only the 'num_most_recent_indices'
+        amount of most recent indices.\r\n  # num_most_recent_indices = 0\r\n"
+    description: Telegraf input config for collecting Elasticsearch metrics
+    name: Elasticsearch
