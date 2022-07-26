@@ -81,6 +81,7 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [The Things Network](thing_network/) | Monitor your Things Network devices and network. | [@Jayclifford345](https://github.com/Jayclifford345)|
 | [Tomcat Dashboard](tomcat/) | Monitor your Tomcat instance. Include Threads, Commit Memory, Request Count, Traffic and more | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [vSphere System Monitor](vsphere/) | View information about vSphere system. CPU, RAM, Network, Disk Latency and more | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
+| [Weather Station](weather_station/) | Influxdata Weather Station is a smart IoT device that shows various information on the embedded OLED display. |
 | [Website Monitor (Apache/Postgresql)](apache_postgresql/) | Monitor a website that uses Apache and Postgresql | [Michael Hall](https://github.com/mhall119) |
 | [Website Monitor (NGINX/MySQL)](nginx_mysql/) | Monitor a website that uses NGINX and MySQL | Ray Farias |
 | [Windows System Monitor](windows_system/) | Monitor system resources on one or more Windows hosts. | [@russorat](https://github.com/russorat) |
@@ -90,7 +91,6 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 To submit a new template, see our [contributing guide](docs/submit_a_template.md).
 
 You can also ask the community to create a template for a specific use-case by creating a [Template Request](https://github.com/influxdata/community-templates/issues/new?template=template-request.md&labels=Template+Request).
-
 
 ## Support
 
