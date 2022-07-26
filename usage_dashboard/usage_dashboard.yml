@@ -136,6 +136,7 @@ spec:
                     |> group()
                     |> keep(columns: ["_value", "_field", "_time"])
                     |> fill(column: "_value", value: 0)
+                    |> sort(columns: ["_time"], desc: true)
                     |> map(fn: (r) =>
                       ({r with
                         write_mb: math.round(x: float(v: r._value) / 10000.0) / 100.0
