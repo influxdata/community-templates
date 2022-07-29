@@ -53,7 +53,8 @@ Start by reading [how to use a template](docs/use_a_template.md), then check eac
 | [Istio Service Mesh](istio/) | Istio is an open source service mesh that layers transparently onto existing distributed applications. Istio's powerful features provide a uniform and more efficient way to secure, connect, and monitor services. | [@bonitoo.io](https://github.com/bonitoo-io) |
 | [Jboss Wildfly](jboss_wildfly/) | View information your Jboss Wildfly Instance using Jolokia. Uptime, Heap Memory, Non Heap Memory, Memory Pool, etc | [Ignacio Van Droogenbroeck](https://github.com/xe-nvdk) |
 | [JMeter](apache_jmeter/) | This template provides Apache JMeter dashboard | [bonitoo.io](.) |
-| [Kafka](kafka/) | Monitor Kafka via Jolokia agent | [@samhld](https:/github.com/samhld)
+| [Kafka](kafka/) | Monitor Kafka via Jolokia agent | [@samhld](https:/github.com/samhld) |
+| [Kafka Kubernetes](kafka_kubernetes/) | Monitor Kafka broker running in Kubernetes | [bonitoo.io](.) |
 | [Kubernetes Dashboards](k8s/) | Monitor your Kubernetes cluster. | [bonitoo.io](.) |
 | [Linux System Monitor](linux_system/) | Monitor system resources on one or more Linux hosts. | [@russorat](https://github.com/russorat) |
 | [Jenkins](jenkins/) | Monitor your Jenkins node and jobs. | Ray Farias |
