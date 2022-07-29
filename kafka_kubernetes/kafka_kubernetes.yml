@@ -1,0 +1,1069 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: hardcore-hertz-2b7001
+spec:
+    color: '#0f0e15'
+    name: kafka
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: busy-gould-2b7009
+spec:
+    associations:
+      - kind: Label
+        name: hardcore-hertz-2b7001
+    language: flux
+    name: kafka_namespace
+    query: "import \"influxdata/influxdb/schema\"\r\n\r\nschema.tagValues(\r\n  bucket:
+        v.bucket,\r\n  tag: \"namespace\",\r\n  predicate: (r) => r._measurement ==
+        \"prometheus\" \r\n    and r._field == \"kafka_controller_kafkacontroller_activecontrollercount_value\",\r\n
+        \ start: v.timeRangeStart\r\n)"
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: inspiring-nash-2b7005
+spec:
+    associations:
+      - kind: Label
+        name: hardcore-hertz-2b7001
+    language: flux
+    name: bucket
+    query: |-
+        buckets()
+          |> filter(fn: (r) => r.name !~ /^_/)
+          |> rename(columns: {name: "_value"})
+          |> keep(columns: ["_value"])
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: stubborn-dewdney-ab7001
+spec:
+    associations:
+      - kind: Label
+        name: hardcore-hertz-2b7001
+    charts:
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '# **General**'
+        width: 6
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Active controller status
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"kafka_controller_kafkacontroller_activecontrollercount_value\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)\r\n
+                \ |> map(fn: (r) => ({ r with _value: \r\n        if string(v: r._value)
+                == \"1\"\r\n        then \"OK\"\r\n        else \"KO\"\r\n        }))\r\n//
+                \  |> keep(columns: [\"_start\",\"_stop\",\"_time\",\"_value\"])"
+        width: 3
+        yPos: 1
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Unclean leader election
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"kafka_controller_controllerstats_uncleanleaderelectionspersec_count\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)"
+        width: 1
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        decimalPlaces: 0
+        height: 2
+        hoverDimension: auto
+        kind: Single_Stat_Plus_Line
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Bytes rate
+        position: overlaid
+        queries:
+          - query: "import \"experimental/aggregate\"\r\nall = from(bucket: v.bucket)\r\n
+                \ |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |>
+                filter(fn: (r) => r[\"_measurement\"] == \"prometheus\")\r\n\r\nb_in
+                = all\r\n  |> filter(fn: (r) => r[\"_field\"] == \"kafka_server_brokertopicmetrics_total_bytesinpersec_count\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> filter(fn: (r) => exists r._value) \r\n  |> increase(columns:
+                [\"_value\"])\r\n  |> aggregate.rate(every: 1m, unit: 1s)\r\n\r\nb_out
+                = all\r\n  |> filter(fn: (r) => r[\"_field\"] == \"kafka_server_brokertopicmetrics_total_bytesoutpersec_count\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> filter(fn: (r) => exists r._value) \r\n  |> increase(columns:
+                [\"_value\"])\r\n  |> aggregate.rate(every: 1m, unit: 1s) \r\n\r\n\r\njoin(tables:
+                {b_in:b_in, b_out:b_out}, on: [\"_time\", \"_start\", \"_stop\"])\r\n
+                \ |> map(fn: (r) => ({\r\n    _time: r._time,\r\n    _value: if r._value_b_out
+                == 0. then r._value_b_in / 1. else r._value_b_in / r._value_b_out\r\n
+                \   })\r\n  )"
+        width: 3
+        xCol: _time
+        yCol: _value
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        decimalPlaces: 0
+        height: 2
+        hoverDimension: auto
+        kind: Single_Stat_Plus_Line
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Messages IN
+        position: overlaid
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"kafka_server_brokertopicmetrics_total_messagesinpersec_oneminuterate\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)"
+        width: 3
+        xCol: _time
+        yCol: _value
+        yPos: 7
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        decimalPlaces: 0
+        height: 2
+        hoverDimension: auto
+        kind: Single_Stat_Plus_Line
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: In-sync replicas
+        position: overlaid
+        queries:
+          - query: "import \"experimental/aggregate\"\r\nfrom(bucket: v.bucket)\r\n
+                \ |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |>
+                filter(fn: (r) => r[\"_measurement\"] == \"prometheus\")\r\n  |> filter(fn:
+                (r) => r[\"_field\"] == \"kafka_server_replicamanager_total_isrshrinkspersec_count\"
+                or r[\"_field\"] == \"kafka_server_replicamanager_total_isrexpandspersec_count\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)\r\n
+                \ |> group(columns: [\"_field\"], mode:\"by\")"
+        width: 3
+        xCol: _time
+        yCol: _value
+        yPos: 9
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Under replicated partitions
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"kafka_topic_partition_under_replicated_partition\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)"
+        width: 1
+        xPos: 1
+        yPos: 3
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Offline partitions count
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"kafka_controller_kafkacontroller_offlinepartitionscount_value\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)"
+        width: 1
+        xPos: 2
+        yPos: 3
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: In-sync replicas shrinks
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"kafka_server_replicamanager_total_isrshrinkspersec_count\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)\r\n
+                \ |> keep(columns: [\"_start\",\"_stop\",\"_time\",\"_value\"])"
+        width: 1
+        xPos: 3
+        yPos: 1
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Kafka brokers
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"kafka_brokers\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)"
+        width: 1
+        xPos: 3
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        decimalPlaces: 0
+        height: 2
+        hoverDimension: auto
+        kind: Single_Stat_Plus_Line
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Number of partitions
+        position: overlaid
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"kafka_server_replicamanager_total_partitioncount_value\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)"
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        decimalPlaces: 0
+        height: 2
+        hoverDimension: auto
+        kind: Single_Stat_Plus_Line
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Bytes IN
+        position: overlaid
+        queries:
+          - query: "import \"experimental/aggregate\"\r\nfrom(bucket: v.bucket)\r\n
+                \ |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |>
+                filter(fn: (r) => r[\"_measurement\"] == \"prometheus\")\r\n  |> filter(fn:
+                (r) => r[\"_field\"] == \"kafka_server_brokertopicmetrics_total_bytesinpersec_count\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> filter(fn: (r) => exists r._value)\r\n  |> increase(columns:
+                [\"_value\"])\r\n  |> aggregate.rate(every: 1m, unit: 1s)"
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 7
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        decimalPlaces: 0
+        height: 2
+        hoverDimension: auto
+        kind: Single_Stat_Plus_Line
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Bytes OUT
+        position: overlaid
+        queries:
+          - query: "import \"experimental/aggregate\"\r\nfrom(bucket: v.bucket)\r\n
+                \ |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |>
+                filter(fn: (r) => r[\"_measurement\"] == \"prometheus\")\r\n  |> filter(fn:
+                (r) => r[\"_field\"] == \"kafka_server_brokertopicmetrics_total_bytesoutpersec_count\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> filter(fn: (r) => exists r._value)\r\n  |> increase(columns:
+                [\"_value\"])\r\n  |> aggregate.rate(every: 1m, unit: 1s)"
+        width: 3
+        xCol: _time
+        xPos: 3
+        yCol: _value
+        yPos: 9
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: In-sync replicas expands
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"kafka_server_replicamanager_total_isrexpandspersec_count\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)\r\n
+                \ |> keep(columns: [\"_start\",\"_stop\",\"_time\",\"_value\"])"
+        width: 1
+        xPos: 4
+        yPos: 1
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Total CPUs
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"java_lang_operatingsystem_availableprocessors\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)"
+        suffix: ' vCPU'
+        width: 1
+        xPos: 4
+        yPos: 3
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        decimalPlaces: 0
+        height: 2
+        kind: Single_Stat
+        name: Partition count
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"kafka_server_replicamanager_total_partitioncount_value\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)"
+        width: 1
+        xPos: 5
+        yPos: 1
+      - colors:
+          - hex: '#ffffff'
+            id: base
+            name: white
+            type: text
+        decimalPlaces: 1
+        height: 2
+        kind: Single_Stat
+        name: Total memory
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"java_lang_operatingsystem_totalphysicalmemorysize\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)\r\n
+                \ |> map(fn: (r) => ({ r with _value: r._value / 1073741824. }))"
+        suffix: ' GB'
+        width: 1
+        xPos: 5
+        yPos: 3
+      - height: 1
+        kind: Markdown
+        name: Name this Cell
+        note: '# **jvm**'
+        width: 6
+        xPos: 6
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 6526c1d4-27ba-42fe-a9a2-078f08b7d80b
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: e54907d5-919f-45f0-b795-dddd98855cbe
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 4fcd23a4-1f07-4929-9770-d867f657f9ab
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: JVM memory
+        position: overlaid
+        queries:
+          - query: "import \"experimental/aggregate\"\r\nfrom(bucket: v.bucket)\r\n
+                \ |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |>
+                filter(fn: (r) => r[\"_measurement\"] == \"prometheus\")\r\n  |> filter(fn:
+                (r) => r[\"_field\"] == \"java_lang_memory_heapmemoryusage_used\"
+                or r[\"_field\"] == \"java_lang_memory_heapmemoryusage_max\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)"
+        width: 3
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 6526c1d4-27ba-42fe-a9a2-078f08b7d80b
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: e54907d5-919f-45f0-b795-dddd98855cbe
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 4fcd23a4-1f07-4929-9770-d867f657f9ab
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: CPU load
+        position: overlaid
+        queries:
+          - query: "import \"experimental/aggregate\"\r\nfrom(bucket: v.bucket)\r\n
+                \ |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |>
+                filter(fn: (r) => r[\"_measurement\"] == \"prometheus\")\r\n  |> filter(fn:
+                (r) => r[\"_field\"] == \"java_lang_operatingsystem_systemcpuload\"
+                or r[\"_field\"] == \"java_lang_operatingsystem_processcpuload\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)"
+        width: 3
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 6526c1d4-27ba-42fe-a9a2-078f08b7d80b
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: e54907d5-919f-45f0-b795-dddd98855cbe
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 4fcd23a4-1f07-4929-9770-d867f657f9ab
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: System memory
+        position: overlaid
+        queries:
+          - query: "import \"experimental/aggregate\"\r\nfrom(bucket: v.bucket)\r\n
+                \ |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |>
+                filter(fn: (r) => r[\"_measurement\"] == \"prometheus\")\r\n  |> filter(fn:
+                (r) => r[\"_field\"] == \"java_lang_operatingsystem_totalphysicalmemorysize\"
+                \r\n    or r[\"_field\"] == \"java_lang_operatingsystem_processcpuload\"\r\n
+                \   or r[\"_field\"] == \"java_lang_operatingsystem_freephysicalmemorysize\"\r\n
+                \   or r[\"_field\"] == \"java_lang_operatingsystem_totalswapspacesize\"\r\n
+                \   or r[\"_field\"] == \"java_lang_operatingsystem_freeswapspacesize\"\r\n
+                \   or r[\"_field\"] == \"java_lang_operatingsystem_committedvirtualmemorysize\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)"
+        width: 3
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 6526c1d4-27ba-42fe-a9a2-078f08b7d80b
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: e54907d5-919f-45f0-b795-dddd98855cbe
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 4fcd23a4-1f07-4929-9770-d867f657f9ab
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: System load
+        position: overlaid
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"java_lang_operatingsystem_systemloadaverage\"
+                \r\n    or r[\"_field\"] == \"java_lang_operatingsystem_availableprocessors\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)"
+        width: 3
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 7
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 6526c1d4-27ba-42fe-a9a2-078f08b7d80b
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: e54907d5-919f-45f0-b795-dddd98855cbe
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 4fcd23a4-1f07-4929-9770-d867f657f9ab
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Open file descriptor
+        position: overlaid
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"java_lang_operatingsystem_openfiledescriptorcount\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)"
+        width: 3
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 9
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 6526c1d4-27ba-42fe-a9a2-078f08b7d80b
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: e54907d5-919f-45f0-b795-dddd98855cbe
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 4fcd23a4-1f07-4929-9770-d867f657f9ab
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Idle network processors
+        position: overlaid
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"kafka_network_processor_idlepercent_value\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)"
+        width: 3
+        xCol: _time
+        xPos: 6
+        yCol: _value
+        yPos: 11
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 6526c1d4-27ba-42fe-a9a2-078f08b7d80b
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: e54907d5-919f-45f0-b795-dddd98855cbe
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 4fcd23a4-1f07-4929-9770-d867f657f9ab
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Class loading
+        position: overlaid
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"java_lang_classloading_loadedclasscount\"\r\n
+                \   or r[\"_field\"] == \"java_lang_classloading_loadedclasscount_total\"\r\n
+                \   or r[\"_field\"] == \"java_lang_classloading_unloadedclasscount_total\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)"
+        width: 3
+        xCol: _time
+        xPos: 9
+        yCol: _value
+        yPos: 1
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 6526c1d4-27ba-42fe-a9a2-078f08b7d80b
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: e54907d5-919f-45f0-b795-dddd98855cbe
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 4fcd23a4-1f07-4929-9770-d867f657f9ab
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Threads
+        position: overlaid
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"java_lang_threading_threadcount\"\r\n
+                \   or r[\"_field\"] == \"java_lang_threading_daemonthreadcount\"\r\n
+                \   or r[\"_field\"] == \"java_lang_threading_peakthreadcount\"\r\n
+                \   or r[\"_field\"] == \"java_lang_threading_totalstartedthreadcount\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)"
+        width: 3
+        xCol: _time
+        xPos: 9
+        yCol: _value
+        yPos: 3
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 6526c1d4-27ba-42fe-a9a2-078f08b7d80b
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: e54907d5-919f-45f0-b795-dddd98855cbe
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 4fcd23a4-1f07-4929-9770-d867f657f9ab
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Number of requests
+        position: overlaid
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"kafka_network_requestmetrics_requestspersec_count\"\r\n
+                \   or r[\"_field\"] == \"kafka_network_requestmetrics_requestspersec_count\"\r\n
+                \   or r[\"_field\"] == \"kafka_network_requestmetrics_requestspersec_count\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)"
+        width: 3
+        xCol: _time
+        xPos: 9
+        yCol: _value
+        yPos: 5
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 6526c1d4-27ba-42fe-a9a2-078f08b7d80b
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: e54907d5-919f-45f0-b795-dddd98855cbe
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 4fcd23a4-1f07-4929-9770-d867f657f9ab
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Purgatory delayed fetch operations
+        position: overlaid
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"kafka_server_delayedoperationpurgatory_numdelayedoperations_fetch_value\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)"
+        width: 3
+        xCol: _time
+        xPos: 9
+        yCol: _value
+        yPos: 7
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 6526c1d4-27ba-42fe-a9a2-078f08b7d80b
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: e54907d5-919f-45f0-b795-dddd98855cbe
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 4fcd23a4-1f07-4929-9770-d867f657f9ab
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Log size
+        position: overlaid
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"kafka_log_log_size\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)"
+        width: 3
+        xPos: 9
+        yPos: 9
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "2"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: 6526c1d4-27ba-42fe-a9a2-078f08b7d80b
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: e54907d5-919f-45f0-b795-dddd98855cbe
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 4fcd23a4-1f07-4929-9770-d867f657f9ab
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 2
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Idle request handler threads
+        position: overlaid
+        queries:
+          - query: "from(bucket: v.bucket)\r\n  |> range(start: v.timeRangeStart,
+                stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"]
+                == \"prometheus\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"kafka_server_kafkarequesthandlerpool_total_requesthandleravgidlepercent_oneminuterate\")\r\n
+                \ |> filter(fn: (r) => r[\"namespace\"] == v.kafka_namespace)\r\n
+                \ |> aggregateWindow(every: 1m, fn: last)\r\n  |> filter(fn: (r) =>
+                exists r._value)\r\n  |> fill(column: \"_value\", usePrevious: true)"
+        width: 3
+        xCol: _time
+        xPos: 9
+        yCol: _value
+        yPos: 11
+    description: 'Single dashboard for measuring Kafka performance. It uses Prometheus
+        plugin in Telegraf as an input data provider. '
+    name: Kafka Kubernetes
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Telegraf
+metadata:
+    name: elastic-kapitsa-ab7005
+spec:
+    associations:
+      - kind: Label
+        name: hardcore-hertz-2b7001
+    config: |
+        # Configuration for telegraf agent
+        [agent]
+          ## Default data collection interval for all inputs
+          interval = "10s"
+          ## Rounds collection interval to 'interval'
+          ## ie, if interval="10s" then always collect on :00, :10, :20, etc.
+          round_interval = true
+
+          ## Telegraf will send metrics to outputs in batches of at most
+          ## metric_batch_size metrics.
+          ## This controls the size of writes that Telegraf sends to output plugins.
+          metric_batch_size = 1000
+
+          ## For failed writes, telegraf will cache metric_buffer_limit metrics for each
+          ## output, and will flush this buffer on a successful write. Oldest metrics
+          ## are dropped first when this buffer fills.
+          ## This buffer only fills when writes fail to output plugin(s).
+          metric_buffer_limit = 10000
+
+          ## Collection jitter is used to jitter the collection by a random amount.
+          ## Each plugin will sleep for a random time within jitter before collecting.
+          ## This can be used to avoid many plugins querying things like sysfs at the
+          ## same time, which can have a measurable effect on the system.
+          collection_jitter = "0s"
+
+          ## Default flushing interval for all outputs. Maximum flush_interval will be
+          ## flush_interval + flush_jitter
+          flush_interval = "10s"
+          ## Jitter the flush interval by a random amount. This is primarily to avoid
+          ## large write spikes for users running a large number of telegraf instances.
+          ## ie, a jitter of 5s and interval 10s means flushes will happen every 10-15s
+          flush_jitter = "0s"
+
+          ## By default or when set to "0s", precision will be set to the same
+          ## timestamp order as the collection interval, with the maximum being 1s.
+          ##   ie, when interval = "10s", precision will be "1s"
+          ##       when interval = "250ms", precision will be "1ms"
+          ## Precision will NOT be used for service inputs. It is up to each individual
+          ## service input to set the timestamp at the appropriate precision.
+          ## Valid time units are "ns", "us" (or "µs"), "ms", "s".
+          precision = ""
+
+          ## Logging configuration:
+          ## Run telegraf with debug log messages.
+          debug = false
+          ## Run telegraf in quiet mode (error log messages only).
+          quiet = false
+          ## Specify the log file name. The empty string means to log to stderr.
+          logfile = ""
+
+          ## Override default hostname, if empty use os.Hostname()
+          hostname = ""
+          ## If set to true, do no set the "host" tag in the telegraf agent.
+          omit_hostname = false
+        [[outputs.influxdb_v2]]	
+          ## The URLs of the InfluxDB cluster nodes.
+          ##
+          ## Multiple URLs can be specified for a single cluster, only ONE of the
+          ## urls will be written to each interval.
+          ## urls exp: http://127.0.0.1:8086
+          urls = ["$INFLUX_HOST"]
+
+          ## Token for authentication.
+          token = "$INFLUX_TOKEN"
+
+          ## Organization is the name of the organization you wish to write to; must exist.
+          organization = "$INFLUX_ORG"
+
+          ## Destination bucket to write into.
+          bucket = "$INFLUX_BUCKET"
+        [[inputs.prometheus]]
+          response_timeout = "5s"
+          metric_version = 2
+          kubernetes_services = [
+            "http://kafka-metrics.$KAFKA_NAMESPACE:9308/metrics",
+            "http://kafka-jmx-metrics.$KAFKA_NAMESPACE:5556/metrics"
+            ]
+          bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
+          insecure_skip_verify = true
+          [inputs.prometheus.tags]
+            namespace = "$KAFKA_NAMESPACE"
+    name: Kafka Kubernetes
