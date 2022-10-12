@@ -825,6 +825,9 @@ spec:
           - displayName: job name
             fieldName: name
             visible: true
+          - displayName: build number
+            fieldName: number
+            visible: true
           - displayName: port
             fieldName: port
           - displayName: source
@@ -832,6 +835,9 @@ spec:
             visible: true
           - displayName: duration
             fieldName: duration
+          - displayName: status
+            fieldName: result_status
+            visible: true
           - displayName: result code
             fieldName: result_code
             visible: true
@@ -856,9 +862,10 @@ spec:
                 strings.split(v: v.jenkinsExcludedJobs, t: \",\"), value: r.name)\r\n
                 \     else r.name == v.jenkinsJobNames\r\n    )\r\n  |> v1.fieldsAsCols()\r\n
                 \ |> duplicate(column: \"result_code\", as: \"_value\")\r\n  |> group()\r\n
-                \ |> keep(columns: [\"_time\", \"host\", \"port\", \"name\", \"result\",
+                \ |> rename(columns: {result: \"result_status\"})\r\n
+                \ |> keep(columns: [\"_time\", \"host\", \"port\", \"name\", \"number\", \"result_status\",
                 \"result_code\", \"duration\"])\r\n  |> map(fn: (r) => ({r with link:
-                \"https://\" + r.host + \":\" + r.port + \"/job/\" + r.name + \"/\"}))"
+                \"https://\" + r.host + \":\" + r.port + \"/job/\" + r.name + \"/\" + string(v: r.number) + \"/\"}))"
         tableOptions:
             sortBy: _time
             verticalTimeAxis: true
@@ -1124,8 +1131,8 @@ spec:
                 \ |> range(start: -1y)\r\n  |> filter(fn: (r) => r._measurement ==
                 \"jenkins_job\")\r\n  |> filter(fn: (r) => r.host == v.jenkinsHostnames)\r\n
                 \ |> v1.fieldsAsCols()\r\n  |> duplicate(column: \"result_code\",
-                as: \"_value\")\r\n  |> group(columns: [\"name\"])\r\n  |> last()\r\n
-                \ |> group()\r\n  |> keep(columns: [\"name\", \"_time\", \"result\",
+                as: \"_value\")\r\n  |> group(columns: [\"name\"])\r\n  |> sort(columns: [\"_time\"])\r\n  |> last()\r\n
+                \ |> group()\r\n |> keep(columns: [\"name\", \"_time\",
                 \"result_code\", \"duration\"])"
         tableOptions:
             sortBy: _time
