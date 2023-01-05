@@ -1,0 +1,381 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+  name: angry-leavitt-8af001
+spec:
+  color: '#00a3ff'
+  name: IOx migration
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+  name: upbeat-diffie-8af005
+spec:
+  associations:
+    - kind: Label
+      name: angry-leavitt-8af001
+  name: migration
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Task
+metadata:
+  name: infallible-roentgen-caf001
+spec:
+  associations:
+    - kind: Label
+      name: angry-leavitt-8af001
+  every: 5m
+  name: Migrate data from TSM to IOx
+  query: |-
+    import "array"
+    import "experimental"
+    import "date"
+    import "influxdata/influxdb/secrets"
+
+    // Configure the task
+
+
+    // Configure the migration
+    migration = {
+        start: 2023-01-01T00:00:00Z,
+        stop: 2023-02-01T00:00:00Z,
+        batchInterval: 1h,
+        batchBucket: "migration",
+        sourceBucket: "example-source-tsm-bucket",
+        destinationHost: "https://example.cloud2.influxdata.com",
+        destinationOrg: "example-destination-iox-org",
+        destinationToken: secrets.get(key: "INFLUXDB_IOX_TOKEN"),
+        destinationBucket: "example-destination-iox-bucket",
+    }
+
+    // batchRange dynamically returns a record with start and stop properties for
+    // the current batch. It queries migration metadata stored in the
+    // `migration.batchBucket` to determine the stop time of the previous batch.
+    // It uses the previous stop time as the new start time for the current batch
+    // and adds the `migration.batchInterval` to determine the current batch stop time.
+    batchRange = () => {
+        _lastBatchStop =
+            (from(bucket: migration.batchBucket)
+                |> range(start: migration.start)
+                |> filter(fn: (r) => r._field == "batch_stop")
+                |> filter(fn: (r) => r.dstOrg == migration.destinationOrg)
+                |> filter(fn: (r) => r.dstBucket == migration.destinationBucket)
+                |> last()
+                |> findRecord(fn: (key) => true, idx: 0))._value
+        _batchStart =
+            if exists _lastBatchStop then
+                time(v: _lastBatchStop)
+            else
+                migration.start
+
+        return {start: _batchStart, stop: date.add(d: migration.batchInterval, to: _batchStart)}
+    }
+
+    // Define a static record with batch start and stop time properties
+    batch = batchRange()
+
+    // Check to see if the current batch start time is beyond the migration.stop
+    // time and exit with an error if it is.
+    finished =
+        if batch.start >= migration.stop then
+            die(msg: "Batch range is beyond the migration range. Migration is complete.")
+        else
+            "Migration in progress"
+
+    // Query all data from the specified source bucket within the batch-defined time
+    // range. To limit migrated data by measurement, tag, or field, add a `filter()`
+    // function after `range()` with the appropriate predicate fn.
+    data = () =>
+        from(bucket: migration.sourceBucket)
+            |> range(start: batch.start, stop: batch.stop)
+
+    // rowCount is a stream of tables that contains the number of rows returned in
+    // the batch and is used to generate batch metadata.
+    rowCount =
+        data()
+            |> group(columns: ["_start", "_stop"])
+            |> count()
+
+    // emptyRange is a stream of tables that acts as filler data if the batch is
+    // empty. This is used to generate batch metadata for empty batches and is
+    // necessary to correctly increment the time range for the next batch.
+    emptyRange = array.from(rows: [{_start: batch.start, _stop: batch.stop, _value: 0}])
+
+    // metadata returns a stream of tables representing batch metadata.
+    metadata = () => {
+        _input =
+            if exists (rowCount |> findRecord(fn: (key) => true, idx: 0))._value then
+                rowCount
+            else
+                emptyRange
+
+        return
+            _input
+                |> map(
+                    fn: (r) =>
+                        ({
+                            _time: now(),
+                            _measurement: "batches",
+                            srcBucket: migration.sourceBucket,
+                            dstOrg: migration.destinationOrg,
+                            dstBucket: migration.destinationBucket,
+                            batch_start: string(v: batch.start),
+                            batch_stop: string(v: batch.stop),
+                            rows: r._value,
+                            percent_complete:
+                                float(v: int(v: r._stop) - int(v: migration.start)) / float(
+                                        v: int(v: migration.stop) - int(v: migration.start),
+                                    ) * 100.0,
+                        }),
+                )
+                |> group(columns: ["_measurement", "srcBucket", "dstOrg", "dstBucket"])
+    }
+
+    // Write the queried data to the specified InfluxDB OSS bucket.
+    data()
+        |> to(
+            host: migration.destinationHost,
+            org: migration.destinationOrg,
+            token: migration.destinationToken,
+            bucket: migration.destinationBucket,
+        )
+
+    // Generate and store batch metadata in the migration.batchBucket.
+    metadata()
+        |> experimental.to(bucket: migration.batchBucket)
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+  name: burfect-curran-caf009
+spec:
+  associations:
+    - kind: Label
+      name: angry-leavitt-8af001
+  language: flux
+  name: destination_org
+  query: |-
+    import "influxdata/influxdb/schema"
+
+    schema.tagValues(bucket: "migration", tag: "dstOrg")
+  type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+  name: clever-jang-caf005
+spec:
+  associations:
+    - kind: Label
+      name: angry-leavitt-8af001
+  language: flux
+  name: destination_bucket
+  query: |-
+    import "influxdata/influxdb/schema"
+
+    schema.tagValues(bucket: "migration", tag: "dstBucket")
+  type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+  name: epic-rubin-caf00d
+spec:
+  associations:
+    - kind: Label
+      name: angry-leavitt-8af001
+  language: flux
+  name: migrationTaskID
+  query: |-
+    import "influxdata/influxdb/schema"
+
+    schema.tagValues(bucket: "_tasks", tag: "taskID")
+  type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+  name: relaxed-nash-0af001
+spec:
+  associations:
+    - kind: Label
+      name: angry-leavitt-8af001
+  charts:
+    - axes:
+        - base: '10'
+          name: x
+          scale: linear
+        - base: '10'
+          name: 'y'
+          scale: linear
+      colorizeRows: true
+      colors:
+        - hex: '#31C0F6'
+          id: 7f557940-ea4b-417b-a2f3-81b4ac720454
+          name: Nineteen Eighty Four
+          type: scale
+        - hex: '#A500A5'
+          id: c1133b30-36e2-4fbf-a5a8-8b04b3ee8a95
+          name: Nineteen Eighty Four
+          type: scale
+        - hex: '#FF7E27'
+          id: 9390cf24-0b0d-4499-8a33-cfb0ca65ad65
+          name: Nineteen Eighty Four
+          type: scale
+      geom: line
+      height: 4
+      hoverDimension: auto
+      kind: Xy
+      legendColorizeRows: true
+      legendOpacity: 1
+      legendOrientationThreshold: 1e+08
+      name: Number of Rows per Batch
+      opacity: 1
+      orientationThreshold: 1e+08
+      position: overlaid
+      queries:
+        - query: |-
+            from(bucket: "migration")
+                |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                |> filter(fn: (r) => r["_measurement"] == "batches")
+                |> filter(fn: (r) => r["dstBucket"] == v.destination_bucket)
+                |> filter(fn: (r) => r["dstOrg"] == v.destination_org)
+                |> filter(fn: (r) => r["_field"] == "rows")
+      staticLegend:
+        colorizeRows: true
+        opacity: 1
+        orientationThreshold: 1e+08
+        widthRatio: 1
+      width: 8
+      widthRatio: 1
+    - colors:
+        - hex: '#ffffff'
+          id: base
+          name: white
+          type: text
+      fieldOptions:
+        - displayName: _time
+          fieldName: _time
+          visible: true
+        - displayName: error
+          fieldName: error
+          visible: true
+        - displayName: runID
+          fieldName: runID
+          visible: true
+        - displayName: taskID
+          fieldName: taskID
+          visible: true
+        - displayName: _start
+          fieldName: _start
+          visible: true
+        - displayName: _stop
+          fieldName: _stop
+          visible: true
+        - displayName: _value
+          fieldName: _value
+          visible: true
+        - displayName: _field
+          fieldName: _field
+          visible: true
+        - displayName: _measurement
+          fieldName: _measurement
+          visible: true
+        - displayName: batch_start
+          fieldName: batch_start
+          visible: true
+        - displayName: batch_stop
+          fieldName: batch_stop
+          visible: true
+        - displayName: srcOrg
+          fieldName: srcOrg
+          visible: true
+        - displayName: srcBucket
+          fieldName: srcBucket
+          visible: true
+        - displayName: dstBucket
+          fieldName: dstBucket
+          visible: true
+        - displayName: percent_complete
+          fieldName: percent_complete
+          visible: true
+        - displayName: rows
+          fieldName: rows
+          visible: true
+      height: 3
+      kind: Table
+      name: Batch data
+      queries:
+        - query: "from(bucket: \"migration\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"batches\")  \n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> drop(columns: [\"_start\", \"_stop\", \"_measurement\"])"
+      staticLegend: {}
+      tableOptions:
+        verticalTimeAxis: true
+      timeFormat: YYYY-MM-DD HH:mm:ss
+      width: 12
+      yPos: 4
+    - colors:
+        - hex: '#ffffff'
+          id: base
+          name: white
+          type: text
+      fieldOptions:
+        - displayName: _time
+          fieldName: _time
+          visible: true
+        - displayName: runID
+          fieldName: runID
+          visible: true
+        - displayName: error
+          fieldName: error
+          visible: true
+        - displayName: taskID
+          fieldName: taskID
+          visible: true
+      height: 3
+      kind: Table
+      name: Migration Task Errors
+      queries:
+        - query: |-
+            import "experimental/json"
+
+            from(bucket: "_tasks")
+                |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                |> filter(fn: (r) => r["_measurement"] == "runs")
+                |> filter(fn: (r) => r["_field"] == "logs")
+                |> filter(fn: (r) => r["taskID"] == v.migrationTaskID)
+                |> filter(fn: (r) => r["status"] == "failed")
+                |> map(fn: (r) => {
+                    _rowData = (json.parse(data: bytes(v: r._value)))[2]
+
+                    return {_time: r._time, runID: _rowData.runID, error: string(v: _rowData.message)}
+                })
+      staticLegend: {}
+      tableOptions:
+        verticalTimeAxis: true
+      timeFormat: YYYY-MM-DD HH:mm:ss
+      width: 12
+      yPos: 7
+    - colors:
+        - hex: '#00C9FF'
+          id: base
+          name: laser
+          type: text
+      decimalPlaces: 0
+      height: 4
+      kind: Single_Stat
+      name: Migration – Percent Complete
+      queries:
+        - query: |-
+            from(bucket: "migration")
+                |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                |> filter(fn: (r) => r["_measurement"] == "batches")
+                |> filter(fn: (r) => r["_field"] == "percent_complete")
+                |> filter(fn: (r) => r["dstBucket"] == v.destination_bucket)
+                |> filter(fn: (r) => r["dstOrg"] == v.destination_org)
+                |> last()
+      staticLegend: {}
+      suffix: '%'
+      width: 4
+      xPos: 8
+  description: Monitor the progress of data migrations from InfluxDB backed by TSM to InfluxDB backed by IOx
+  name: InfluxDB TSM to IOx Migration Progress
