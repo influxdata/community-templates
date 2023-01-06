@@ -1,15 +1,15 @@
-## InfluxDB Cloud Migration Template
+## InfluxDB TSM to IOx Migration Template
 
 Provided by: [Scott Anderson](https://github.com/sanderson/)
 
-Use this InfluxDB Cloud Migration template to run and monitor data migrations
-from [InfluxDB Cloud](https://cloud2.influxdata.com) to [InfluxDB OSS](https://www.influxdata.com/)
-or another InfluxDB Cloud organization.
+Use this InfluxDB TSM to IOX Migration template to run and monitor data migrations
+from **InfluxDB Cloud or OSS (backed by TSM)** to and InfluxDB Cloud organization
+(backed by [InfluxDB IOx](https://www.influxdata.com/blog/intro-influxdb-iox/)).
 
 ![InfluxDB Cloud Migration Dashboard Screenshot](img/migration-dashboard.png)
 
-**Important:** Install this template on the **InfluxDB OSS** or **InfluxDB Cloud**
-instance you want to migrate data to.
+**Important:** Install this template on the **InfluxDB Cloud or OSS** instance
+you want to migrate data _from_.
 
 ## Quick Install
 
@@ -18,7 +18,7 @@ instance you want to migrate data to.
 In the InfluxDB UI, go to **Settings > Templates** and enter the following URL:
 
 ```sh
-https://raw.githubusercontent.com/influxdata/community-templates/master/influxdb-cloud-oss-migration/migration.yml
+https://raw.githubusercontent.com/influxdata/community-templates/master/influxdb-tsm-iox-migration/migration.yml
 ```
 
 ### Influx CLI
@@ -26,19 +26,19 @@ https://raw.githubusercontent.com/influxdata/community-templates/master/influxdb
 If you have your InfluxDB credentials [configured in the CLI](https://docs.influxdata.com/influxdb/latest/reference/cli/influx/config/), install this template with:
 
 ```sh
-influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/influxdb-cloud-oss-migration/migration.yml
+influx apply -u https://raw.githubusercontent.com/influxdata/community-templates/master/influxdb-tsm-iox-migration/migration.yml
 ```
 
 ## Included Resources
 
 - 1 Bucket: `migration`
-- 1 Dashboard: `InfluxDB Cloud Migration Progress`
+- 1 Dashboard: `InfluxDB TSM to IOx Migration Progress`
 - 3 Dashboard Variables:
-  - `source_org`
-  - `source_bucket`
+  - `destination_org`
+  - `destination_bucket`
   - `migrationTaskID`
-- 1 Task: `Migrate data from InfluxDB Cloud`
-- 1 Label: `Cloud migration`
+- 1 Task: `Migrate data from TSM to IOx`
+- 1 Label: `IOx migration`
 
 ## Setup Instructions
 
@@ -46,50 +46,55 @@ General instructions on using InfluxDB Templates can be found in [Use a template
 
 ### Set up the migration
 
-1.  **In the InfluxDB Cloud instance you want to migrate data from**,
-    [create an API token](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/)
-    with **read access** to the bucket you want to migrate.
+{{% note %}}
+The migration process requires two buckets in your source InfluxDB
+organization—one bucket to store the migrated data and another bucket to store migration metadata.
+If the destination organization uses the [InfluxDB Cloud Free Plan](https://docs.influxdata.com/influxdb/cloud/account-management/limits/#free-plan),
+any buckets in addition to these two will exceed the your plan's bucket limit.
+{{% /note %}}
 
-2.  **In the InfluxDB Cloud or OSS instance you want to migrate data to**:
-    1.  Add the **InfluxDB Cloud API token from the source organization** as a
-        secret using the key, `INFLUXDB_CLOUD_TOKEN`.
-        _See [Add secrets](https://docs.influxdata.com/influxdb/latest/security/secrets/add/) for more information._
-    2.  [Create a bucket](https://docs.influxdata.com/influxdb/latest/organizations/buckets/create-bucket/)
-        **to migrate data to**.
-    3.  [Create a bucket](https://docs.influxdata.com/influxdb/latest/organizations/buckets/create-bucket/)
+1.  **In the InfluxDB Cloud (IOx) organization you're migrating data _to_**:
+
+    1. Create a bucket **to migrate data to**.
+    2. Create an API token with **write access** to the bucket you want to migrate to.
+
+2.  **In the InfluxDB Cloud (TSM) organization you're migrating data _from_**:
+
+    1.  Add the **InfluxDB Cloud API token from the IOx-backed organization**
+        as a secret using the key, `INFLUXDB_IOX_TOKEN`.
+        _See [Add secrets](https://docs.influxdata.com/influxdb/cloud/security/secrets/add/) for more information._
+    2.  [Create a bucket](https://docs.influxdata.com/influxdb/cloud/organizations/buckets/create-bucket/)
         **to store temporary migration metadata**.
-    4.  Edit the **Migrate data from InfluxDB Cloud** task installed with this
+    3.  Edit the **Migrate data from TSM to IOx** task installed with this
         template and update the `migration` record properties to suit your migration:
 
-        **migration**:        
+        **migration**:
         - **start**: Earliest time to include in the migration.
-          _See [Determine your migration start time](https://docs.influxdata.com/influxdb/latest/write-data/migrate-cloud-to-oss/#determine-your-migration-start-time)._
+          _See [Determine your migration start time](https://docs.influxdata.com/influxdb/cloud/migrate-data/migrate-cloud-to-cloud/#determine-your-migration-start-time)._
         - **stop**: Latest time to include in the migration.
         - **batchInterval**: Duration of each time-based batch.
-          _See [Determine your batch interval](https://docs.influxdata.com/influxdb/latest/write-data/migrate-cloud-to-oss/#determine-your-batch-interval)._
-        - **batchBucket**: InfluxDB bucket to store migration batch metadata in.
-        - **sourceHost**: [InfluxDB Cloud region URL](https://docs.influxdata.com/influxdb/cloud/reference/regions)
+          _See [Determine your batch interval](https://docs.influxdata.com/influxdb/cloud/migrate-data/migrate-cloud-to-cloud/#determine-your-batch-interval)._
+        - **batchBucket**: InfluxDB Cloud (TSM) bucket to store migration batch metadata in.
+        - **sourceBucket**: InfluxDB Cloud (TSM) bucket to migrate data from.
+        - **destinationHost**: [InfluxDB Cloud (IOx) region URL](https://docs.influxdata.com/influxdb/cloud-iox/reference/regions)
           to migrate data from.
-        - **sourceOrg**: InfluxDB Cloud organization to migrate data from.
-        - **sourceToken**: InfluxDB Cloud API token. To keep the API token secure, store
-          it as a secret in InfluxDB OSS.
-        - **sourceBucket**: InfluxDB Cloud bucket to migrate data from.
-        - **destinationBucket**: InfluxDB bucket to migrate data to.
-    
-    5. Save and enable the task to begin the migration.
+        - **destinationOrg**: InfluxDB Cloud (IOx) organization to migrate data to.
+        - **destinationToken**: InfluxDB Cloud (IOx) API token. To keep the API token secure, store
+          it as a secret in InfluxDB Cloud (TSM).
+        - **destinationBucket**: InfluxDB OSS bucket to migrate data to.
 
-**After a migration is complete**, all subsequent executions of the migration
-task fail and return the following error:
+    4. Save and enable the task to begin the migration.
+
+**After the migration is complete**, each subsequent migration task execution
+will fail with the following error:
 
 ```
 error exhausting result iterator: error calling function "die" @41:9-41:86:
 Batch range is beyond the migration range. Migration is complete.
 ```
 
-For detailed information about this data migration process, see one of the following:
-
-- [Migrate data from InfluxDB Cloud to InfluxDB OSS](https://docs.influxdata.com/influxdb/latest/migrate-data/migrate-cloud-to-oss/).
-- [Migrate data between InfluxDB Cloud organizations](https://docs.influxdata.com/influxdb/cloud/migrate-data/migrate-cloud-to-cloud/).
+For detailed information about this data migration process, see
+[Migrate data from TSM to IOx](https://docs.influxdata.com/influxdb/cloud-iox/migrate-data/migrate-tsm-to-iox/).
 
 ## Contact
 
