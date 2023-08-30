@@ -6,7 +6,7 @@ Provided by: [bonitoo.io](.)
 
 > AWS Lambda is a serverless compute service that lets you run code without provisioning or managing servers, creating workload-aware cluster scaling logic, ...
 
-Monitor your Lambda functions with beautiful InfluDB dashboards.
+Monitor your Lambda functions with beautiful InfluxDB dashboards.
 
 ![Example Dashboard Screenshot](./img/lambda_dashboard_1.jpg)
 ![Example Dashboard Screenshot](./img/lambda_dashboard_2.jpg)
