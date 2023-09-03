@@ -1,0 +1,921 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: cranky-swirles-ab8001
+spec:
+    color: '#8e1fc3'
+    name: Sample data
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: quizzical-jemison-ab8005
+spec:
+    associations:
+      - kind: Label
+        name: cranky-swirles-ab8001
+    name: sampledata
+    retentionRules:
+      - everySeconds: 604800
+        type: expire
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Task
+metadata:
+    name: nice-gates-ab8009
+spec:
+    associations:
+      - kind: Label
+        name: cranky-swirles-ab8001
+    every: 15m
+    name: Sample Data - Air Sensors
+    query: |-
+        import "influxdata/influxdb/sample"
+
+
+        sample.data(set: "airSensor")
+            |> to(bucket: "sampledata")
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: gallant-allen-ab800d
+spec:
+    associations:
+      - kind: Label
+        name: cranky-swirles-ab8001
+    name: temperature_unit
+    selected:
+      - °C
+    type: map
+    values:
+        °C: °C
+        °F: °F
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: sloppy-hertz-ab8001
+spec:
+    associations:
+      - kind: Label
+        name: cranky-swirles-ab8001
+    charts:
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#8F8AF4'
+            id: b9c98889-cabc-497c-b8e6-6611e891ed8b
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#A51414'
+            id: 8573e942-b91b-4b18-b970-4f31b581e934
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+          - hex: '#F4CF31'
+            id: e24b49a9-e05e-4379-ac10-b63ee164e99d
+            name: Do Androids Dream of Electric Sheep?
+            type: scale
+        geom: line
+        height: 4
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Temperature
+        note: |-
+            No results. Try the following:
+
+            1. Manually run the **Sample Data - Air Sensors** task to collect the first batch of sample data.
+            2. Adjust the time range above.
+        noteOnEmpty: true
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                toC = (t) => (t - 32.0) * (5.0 / 9.0)
+
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "temperature")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> map(fn: (r) => {
+                      temp = if v.temperature_unit == "°C" then toC(t: r._value) else r._value
+
+                      return {r with _value: temp}
+                  })
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 4
+        widthRatio: 1
+        xCol: _time
+        yCol: _value
+      - colors:
+          - hex: '#FFB94A'
+            id: base
+            name: pineapple
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0100
+        queries:
+          - query: |-
+                toC = (t) => (t - 32.0) * (5.0 / 9.0)
+
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "temperature")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0100")
+                  |> last()
+                  |> map(
+                    fn: (r) => {
+                        temp = if v.temperature_unit == "°C" then toC(t: r._value) else r._value
+
+                        return {r with _value: temp}
+                    }
+                  )
+        staticLegend: {}
+        suffix: °
+        width: 2
+        yPos: 4
+      - colors:
+          - hex: '#FFB94A'
+            id: base
+            name: pineapple
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0101
+        queries:
+          - query: |-
+                toC = (t) => (t - 32.0) * (5.0 / 9.0)
+
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "temperature")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0101")
+                  |> last()
+                  |> map(
+                    fn: (r) => {
+                        temp = if v.temperature_unit == "°C" then toC(t: r._value) else r._value
+
+                        return {r with _value: temp}
+                    }
+                  )
+        staticLegend: {}
+        suffix: °
+        width: 2
+        yPos: 5
+      - colors:
+          - hex: '#FFB94A'
+            id: base
+            name: pineapple
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0102
+        queries:
+          - query: |-
+                toC = (t) => (t - 32.0) * (5.0 / 9.0)
+
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "temperature")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0102")
+                  |> last()
+                  |> map(
+                    fn: (r) => {
+                        temp = if v.temperature_unit == "°C" then toC(t: r._value) else r._value
+
+                        return {r with _value: temp}
+                    }
+                  )
+        staticLegend: {}
+        suffix: °
+        width: 2
+        yPos: 6
+      - colors:
+          - hex: '#FFB94A'
+            id: base
+            name: pineapple
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0103
+        queries:
+          - query: |-
+                toC = (t) => (t - 32.0) * (5.0 / 9.0)
+
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "temperature")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0103")
+                  |> last()
+                  |> map(
+                    fn: (r) => {
+                        temp = if v.temperature_unit == "°C" then toC(t: r._value) else r._value
+
+                        return {r with _value: temp}
+                    }
+                  )
+        staticLegend: {}
+        suffix: °
+        width: 2
+        yPos: 7
+      - colors:
+          - hex: '#FFB94A'
+            id: base
+            name: pineapple
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0200
+        queries:
+          - query: |-
+                toC = (t) => (t - 32.0) * (5.0 / 9.0)
+
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "temperature")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0200")
+                  |> last()
+                  |> map(
+                    fn: (r) => {
+                        temp = if v.temperature_unit == "°C" then toC(t: r._value) else r._value
+
+                        return {r with _value: temp}
+                    }
+                  )
+        staticLegend: {}
+        suffix: °
+        width: 2
+        xPos: 2
+        yPos: 4
+      - colors:
+          - hex: '#FFB94A'
+            id: base
+            name: pineapple
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0201
+        queries:
+          - query: |-
+                toC = (t) => (t - 32.0) * (5.0 / 9.0)
+
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "temperature")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0201")
+                  |> last()
+                  |> map(
+                    fn: (r) => {
+                        temp = if v.temperature_unit == "°C" then toC(t: r._value) else r._value
+
+                        return {r with _value: temp}
+                    }
+                  )
+        staticLegend: {}
+        suffix: °
+        width: 2
+        xPos: 2
+        yPos: 5
+      - colors:
+          - hex: '#FFB94A'
+            id: base
+            name: pineapple
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0202
+        queries:
+          - query: |-
+                toC = (t) => (t - 32.0) * (5.0 / 9.0)
+
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "temperature")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0202")
+                  |> last()
+                  |> map(
+                    fn: (r) => {
+                        temp = if v.temperature_unit == "°C" then toC(t: r._value) else r._value
+
+                        return {r with _value: temp}
+                    }
+                  )
+        staticLegend: {}
+        suffix: °
+        width: 2
+        xPos: 2
+        yPos: 6
+      - colors:
+          - hex: '#FFB94A'
+            id: base
+            name: pineapple
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0203
+        queries:
+          - query: |-
+                toC = (t) => (t - 32.0) * (5.0 / 9.0)
+
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "temperature")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0203")
+                  |> last()
+                  |> map(
+                    fn: (r) => {
+                        temp = if v.temperature_unit == "°C" then toC(t: r._value) else r._value
+
+                        return {r with _value: temp}
+                    }
+                  )
+        staticLegend: {}
+        suffix: °
+        width: 2
+        xPos: 2
+        yPos: 7
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#FDC44F'
+            id: 5a91f376-48bf-42ba-bdf3-da7c3ce9b4cd
+            name: Cthulhu
+            type: scale
+          - hex: '#007C76'
+            id: 32b3fafa-9381-44eb-9af4-a0ac13e74dd8
+            name: Cthulhu
+            type: scale
+          - hex: '#8983FF'
+            id: 95930d26-dd02-4146-b958-94ec839bb723
+            name: Cthulhu
+            type: scale
+        geom: line
+        height: 4
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Humidity
+        note: |-
+            No results. Try the following:
+
+            1. Manually run the **Sample Data - Air Sensors** task to collect the first batch of sample data.
+            2. Adjust the time range above.
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "humidity")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 4
+        widthRatio: 1
+        xCol: _time
+        xPos: 4
+        yCol: _value
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0100
+        queries:
+          - query: |-
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "humidity")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0100")
+                  |> last()
+        staticLegend: {}
+        suffix: '%'
+        width: 2
+        xPos: 4
+        yPos: 4
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0101
+        queries:
+          - query: |-
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "humidity")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0101")
+                  |> last()
+        staticLegend: {}
+        suffix: '%'
+        width: 2
+        xPos: 4
+        yPos: 5
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0102
+        queries:
+          - query: |-
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "humidity")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0102")
+                  |> last()
+        staticLegend: {}
+        suffix: '%'
+        width: 2
+        xPos: 4
+        yPos: 6
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0103
+        queries:
+          - query: |-
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "humidity")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0103")
+                  |> last()
+        staticLegend: {}
+        suffix: '%'
+        width: 2
+        xPos: 4
+        yPos: 7
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0200
+        queries:
+          - query: |-
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "humidity")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0200")
+                  |> last()
+        staticLegend: {}
+        suffix: '%'
+        width: 2
+        xPos: 6
+        yPos: 4
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0201
+        queries:
+          - query: |-
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "humidity")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0201")
+                  |> last()
+        staticLegend: {}
+        suffix: '%'
+        width: 2
+        xPos: 6
+        yPos: 5
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0202
+        queries:
+          - query: |-
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "humidity")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0202")
+                  |> last()
+        staticLegend: {}
+        suffix: '%'
+        width: 2
+        xPos: 6
+        yPos: 6
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0203
+        queries:
+          - query: |-
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "humidity")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0203")
+                  |> last()
+        staticLegend: {}
+        suffix: '%'
+        width: 2
+        xPos: 6
+        yPos: 7
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#FD7A5D'
+            id: 0741f2a1-8b7b-4f41-85fe-cad4b200822d
+            name: Delorean
+            type: scale
+          - hex: '#5F1CF2'
+            id: 6685c02d-23cc-4f90-9c35-d3627be5dcc8
+            name: Delorean
+            type: scale
+          - hex: '#4CE09A'
+            id: 049a1252-4b89-477a-a833-03b6f3681ae0
+            name: Delorean
+            type: scale
+        geom: line
+        height: 4
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Carbon Monoxide
+        note: |-
+            No results. Try the following:
+
+            1. Manually run the **Sample Data - Air Sensors** task to collect the first batch of sample data.
+            2. Adjust the time range above.
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "co")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 4
+        widthRatio: 1
+        xCol: _time
+        xPos: 8
+        yCol: _value
+      - colors:
+          - hex: '#4ED8A0'
+            id: base
+            name: rainforest
+            type: text
+          - hex: '#F48D38'
+            id: 24700dea-995a-40fe-aeda-740a9c442d10
+            name: tiger
+            type: text
+            value: 25
+          - hex: '#DC4E58'
+            id: a295d73a-11e5-4aeb-a81c-2f24e2c1f354
+            name: fire
+            type: text
+            value: 50
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0100
+        queries:
+          - query: |-
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "co")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0100")
+                  |> last()
+                  |> map(fn: (r) => ({r with _value: r._value * 10.0}))
+        staticLegend: {}
+        suffix: ' ppm'
+        width: 2
+        xPos: 8
+        yPos: 4
+      - colors:
+          - hex: '#4ED8A0'
+            id: base
+            name: rainforest
+            type: text
+          - hex: '#F48D38'
+            id: 24700dea-995a-40fe-aeda-740a9c442d10
+            name: tiger
+            type: text
+            value: 25
+          - hex: '#DC4E58'
+            id: a295d73a-11e5-4aeb-a81c-2f24e2c1f354
+            name: fire
+            type: text
+            value: 50
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0101
+        queries:
+          - query: |-
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "co")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0101")
+                  |> last()
+                  |> map(fn: (r) => ({r with _value: r._value * 10.0}))
+        staticLegend: {}
+        suffix: ' ppm'
+        width: 2
+        xPos: 8
+        yPos: 5
+      - colors:
+          - hex: '#4ED8A0'
+            id: base
+            name: rainforest
+            type: text
+          - hex: '#F48D38'
+            id: 24700dea-995a-40fe-aeda-740a9c442d10
+            name: tiger
+            type: text
+            value: 25
+          - hex: '#DC4E58'
+            id: a295d73a-11e5-4aeb-a81c-2f24e2c1f354
+            name: fire
+            type: text
+            value: 50
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0102
+        queries:
+          - query: |-
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "co")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0102")
+                  |> last()
+                  |> map(fn: (r) => ({r with _value: r._value * 10.0}))
+        staticLegend: {}
+        suffix: ' ppm'
+        width: 2
+        xPos: 8
+        yPos: 6
+      - colors:
+          - hex: '#4ED8A0'
+            id: base
+            name: rainforest
+            type: text
+          - hex: '#F48D38'
+            id: 24700dea-995a-40fe-aeda-740a9c442d10
+            name: tiger
+            type: text
+            value: 25
+          - hex: '#DC4E58'
+            id: a295d73a-11e5-4aeb-a81c-2f24e2c1f354
+            name: fire
+            type: text
+            value: 50
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0103
+        queries:
+          - query: |-
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "co")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0103")
+                  |> last()
+                  |> map(fn: (r) => ({r with _value: r._value * 10.0}))
+        staticLegend: {}
+        suffix: ' ppm'
+        width: 2
+        xPos: 8
+        yPos: 7
+      - colors:
+          - hex: '#4ED8A0'
+            id: base
+            name: rainforest
+            type: text
+          - hex: '#F48D38'
+            id: 24700dea-995a-40fe-aeda-740a9c442d10
+            name: tiger
+            type: text
+            value: 25
+          - hex: '#DC4E58'
+            id: a295d73a-11e5-4aeb-a81c-2f24e2c1f354
+            name: fire
+            type: text
+            value: 50
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0200
+        queries:
+          - query: |-
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "co")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0200")
+                  |> last()
+                  |> map(fn: (r) => ({r with _value: r._value * 10.0}))
+        staticLegend: {}
+        suffix: ' ppm'
+        width: 2
+        xPos: 10
+        yPos: 4
+      - colors:
+          - hex: '#4ED8A0'
+            id: base
+            name: rainforest
+            type: text
+          - hex: '#F48D38'
+            id: 24700dea-995a-40fe-aeda-740a9c442d10
+            name: tiger
+            type: text
+            value: 25
+          - hex: '#DC4E58'
+            id: a295d73a-11e5-4aeb-a81c-2f24e2c1f354
+            name: fire
+            type: text
+            value: 50
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0201
+        queries:
+          - query: |-
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "co")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0201")
+                  |> last()
+                  |> map(fn: (r) => ({r with _value: r._value * 10.0}))
+        staticLegend: {}
+        suffix: ' ppm'
+        width: 2
+        xPos: 10
+        yPos: 5
+      - colors:
+          - hex: '#4ED8A0'
+            id: base
+            name: rainforest
+            type: text
+          - hex: '#F48D38'
+            id: 24700dea-995a-40fe-aeda-740a9c442d10
+            name: tiger
+            type: text
+            value: 25
+          - hex: '#DC4E58'
+            id: a295d73a-11e5-4aeb-a81c-2f24e2c1f354
+            name: fire
+            type: text
+            value: 50
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0202
+        queries:
+          - query: |-
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "co")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0202")
+                  |> last()
+                  |> map(fn: (r) => ({r with _value: r._value * 10.0}))
+        staticLegend: {}
+        suffix: ' ppm'
+        width: 2
+        xPos: 10
+        yPos: 6
+      - colors:
+          - hex: '#4ED8A0'
+            id: base
+            name: rainforest
+            type: text
+          - hex: '#F48D38'
+            id: 24700dea-995a-40fe-aeda-740a9c442d10
+            name: tiger
+            type: text
+            value: 25
+          - hex: '#DC4E58'
+            id: a295d73a-11e5-4aeb-a81c-2f24e2c1f354
+            name: fire
+            type: text
+            value: 50
+        decimalPlaces: 2
+        height: 1
+        kind: Single_Stat
+        name: TLM0203
+        queries:
+          - query: |-
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "airSensors")
+                  |> filter(fn: (r) => r["_field"] == "co")
+                  |> filter(fn: (r) => r["sensor_id"] == "TLM0203")
+                  |> last()
+                  |> map(fn: (r) => ({r with _value: r._value * 10.0}))
+        staticLegend: {}
+        suffix: ' ppm'
+        width: 2
+        xPos: 10
+        yPos: 7
+    description: Sample temperature, humidity, and carbon monoxide data collected
+        from air sensors inside of a bulding.
+    name: Air Sensors
