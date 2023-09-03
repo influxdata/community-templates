@@ -1,0 +1,214 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: mystifying-khayyam-ab8001
+spec:
+    color: '#8e1fc3'
+    name: Sample data
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: thirsty-shtern-ab8005
+spec:
+    associations:
+      - kind: Label
+        name: mystifying-khayyam-ab8001
+    name: sampledata
+    retentionRules:
+      - everySeconds: 604800
+        type: expire
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Task
+metadata:
+    name: upbeat-curie-ab8009
+spec:
+    associations:
+      - kind: Label
+        name: mystifying-khayyam-ab8001
+    every: 15m
+    name: Sample Data - Bitcoin
+    query: |-
+        import "influxdata/influxdb/sample"
+
+
+        sample.data(set: "bitcoin")
+            |> to(bucket: "sampledata")
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: confident-shirley-ab800b
+spec:
+    name: currency
+    type: constant
+    values:
+      - USD
+      - GBP
+      - EUR
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: wizardly-mayer-eb8001
+spec:
+    associations:
+      - kind: Label
+        name: mystifying-khayyam-ab8001
+    charts:
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colorizeRows: true
+        colors:
+          - hex: '#31C0F6'
+            id: 541cb74d-b409-4476-8e39-f7c86ecf0aa2
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: e5200dec-2d03-4be5-8128-029d0f0594ef
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: ef09eae3-e606-42e8-9159-9a90efba7abf
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 6
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: Bitcoin Price
+        opacity: 1
+        orientationThreshold: 1e+08
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "sampledata")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "coindesk")
+                  |> filter(fn: (r) => r["_field"] == "price")
+                  |> filter(fn: (r) => r["code"] == v.currency)
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        staticLegend:
+            colorizeRows: true
+            opacity: 1
+            orientationThreshold: 1e+08
+            widthRatio: 1
+        width: 6
+        widthRatio: 1
+        xCol: _time
+        yCol: _value
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 4
+        kind: Single_Stat
+        name: Current Price
+        queries:
+          - query: "import \"math\"\nimport \"regexp\"\n\nsymbol = if v.currency ==
+                \"EUR\" then \"€\" else if v.currency == \"GBP\" then \"£\" else \"$\"\npriceStr
+                = (v) => {\n  _priceStr = \"${symbol}${math.round(x: (v * 100.0))
+                / 100.0}\"\n  _withComma = regexp.replaceAllString(r: /([0-9]{3}\\.)/,
+                v: _priceStr, t: \",$1\")\n  _trailingZero = regexp.replaceAllString(r:
+                /(\\.[0-9]{1}$)/, v: _withComma, t: \"$1 0\")\n  \n  return regexp.replaceAllString(r:
+                / /, v: _trailingZero, t: \"\")\n}\n\nfrom(bucket: \"sampledata\")\n
+                \ |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn:
+                (r) => r[\"_measurement\"] == \"coindesk\")\n  |> filter(fn: (r) =>
+                r[\"_field\"] == \"price\")\n  |> filter(fn: (r) => r[\"code\"] ==
+                v.currency)\n  |> last()\n  |> map(fn: (r) => ({r with _value: priceStr(v:
+                r._value)}))"
+        staticLegend: {}
+        width: 6
+        xPos: 6
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Min Price
+        queries:
+          - query: "import \"math\"\nimport \"regexp\"\n\nsymbol = if v.currency ==
+                \"EUR\" then \"€\" else if v.currency == \"GBP\" then \"£\" else \"$\"\npriceStr
+                = (v) => {\n  _priceStr = \"${symbol}${math.round(x: (v * 100.0))
+                / 100.0}\"\n  _withComma = regexp.replaceAllString(r: /([0-9]{3}\\.)/,
+                v: _priceStr, t: \",$1\")\n  _trailingZero = regexp.replaceAllString(r:
+                /(\\.[0-9]{1}$)/, v: _withComma, t: \"$1 0\")\n  \n  return regexp.replaceAllString(r:
+                / /, v: _trailingZero, t: \"\")\n}\n\nfrom(bucket: \"sampledata\")\n
+                \ |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn:
+                (r) => r[\"_measurement\"] == \"coindesk\")\n  |> filter(fn: (r) =>
+                r[\"_field\"] == \"price\")\n  |> filter(fn: (r) => r[\"code\"] ==
+                v.currency)\n  |> min()\n  |> map(fn: (r) => ({r with _value: priceStr(v:
+                r._value)}))"
+        staticLegend: {}
+        width: 2
+        xPos: 6
+        yPos: 4
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Mean Price
+        queries:
+          - query: "import \"math\"\nimport \"regexp\"\n\nsymbol = if v.currency ==
+                \"EUR\" then \"€\" else if v.currency == \"GBP\" then \"£\" else \"$\"\npriceStr
+                = (v) => {\n  _priceStr = \"${symbol}${math.round(x: (v * 100.0))
+                / 100.0}\"\n  _withComma = regexp.replaceAllString(r: /([0-9]{3}\\.)/,
+                v: _priceStr, t: \",$1\")\n  _trailingZero = regexp.replaceAllString(r:
+                /(\\.[0-9]{1}$)/, v: _withComma, t: \"$1 0\")\n  \n  return regexp.replaceAllString(r:
+                / /, v: _trailingZero, t: \"\")\n}\n\nfrom(bucket: \"sampledata\")\n
+                \ |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn:
+                (r) => r[\"_measurement\"] == \"coindesk\")\n  |> filter(fn: (r) =>
+                r[\"_field\"] == \"price\")\n  |> filter(fn: (r) => r[\"code\"] ==
+                v.currency)\n  |> mean()\n  |> map(fn: (r) => ({r with _value: priceStr(v:
+                r._value)}))"
+        staticLegend: {}
+        width: 2
+        xPos: 8
+        yPos: 4
+      - colors:
+          - hex: '#00C9FF'
+            id: base
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 2
+        kind: Single_Stat
+        name: Max Price
+        queries:
+          - query: "import \"math\"\nimport \"regexp\"\n\nsymbol = if v.currency ==
+                \"EUR\" then \"€\" else if v.currency == \"GBP\" then \"£\" else \"$\"\npriceStr
+                = (v) => {\n  _priceStr = \"${symbol}${math.round(x: (v * 100.0))
+                / 100.0}\"\n  _withComma = regexp.replaceAllString(r: /([0-9]{3}\\.)/,
+                v: _priceStr, t: \",$1\")\n  _trailingZero = regexp.replaceAllString(r:
+                /(\\.[0-9]{1}$)/, v: _withComma, t: \"$1 0\")\n  \n  return regexp.replaceAllString(r:
+                / /, v: _trailingZero, t: \"\")\n}\n\nfrom(bucket: \"sampledata\")\n
+                \ |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn:
+                (r) => r[\"_measurement\"] == \"coindesk\")\n  |> filter(fn: (r) =>
+                r[\"_field\"] == \"price\")\n  |> filter(fn: (r) => r[\"code\"] ==
+                v.currency)\n  |> max()\n  |> map(fn: (r) => ({r with _value: priceStr(v:
+                r._value)}))"
+        staticLegend: {}
+        width: 2
+        xPos: 10
+        yPos: 4
+    description: View current and historical bitcoin prices.
+    name: Bitcoin Price
